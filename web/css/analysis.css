@@ -37,10 +37,10 @@
    Analysis — side panel
    ====================================================================== */
 .an-actions {
-  display: flex; flex-wrap: nowrap; gap: 2px; padding: var(--sp-2);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 2px; padding: var(--sp-2);
   border-bottom: 1px solid var(--divider); background: var(--surface-sunken); flex: none;
 }
-/* One row in every language: labels shrink (ellipsis) before anything wraps; tooltips carry the full text. */
+/* Buttons flow onto a second row rather than truncating labels; tooltips carry the full text. */
 .an-act { flex: 1 1 auto; min-width: 0; justify-content: center; gap: 4px; padding-inline: 4px; }
 .an-act span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .an-act svg { flex: none; }
@@ -383,8 +383,8 @@
    ====================================================================== */
 @media (max-width: 860px) {
   .analysis-page .game-panel, .review-layout .game-panel { min-height: 560px; }
+  .an-actions { grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }
   .an-act span { display: none; }
-  .an-act { flex: 1; }
   .rv-acc-ring { width: 72px; height: 72px; }
   .rv-line-banner { font-size: var(--fs-xs); }
 }
