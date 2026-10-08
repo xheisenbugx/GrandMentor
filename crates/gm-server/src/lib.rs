@@ -79,8 +79,8 @@ pub fn app(state: AppState, web_dir: &Path) -> Router {
         );
 
     let cors = CorsLayer::new()
-        .allow_origin(AllowOrigin::predicate(|origin, _| {
-            is_local_origin(origin.as_bytes())
+        .allow_origin(AllowOrigin::predicate(|origin, parts| {
+            is_local_origin(origin.as_bytes()) || routes::backup::sync_cors_allowed(origin, parts)
         }))
         .allow_methods([
             Method::GET,
@@ -89,7 +89,12 @@ pub fn app(state: AppState, web_dir: &Path) -> Router {
             Method::DELETE,
             Method::OPTIONS,
         ])
-        .allow_headers([header::CONTENT_TYPE, header::ACCEPT, header::ACCEPT_LANGUAGE])
+        .allow_headers([
+            header::CONTENT_TYPE,
+            header::ACCEPT,
+            header::ACCEPT_LANGUAGE,
+            header::HeaderName::from_static(routes::backup::PAIR_HEADER),
+        ])
         .max_age(Duration::from_secs(3600));
 
     Router::new()

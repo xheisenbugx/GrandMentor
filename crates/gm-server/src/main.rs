@@ -2,7 +2,8 @@
 //!
 //! Env: GM_PORT (8080), GM_HOST (127.0.0.1), GM_DATA_DIR (./data), GM_DB (./grandmentor.db),
 //! GM_WEB_DIR (./web), ANTHROPIC_API_KEY (optional), GM_MENTOR_MODEL (claude-opus-5-5),
-//! GM_ENGINES (default: available cores - 1, clamped to 2..=8), GM_TT_MB (default 32 per engine).
+//! GM_ENGINES (default: available cores - 1, clamped to 2..=8), GM_TT_MB (default 32 per engine),
+//! GM_SYNC_ALLOW_ORIGINS (optional comma list restricting device-sync CORS, see routes/backup.rs).
 
 use std::net::{IpAddr, SocketAddr};
 use std::path::PathBuf;
@@ -121,7 +122,10 @@ async fn run() -> anyhow::Result<()> {
 
     let shutdown = Arc::clone(&state.shutdown);
     let mut shutdown_rx = shutdown.subscribe();
-    let server = axum::serve(listener, app(state, &web_dir)).with_graceful_shutdown(async move {
+    let server = axum::serve(
+        listener,
+        app(state, &web_dir).into_make_service_with_connect_info::<SocketAddr>(),
+    ).with_graceful_shutdown(async move {
         let _ = shutdown_rx.wait_for(|v| *v).await;
     });
     let mut server = tokio::spawn(async move { server.await });

@@ -1,13 +1,15 @@
 // Settings page (#/settings): appearance (theme, board theme, piece set), live preview board,
-// board behaviour (coords, legal dots, animation, auto-queen, notation), game (eval bar, sounds)
-// and a "danger zone". Everything goes through ../settings.js. The language picker sits at the top
-// of Appearance; switching language makes app.js remount this page.
+// board behaviour (coords, legal dots, animation, auto-queen, notation), game (eval bar, sounds),
+// "Your data" (backup / restore / device sync, components/backup.js) and a "danger zone".
+// Everything goes through ../settings.js. The language picker sits at the top of Appearance;
+// switching language makes app.js remount this page.
 
 import { api, qs, isAbort } from '../api.js';
 import { h, icon, pageHeader, disposables, debounce, confirmDialog, toast, formatSan } from '../ui.js';
 import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, pieceUrl } from '../settings.js';
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
+import { createBackupSection } from '../components/backup.js';
 
 export const title = () => t('nav.routes.settings');
 
@@ -183,6 +185,10 @@ export async function mount(root) {
     location.reload();
   });
 
+  // ---- Your data (backup, restore, device sync) — self-contained component -----------
+  const dataSection = createBackupSection();
+  bag.add(dataSection.destroy);
+
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
     pageHeader({ title: t('settings.title'), subtitle: t('settings.subtitle'), icon: 'settings' }),
@@ -212,6 +218,7 @@ export async function mount(root) {
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + `<span>${t('settings.sections.playing')}</span>` })),
           row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria'))),
           row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
+        dataSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),
