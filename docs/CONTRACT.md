@@ -400,3 +400,40 @@ The server logs the `local_game` activity for `bot_id: null`. The game-over moda
 **Resume:** an unfinished game is kept in `localStorage["grandmentor.local.current.v1"]` =
 `{v: 1, white, black, startFen, moves /* UCI */, tcId, opts, orientation, clocks: {white, black} | null, takebacks, updatedAt}`
 (written after every move and on `pagehide` / hidden / unmount; removed when the game ends or is discarded). The setup screen shows a resume card for it.
+
+## Installable app (PWA)
+
+GrandMentor can be installed as an app and keeps puzzles and lessons working without a connection.
+
+**Static endpoints (served by `crates/gm-server/src/web.rs`, not under `/api`)**
+
+| Path | Notes |
+|---|---|
+| `GET /sw.js` | The service worker. `Cache-Control: no-cache`, `Service-Worker-Allowed: /`, `text/javascript`. The literal token `__GM_BUILD__` in `web/sw.js` is replaced by the build id (hash of every shell file's path + size + mtime, plus the crate version), so any frontend change ships a byte-different worker. 404 if the file is missing or > 512 KB. |
+| `GET /precache-manifest.json` | `{"version": "<build id>", "files": ["/index.html", "/css/app.css", ...]}` — every file under `web/` except `dev/`, dot-files, `*.br`/`*.gz`, symlinks and `sw.js` itself. Bounded walk (depth 8, max 1500 files) on a blocking thread. `no-cache`. |
+| `GET /manifest.webmanifest` | `application/manifest+json`, `no-cache`. Icons live in `web/img/icons/` (`icon-192/512.png`, `maskable-192/512.png`, `apple-touch-icon.png`, generated from `web/favicon.svg`). |
+
+**Service worker (`web/sw.js`) — caches (all bounded; unknown `gm-*` caches are deleted on activate)**
+
+| Cache | Strategy | Contents | Limit |
+|---|---|---|---|
+| `gm-shell-<build>` | precache, cache-first | the precache manifest list; navigations fall back to the cached `/index.html` | exact list |
+| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache; Google Fonts (SWR) | 120 entries |
+| `gm-content-v1` | stale-while-revalidate | `GET /api/courses[/:id]`, `/api/openings[/:id]`, `/api/endgames[/:id]`, `/api/classics[/:id]`, `/api/puzzles/themes`, `/api/bots`, `/api/puzzles/:id`, plus the offline puzzle pack | 250 entries |
+| `gm-api-v1` | network-first, cached fallback | any other JSON `GET /api/*` (profile, progress, stats, summaries…) | 80 entries |
+
+- Cache keys for `/api` include the request language (`?__lang=<Accept-Language>`), since content is localized. Offline with nothing cached in the current language, the same content in another language is served.
+- Eviction is LRU-ish: every write re-inserts the key at the end, the oldest keys are evicted beyond the limit.
+- **Never cached:** non-GET requests, `/api/health`, `/api/engine/*` (incl. the WebSocket), `/api/mentor/*`, `/api/backup*`, anything containing `/export`, `*/pgn`.
+- **Offline puzzles:** `GET /api/puzzles/next[?theme=]` and `GET /api/puzzles/rush[?count=]` are network-first; offline they are answered from a pack of up to 200 puzzles (`/api/puzzles/rush?count=200`), honouring `theme` when possible and avoiding recent repeats. Offline responses carry `X-GM-Offline: 1`.
+- **Prefetch:** when the page is idle (`requestIdleCallback`, ≥ 4 s after load, skipped on Save-Data unless installed) `pwa.js` posts `{type:'prefetch', lang}`; the worker caches `/api/courses` + every course (lessons included, max 80 courses), the puzzle pack, themes, openings, endgames, profile and progress. Throttled to once per 12 h per language (IndexedDB `gm-pwa/meta`); forced after `appinstalled`; re-run for a new language after a language switch.
+- **Offline write queue:** `POST /api/puzzles/:id/attempt`, `POST /api/progress`, `POST /api/puzzles/rush` and `POST /api/activity` that fail with a network error are stored in IndexedDB (`gm-pwa/queue`, max 200 entries, max 8 KB body, dropped after 30 days) and answered with `200` + `X-GM-Queued: 1` and a plausible body (`{rating, delta: 0, queued: true}` from the cached profile; the merged progress list — also written back into the cache so the course page shows the tick; `{best, queued: true}`; otherwise `{queued: true}`). Replay is in order, on Background Sync (`gm-replay`), on worker activation, and when the page reports it is back online. 2xx and 4xx remove an entry; network errors and 5xx stop the replay and keep the rest. Only these record-a-fact endpoints are queued; a write that reached the server but whose response was lost may be recorded twice.
+- **Messages** page → worker: `{type:'skipWaiting'}`, `{type:'replay'}`, `{type:'prefetch', lang, force?}`, `{type:'status'}` (replies `{build, queued}` on `ports[0]`). Worker → page (`source: 'gm-sw'`): `queued`, `replayed {count, remaining}`, `prefetched {courses, lessons, puzzles}`.
+
+**Frontend (`web/js/pwa.js`)** — `initPwa()` (called once from `app.js` boot after the shell renders) and `destroyPwa()`.
+- Registers `/sw.js` (scope `/`, `updateViaCache: 'none'`) in secure contexts (https or localhost); checks for updates when the tab becomes visible (at most every 30 min).
+- Update flow: a waiting worker shows a sticky toast "A new version is available — Reload"; Reload posts `skipWaiting` and reloads on `controllerchange` (fallback reload after 3 s).
+- Offline: `navigator.onLine` + a `/api/health` probe (4 s timeout; re-probed every 15 s while offline and on `online`). Shows `#offline-banner` ("Offline — puzzles and lessons still work", Retry) and sets `html.is-offline`; "Back online" for 2.5 s when the connection returns, then asks the worker to replay the queue.
+- Install: captures `beforeinstallprompt` and adds an "Install app" entry to the sidebar footer and the mobile "More" sheet (re-injected when `app.js` re-renders the shell); on iOS Safari (not standalone) the entry opens "Share → Add to Home Screen" instructions. Hidden once installed / in standalone mode.
+- Keeps `<meta name="theme-color">` in sync with the in-app theme (`--bg-elev`).
+- Strings: `pwa.*` in `web/locales/{en,es}/pwa.js`. Styles: `web/css/pwa.css`.
