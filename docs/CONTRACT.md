@@ -380,3 +380,48 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Learn from your mistakes
+
+Spaced-repetition "find the better move" cards built from the user's own reviewed games.
+Storage: `crates/gm-store/src/srs.rs` (tables `mistake_cards`, `mistake_scanned_games`); routes: `crates/gm-server/src/routes/mistakes.rs`.
+
+**Ingestion.** When `POST /api/review` computes a review for a `game_id` and saves it, every move of the user's side
+(`games.user_color`) classified `mistake` | `miss` | `blunder` with `win_chance_loss >= 10` and a different engine best
+move becomes a card (max 12 per game, worst first). Cards are deduplicated by the first four FEN fields; removed cards
+stay as tombstones and are never re-added. The deck is capped at 5000 live cards. Games without `user_color` are skipped.
+`solution` is the best move plus the engine continuation while it stays forcing (the opponent has a single legal reply,
+or the line is a forced mate), always odd length (ends on the user's move), max 9 plies.
+
+**Scheduling** (Leitner / SM-2 hybrid): new cards are due immediately. A correct answer on a due card bumps `streak`
+and grows the interval (1 day, then ≥ 3 days, then ≥ 7 days, × `ease`); at `streak` 3 the card graduates (retired).
+A wrong answer (or hint / show solution) resets `streak` to 0, lowers `ease` (min 1.3) and brings the card back in 10 minutes.
+Answering a card before it is due is practice: success leaves the schedule alone (`counted: false`), failure still resets it.
+Each attempt logs activity `mistake_review`.
+
+```
+MistakeCard {
+  id, fen /* user to move */, prev_fen?, prev_uci? /* opponent's previous move: prev_fen --prev_uci--> fen */,
+  played_uci, played_san, best_uci, best_san, solution: [uci] /* starts with best_uci */,
+  game_id?, ply /* 1-based */, move_number, color: "white"|"black", classification: "mistake"|"miss"|"blunder",
+  phase: "opening"|"middlegame"|"endgame", opponent, bot_id?, explanation /* coach text of the played move */, lang,
+  win_chance_loss, due_at /* ISO UTC */, due_in_secs /* <= 0 when due */, interval_days, ease, streak, reps, lapses,
+  graduated, last_reviewed_at?, created_at
+}
+MistakeSummary { due, total /* live cards incl. graduated */, graduated, learning, next_due_at?, next_due_in_secs? }
+```
+
+| Method & path | Body / query | Response |
+|---|---|---|
+| `GET /api/mistakes/summary` | | `MistakeSummary` |
+| `GET /api/mistakes/next` | `?exclude=<id>` (skip the card just answered) | `{ card: MistakeCard \| null, due: bool, summary }` — the most overdue card; if none is due, the soonest upcoming one (`due: false`). Graduated cards are never returned. `explanation` is in the request language. |
+| `POST /api/mistakes/:id/attempt` | `{ solved: bool, time_ms?: n }` | `{ card, counted, graduated_now, summary }`; 404 if unknown/removed |
+| `POST /api/mistakes/sync` | | `{ scanned, added, more, summary }` — backfill: scans up to 100 reviewed, not-yet-scanned games per call (`more: true` → call again) |
+| `GET /api/mistakes` | `?filter=all\|due\|learning\|graduated&limit=1..100 (20)&offset=n` | `{ items: [MistakeCard], summary, limit, offset }` (newest first) |
+| `DELETE /api/mistakes/:id` | | `{ ok: true, summary }`; 404 if unknown/removed |
+
+**Frontend.** `#/puzzles/mistakes` (`params.mode === 'mistakes'` in `pages/puzzles.js`) runs the deck with the shared
+`PuzzleRunner` (a card becomes `{ fen: prev_fen, moves: [prev_uci, ...solution] }`, or `{ fen, moves: solution, userFirst: true }`
+when there is no previous move). On mount it calls `POST /api/mistakes/sync` (up to 3 rounds). The Puzzles hub shows a
+"Learn from your mistakes" entry with the due-count badge (from `/api/mistakes/summary`). `#/puzzles?theme=<theme>` opens the
+rated solver filtered by theme.

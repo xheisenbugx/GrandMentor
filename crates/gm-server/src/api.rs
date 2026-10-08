@@ -403,6 +403,9 @@ async fn review(
         // Caching is best-effort: the review itself is still returned on a store error.
         if let Err(e) = store_op(&st.store, move |s| s.update_game(id, &patch)).await {
             tracing::warn!("could not cache review for game {id}: {}", e.message);
+        } else {
+            // "Learn from your mistakes": the user's errors become spaced-repetition cards.
+            crate::routes::mistakes::ingest_review(&st, &game, &review, lang).await;
         }
         return Ok(Json(review));
     }
