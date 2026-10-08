@@ -52,6 +52,7 @@ export default {
     flip: 'Flip board (F)',
   },
   analyze: 'Analyze this position',
+  addToRepertoire: 'Add to my repertoire',
   tabs: { learn: 'Learn', explore: 'Explore', train: 'Train' },
   startingPosition: 'Starting position',
   bookPosition: 'Book position',

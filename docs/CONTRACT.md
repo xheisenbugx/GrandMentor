@@ -841,3 +841,59 @@ Library: stats, level/era/theme/search filters, cards with a mini board of `key_
 longer pauses on comments) or step-by-step (←/→, Space, F), "pause and think" questions (move on the board; hint /
 show me), key-moment chips, move list, "Play this position vs a bot" (`#/play?fen=…&color=w|b`) and "Open in Analysis"
 (`#/analysis?pgn=…`). Speed and eval preference persist in localStorage `grandmentor.classics.v1`.
+
+## Repertoire
+
+Opening repertoire builder with spaced-repetition drills. Store: `crates/gm-store/src/repertoire.rs`
+(`gm_store::repertoire::{Side, RepNode, RepTree, RepSummary, AddOutcome, Conflict, DrillLine, ReviewOutcome, Deviation, RepError}`);
+routes: `crates/gm-server/src/routes/repertoire.rs`; page: `web/js/pages/repertoire.js` (`#/repertoire`, `#/repertoire/:side`,
+query `?drill=1` starts the drill, `?node=<id>` selects a move); styles `web/css/repertoire.css` (injected by the page).
+
+**Model.** One move tree per side (`white` | `black`), rooted at the standard initial position. A node is one move:
+```jsonc
+// RepNode
+{ "id": 12, "parent_id": 0 /* 0 = first move */, "side": "white", "ply": 1 /* 1 = White's first move */,
+  "uci": "e2e4", "san": "e4", "fen": "<full FEN after the move>", "note": "",
+  "mine": true /* played by the repertoire's side = a drill card */,
+  "ease": 2.5, "interval_days": 0, "reps": 0, "lapses": 0, "due": 1800000000 /* unix s */, "is_due": true,
+  "last_review": null }
+```
+Rules: for your side at most **one** move per position (adding another returns a `conflict` unless `replace: true`,
+which removes the old move and everything after it); opponent replies may branch freely. Bounds: ≤ 5000 nodes per
+side, lines ≤ 80 plies, notes ≤ 500 chars. Every move is validated as legal. New cards are due immediately.
+Scheduling (SM-2 style): correct on a due card → interval 1 d, 3 d, then × ease (ease +0.1, max 3.0, interval ≤ 365 d);
+a correct answer on a card that is not due changes nothing; wrong → lapse, interval 0, ease −0.2 (min 1.3), due again in 10 min.
+
+| Method & path | Body / query | Response |
+|---|---|---|
+| `GET /api/repertoire?side=white` | | `RepTree {side, nodes:[RepNode] (parents before children), stats:SideStats, max_nodes}` |
+| `DELETE /api/repertoire?side=white` | | `{deleted:n}` |
+| `GET /api/repertoire/summary` | | `{due, lines, new, cards, white:SideStats, black:SideStats}` — `SideStats = {nodes, cards, lines, due, new, learned, depth}` |
+| `POST /api/repertoire/nodes` | `{side, parent_id?:0, uci, note?, replace?:false}` | `AddOutcome` |
+| `POST /api/repertoire/lines` | `{side, parent_id?:0, moves:[uci…], replace?:false}` | `AddOutcome` |
+| `PUT` (or `PATCH`) `/api/repertoire/nodes/:id` | `{note}` | `RepNode` |
+| `DELETE /api/repertoire/nodes/:id` | | `{deleted:n}` (the move and everything after it) |
+| `GET /api/repertoire/drill/next` | `?side=white\|black` (omit = both) `&any=1` (practice cards that are not due) | `{line: DrillLine \| null}` |
+| `POST /api/repertoire/drill/attempt` | `{node_id, uci}` | `ReviewOutcome {correct, expected_uci, expected_san, card:RepNode}`; logs activity `repertoire_review` |
+| `GET /api/repertoire/deviations` | `?limit=8` (max 30) | `[Deviation]` |
+| `GET /api/repertoire/starters` | | `[{id, side, openings:[{id, name /* localized */}], lines}]` |
+| `POST /api/repertoire/starters/:id` | | `{side, added, lines, skipped}` (lines clashing with your moves are skipped) |
+
+`AddOutcome = {added, removed, path:[node ids of the whole line], conflict: null | {ply, parent_id, existing_id, existing_uci, existing_san, new_uci, new_san}}`
+— with a conflict nothing is saved. Errors (`{error}`, localized en/es): 400 bad side / illegal move / line too long /
+repertoire full / wrong side / drilling an opponent move; 404 unknown node or starter.
+
+`DrillLine = {side, nodes:[RepNode] (path from the first move; always ends on one of your moves), due_in_line, due_total}`.
+The server walks the tree preferring due, overdue and weak (low ease, lapsed) cards; opponent replies are picked at
+random weighted by how much work their branch needs. The page's client-side "bot" plays the opponent moves of the line;
+a wrong answer is recorded once, the right move is shown with a green arrow and the line is re-asked at the end.
+
+`Deviation` (user games with `user_color`, standard start, newest first; games of a side with an empty repertoire are skipped):
+`{game_id, side, white, black, result, created_at, opening_name, status, ply, played_uci, played_san, expected:[{uci,san}],
+parent_id /* node whose position is fen_before; 0 = start */, fen_before, moves_before:[uci], book_plies}` with
+`status` = `deviated` (you played a different move than your repertoire), `unprepared` (opponent move you have not
+prepared — add it with `POST /nodes {side, parent_id, uci: played_uci}`), `end` (the game went past the end of your
+preparation) or `followed` (the game ended inside the repertoire). Positions are matched by FEN, so transpositions count.
+
+Shared helper for other pages: `import('./repertoire.js').then(m => m.openAddToRepertoire({ucis, sans?, name?, side?}))`
+opens the "Add to my repertoire" dialog (used by the Openings detail page).
