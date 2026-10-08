@@ -58,7 +58,7 @@ function coachAvatar(size = '') {
 }
 
 // ---------------------------------------------------------------------------
-export async function mount(root, { params = {} } = {}) {
+export async function mount(root, { params = {}, query = {} } = {}) {
   ensureAnalysisCss();
   const bag = disposables();
   const ctrl = new AbortController();
@@ -882,8 +882,9 @@ export async function mount(root, { params = {} } = {}) {
     });
 
     // ---- start ----
-    setMode('report');
-    goTo(0);
+    // `?ply=<n>` (e.g. from Insights) opens that move in the walkthrough.
+    const startPly = Number.parseInt(query.ply, 10);
+    if (startPly >= 1 && startPly <= n) { setMode('walk'); goTo(startPly); } else { setMode('report'); goTo(0); }
   }
 
   function errorCard(titleText, text) {

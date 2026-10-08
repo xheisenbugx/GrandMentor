@@ -521,3 +521,69 @@ MistakeSummary { due, total /* live cards incl. graduated */, graduated, learnin
 when there is no previous move). On mount it calls `POST /api/mistakes/sync` (up to 3 rounds). The Puzzles hub shows a
 "Learn from your mistakes" entry with the due-count badge (from `/api/mistakes/summary`). `#/puzzles?theme=<theme>` opens the
 rated solver filtered by theme.
+
+## Insights
+
+Personal weakness tracker built from the user's reviewed games. Aggregation is pure and lives in
+`gm_analysis::insights` (unit-tested); routes in `crates/gm-server/src/routes/insights.rs`.
+
+**User side of a game:** `user_color`, else a case-insensitive match of the profile name against
+`white`/`black`. Games where the side is unknown are ignored. "Reviewed" = the game has stored
+accuracies (set by `POST /api/review {game_id}` or `review-next`).
+
+### `GET /api/insights`
+Computed server-side from at most 200 recent reviewed games (scan of the 500 most recent games),
+cached in a bounded cache (8 entries) keyed by language + every reviewed game's `id:updated_at`
+(any change invalidates). Text (`title`, `explanation`, `drill.label`) is in the request `Lang`.
+```json
+{
+  "games_analyzed": 9, "min_games": 3, "ready": true,
+  "total_games": 12, "unreviewed": 3, "reviewable": 3,
+  "weaknesses": [{
+    "id": "hanging_pieces|missed_tactics|endgame|opening|conversion|repeated|time_trouble",
+    "title": "Leaving pieces unprotected", "explanation": "…", "count": 28, "games": 8, "score": 4.1,
+    "theme": "fork",
+    "examples": [{ "game_id": 7, "ply": 19, "fen": "<before the move>", "move_uci": "d1d3", "move_san": "Qd3",
+                   "best_uci": "b5c4", "best_san": "bxc4", "color": "white", "classification": "blunder" }],
+    "drill": { "href": "#/drills/hanging", "label": "Practice spotting hanging pieces" }
+  }],
+  "phases": [{ "phase": "opening|middlegame|endgame", "moves": 90, "inaccuracies": 15, "mistakes": 5, "blunders": 4 }],
+  "hanging": [{ "piece": "pawn|knight|bishop|rook|queen", "count": 13 }],
+  "tactics": [{ "theme": "hangingPiece", "count": 5 }],
+  "accuracy_trend": [{ "game_id": 3, "date": "…", "accuracy": 72.6, "outcome": "win|loss|draw|ongoing", "color": "white" }],
+  "average_accuracy": 73.8,
+  "by_color": { "white": { "games": 6, "wins": 2, "losses": 4, "draws": 0, "accuracy": 73.0 } },
+  "by_opening": [{ "name": "Italian Game", "games": 2, "wins": 1, "losses": 1, "draws": 0, "accuracy": 72.4 }],
+  "conversion": { "winning_games": 3, "converted": 2,
+                  "failed": [{ "game_id": 9, "ply": 41, "fen": "…", "color": "white", "outcome": "draw|loss", "best_cp": 1250 }] },
+  "time_trouble": null
+}
+```
+- `ready` = `games_analyzed >= min_games`; `reviewable` = unreviewed user games with ≥ 6 plies.
+- `weaknesses`: at most 3, most urgent first; `theme` only for `missed_tactics`; `tactics` lists puzzle theme ids, most frequent first.
+- `time_trouble`, when clock data exists: `{ games_with_clock, low_time_secs: 30, low_time_moves, low_time_errors, normal_moves, normal_errors }`.
+
+Definitions: user errors = mistake, miss, blunder (phases also count inaccuracies). Phase: endgame when
+non-pawn material of both sides ≤ 20 points (or no queens and ≤ 26), else opening while full move ≤ 10,
+else middlegame. Hanging = a mistake/blunder after which a user piece can be won (SEE). Missed tactic =
+the engine's best move on a user error is a fork / pin / skewer / discovered attack / back-rank mate /
+mate in 1–3 / winning a hanging piece (`gm_mentor::tactics`). Conversion = finished game where the user
+reached ≥ +3 and didn't win. Time trouble needs `[%clk]` comments in the stored PGN (currently stripped
+on import, so it is normally `null` and the UI hides the card). Drill links: `#/drills/hanging`,
+`#/puzzles?theme=<theme>`, `#/endgames`, `#/repertoire`, `#/play?fen=…&color=w|b`, `#/puzzles/mistakes`,
+`#/puzzles/rush`.
+
+### `POST /api/insights/review-next`
+Body `{ "skip": [gameId…] }` (optional, ≤ 200 ids). Reviews ONE unreviewed user game (most recent
+first, ≥ 6 plies) at depth 12 through the normal review pipeline and stores it like
+`POST /api/review {game_id}`. → `{ "game_id": 12 | null, "remaining": 2 }` (`null` = nothing left).
+Only one runs at a time (`409` otherwise). The review is awaited inside the request, so aborting the
+HTTP request cancels its engine searches. The Insights page loops it for at most 10 games per click
+and has a Stop button.
+
+### Frontend
+- `#/insights` (`web/js/pages/insights.js`, CSS `web/css/insights.css` linked from `index.html`).
+  Exports `topWeaknessesCard() → { el, destroy() }` (used on the Profile page), `miniBoard(fen,
+  { orientation, played, best })` (static SVG), `momentHref(gameId, ply)`.
+- `#/review/:gameId?ply=<n>` opens Game Review on that move's walkthrough (added for Insights).
+- Strings: `insights.*` in `web/locales/{en,es}/insights.js`.
