@@ -646,26 +646,10 @@ fn clean_new_game(g: &NewGame) -> NewGame {
     }
 }
 
-/// Bumps the daily streak. Call inside the same lock as the activity.
+/// Bumps the daily streak (UTC days). Call inside the same lock as the activity.
+/// The streak logic lives in [`activity`], the single source of truth.
 fn touch_activity(conn: &Connection) -> anyhow::Result<()> {
-    let (today, yesterday): (String, String) = conn
-        .prepare_cached("SELECT date('now','localtime'), date('now','localtime','-1 day')")?
-        .query_row([], |r| Ok((r.get(0)?, r.get(1)?)))?;
-    let (last, streak): (String, i64) = conn
-        .prepare_cached("SELECT last_active, streak_days FROM profile WHERE id = 1")?
-        .query_row([], |r| Ok((r.get(0)?, r.get(1)?)))?;
-    let new_streak = if last == today {
-        streak.max(1)
-    } else if last == yesterday {
-        streak.saturating_add(1)
-    } else {
-        1
-    };
-    if last != today || new_streak != streak {
-        conn.prepare_cached("UPDATE profile SET last_active = ?1, streak_days = ?2 WHERE id = 1")?
-            .execute(params![today, new_streak])?;
-    }
-    Ok(())
+    activity::touch_profile(conn)
 }
 
 fn prune(conn: &Connection, table: &'static str) -> anyhow::Result<()> {
@@ -680,13 +664,12 @@ fn prune(conn: &Connection, table: &'static str) -> anyhow::Result<()> {
 fn get_profile_in(conn: &Connection) -> anyhow::Result<Profile> {
     let mut stmt = conn.prepare_cached(
         "SELECT name, avatar, puzzle_rating, puzzle_rd, rush_best, puzzles_solved, puzzles_failed, \
-         streak_days, last_active, settings_json, \
-         (last_active = date('now','localtime') OR last_active = date('now','localtime','-1 day')) \
+         last_active, settings_json \
          FROM profile WHERE id = 1",
     )?;
+    // Streak: computed from the activity log + profile run (see `activity::streak_in`).
+    let streak = activity::streak_in(conn)?.current;
     let p = stmt.query_row([], |r| {
-        let alive: bool = r.get::<_, Option<i64>>(10)?.unwrap_or(0) != 0;
-        let streak: i64 = r.get(7)?;
         Ok(Profile {
             name: r.get(0)?,
             avatar: r.get(1)?,
@@ -696,13 +679,9 @@ fn get_profile_in(conn: &Connection) -> anyhow::Result<Profile> {
             puzzles_solved: r.get::<_, i64>(5)?.clamp(0, u32::MAX as i64) as u32,
             puzzles_failed: r.get::<_, i64>(6)?.clamp(0, u32::MAX as i64) as u32,
             // A streak is broken once a full day is missed.
-            streak_days: if alive {
-                streak.clamp(0, u32::MAX as i64) as u32
-            } else {
-                0
-            },
-            last_active: r.get(8)?,
-            settings_json: r.get(9)?,
+            streak_days: streak,
+            last_active: r.get(7)?,
+            settings_json: r.get(8)?,
         })
     })?;
     Ok(p)

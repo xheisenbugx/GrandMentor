@@ -311,6 +311,8 @@ async function mountDrill(root, id, bag, signal) {
     status = result;
     busy = false;
     syncControls();
+    // Feeds the daily plan / streak (any finished attempt is practice). Best effort.
+    api.post('/api/activity', { kind: 'endgame' }).catch(() => {});
     if (result === 'won') {
       const moves = userMoveCount();
       const rec = markDone(drill.id, moves, validIds);
