@@ -302,8 +302,11 @@ function courseStats(course, done) {
   return { total, completed, pct: total ? (completed / total) * 100 : 0, next };
 }
 
-/** Pick the lesson to continue: last opened (if unfinished) → after most recent progress → first lesson overall. */
-function pickContinue(courses, progress, done) {
+/**
+ * Pick the lesson to continue: last opened (if unfinished) → after most recent progress → first lesson overall.
+ * `serverOrder` (the curriculum order of /api/courses) decides where a brand-new learner starts.
+ */
+function pickContinue(courses, progress, done, serverOrder = courses) {
   const last = readStore(LAST_KEY, null);
   if (last && last.course_id) {
     const c = courses.find((x) => x.id === last.course_id);
@@ -321,7 +324,7 @@ function pickContinue(courses, progress, done) {
     }
     return null; // everything done
   }
-  const first = courses.find((c) => courseLessons(c).length);
+  const first = serverOrder.find((c) => courseLessons(c).length);
   return first ? { course: first, lesson: courseLessons(first)[0], kind: 'start' } : null;
 }
 
@@ -399,7 +402,7 @@ async function renderHub(page, signal, bag) {
   }
 
   // Continue card
-  const cont = pickContinue(courses, progress, done);
+  const cont = pickContinue(courses, progress, done, Array.isArray(coursesRaw) ? coursesRaw : courses);
   let hero;
   if (cont) {
     const st = courseStats(cont.course, done);
@@ -430,6 +433,11 @@ async function renderHub(page, signal, bag) {
     statTile(t('learn.stats.lessonsCompleted'), `${totalDone}/${totalLessons}`),
     statTile(t('learn.stats.coursesFinished'), `${coursesDone}/${courses.length}`),
     statTile(t('learn.stats.overall'), `${totalLessons ? Math.round((totalDone / totalLessons) * 100) : 0}%`));
+
+  // Practice entry points (Quick drills / Classic games).
+  const practice = h('section', { class: 'lrn-practice', 'aria-label': t('learn.practice.aria') },
+    practiceCard({ href: '#/drills', emoji: '⚡', tone: 'drills', title: t('learn.practice.drills.title'), text: t('learn.practice.drills.text'), cta: t('learn.practice.drills.cta'), tags: t('learn.practice.drills.tags') }),
+    practiceCard({ href: '#/classics', emoji: '🏛️', tone: 'classics', title: t('learn.practice.classics.title'), text: t('learn.practice.classics.text'), cta: t('learn.practice.classics.cta'), tags: t('learn.practice.classics.tags') }));
 
   // Category filter chips
   const present = CATEGORIES.filter((cat) => courses.some((c) => c.category === cat.key));
@@ -464,8 +472,18 @@ async function renderHub(page, signal, bag) {
 
   renderChips();
   renderSections();
-  page.replaceChildren(header, hero, stats, chips, sections);
+  page.replaceChildren(header, hero, stats, practice, chips, sections);
   void bag;
+}
+
+function practiceCard({ href, emoji, tone, title, text, cta, tags }) {
+  return h('a', { class: `card card-link lrn-practice-card ${tone}`, href },
+    h('div', { class: 'lrn-practice-emoji', 'aria-hidden': 'true' }, emoji),
+    h('div', { class: 'lrn-practice-body' },
+      h('h3', { class: 'lrn-practice-title' }, title),
+      h('p', { class: 'lrn-practice-text' }, text),
+      Array.isArray(tags) && tags.length ? h('div', { class: 'lrn-practice-tags' }, tags.map((tag) => h('span', { class: 'badge' }, tag))) : null),
+    h('span', { class: 'lrn-practice-cta', html: `<span>${escapeHtml(cta)}</span>` + icon('chevron-right') }));
 }
 
 function statTile(label, value) {

@@ -1,0 +1,430 @@
+{
+  "_comment": "Spanish overlay for the Board Vision and Guess the Move courses (see docs/I18N.md).",
+  "board-vision": {
+    "title": "Visión del tablero",
+    "description": "Entrena la vista: nombra cualquier casilla al instante, cuenta el material, detecta piezas sueltas y compara jugadas candidatas.",
+    "lessons": {
+      "bv-coordinates": {
+        "title": "Cada casilla tiene nombre",
+        "summary": "Aprende columnas y filas, y encuentra casillas rápido.",
+        "steps": [
+          {
+            "text": "El tablero es una cuadrícula de **64 casillas**. Las columnas se nombran con letras de la **a** a la **h**, de izquierda a derecha desde el lado de las blancas. Las filas se numeran del **1** al **8**, empezando por el lado de las blancas."
+          },
+          {
+            "text": "Para nombrar una casilla, di primero su **columna y después su fila**. La casilla resaltada es **e4**: columna *e*, fila *4*. Todas las jugadas se escriben con estos nombres, así que saberlos de memoria lo hace todo más fácil."
+          },
+          {
+            "text": "¡Te toca! Las letras y números del borde del tablero te ayudarán.",
+            "task": {
+              "prompt": "Haz clic en cada casilla que se nombre.",
+              "success": "¡Buen ojo! Encontraste todas las casillas.",
+              "hint": "Busca la letra de la columna abajo y sube hasta el número de la fila."
+            }
+          },
+          {
+            "text": "Ahora un poco más rápido. Las casillas del borde engañan: la **a** y la **h** son las columnas de los lados; la **1** y la **8**, las filas del fondo.",
+            "task": {
+              "prompt": "Encuentra estas casillas.",
+              "success": "¡Perfecto! Ya lees el tablero como un mapa."
+            }
+          }
+        ]
+      },
+      "bv-black-side": {
+        "title": "Ver desde el lado de las negras",
+        "summary": "Gira el tablero y sigue encontrando cada casilla.",
+        "steps": [
+          {
+            "text": "Cuando juegas con negras el tablero se da la vuelta. Tus piezas están en las filas **8** y **7**, abajo, y la **columna h** queda ahora a tu izquierda. Las casillas no cambian de nombre; solo cambia tu punto de vista."
+          },
+          {
+            "text": "Practiquemos desde el lado de las negras.",
+            "task": {
+              "prompt": "Haz clic en cada casilla que se nombre.",
+              "success": "¡Bien hecho! El tablero se ve distinto, pero te orientaste.",
+              "hint": "Desde este lado, la columna **a** está a la derecha y la fila **1** arriba."
+            }
+          },
+          {
+            "text": "Dos trucos útiles: la casilla de la esquina a tu **derecha** siempre es **clara**, y cada dama empieza en su color: la dama blanca en la casilla clara **d1** y la negra en la oscura **d8**."
+          },
+          {
+            "text": "Llega un reto: ¡ya no hay etiquetas! Imagina las letras y los números.",
+            "task": {
+              "prompt": "Encuentra estas casillas sin las coordenadas.",
+              "success": "¡Impresionante! Eso es visión de tablero de verdad.",
+              "hint": "Usa los reyes como referencia: están en **e1** y **e8**."
+            }
+          },
+          {
+            "text": "La última: sin etiquetas y jugando con negras.",
+            "task": {
+              "prompt": "Encuentra estas casillas desde el lado de las negras.",
+              "success": "¡Fantástico! Encuentras cualquier casilla desde ambos lados.",
+              "hint": "Los reyes están en **e8** (abajo) y **e1** (arriba)."
+            }
+          }
+        ]
+      },
+      "bv-counting": {
+        "title": "Contar el material",
+        "summary": "Suma el valor de las piezas para saber quién va ganando.",
+        "steps": [
+          {
+            "text": "Las piezas tienen un valor aproximado en puntos: **peón 1**, **caballo 3**, **alfil 3**, **torre 5**, **dama 9**. El rey no tiene precio, así que no se cuenta.\n\nSuma los puntos de cada bando y compáralos: ese es el balance de **material**."
+          },
+          {
+            "text": "Cuenta las piezas de los dos bandos.",
+            "task": {
+              "prompt": "¿Quién va ganando y por cuánto?",
+              "success": "¡Correcto! Las blancas tienen un caballo de más: **+3**.",
+              "hint": "Los peones están igualados. Compara los caballos."
+            }
+          },
+          {
+            "text": "Esta vez hay piezas distintas. Suma con cuidado.",
+            "task": {
+              "prompt": "¿Quién va ganando y por cuánto?",
+              "success": "Exacto: dos torres (10) contra torre y alfil (8), así que **las negras van +2**. Ganar una torre a cambio de un alfil o un caballo se llama **ganar la calidad**.",
+              "hint": "Una torre vale 5 y un alfil 3."
+            }
+          },
+          {
+            "text": "Una dama contra un equipo de piezas menores. ¿Quién tiene más?",
+            "task": {
+              "prompt": "¿Quién va ganando y por cuánto?",
+              "success": "¡Igualados! Una dama (9) vale más o menos lo mismo que torre, alfil y peón (5 + 3 + 1). Piezas distintas, mismo total.",
+              "hint": "Cuenta también los peones: las negras tienen uno más."
+            }
+          },
+          {
+            "text": "Contar después de cada captura evita que regales piezas. Pero recuerda: el material no lo es todo. **¡El jaque mate vale más que cualquier ventaja de material!**"
+          }
+        ]
+      },
+      "bv-hanging": {
+        "title": "Encuentra la pieza colgada",
+        "summary": "Encuentra piezas que se pueden capturar gratis.",
+        "steps": [
+          {
+            "text": "Una pieza está **colgada** cuando una pieza rival la ataca y nada la defiende, o cuando la ataca una pieza **de menos valor**. Aquí el caballo negro de c6 está atacado por el alfil y no tiene defensa.\n\nAntes de cada jugada, pregúntate: *¿qué piezas están colgadas?*"
+          },
+          {
+            "text": "La dama negra acaba de saltar a b6.",
+            "task": {
+              "prompt": "Haz clic en la pieza blanca colgada.",
+              "success": "¡Sí! El **peón de b2** está atacado por la dama y nada lo defiende. Una jugada como **Db3** o **Dc2** lo soluciona.",
+              "hint": "Sigue las líneas de la dama desde b6."
+            }
+          },
+          {
+            "text": "Las blancas acaban de capturar en d5 con el caballo. Juegas con negras.",
+            "task": {
+              "prompt": "Haz clic en la pieza blanca colgada.",
+              "success": "¡Correcto! Nada defiende el **caballo de d5**. Tu caballo de f6 parece clavado, pero **Cxd5!** funciona: si **Axd8**, entonces **Ab4+** recupera la dama y te quedas con una pieza de más. Es la famosa **trampa del elefante**.",
+              "hint": "¿Qué pieza blanca está justo al lado de las tuyas?"
+            }
+          },
+          {
+            "text": "**Revisión contra errores graves:** antes de mover, mira todas las piezas, las tuyas y las del rival, y pregúntate qué atacan y qué las defiende. Son unos segundos que salvan muchas partidas."
+          }
+        ]
+      },
+      "bv-many-hanging": {
+        "title": "Más de una pieza suelta",
+        "summary": "Encuentra todas las piezas colgadas, de ambos bandos.",
+        "steps": [
+          {
+            "text": "A veces hay **más de una** pieza colgada, y pueden ser de cualquiera de los dos bandos. Haz clic en todas y luego pulsa **Comprobar**."
+          },
+          {
+            "text": "El caballo negro acaba de saltar a f6.",
+            "task": {
+              "prompt": "Encuentra las **dos** piezas blancas colgadas.",
+              "success": "Exacto: la **dama de h5** y el **peón de e4** están atacados. Pero antes de salvarlos, busca siempre los jaques: ¡aquí **Dxf7#** es jaque mate!",
+              "hint": "¿Qué ataca el caballo de f6?"
+            }
+          },
+          {
+            "text": "Los peones son grandes atacantes porque son lo que menos vale.",
+            "task": {
+              "prompt": "Cada bando tiene una pieza atacada por un peón. Haz clic en las dos.",
+              "success": "¡Bien! El peón de e5 ataca al **caballo de f6** y el de d5 ataca al **alfil de c4**. Un peón que ataca una pieza es una gran amenaza.",
+              "hint": "Mira los peones de e5 y d5."
+            }
+          },
+          {
+            "text": "El caballo blanco acaba de llegar a d5. Juegas con negras.",
+            "task": {
+              "prompt": "¿Qué piezas tuyas están colgadas? Hay dos.",
+              "success": "¡Bien visto! El caballo ataca a tu **dama de f6** y al **peón de c7**, y **Cxc7+** además haría un ataque doble al rey y a la torre.",
+              "hint": "El caballo ataca en forma de L, hasta ocho casillas."
+            }
+          }
+        ]
+      },
+      "bv-best-plan": {
+        "title": "Elige el mejor plan",
+        "summary": "Compara jugadas candidatas antes de decidir.",
+        "steps": [
+          {
+            "text": "Los buenos jugadores comparan varias **jugadas candidatas** antes de decidir. Cada opción muestra una flecha en el tablero: pasa el ratón o toca una opción para verla y luego elige la mejor."
+          },
+          {
+            "text": "¿Recuerdas esta posición? Juegan las blancas.",
+            "task": {
+              "prompt": "¿Qué jugada es la mejor?",
+              "success": "¡Jaque mate! Mira siempre primero los **jaques y las capturas**.",
+              "options": [
+                {
+                  "text": "Dh3: salvar la dama",
+                  "explain": "Es segura, ¡pero te pierdes un mate en una!"
+                },
+                {
+                  "text": "Dxf7#: capturar en f7",
+                  "explain": "¡Jaque mate! Solo el rey defendía f7, y el alfil de c4 apoya a la dama."
+                },
+                {
+                  "text": "Dxe5+: comer un peón con jaque",
+                  "explain": "El caballo de c6 defiende e5: tras **Cxe5** pierdes la dama."
+                }
+              ]
+            }
+          },
+          {
+            "text": "La dama negra ataca tu peón de b2.",
+            "task": {
+              "prompt": "¿Cuál es tu plan?",
+              "success": "¡Buen plan! Primero defiende y después sigue desarrollando.",
+              "options": [
+                {
+                  "text": "Ce5: ignorarlo y atacar",
+                  "explain": "Las negras capturan en b2, ganan un peón y atacan tu torre."
+                },
+                {
+                  "text": "Ac7: atacar a la dama",
+                  "explain": "Nada defiende el alfil en c7, así que la dama se lo come."
+                },
+                {
+                  "text": "Db3: defender b2 y ofrecer cambio",
+                  "explain": "Sólido: b2 queda protegido y un cambio de damas te deja una posición sana."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Otra vez la trampa del elefante. Juegas con negras.",
+            "task": {
+              "prompt": "Tu caballo de f6 está clavado. ¿Aun así puedes capturar en d5?",
+              "success": "¡Sí! Una clavada solo es peligrosa si la pieza de detrás se puede capturar gratis de verdad.",
+              "options": [
+                {
+                  "text": "Cxd5: capturar el caballo",
+                  "explain": "Si **Axd8**, entonces **Ab4+** recupera la dama y terminas con una pieza de más."
+                },
+                {
+                  "text": "c6: echar al caballo",
+                  "explain": "Se puede jugar, pero te pierdes ganar un caballo entero."
+                },
+                {
+                  "text": "Ae7: romper primero la clavada",
+                  "explain": "Es seguro, pero el caballo regalado se escapa."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Repaso final: cuenta el material.",
+            "task": {
+              "prompt": "¿Quién va ganando y por cuánto?",
+              "success": "Correcto: las negras tienen un peón de más. ¡Ya tienes verdadera visión de tablero!"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "guess-the-move": {
+    "title": "Adivina la jugada: partidas de maestros",
+    "description": "Siéntate en la silla de una leyenda. Adivina la siguiente jugada de partidas famosas: acertar da 3 puntos, una buena alternativa suma puntos parciales y cada jugada se explica.",
+    "lessons": {
+      "gtm-legal": {
+        "title": "El mate de Légal (1750)",
+        "summary": "Un sacrificio de dama que lleva siglos engañando a los jugadores.",
+        "steps": [
+          {
+            "text": "**Légal vs. Saint Brie, París 1750.** Una de las trampas más antiguas que se conocen. Las negras han clavado el caballo blanco contra la dama con **...Ag4**. El caballo parece atrapado... ¿o no?"
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡El mate de Légal! Una clavada solo importa si mover la pieza clavada pierde algo de verdad.",
+              "hint": "¿De verdad el caballo clavado no se puede mover?",
+              "game": "Légal vs. Saint Brie, París 1750",
+              "notes": [
+                "**Cxe5!** ignora la clavada y ofrece la dama.",
+                "**Axf7+**: el alfil da jaque y obliga al rey a avanzar.",
+                "**Cd5#**: tres piezas menores dan mate. ¡La dama de más de las negras no sirve de nada!"
+              ]
+            }
+          },
+          {
+            "text": "Las negras fueron codiciosas. Comerse la dama llevó al mate; **5...dxe5**, devolviendo un peón, era mucho mejor. Antes de capturar material, revisa siempre qué amenaza tu rival."
+          }
+        ]
+      },
+      "gtm-opera": {
+        "title": "La partida de la ópera de Morphy (1858)",
+        "summary": "Desarrollo rápido y líneas abiertas contra un rey atascado en el centro.",
+        "steps": [
+          {
+            "text": "**Paul Morphy vs. el duque Karl de Brunswick y el conde Isouard, París 1858**, ¡jugada en un palco de la ópera! Tras ocho jugadas Morphy lleva mucha ventaja en desarrollo, y el rey negro sigue en el centro."
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Gran juego de ataque! Las negras respondieron **12...Td8**. Ahora remata el trabajo.",
+              "hint": "Desarrolla una pieza con amenaza.",
+              "game": "Paul Morphy vs. el duque Karl y el conde Isouard, París 1858",
+              "notes": [
+                "**Ag5** desarrolla y clava el caballo de f6.",
+                "**Cxb5!** entrega un caballo para abrir líneas hacia el rey negro.",
+                "**Axb5+**: jaque, y ahora el caballo de d7 quedará clavado.",
+                "**O-O-O** lleva la torre directamente a la columna d, apuntando al caballo clavado."
+              ]
+            }
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Brillante! Un modelo de desarrollo rápido y ataque al rey sin enrocar.",
+              "hint": "El caballo de d7 está clavado. Ataca con más piezas.",
+              "game": "Paul Morphy vs. el duque Karl y el conde Isouard, París 1858",
+              "notes": [
+                "**Txd7!** entrega una torre para mantener el ataque.",
+                "**Td1**: la segunda torre se suma a la clavada en d7.",
+                "**Axd7+** elimina otro defensor.",
+                "**Db8+!!** Un sacrificio de dama que aparta al caballo de d7.",
+                "**Td8#**: jaque mate con las dos últimas piezas, alfil y torre."
+              ]
+            }
+          },
+          {
+            "text": "Morphy usó todas sus piezas, y entregó casi todas, para dar mate solo con alfil y torre. **Desarrolla rápido, abre líneas y ataca al rey que no ha enrocado.**"
+          }
+        ]
+      },
+      "gtm-reti": {
+        "title": "Réti vs. Tartakower (1910)",
+        "summary": "Un sacrificio de dama y un jaque doble acaban la partida en 11 jugadas.",
+        "steps": [
+          {
+            "text": "**Richard Réti vs. Savielly Tartakower, Viena 1910.** La dama negra se ha comido un peón en e5, pero el rey negro sigue en el centro y las piezas blancas están listas para atacar."
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Magnífico! Los jaques dobles son las jugadas más forzadas del ajedrez.",
+              "hint": "Pon tu rey a salvo y tu torre en la columna abierta.",
+              "game": "Richard Réti vs. Savielly Tartakower, Viena 1910",
+              "notes": [
+                "**O-O-O!** enroca y coloca la torre en la columna d abierta. A las blancas no les importa perder el caballo de e4.",
+                "**Dd8+!!** ¡Un sacrificio de dama! El rey tiene que capturar.",
+                "**Ag5+** es un **jaque doble**: el alfil y la torre dan jaque a la vez, así que el rey tiene que moverse.",
+                "**Ad8#**: el alfil llega a d8 y da mate."
+              ]
+            }
+          },
+          {
+            "text": "¡Solo 11 jugadas! Tartakower ganó un peón y dejó su rey en el centro. **Cuando el rey rival está atascado en el centro, abre líneas, aunque cueste la dama.**"
+          }
+        ]
+      },
+      "gtm-immortal": {
+        "title": "La Inmortal (1851)",
+        "summary": "Anderssen entrega las dos torres y la dama, y da mate.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen vs. Lionel Kieseritzky, Londres 1851.** La dama negra acaba de capturar en b2 y ahora ataca la torre de a1. Las blancas ya han entregado un alfil. ¿Encontrarás los famosos sacrificios de Anderssen?"
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Qué valentía! Ahora llega el final.",
+              "hint": "¿A qué casilla querría huir el rey negro? Quítasela.",
+              "game": "Adolf Anderssen vs. Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Ad6!** ignora las dos torres atacadas y le quita al rey negro la casilla f8.",
+                "**e5!** cierra la gran diagonal, así que la dama negra ya no puede defender g7.",
+                "**Re2** sale del jaque. Las blancas tienen dos torres menos, pero las piezas negras están lejos de su rey."
+              ]
+            }
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Inmortal de verdad! Las blancas entregaron un alfil, dos torres y la dama.",
+              "hint": "Empieza con un jaque.",
+              "game": "Adolf Anderssen vs. Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Cxg7+**: jaque, que lleva al rey a d8.",
+                "**Df6+!!** entrega también la dama y aparta al caballo de la defensa de e7.",
+                "**Ae7#**: las piezas menores dan mate a un rey rodeado del material de más de las negras."
+              ]
+            }
+          },
+          {
+            "text": "**Lo que cuenta son las piezas que participan en el ataque, no las del marcador.** Las negras tenían mucho más material, pero nada podía defender a su rey."
+          }
+        ]
+      },
+      "gtm-evergreen": {
+        "title": "La Siempreviva (1852)",
+        "summary": "Una jugada tranquila de torre, un sacrificio de dama y un jaque doble.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen vs. Jean Dufresne, Berlín 1852.** Las piezas blancas rodean al rey negro en el centro, pero las negras amenazan **...Dxf3** y **...Txg2+**. Juegan las blancas."
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Sin miedo! Ahora la columna d está lista.",
+              "hint": "Mete en juego tu última pieza.",
+              "game": "Adolf Anderssen vs. Jean Dufresne, Berlín 1852",
+              "notes": [
+                "**Tad1!!** Una jugada tranquila que ignora las amenazas negras y suma la última pieza al ataque.",
+                "**Txe7+!** elimina un defensor con jaque."
+              ]
+            }
+          },
+          {
+            "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
+            "task": {
+              "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
+              "success": "¡Siempreviva! Un final que se sigue admirando más de 170 años después.",
+              "hint": "Todas las jugadas son jaque. Empieza por el mayor sacrificio.",
+              "game": "Adolf Anderssen vs. Jean Dufresne, Berlín 1852",
+              "notes": [
+                "**Dxd7+!!** El sacrificio de dama abre la columna d.",
+                "**Af5+**: jaque doble del alfil y la torre de d1.",
+                "**Ad7+** sigue dando jaque y no deja escapatoria al rey.",
+                "**Axe7#**: ¡mate! Uno de los finales más bellos de la historia."
+              ]
+            }
+          },
+          {
+            "text": "**Mete todas las piezas en el ataque antes de rematar.** La tranquila **Tad1** hizo posibles todos los fuegos artificiales."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -23,6 +23,21 @@ export default {
     coursesFinished: 'Courses finished',
     overall: 'Overall progress',
   },
+  practice: {
+    aria: 'Practice',
+    drills: {
+      title: 'Quick drills',
+      text: 'Short workouts that sharpen your tactics, vision and calculation.',
+      cta: 'Start a drill',
+      tags: ['Short sessions', 'Daily practice'],
+    },
+    classics: {
+      title: 'Classic games',
+      text: 'Replay legendary games move by move and see how the masters won.',
+      cta: 'Browse games',
+      tags: ['Famous games', 'Move by move'],
+    },
+  },
   filterAria: 'Filter by category',
   all: 'All',
   moreCourses: 'More courses',

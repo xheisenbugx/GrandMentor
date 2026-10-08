@@ -8,6 +8,7 @@
 mod lang;
 mod openings;
 pub mod overlay;
+pub mod steps;
 pub mod words;
 
 use std::path::Path;
@@ -113,13 +114,16 @@ pub struct Arrow {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[serde(default)]
 pub struct Task {
-    /// "moves"
+    /// "moves" | "guess" | "count" | "hanging" | "choice" | "square" (see [`steps`])
     pub kind: String,
     pub prompt: String,
     /// UCI, alternating: user, reply, user, ... from step.fen
     pub solution: Vec<String>,
     pub hint: Option<String>,
     pub success: String,
+    /// Fields of the interactive kinds (guess, count, hanging, choice, square): see [`steps`].
+    #[serde(flatten)]
+    pub extra: steps::TaskExtra,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -329,12 +333,8 @@ fn validate_step(s: &mut Step) -> Result<(), String> {
         }
         None => None,
     };
-    if let Some(t) = &s.task {
-        let p = pos.ok_or("task without fen")?;
-        if t.solution.is_empty() {
-            return Err("task without solution".into());
-        }
-        replay_uci(&p, &t.solution)?;
+    if let Some(t) = &mut s.task {
+        steps::validate_task(t, pos.as_ref())?;
     }
     Ok(())
 }

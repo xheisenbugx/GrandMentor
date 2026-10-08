@@ -709,3 +709,45 @@ Store API (`gm_store::drills`): `DRILLS`, `is_known`, `variants_of`, `Store::rec
 
 Client preferences (mode / board side / coordinates / variant) are kept per viewer in `localStorage["gm.drills.v1"]`.
 Keyboard: Enter/Space starts; type a square (`e4`) to click it; `1`–`4` pick an answer; in `checks` type a move (`g1f3`) and Enter for the next position.
+
+## Interactive lessons
+
+Extends `Task` (§3 gm-content) with new `kind`s. Module: `crates/gm-content/src/steps.rs`; the extra
+fields live in `steps::TaskExtra`, flattened into `Task` on the wire and **omitted when empty**, so
+`moves` tasks serialize exactly as before. `GET /api/courses/:id` returns them unchanged. An empty
+`kind` means `moves`; an unknown kind drops the lesson at load time (and fails `cargo test -p gm-content`).
+
+| `kind` | Learner does | Fields (besides `prompt`, `hint?`, `success`) | Load-time validation |
+|---|---|---|---|
+| `moves` | plays `solution` (replies auto-played) | `solution` | needs `fen`; every move legal |
+| `guess` | guesses a master's moves one by one | `solution` (learner, reply, …), `notes: [string]` (one per learner move), `game?: string` caption | needs `fen`; moves legal; `notes.len() <= ceil(solution.len()/2)` |
+| `count` | answers "who's ahead and by how much?" | `answer: i32` (pawns, White − Black, values 1/3/3/5/9), `choices: [i32]` (2–7, unique) | needs `fen`; `answer` equals the position's material balance and is one of `choices` |
+| `hanging` | clicks every hanging piece, then **Check** | `squares: [sq]` | needs `fen`; each square holds a non-king piece that is attacked and undefended or attacked by a cheaper piece; no other piece of those colours qualifies |
+| `choice` | picks the best option | `options: [{text, arrows: [Arrow], correct: bool, explain}]` (2–6, ≥ 1 correct) | squares/colours of arrows valid |
+| `square` | clicks the named squares in order (coordinate quiz) | `squares: [sq]` (1–16), `blind?: bool` (hide board coordinates) | valid squares; `fen` optional (inherits the previous step's position) |
+
+```jsonc
+{ "kind": "count", "prompt": "Who is ahead, and by how much?", "answer": -2, "choices": [-3, -2, 0, 2, 3], "success": "…" }
+{ "kind": "guess", "game": "Paul Morphy vs Duke Karl & Count Isouard, Paris 1858", "solution": ["c1g5", "b7b5", "c3b5", …], "notes": ["**Bg5** develops with a pin…", …], "prompt": "…", "success": "…" }
+```
+
+**Lesson player (`web/js/pages/lesson.js`).**
+- `guess`: an exact guess scores **3** points (any mate also counts when the master's move mates). Otherwise the
+  player compares the two resulting positions with `POST /api/engine/analyze` (`{fen, movetime_ms: 700, depth: 14}`,
+  both in parallel, aborted when the step changes): loss ≤ 30 cp → **2**, ≤ 90 cp → **1**, else 0 (engine
+  unavailable → 0, the lesson continues). Hints cap the move at 2 (piece shown) or 1 (arrow shown). The master's move
+  is then animated with its note, the reply is auto-played, and the step total is shown; the finish card sums all
+  guess steps of the lesson.
+- `count`: answer buttons labelled "White +n / Equal / Black +n" (keys 1–9); a correct answer shows a per-side material breakdown.
+- `hanging`: clicking a piece toggles it (only occupied squares); **Check** marks right picks green, wrong ones red, and says how many are still missing.
+- `choice`: option arrows are drawn together and recoloured by position (blue, yellow, red, green), so the colour never gives the answer away; hovering/focusing an option shows only its arrows. Keys 1–9 pick an option.
+- `square`: shows the target square big; `blind` hides `.gm-coord` labels via `.lrn-blind` on the board slot; reports the time taken.
+
+**Translations.** `data/i18n/<lang>/courses*.json` task overlays accept, besides `prompt`/`hint`/`success`:
+`game`, `notes: [string|null]` and `options: [{text?, explain?}|null]`, all in English order. Answers,
+squares, arrows, `correct` flags and solutions always come from the English source. The Spanish text of the
+**Board Vision** (`board-vision`) and **Guess the Move: Master Games** (`guess-the-move`) courses is in
+`data/i18n/es/courses.part3.json`.
+
+**Learn hub.** `#/learn` shows two practice entry cards between the stats and the course list: **Quick drills** → `#/drills`
+and **Classic games** → `#/classics`.
