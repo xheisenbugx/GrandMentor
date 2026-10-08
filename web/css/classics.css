@@ -1,0 +1,154 @@
+/* Classic games library + narrated player (web/js/pages/classics.js). Tokens only. */
+
+/* ---------- Library ---------------------------------------------------- */
+.cl-stats { display: grid; gap: var(--sp-3); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cl-stat { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--r-lg); padding: var(--sp-3) var(--sp-4); box-shadow: var(--shadow-xs); }
+.cl-stat .stat-value { font-size: var(--fs-xl); }
+
+.cl-filters { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4); }
+.cl-filter-row { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
+.cl-filter-row .segmented { flex: none; }
+.cl-era { width: auto; min-width: 200px; max-width: 100%; }
+.cl-search { flex: 1 1 220px; min-width: 0; }
+.cl-search .input { width: 100%; }
+.cl-theme-chips .chip { cursor: pointer; }
+
+.cl-grid { --min: 250px; align-items: stretch; }
+.cl-grid-empty { grid-column: 1 / -1; }
+.cl-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; color: var(--text); text-decoration: none; }
+.cl-card:hover { text-decoration: none; }
+.cl-card-board { position: relative; padding: var(--sp-3) var(--sp-3) 0; }
+.cl-mini-board { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: var(--r-sm); overflow: hidden; box-shadow: var(--shadow-xs); }
+.cl-mini-board .l { fill: var(--board-light); }
+.cl-mini-board .d { fill: var(--board-dark); }
+.cl-read-badge { position: absolute; top: calc(var(--sp-3) + 8px); right: calc(var(--sp-3) + 8px); display: inline-flex; align-items: center; gap: 4px; box-shadow: var(--shadow-sm); }
+.cl-read-badge svg { width: 14px; height: 14px; }
+.cl-card-body { display: flex; flex-direction: column; gap: 6px; padding: var(--sp-3) var(--sp-4) var(--sp-4); flex: 1; min-width: 0; }
+.cl-card-year { font-size: var(--fs-xs); color: var(--text-subtle); text-transform: uppercase; letter-spacing: .04em; font-weight: var(--fw-semibold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cl-card-title { font-size: var(--fs-lg); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
+.cl-card-players { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-sm); color: var(--text-muted); min-width: 0; }
+.cl-card-player { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.cl-card-player .truncate { min-width: 0; }
+.cl-dot { width: 10px; height: 10px; border-radius: var(--r-full); flex: none; border: 1px solid var(--border-strong); }
+.cl-dot.white { background: var(--eval-white); }
+.cl-dot.black { background: var(--eval-black); }
+.cl-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.cl-theme-badge { background: var(--surface-3); }
+.cl-card-foot { display: flex; align-items: center; gap: 2px; font-size: var(--fs-xs); margin-top: auto; padding-top: 4px; }
+.cl-card-progress { display: flex; flex-direction: column; gap: 4px; }
+.cl-card.is-done { border-color: color-mix(in srgb, var(--primary) 45%, transparent); }
+
+/* ---------- Player ----------------------------------------------------- */
+.cl-player-page { display: flex; flex-direction: column; min-width: 0; }
+.cl-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-6) 0; max-width: 1400px; width: 100%; margin: 0 auto; }
+.cl-top-main { min-width: 0; flex: 1 1 360px; display: flex; flex-direction: column; gap: 4px; }
+.cl-title { margin: 0; font-size: var(--fs-2xl); font-weight: var(--fw-black); line-height: var(--lh-tight); }
+.cl-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font-size: var(--fs-sm); }
+.cl-top-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.cl-keys { text-align: center; margin: 0 0 var(--sp-4); }
+
+.cl-layout { --panel-w: 400px; }
+.cl-player-bar .cl-side img { width: 80%; height: 80%; display: block; }
+.cl-side.white { background: var(--eval-white); color: var(--eval-text-on-white); }
+.cl-side.black { background: var(--eval-black); color: var(--eval-text-on-black); }
+.cl-bar-result { margin-left: auto; font-weight: var(--fw-black); font-size: var(--fs-lg); font-variant-numeric: tabular-nums; color: var(--text-muted); }
+
+.cl-panel { gap: var(--sp-2); }
+.cl-narration { flex: none; max-height: 52%; }
+.cl-narration-head { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); border-bottom: none; }
+.cl-narration-head .avatar { flex: none; }
+.cl-narration-title { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; flex: 1; }
+.cl-caption { font-size: var(--fs-xs); color: var(--text-subtle); font-weight: var(--fw-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cl-counter { font-size: var(--fs-xs); flex: none; }
+.cl-progress { margin: 0 var(--sp-3); flex: none; }
+.cl-narration-body { padding: var(--sp-3); overflow-y: auto; min-height: 120px; display: flex; flex-direction: column; gap: var(--sp-2); }
+.cl-bubble-row { display: flex; gap: var(--sp-2); }
+.cl-bubble-row .cl-bubble { max-width: 100%; flex: 1; font-size: var(--fs-md); }
+.cl-bubble-row.stale .cl-bubble { opacity: .62; }
+.cl-moment-label { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--gold); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.cl-moment-label svg { width: 14px; height: 14px; }
+.cl-hint-line { margin: 0; }
+.cl-resume { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); justify-content: space-between; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); }
+
+.cl-question { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--info) 10%, var(--surface-2)); box-shadow: inset 3px 0 0 var(--info); }
+.cl-question.is-done { box-shadow: inset 3px 0 0 var(--primary); }
+.cl-question-head { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.cl-question-icon svg { width: 20px; height: 20px; color: var(--info); display: block; }
+.cl-question-prompt { font-size: var(--fs-md); }
+.cl-question-hint { display: flex; gap: 6px; align-items: flex-start; color: var(--text-muted); }
+.cl-question-hint svg { flex: none; color: var(--warning); margin-top: 2px; }
+.cl-question-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: flex-end; }
+.cl-turn { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--text-muted); }
+.cl-turn-dot { width: 12px; height: 12px; border-radius: var(--r-full); border: 1px solid var(--border-strong); }
+.cl-turn.white .cl-turn-dot { background: var(--eval-white); }
+.cl-turn.black .cl-turn-dot { background: var(--eval-black); }
+.cl-feedback { display: flex; gap: var(--sp-2); align-items: flex-start; font-size: var(--fs-sm); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); animation: cl-in var(--dur) var(--ease-out); }
+.cl-feedback svg { flex: none; width: 18px; height: 18px; margin-top: 1px; }
+.cl-feedback.good { background: var(--success-soft); color: var(--text); }
+.cl-feedback.good svg { color: var(--success); }
+.cl-feedback.bad { background: var(--danger-soft); }
+.cl-feedback.bad svg { color: var(--danger); }
+.cl-feedback.info { background: var(--info-soft); }
+.cl-feedback.info svg { color: var(--info); }
+@keyframes cl-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.cl-done { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border-radius: var(--r-md); background: var(--primary-soft); }
+.cl-done p { margin: 0; }
+.cl-done-title { display: flex; align-items: center; gap: var(--sp-2); font-weight: var(--fw-black); font-size: var(--fs-lg); }
+.cl-done-title svg { color: var(--gold); width: 22px; height: 22px; }
+.cl-done-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+.cl-moves-panel { min-height: 160px; }
+.cl-moments-wrap { display: flex; flex-direction: column; gap: 6px; padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--divider); }
+.cl-section-label { display: flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--text-subtle); text-transform: uppercase; letter-spacing: .05em; }
+.cl-section-label svg { width: 14px; height: 14px; color: var(--gold); }
+.cl-moments { gap: 6px; }
+.cl-moments .chip { padding-top: 3px; padding-bottom: 3px; }
+.cl-chip { flex: none; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.cl-chip-icon svg { display: block; width: 14px; height: 14px; }
+.cl-chip-moment .cl-chip-icon { color: var(--gold); }
+.cl-chip-question .cl-chip-icon { color: var(--info); }
+.cl-chip-question.answered .cl-chip-icon { color: var(--success); }
+.cl-moves-body { padding: var(--sp-2); }
+
+.cl-controls { display: flex; flex-direction: column; gap: var(--sp-2); flex: none; }
+.cl-toolbar { justify-content: center; }
+.cl-play { min-width: 128px; }
+.cl-options { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.cl-eval-switch { font-size: var(--fs-sm); gap: var(--sp-2); }
+
+@media (max-width: 860px) {
+  .cl-top { padding: var(--sp-3) var(--sp-3) 0; }
+  .cl-title { font-size: var(--fs-xl); }
+  .cl-layout .game-panel { height: auto; }
+  .cl-narration { max-height: none; }
+  .cl-narration-body { max-height: 320px; }
+  .cl-moves-panel { max-height: 260px; }
+  .cl-panel { order: 0; }
+}
+@media (max-width: 560px) {
+  .cl-stats { gap: var(--sp-2); }
+  .cl-stat { padding: var(--sp-2); }
+  .cl-stat .stat-label { font-size: 10px; line-height: 1.3; }
+  .cl-stat .stat-value { font-size: var(--fs-md); }
+  .cl-filters { padding: var(--sp-3); }
+  .cl-filter-row .segmented { width: 100%; display: flex; }
+  .cl-filter-row .segmented button { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; font-size: var(--fs-xs); }
+  .cl-theme-chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .cl-theme-chips .chip { flex: none; }
+  .cl-grid { --min: 150px; gap: var(--sp-3); }
+  .cl-card-board { padding: var(--sp-2) var(--sp-2) 0; }
+  .cl-card-body { padding: var(--sp-2) var(--sp-3) var(--sp-3); gap: 4px; }
+  .cl-card-title { font-size: var(--fs-md); }
+  .cl-card-year { font-size: 10px; }
+  .cl-card-players { font-size: var(--fs-xs); }
+  .cl-theme-badge { display: none; }
+  .cl-read-badge { top: calc(var(--sp-2) + 4px); right: calc(var(--sp-2) + 4px); font-size: 10px; }
+  .cl-era { width: 100%; }
+  .cl-top-actions { width: 100%; }
+  .cl-top-actions .btn { flex: 1; justify-content: center; }
+  .cl-options { justify-content: center; }
+}
+.cl-layout { padding-top: var(--sp-3); }
