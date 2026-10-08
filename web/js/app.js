@@ -5,43 +5,44 @@
 import { h, icon, brandMark, toast, closeAllModals, escapeHtml } from './ui.js';
 import { api } from './api.js';
 import { getSettings, setSetting, onSettingsChange } from './settings.js';
+import { initI18n, onLanguageChange, t } from './i18n.js';
 
 // ---------------------------------------------------------------------------
-// Navigation model
+// Navigation model (labels are i18n keys nav.<key>, resolved at render time)
 // ---------------------------------------------------------------------------
 const NAV = [
-  { key: 'home', label: 'Home', icon: 'home', href: '#/', primary: true },
-  { key: 'play', label: 'Play', icon: 'play', href: '#/play', primary: true },
-  { key: 'puzzles', label: 'Puzzles', icon: 'puzzle', href: '#/puzzles', primary: true },
-  { key: 'learn', label: 'Learn', icon: 'learn', href: '#/learn', primary: true },
-  { key: 'openings', label: 'Openings', icon: 'openings', href: '#/openings' },
-  { key: 'endgames', label: 'Endgames', icon: 'endgames', href: '#/endgames' },
-  { key: 'analysis', label: 'Analysis', icon: 'analysis', href: '#/analysis', primary: true },
-  { key: 'library', label: 'Library', icon: 'library', href: '#/library' },
-  { key: 'profile', label: 'Profile', icon: 'profile', href: '#/profile', section: 'you' },
-  { key: 'settings', label: 'Settings', icon: 'settings', href: '#/settings', section: 'you' },
+  { key: 'home', icon: 'home', href: '#/', primary: true },
+  { key: 'play', icon: 'play', href: '#/play', primary: true },
+  { key: 'puzzles', icon: 'puzzle', href: '#/puzzles', primary: true },
+  { key: 'learn', icon: 'learn', href: '#/learn', primary: true },
+  { key: 'openings', icon: 'openings', href: '#/openings' },
+  { key: 'endgames', icon: 'endgames', href: '#/endgames' },
+  { key: 'analysis', icon: 'analysis', href: '#/analysis', primary: true },
+  { key: 'library', icon: 'library', href: '#/library' },
+  { key: 'profile', icon: 'profile', href: '#/profile', section: 'you' },
+  { key: 'settings', icon: 'settings', href: '#/settings', section: 'you' },
 ];
 
-// Route table: first match wins. `nav` = sidebar item to highlight.
+// Route table: first match wins. `nav` = sidebar item to highlight. `titleKey` = i18n key of the tab title.
 const ROUTES = [
-  { pattern: '/', page: 'home', nav: 'home', title: 'Home' },
-  { pattern: '/play', page: 'play', nav: 'play', title: 'Play' },
-  { pattern: '/play/:botId', page: 'play', nav: 'play', title: 'Play' },
-  { pattern: '/analysis', page: 'analysis', nav: 'analysis', title: 'Analysis' },
-  { pattern: '/review/:gameId', page: 'review', nav: 'analysis', title: 'Game Review' },
-  { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', title: 'Puzzle Rush', params: { mode: 'rush' } },
-  { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', title: 'Daily Puzzle', params: { mode: 'daily' } },
-  { pattern: '/puzzles', page: 'puzzles', nav: 'puzzles', title: 'Puzzles' },
-  { pattern: '/learn', page: 'learn', nav: 'learn', title: 'Learn' },
-  { pattern: '/learn/:courseId', page: 'learn', nav: 'learn', title: 'Learn' },
-  { pattern: '/learn/:courseId/:lessonId', page: 'lesson', nav: 'learn', title: 'Lesson' },
-  { pattern: '/openings', page: 'openings', nav: 'openings', title: 'Openings' },
-  { pattern: '/openings/:id', page: 'openings', nav: 'openings', title: 'Openings' },
-  { pattern: '/endgames', page: 'endgames', nav: 'endgames', title: 'Endgames' },
-  { pattern: '/endgames/:id', page: 'endgames', nav: 'endgames', title: 'Endgames' },
-  { pattern: '/library', page: 'library', nav: 'library', title: 'Library' },
-  { pattern: '/profile', page: 'profile', nav: 'profile', title: 'Profile' },
-  { pattern: '/settings', page: 'settings', nav: 'settings', title: 'Settings' },
+  { pattern: '/', page: 'home', nav: 'home', titleKey: 'nav.routes.home' },
+  { pattern: '/play', page: 'play', nav: 'play', titleKey: 'nav.routes.play' },
+  { pattern: '/play/:botId', page: 'play', nav: 'play', titleKey: 'nav.routes.play' },
+  { pattern: '/analysis', page: 'analysis', nav: 'analysis', titleKey: 'nav.routes.analysis' },
+  { pattern: '/review/:gameId', page: 'review', nav: 'analysis', titleKey: 'nav.routes.review' },
+  { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzleRush', params: { mode: 'rush' } },
+  { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.dailyPuzzle', params: { mode: 'daily' } },
+  { pattern: '/puzzles', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzles' },
+  { pattern: '/learn', page: 'learn', nav: 'learn', titleKey: 'nav.routes.learn' },
+  { pattern: '/learn/:courseId', page: 'learn', nav: 'learn', titleKey: 'nav.routes.learn' },
+  { pattern: '/learn/:courseId/:lessonId', page: 'lesson', nav: 'learn', titleKey: 'nav.routes.lesson' },
+  { pattern: '/openings', page: 'openings', nav: 'openings', titleKey: 'nav.routes.openings' },
+  { pattern: '/openings/:id', page: 'openings', nav: 'openings', titleKey: 'nav.routes.openings' },
+  { pattern: '/endgames', page: 'endgames', nav: 'endgames', titleKey: 'nav.routes.endgames' },
+  { pattern: '/endgames/:id', page: 'endgames', nav: 'endgames', titleKey: 'nav.routes.endgames' },
+  { pattern: '/library', page: 'library', nav: 'library', titleKey: 'nav.routes.library' },
+  { pattern: '/profile', page: 'profile', nav: 'profile', titleKey: 'nav.routes.profile' },
+  { pattern: '/settings', page: 'settings', nav: 'settings', titleKey: 'nav.routes.settings' },
 ].map((r) => ({ ...r, segments: r.pattern.split('/').filter(Boolean) }));
 
 const APP_NAME = 'GrandMentor';
@@ -97,10 +98,22 @@ export function navigate(path, { replace = false } = {}) {
 // ---------------------------------------------------------------------------
 const els = {};
 
+const navLabel = (item) => t(`nav.${item.key}`);
+
 function navLink(item, cls = 'nav-item') {
-  return h('a', { class: cls, href: item.href, dataset: { nav: item.key }, 'aria-label': item.label },
+  return h('a', { class: cls, href: item.href, dataset: { nav: item.key }, 'aria-label': navLabel(item) },
     h('span', { html: icon(item.icon), style: 'display:contents' }),
-    h('span', { class: 'nav-label' }, item.label));
+    h('span', { class: 'nav-label' }, navLabel(item)));
+}
+
+/** Localize the static landmarks in index.html (they live outside the re-rendered shell). */
+function localizeStatic() {
+  els.sidebar.setAttribute('aria-label', t('nav.mainNavigation'));
+  els.bottombar.setAttribute('aria-label', t('nav.mainNavigation'));
+  const skip = document.querySelector('a.sr-only[href="#view"]');
+  if (skip) skip.textContent = t('nav.skipToContent');
+  const desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', t('nav.metaDescription'));
 }
 
 function renderShell() {
@@ -110,22 +123,23 @@ function renderShell() {
   els.bottombar = document.getElementById('bottombar');
   els.sheet = document.getElementById('more-sheet');
   els.progress = document.getElementById('route-progress');
+  localizeStatic();
 
   // Sidebar
-  const brand = h('a', { class: 'brand', href: '#/', 'aria-label': `${APP_NAME} home`, html: brandMark(36) },
+  const brand = h('a', { class: 'brand', href: '#/', 'aria-label': t('nav.brandHome', { app: APP_NAME }), html: brandMark(36) },
     h('span', { class: 'brand-name' }, 'Grand', h('span', null, 'Mentor')));
   const mainNav = h('nav', { class: 'nav' }, NAV.filter((n) => !n.section).map((n) => navLink(n)));
   const youNav = h('nav', { class: 'nav' },
-    h('div', { class: 'nav-section-label' }, 'You'),
+    h('div', { class: 'nav-section-label' }, t('nav.you')),
     NAV.filter((n) => n.section === 'you').map((n) => navLink(n)));
 
   els.statusDot = h('span', { class: 'status-dot' });
-  els.statusText = h('span', { class: 'nav-label' }, 'Connecting…');
-  const status = h('div', { class: 'engine-status', title: 'Engine status' }, els.statusDot, els.statusText);
+  els.statusText = h('span', { class: 'nav-label' }, t('nav.status.connecting'));
+  const status = h('div', { class: 'engine-status', title: t('nav.status.title') }, els.statusDot, els.statusText);
 
   els.themeBtn = h('button', { class: 'nav-item', type: 'button', style: 'border:0;background:none;width:100%;text-align:left', onClick: toggleTheme });
   els.collapseBtn = h('button', { class: 'nav-item collapse-btn hide-mobile', type: 'button', style: 'border:0;background:none;width:100%;text-align:left', onClick: toggleSidebar },
-    h('span', { html: icon('sidebar'), style: 'display:contents' }), h('span', { class: 'nav-label' }, 'Collapse'));
+    h('span', { html: icon('sidebar'), style: 'display:contents' }), h('span', { class: 'nav-label' }, t('nav.collapse')));
   const footer = h('div', { class: 'sidebar-footer' }, els.themeBtn, els.collapseBtn, status);
 
   els.sidebar.replaceChildren(brand, mainNav, youNav, footer);
@@ -133,38 +147,42 @@ function renderShell() {
   // Mobile bottom bar: primary items + "More"
   const tabs = NAV.filter((n) => n.primary).map((n) =>
     h('a', { class: 'tab-item', href: n.href, dataset: { nav: n.key } },
-      h('span', { html: icon(n.icon), style: 'display:contents' }), h('span', null, n.label)));
+      h('span', { html: icon(n.icon), style: 'display:contents' }), h('span', null, navLabel(n))));
   els.moreBtn = h('button', { class: 'tab-item', type: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false', onClick: () => toggleSheet() },
-    h('span', { html: icon('more'), style: 'display:contents' }), h('span', null, 'More'));
+    h('span', { html: icon('more'), style: 'display:contents' }), h('span', null, t('nav.more')));
   els.bottombar.replaceChildren(...tabs, els.moreBtn);
 
   // "More" sheet
   const sheetItems = NAV.filter((n) => !n.primary).map((n) => navLink(n));
   const sheetTheme = h('button', { class: 'nav-item', type: 'button', style: 'border:0', onClick: () => { toggleTheme(); } });
   els.sheetTheme = sheetTheme;
-  const panel = h('div', { class: 'more-sheet-panel', role: 'menu' }, sheetItems, sheetTheme);
+  const panel = h('div', { class: 'more-sheet-panel', role: 'menu', 'aria-label': t('nav.more') }, sheetItems, sheetTheme);
   els.sheet.replaceChildren(panel);
+  syncShellSettings(getSettings());
+
+  // renderShell() runs again on every language switch: install global listeners only once.
+  if (shellListenersInstalled) return;
+  shellListenersInstalled = true;
   els.sheet.addEventListener('click', (e) => {
     if (e.target === els.sheet || e.target.closest('a')) toggleSheet(false);
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && els.sheet.classList.contains('open')) toggleSheet(false);
   });
-
-  syncShellSettings(getSettings());
   onSettingsChange((s, key) => {
     if (key === 'theme' || key === 'sidebarCollapsed') syncShellSettings(s);
   });
 }
+let shellListenersInstalled = false;
 
 function syncShellSettings(s) {
   els.app.classList.toggle('sidebar-collapsed', !!s.sidebarCollapsed);
   const isLight = s.theme === 'light';
-  const themeContent = [h('span', { html: icon(isLight ? 'moon' : 'sun'), style: 'display:contents' }), h('span', { class: 'nav-label' }, isLight ? 'Dark mode' : 'Light mode')];
+  const themeContent = [h('span', { html: icon(isLight ? 'moon' : 'sun'), style: 'display:contents' }), h('span', { class: 'nav-label' }, isLight ? t('nav.theme.darkMode') : t('nav.theme.lightMode'))];
   els.themeBtn.replaceChildren(...themeContent);
-  els.themeBtn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
-  els.sheetTheme.replaceChildren(h('span', { html: icon(isLight ? 'moon' : 'sun'), style: 'display:contents' }), h('span', { class: 'nav-label' }, isLight ? 'Dark' : 'Light'));
-  els.collapseBtn.querySelector('.nav-label').textContent = s.sidebarCollapsed ? 'Expand' : 'Collapse';
+  els.themeBtn.setAttribute('aria-label', isLight ? t('nav.theme.switchToDark') : t('nav.theme.switchToLight'));
+  els.sheetTheme.replaceChildren(h('span', { html: icon(isLight ? 'moon' : 'sun'), style: 'display:contents' }), h('span', { class: 'nav-label' }, isLight ? t('nav.theme.dark') : t('nav.theme.light')));
+  els.collapseBtn.querySelector('.nav-label').textContent = s.sidebarCollapsed ? t('nav.expand') : t('nav.collapse');
 }
 
 function toggleTheme() {
@@ -206,14 +224,13 @@ async function checkHealth() {
     const hres = await api.get('/api/health', { timeout: 5000 });
     healthOk = true;
     els.statusDot.className = 'status-dot ok';
-    const engines = hres && hres.engines ? ` · ${hres.engines} thread${hres.engines === 1 ? "" : "s"}` : '';
-    els.statusText.textContent = `Engine ready${engines}`;
-    els.statusDot.parentElement.title = hres && hres.llm_enabled ? 'Engine online · AI mentor enabled' : 'Engine online · Coach mentor (offline mode)';
+    els.statusText.textContent = hres && hres.engines ? t('nav.status.readyThreads', { count: hres.engines }) : t('nav.status.ready');
+    els.statusDot.parentElement.title = hres && hres.llm_enabled ? t('nav.status.onlineAi') : t('nav.status.onlineCoach');
   } catch {
     healthOk = false;
     els.statusDot.className = 'status-dot bad';
-    els.statusText.textContent = 'Server offline';
-    els.statusDot.parentElement.title = 'Cannot reach the GrandMentor server';
+    els.statusText.textContent = t('nav.status.offline');
+    els.statusDot.parentElement.title = t('nav.status.offlineTitle', { app: APP_NAME });
   } finally {
     healthBusy = false;
   }
@@ -240,8 +257,8 @@ function showProgress(on) {
   else els.progress.classList.remove('active');
 }
 
-function setTitle(t) {
-  document.title = t ? `${t} · ${APP_NAME}` : `${APP_NAME} — Learn chess the friendly way`;
+function setTitle(text) {
+  document.title = text ? `${text} · ${APP_NAME}` : t('nav.defaultTitle', { app: APP_NAME });
 }
 
 async function handleRoute() {
@@ -262,14 +279,14 @@ async function handleRoute() {
 
   if (!match) {
     setActiveNav(null);
-    setTitle('Page not found');
+    setTitle(t('nav.notFound.title'));
     renderNotFound(host, path);
     return;
   }
 
   const { route, params } = match;
   setActiveNav(route.nav);
-  setTitle(route.title);
+  setTitle(t(route.titleKey));
   showProgress(true);
 
   try {
@@ -301,13 +318,13 @@ function renderError(host, err, route) {
   const card = h('div', { class: 'page' },
     h('div', { class: 'card placeholder-card error-card' },
       h('div', { class: 'empty-state-icon', html: icon('alert') }),
-      h('h2', { class: 'mb-2' }, 'Oops — this page tripped over a pawn'),
-      h('p', { class: 'muted' }, `Something went wrong while opening ${route ? route.title : 'this page'}. You can try again, or head back home.`),
+      h('h2', { class: 'mb-2' }, t('nav.error.title')),
+      h('p', { class: 'muted' }, route ? t('nav.error.textPage', { page: t(route.titleKey) }) : t('nav.error.text')),
       h('div', { class: 'row', style: 'justify-content:center;margin-top:var(--sp-5)' },
-        h('button', { class: 'btn btn-primary', type: 'button', onClick: () => handleRoute(), html: icon('refresh') + '<span>Try again</span>' }),
-        h('a', { class: 'btn btn-ghost', href: '#/', html: icon('home') + '<span>Home</span>' })),
+        h('button', { class: 'btn btn-primary', type: 'button', onClick: () => handleRoute(), html: icon('refresh') + `<span>${escapeHtml(t('common.tryAgain'))}</span>` }),
+        h('a', { class: 'btn btn-ghost', href: '#/', html: icon('home') + `<span>${escapeHtml(t('nav.home'))}</span>` })),
       h('details', { class: 'mt-4', style: 'text-align:left' },
-        h('summary', { class: 'subtle text-sm', style: 'cursor:pointer' }, 'Technical details'),
+        h('summary', { class: 'subtle text-sm', style: 'cursor:pointer' }, t('nav.error.details')),
         h('pre', { class: 'error-details' }, details.slice(0, 2000)))));
   host.appendChild(card);
 }
@@ -316,10 +333,10 @@ function renderNotFound(host, path) {
   host.appendChild(h('div', { class: 'page' },
     h('div', { class: 'card placeholder-card' },
       h('div', { class: 'empty-state-icon', html: icon('help') }),
-      h('h2', { class: 'mb-2' }, 'Page not found'),
-      h('p', { class: 'muted', html: `We couldn't find <code>${escapeHtml(path)}</code>. Maybe the knight jumped somewhere else?` }),
+      h('h2', { class: 'mb-2' }, t('nav.notFound.title')),
+      h('p', { class: 'muted', html: escapeHtml(t('nav.notFound.text', { path: '\u0000' })).replace('\u0000', `<code>${escapeHtml(path)}</code>`) }),
       h('div', { class: 'row', style: 'justify-content:center;margin-top:var(--sp-5)' },
-        h('a', { class: 'btn btn-primary', href: '#/', html: icon('home') + '<span>Go home</span>' })))));
+        h('a', { class: 'btn btn-primary', href: '#/', html: icon('home') + `<span>${escapeHtml(t('nav.goHome'))}</span>` })))));
 }
 
 // ---------------------------------------------------------------------------
@@ -336,19 +353,27 @@ window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason;
   if (r && r.name === 'AbortError') { e.preventDefault(); return; }
   console.error('[unhandled]', r);
-  reportGlobal(r && r.message ? r.message : 'Something went wrong');
+  reportGlobal(r && r.message ? r.message : t('common.somethingWentWrong'));
 });
 window.addEventListener('error', (e) => {
   if (!e.error) return; // resource load errors etc.
   console.error('[error]', e.error);
-  reportGlobal('Something went wrong — try reloading the page');
+  reportGlobal(t('nav.globalError'));
 });
 
 // ---------------------------------------------------------------------------
 // Boot
 // ---------------------------------------------------------------------------
-function boot() {
+async function boot() {
+  try { await initI18n(); } catch (e) { console.error('[i18n] init failed', e); }
   renderShell();
+  setTitle(null);
+  // A language switch re-renders the shell and remounts the current page in the new language.
+  onLanguageChange(() => {
+    renderShell();
+    checkHealth();
+    handleRoute();
+  });
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('online', checkHealth);
   if (!location.hash || location.hash === '#') history.replaceState(null, '', '#/');

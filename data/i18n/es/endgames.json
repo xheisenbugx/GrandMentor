@@ -1,0 +1,370 @@
+{
+  "kq-vs-k": {
+    "title": "Mate con dama",
+    "description": "Da jaque mate al rey solitario con tu rey y tu dama. Es el mate básico más importante: deberías poder darlo en menos de 10 jugadas.",
+    "hint": "Coloca la dama a un salto de caballo del rey enemigo para encerrarlo y luego acerca tu rey.",
+    "technique": [
+      "Reduce la caja del rey con la dama (a un salto de caballo, la dama lo sigue como un espejo)",
+      "Empuja al rey hacia el borde",
+      "Acerca tu rey: la dama no puede dar mate sola",
+      "Deja siempre una jugada legal al rey hasta el mate (¡cuidado con el ahogado!)"
+    ]
+  },
+  "kq-vs-k-center": {
+    "title": "Mate con dama desde el centro",
+    "description": "El rey negro empieza en el centro del tablero. Llévalo al borde y dale mate.",
+    "hint": "¡Qf6! quita de golpe todo un bloque de casillas.",
+    "technique": [
+      "Primero restringe al rey con la dama",
+      "Lleva al rey hacia el borde",
+      "Da mate con la dama protegida por el rey"
+    ]
+  },
+  "kr-vs-k": {
+    "title": "Mate con torre",
+    "description": "Da jaque mate al rey solitario con rey y torre. El rey tiene que ayudar, y la oposición es la clave.",
+    "hint": "Corta al rey con tu torre a lo largo de una fila y luego acerca tu rey hasta ponerlo frente al rey enemigo.",
+    "technique": [
+      "Corta al rey por una fila o una columna",
+      "Pon tu rey frente al rey enemigo (oposición)",
+      "Da jaque por el borde cuando los reyes estén enfrentados",
+      "Haz una jugada de espera con la torre para ganar la oposición"
+    ]
+  },
+  "kr-vs-k-center": {
+    "title": "Mate con torre desde el centro",
+    "description": "Una versión más difícil: el rey enemigo está centralizado. Enciérralo paso a paso.",
+    "hint": "Empieza con Rh4 o Rh5 para cortar al rey y luego acércate con tu rey.",
+    "technique": [
+      "Haz la caja más pequeña con cada jugada de torre",
+      "Protege la torre con tu rey cuando la ataquen",
+      "Oposición + jaque en el borde = mate"
+    ]
+  },
+  "two-rooks-ladder": {
+    "title": "Dos torres: la escalera",
+    "description": "Con dos torres ni siquiera necesitas tu rey. Lleva al rey enemigo hasta el borde como si subieras una escalera.",
+    "hint": "Una torre corta una fila y la otra da jaque en la fila siguiente. Mantén las torres lejos del rey.",
+    "technique": [
+      "La torre 1 corta una fila",
+      "La torre 2 da jaque en la fila siguiente",
+      "Alterna las torres hasta que el rey llegue al borde",
+      "Si el rey ataca una torre, llévala al otro extremo del tablero"
+    ]
+  },
+  "two-bishops-mate": {
+    "title": "Mate con dos alfiles",
+    "description": "Dos alfiles uno al lado del otro forman un muro que el rey no puede cruzar. Llévalo a una esquina y dale mate.",
+    "hint": "Coloca los alfiles juntos en el centro y usa tu rey para hacer retroceder al rey enemigo.",
+    "technique": [
+      "Los alfiles juntos forman un muro diagonal infranqueable",
+      "El rey ayuda a quitar casillas",
+      "Lleva al rey a una esquina",
+      "Cuidado con el ahogado en la esquina"
+    ]
+  },
+  "bishop-knight-mate": {
+    "title": "Mate con alfil y caballo",
+    "description": "El mate básico más difícil: puede llevar hasta 33 jugadas. Solo puedes forzar el mate en una esquina del **color del alfil** (aquí a8 o h1).",
+    "hint": "Primero empuja al rey hacia el borde y luego usa la «maniobra W» del caballo para llevarlo a una esquina clara.",
+    "technique": [
+      "Centraliza las tres piezas",
+      "Lleva al rey al borde",
+      "Si huye a la esquina equivocada (oscura), usa la maniobra W del caballo",
+      "Da mate en la esquina del color del alfil (a8 o h1)"
+    ]
+  },
+  "queen-vs-rook": {
+    "title": "Dama contra torre",
+    "description": "Dama contra torre es una victoria, pero la técnica es exigente. Gana la torre con un ataque doble o fuerza el mate.",
+    "hint": "Busca la posición de Philidor: pon al bando defensor en zugzwang para que la torre tenga que separarse de su rey.",
+    "technique": [
+      "Mantén tu rey cerca del rey enemigo",
+      "Usa el zugzwang: haz una jugada de espera con la dama",
+      "En cuanto la torre se aleje del rey, busca un ataque doble con la dama (jaque + torre)"
+    ]
+  },
+  "kp-key-squares": {
+    "title": "Rey y peón: casillas clave",
+    "description": "Corona tu peón. Con tu rey delante del peón en la 5.ª fila, siempre puedes llegar a una casilla clave.",
+    "hint": "Juega Kd6 o Kf6: el rey delante del peón gana.",
+    "technique": [
+      "El rey delante del peón, no detrás",
+      "Llega a una casilla clave (d6, e6 o f6)",
+      "Usa la oposición cuando los reyes se encuentren"
+    ]
+  },
+  "kp-opposition": {
+    "title": "Tomar la oposición",
+    "description": "Solo una jugada gana. Toma la oposición y escolta al peón.",
+    "hint": "¡Ke3!: enfréntate al rey negro con una casilla entre ambos reyes.",
+    "technique": [
+      "Reyes en la misma columna con una casilla entre ellos = oposición",
+      "Tiene la oposición el bando que NO está obligado a mover",
+      "Desbordamiento: cuando el rey enemigo se aparta, avanza por el otro lado"
+    ]
+  },
+  "kp-king-sixth": {
+    "title": "Rey en la sexta fila",
+    "description": "Tu rey está al lado de su peón. Una jugada gana; las demás hacen tablas.",
+    "hint": "Kb6: el rey delante del peón en la 6.ª fila siempre gana.",
+    "technique": [
+      "Con el rey en la 6.ª fila delante del peón se gana, tenga quien tenga la oposición",
+      "Después avanza el peón con el apoyo del rey"
+    ]
+  },
+  "kp-defend-opposition": {
+    "title": "Defensa: mantén la oposición",
+    "description": "Te toca defender. Mantén tu rey delante del peón y usa la oposición para hacer tablas.",
+    "hint": "Quédate en la columna e delante del peón. Cuando el rey blanco llegue a la 6.ª fila, toma la oposición.",
+    "technique": [
+      "Quédate justo delante del peón",
+      "Retrocede en línea recta (a e8), no hacia un lado",
+      "Cuando el rey blanco llegue a la 6.ª fila, toma la oposición",
+      "Si el peón llega a la 7.ª con jaque, ve a la casilla de la esquina que está delante"
+    ]
+  },
+  "rook-pawn-draw": {
+    "title": "Peón de torre: corre a la esquina",
+    "description": "El peón de torre es el más débil. Si el rey defensor llega a la esquina, nunca podrán sacarlo de ahí.",
+    "hint": "Mantén tu rey en a8, b8 o cerca; las blancas solo pueden ahogarte.",
+    "technique": [
+      "Mete al rey en la esquina delante del peón",
+      "Muévete entre a8 y b8/b7",
+      "El único intento de las blancas termina en ahogado"
+    ]
+  },
+  "square-of-the-pawn": {
+    "title": "La regla del cuadrado",
+    "description": "El rey blanco está lejos. ¿Puede tu rey alcanzar el peón pasado?",
+    "hint": "Entra en diagonal en el cuadrado del peón: ¡Kg7!",
+    "technique": [
+      "Traza el cuadrado desde el peón hasta su casilla de coronación",
+      "Si tu rey puede entrar en el cuadrado, alcanza al peón",
+      "Las jugadas en diagonal son tan rápidas como las rectas"
+    ]
+  },
+  "reti-manoeuvre": {
+    "title": "La maniobra de Réti",
+    "description": "El famoso estudio de Réti (1921). El rey blanco parece irremediablemente lejos de ambos peones… ¡y sin embargo son tablas!",
+    "hint": "¡Kg7! El rey persigue al peón h y a la vez se acerca a c6, avanzando por la diagonal.",
+    "technique": [
+      "Un rey que se mueve en diagonal puede perseguir dos objetivos a la vez",
+      "Amenaza con apoyar a tu propio peón",
+      "Obliga a las negras a perder tiempo y luego entra en el cuadrado del peón h"
+    ]
+  },
+  "outside-passed-pawn": {
+    "title": "El peón pasado alejado",
+    "description": "Tu peón a está lejos de los demás peones. Úsalo como señuelo para ganar los peones del flanco de rey.",
+    "hint": "Avanza el peón a. Cuando el rey negro corra tras él, lleva tu rey a los peones del flanco de rey.",
+    "technique": [
+      "El peón pasado alejado aleja al rey enemigo",
+      "Tu rey ataca los peones que se quedaron atrás",
+      "No te apresures a coronar si el rey ya está en el cuadrado: úsalo como señuelo"
+    ]
+  },
+  "pawn-breakthrough": {
+    "title": "La ruptura de peones",
+    "description": "Tres peones contra tres, con ambos reyes lejos. Hay una forma brillante de crear un peón pasado.",
+    "hint": "¡¡b6!!: tras axb6 ¡c6! o cxb6 ¡a6!, un peón blanco corona.",
+    "technique": [
+      "Sacrifica primero el peón central",
+      "Luego sacrifica el segundo peón para abrir paso",
+      "El último peón llega a coronar"
+    ]
+  },
+  "wrong-bishop": {
+    "title": "El peón de torre equivocado",
+    "description": "Las blancas tienen un alfil y un peón de ventaja, pero son tablas: el alfil no controla la casilla de coronación h8.",
+    "hint": "Quédate en la esquina. Muévete entre h8 y g8 (o g7). Las blancas no pueden sacarte sin ahogarte.",
+    "technique": [
+      "Peón de torre + alfil del color equivocado = tablas si el rey defensor llega a la esquina",
+      "Mantén tu rey en h8/g8/g7",
+      "No salgas de la esquina"
+    ]
+  },
+  "lucena": {
+    "title": "La posición de Lucena",
+    "description": "El final de torres ganador más importante. Tu peón está en la 7.ª, tu rey delante de él y el rey enemigo está cortado.",
+    "hint": "Construye el puente: ¡Rd4!, luego saca al rey y tapa los jaques con la torre en la 4.ª fila.",
+    "technique": [
+      "Sube tu torre a la 4.ª fila (Rd4)",
+      "Saca a tu rey de delante del peón",
+      "Cuando lleguen los jaques, interpón la torre en la columna b (Rb4)",
+      "Corona el peón"
+    ]
+  },
+  "philidor": {
+    "title": "La defensa de Philidor",
+    "description": "Tienes un peón menos. Usa la defensa de Philidor en la tercera fila para asegurar las tablas.",
+    "hint": "Mantén tu torre en la 6.ª fila hasta que el peón avance a e6; entonces bájala a la 1.ª fila y da jaques por detrás.",
+    "technique": [
+      "La torre en tu 3.ª fila (aquí la 6.ª) impide que avance el rey",
+      "Mantén tu rey delante del peón",
+      "Cuando el peón llegue a e6, da jaques por detrás desde el otro extremo",
+      "El rey blanco no tiene dónde refugiarse"
+    ]
+  },
+  "vancura": {
+    "title": "La posición de Vancura",
+    "description": "Torre contra torre y peón a. Con la torre blanca delante del peón, la defensa Vancura aguanta: ataca el peón de lado.",
+    "hint": "Mantén tu torre en la 6.ª fila atacando a6 de lado y tu rey cerca de g7/h7.",
+    "technique": [
+      "La torre ataca el peón de lado (desde f6)",
+      "Tu rey se queda en g7/h7, a salvo de los jaques de torre por la 7.ª",
+      "Si el rey blanco se acerca, da jaques laterales y vuelve a la 6.ª fila"
+    ]
+  },
+  "rook-behind-passer": {
+    "title": "Torre detrás del peón pasado",
+    "description": "Regla de Tarrasch: las torres van detrás de los peones pasados. Tu torre apoya al peón a desde atrás, mientras la torre negra está atrapada pasivamente delante de él.",
+    "hint": "La torre negra no puede dejar a7. Lleva tu rey hacia el flanco de dama (o ataca los peones del flanco de rey) y las negras se quedarán sin jugadas.",
+    "technique": [
+      "Torre detrás de tu peón pasado",
+      "Avanza el peón para atar a la torre negra",
+      "Activa tu rey"
+    ]
+  },
+  "rook-vs-pawn": {
+    "title": "Torre contra peón",
+    "description": "La torre suele ganarle a un peón, pero solo si tu rey ayuda a tiempo. Detén el peón y gánalo.",
+    "hint": "Acerca tu rey al peón de inmediato (¡Kd2!) y usa la torre para frenarlo desde atrás o por la columna b.",
+    "technique": [
+      "Torre detrás del peón o delante en su camino",
+      "Acerca tu rey al peón",
+      "Cuidado: si el peón corona con el apoyo del rey enemigo, pueden ser tablas"
+    ]
+  },
+  "cut-off-king": {
+    "title": "Corta al rey",
+    "description": "Tu torre corta al rey negro por la columna d. Mantenlo cortado y escolta al peón c.",
+    "hint": "Avanza el rey junto con el peón; si las negras dan jaques laterales, acerca el rey a la torre para taparlos.",
+    "technique": [
+      "El rey cortado no puede ayudar a su torre",
+      "El rey y el peón avanzan juntos",
+      "Busca la posición de Lucena"
+    ]
+  },
+  "queen-vs-knight-pawn": {
+    "title": "Dama contra peón en 7.ª (peón de caballo)",
+    "description": "Un peón en la 7.ª apoyado por su rey. Con un peón de caballo (o central), la dama gana.",
+    "hint": "Da jaque y ataca el peón para que el rey tenga que ponerse delante de él. Cada vez, acerca tu rey una casilla.",
+    "technique": [
+      "Obliga con jaques al rey enemigo a ponerse delante de su peón",
+      "Eso te da un tiempo libre para acercar tu rey",
+      "Repite hasta que tu rey ayude a capturar el peón o a dar mate"
+    ]
+  },
+  "triangulation-black": {
+    "title": "Triangulación con negras (Alburt–Kasparov 1978)",
+    "description": "Kasparov, con negras, ganó este final gracias a la triangulación. El rey blanco solo puede moverse entre f1, g1 y f2.",
+    "hint": "...¡Kf5! Kg1 ¡Ke5!: tu rey vuelve a e4 con las blancas a mover.",
+    "technique": [
+      "Encuentra la posición de zugzwang (rey negro en e4, juegan las blancas)",
+      "Pierde un tiempo con un triángulo del rey f5–e5–e4",
+      "Luego invade por f4 y g3 para ganar el peón de h3"
+    ]
+  },
+  "rook-triangulation": {
+    "title": "Triangulación con torre (Topalov–Karpov 2002)",
+    "description": "Incluso las torres pueden perder un tiempo. Las blancas usan jaques para volver a la misma posición con las negras a mover.",
+    "hint": "Rh7+ Kd8 Rh8+ Kd7 Rh6: ahora las negras están en zugzwang.",
+    "technique": [
+      "Da dos jaques que devuelvan la torre a h6",
+      "El rey negro tiene que apartarse del peón",
+      "Luego libera a tu rey con Ka7 y corona"
+    ]
+  },
+  "triangulation": {
+    "title": "Triangulación",
+    "description": "Si jugaran las negras, esta posición estaría perdida para ellas, pero juegan las blancas. Pierde un tiempo con el rey para que las negras queden en zugzwang.",
+    "hint": "¡Ke5! Kc6 ¡Kd4! Kd7 Kd5: el rey recorre un triángulo mientras el rey negro solo puede moverse entre dos casillas.",
+    "technique": [
+      "Reconoce el zugzwang mutuo",
+      "Recorre con tu rey un triángulo de tres casillas",
+      "Vuelve a la misma posición con el rival a mover",
+      "Luego invade con Ke6–d6–e7–d7"
+    ]
+  },
+  "kp-far-pawn": {
+    "title": "Rey y peón desde la casilla inicial",
+    "description": "Incluso con el peón en su casilla inicial, las blancas ganan… si el rey va por delante.",
+    "hint": "Primero Kd2 o Kf2: el rey debe ir por delante. Si avanzas el peón demasiado pronto, las negras toman la oposición.",
+    "technique": [
+      "Primero el rey, después el peón",
+      "Apunta a las casillas clave d4, e4 y f4",
+      "Aprovecha que el peón puede avanzar una o dos casillas para ganar la oposición"
+    ]
+  },
+  "two-connected-pawns": {
+    "title": "Dos peones contra rey",
+    "description": "Dos peones suelen ganar con facilidad. Avánzalos juntos con el apoyo de tu rey.",
+    "hint": "Acerca primero el rey; los peones uno al lado del otro se defienden entre sí.",
+    "technique": [
+      "Los peones juntos controlan las casillas que tienen delante",
+      "Si el rey ataca un peón, avanza el otro",
+      "Usa tu rey para escoltarlos"
+    ]
+  },
+  "right-bishop": {
+    "title": "Peón de torre con el alfil correcto",
+    "description": "Aquí el alfil controla la casilla oscura de coronación h8, así que el peón de torre gana. ¡Cuidado con el ahogado!",
+    "hint": "Cubre g8/g7 con el alfil antes de avanzar el peón a h7.",
+    "technique": [
+      "El alfil debe controlar la casilla de coronación",
+      "No ahogues al rey en la esquina",
+      "Avanza a h7 con jaque en el momento justo"
+    ]
+  },
+  "knight-and-pawn": {
+    "title": "Caballo y peón contra rey",
+    "description": "Caballo y peón ganan con facilidad si el peón está protegido y el rey lo apoya.",
+    "hint": "Pon el rey delante del peón; usa el caballo para mantener alejado al rey negro.",
+    "technique": [
+      "Protege el peón con el rey o el caballo",
+      "El rey delante del peón",
+      "Los jaques de caballo ganan tiempos"
+    ]
+  },
+  "rook-vs-bishop-draw": {
+    "title": "Torre contra alfil: la esquina correcta",
+    "description": "Torre contra alfil suele ser tablas. Mantén tu rey en la esquina que el alfil NO controla (h8 es oscura y tu alfil es de casillas claras).",
+    "hint": "Quédate en la esquina de h8 y usa el alfil para tapar los jaques en g8 o h7.",
+    "technique": [
+      "La esquina segura es la del color contrario a tu alfil",
+      "Tapa los jaques de torre con el alfil",
+      "Evita la esquina del color de tu alfil: ahí aparecen redes de mate"
+    ]
+  },
+  "rook-vs-knight-draw": {
+    "title": "Torre contra caballo: mantente unido",
+    "description": "Torre contra caballo es tablas si el caballo se mantiene cerca de su rey. Un caballo solo y alejado acaba atrapado.",
+    "hint": "Devuelve el caballo hacia tu rey (Nh3–f4 o Ng4) y mantén el rey en el centro.",
+    "technique": [
+      "Mantén el caballo junto al rey",
+      "Aléjate de las esquinas",
+      "No dejes que corten a tu caballo"
+    ]
+  },
+  "queen-vs-centre-pawn": {
+    "title": "Dama contra peón central",
+    "description": "El peón negro está a punto de coronar, pero contra un peón central la dama gana con jaques y clavadas.",
+    "hint": "Da jaques al rey hasta que tenga que ponerse delante del peón; luego acerca tu rey.",
+    "technique": [
+      "Acércate con jaques y jugadas de dama que ataquen el peón",
+      "Cada vez que el rey bloquee el peón, aprovecha el tiempo para acercar tu rey",
+      "Termina ganando el peón o dando mate"
+    ]
+  },
+  "queen-vs-pawn-2": {
+    "title": "Dama contra peón: la escalera",
+    "description": "El rey negro apoya un peón de caballo en b2. Detenlo y gana.",
+    "hint": "Mantén el peón bajo control con la dama (Qb1 lo bloquea definitivamente) y lleva tu rey hacia allí.",
+    "technique": [
+      "Controla la casilla de coronación",
+      "Trae tu rey para ayudar",
+      "No permitas un ahogado en la esquina"
+    ]
+  }
+}

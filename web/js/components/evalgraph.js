@@ -7,6 +7,7 @@
 // Owns: a ResizeObserver and a handful of DOM listeners — all removed in destroy().
 
 import { winPercent, formatScore, classificationMeta } from '../ui.js';
+import { t } from '../i18n.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const DOT_CLASSES = new Set(['brilliant', 'great', 'miss', 'mistake', 'blunder']);
@@ -46,7 +47,7 @@ export class EvalGraph {
     this.root.style.setProperty('--eg-h', `${height}px`);
     this.root.tabIndex = 0;
     this.root.setAttribute('role', 'slider');
-    this.root.setAttribute('aria-label', 'Evaluation graph. Click to jump to a move.');
+    this.root.setAttribute('aria-label', t('ui.evalgraph.label'));
     this.root.setAttribute('aria-valuemin', '0');
 
     this.svg = svg('svg', { class: 'evalgraph-svg', height, 'aria-hidden': 'true' });
@@ -212,7 +213,7 @@ export class EvalGraph {
     this.hoverLine.setAttribute('x1', x.toFixed(1));
     this.hoverLine.setAttribute('x2', x.toFixed(1));
     const moveNo = Math.ceil(p / 2);
-    const label = p === 0 ? 'Start' : `${moveNo}${p % 2 === 1 ? '.' : '…'} ${this.labels[p - 1] || ''}`;
+    const label = p === 0 ? t('ui.evalgraph.start') : `${moveNo}${p % 2 === 1 ? '.' : '…'} ${this.labels[p - 1] || ''}`;
     const c = p > 0 ? this.cls[p - 1] : null;
     const meta = c ? classificationMeta(c) : null;
     this.tip.textContent = '';

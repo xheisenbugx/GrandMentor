@@ -1,12 +1,23 @@
 // GrandMentor UI helpers: DOM builder, icons, toast, modal, formatting.
 // Contract: docs/CONTRACT.md §5. Class vocabulary: docs/STYLEGUIDE.md.
 
+import { t, getLocale } from './i18n.js';
+
 // ---------------------------------------------------------------------------
 // Escaping & DOM helper
 // ---------------------------------------------------------------------------
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 
 /** Escape a value for safe insertion into HTML text or attribute context. */
+/**
+ * The player's chosen name, or '' when unset. The server's default profile name ("Player") counts
+ * as unset so pages can show a localized fallback instead.
+ */
+export function displayName(name) {
+  const n = typeof name === 'string' ? name.trim() : '';
+  return n === 'Player' ? '' : n;
+}
+
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
 }
@@ -156,6 +167,7 @@ const ICONS = {
   eye: S('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>'),
   'eye-off': S('<path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.9"/><path d="M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/>'),
   lock: S('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
+  globe: S('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/>'),
 
   // Status & feedback
   info: S('<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/>'),
@@ -281,18 +293,19 @@ export function winPercent(score) {
   return 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * cp)) - 1);
 }
 
+// Labels/descriptions are i18n keys (ui.cls.<key>.label / .description), resolved at call time.
 const CLS = {
-  brilliant: { label: 'Brilliant', color: '#26c2a3', symbol: '!!', description: 'A great sacrifice or a hard-to-find best move.' },
-  great: { label: 'Great', color: '#5c8bb0', symbol: '!', description: 'A critical move that changes the outcome of the game.' },
-  best: { label: 'Best', color: '#81b64c', symbol: '★', description: 'The strongest move in the position.' },
-  excellent: { label: 'Excellent', color: '#96bc4b', symbol: '👍', description: 'Almost as good as the best move.' },
-  good: { label: 'Good', color: '#96af8b', symbol: '✓', description: 'A decent move, but there was something better.' },
-  book: { label: 'Book', color: '#a88865', symbol: '📖', description: 'A well-known opening move.' },
-  inaccuracy: { label: 'Inaccuracy', color: '#f7c631', symbol: '?!', description: 'A slightly weaker move.' },
-  mistake: { label: 'Mistake', color: '#ffa459', symbol: '?', description: 'A bad move that lost some advantage.' },
-  miss: { label: 'Miss', color: '#ff7769', symbol: '✗', description: 'You missed a chance to win material or the game.' },
-  blunder: { label: 'Blunder', color: '#fa412d', symbol: '??', description: 'A very bad move that loses a lot.' },
-  forced: { label: 'Forced', color: '#96af8b', symbol: '→', description: 'The only legal (or only reasonable) move.' },
+  brilliant: { color: '#26c2a3', symbol: '!!' },
+  great: { color: '#5c8bb0', symbol: '!' },
+  best: { color: '#81b64c', symbol: '★' },
+  excellent: { color: '#96bc4b', symbol: '👍' },
+  good: { color: '#96af8b', symbol: '✓' },
+  book: { color: '#a88865', symbol: '📖' },
+  inaccuracy: { color: '#f7c631', symbol: '?!' },
+  mistake: { color: '#ffa459', symbol: '?' },
+  miss: { color: '#ff7769', symbol: '✗' },
+  blunder: { color: '#fa412d', symbol: '??' },
+  forced: { color: '#96af8b', symbol: '→' },
 };
 
 /** Ordered list of classification keys (best → worst, then forced). */
@@ -306,7 +319,7 @@ export function classificationMeta(cls) {
   const key = String(cls || '').toLowerCase();
   const m = CLS[key];
   if (!m) return { key, label: key ? key[0].toUpperCase() + key.slice(1) : '', color: '#96af8b', cssVar: 'var(--cls-good)', symbol: '', description: '' };
-  return { key, ...m, cssVar: `var(--cls-${key})` };
+  return { key, ...m, label: t(`ui.cls.${key}.label`), description: t(`ui.cls.${key}.description`), cssVar: `var(--cls-${key})` };
 }
 
 /** <span class="cls-badge" data-cls="..."> element for a classification. */
@@ -334,24 +347,24 @@ export function formatClock(ms, { tenths = true } = {}) {
   return `${mm}:${String(ss).padStart(2, '0')}`;
 }
 
-/** Friendly relative time from an ISO string/Date: "just now", "5 min ago", "Yesterday", "Mar 3". */
+/** Friendly relative time from an ISO string/Date: "just now", "5 min ago", "Yesterday", "Mar 3" (localized). */
 export function formatRelative(date) {
   const d = date instanceof Date ? date : new Date(date);
   if (Number.isNaN(d.getTime())) return '';
   const diff = (Date.now() - d.getTime()) / 1000;
-  if (diff < 45) return 'just now';
-  if (diff < 3600) return `${Math.round(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.round(diff / 3600)} h ago`;
-  if (diff < 172800) return 'Yesterday';
-  if (diff < 604800) return `${Math.round(diff / 86400)} days ago`;
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
+  if (diff < 45) return t('ui.time.justNow');
+  if (diff < 3600) return t('ui.time.minutesAgo', { count: Math.round(diff / 60) });
+  if (diff < 86400) return t('ui.time.hoursAgo', { count: Math.round(diff / 3600) });
+  if (diff < 172800) return t('ui.time.yesterday');
+  if (diff < 604800) return t('ui.time.daysAgo', { count: Math.round(diff / 86400) });
+  return d.toLocaleDateString(getLocale(), { month: 'short', day: 'numeric', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
 }
 
-/** Format a date (ISO/Date) as "Mar 3, 2026". */
+/** Format a date (ISO/Date) as "Mar 3, 2026" (localized). */
 export function formatDate(date) {
   const d = date instanceof Date ? date : new Date(date);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  return d.toLocaleDateString(getLocale(), { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 /**
@@ -422,13 +435,13 @@ export function disposables() {
 }
 
 /** Copy text to clipboard; toasts on success/failure. */
-export async function copyText(text, successMsg = 'Copied to clipboard') {
+export async function copyText(text, successMsg) {
   try {
     await navigator.clipboard.writeText(String(text));
-    toast(successMsg, 'success');
+    toast(successMsg || t('ui.copied'), 'success');
     return true;
   } catch {
-    toast('Could not copy — your browser blocked clipboard access', 'error');
+    toast(t('ui.copyFailed'), 'error');
     return false;
   }
 }
@@ -461,7 +474,7 @@ export function toast(msg, kind = 'info', opts = {}) {
 
   const el = h('div', { class: `toast toast-${k}`, role: k === 'error' ? 'alert' : 'status' });
   el.innerHTML = icon(TOAST_ICONS[k]);
-  const closeBtn = h('button', { class: 'toast-close', type: 'button', 'aria-label': 'Dismiss', html: icon('close') });
+  const closeBtn = h('button', { class: 'toast-close', type: 'button', 'aria-label': t('common.dismiss'), html: icon('close') });
   el.append(h('div', { class: 'toast-msg' }, String(msg ?? '')), closeBtn);
 
   const dismiss = () => {
@@ -501,7 +514,8 @@ const openModals = [];
  *   action.onClick(close): return false to keep the modal open; may be async.
  * @returns {{close: Function, el: HTMLElement, body: HTMLElement}}
  */
-export function modal({ title = '', body = '', actions = [{ label: 'OK', kind: 'primary' }], size, dismissible = true, onClose, className } = {}) {
+export function modal({ title = '', body = '', actions, size, dismissible = true, onClose, className } = {}) {
+  if (actions === undefined) actions = [{ label: t('common.ok'), kind: 'primary' }];
   const prevFocus = document.activeElement;
   const titleId = `modal-title-${Math.random().toString(36).slice(2, 8)}`;
   const bodyEl = h('div', { class: 'modal-body' });
@@ -510,7 +524,7 @@ export function modal({ title = '', body = '', actions = [{ label: 'OK', kind: '
 
   const header = h('div', { class: 'modal-header' },
     title ? h('h2', { class: 'modal-title', id: titleId }, title) : h('div', { class: 'spacer' }),
-    dismissible ? h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'aria-label': 'Close', html: icon('close'), onClick: () => close() }) : null,
+    dismissible ? h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'aria-label': t('common.close'), html: icon('close'), onClick: () => close() }) : null,
   );
 
   let closed = false;
@@ -531,7 +545,7 @@ export function modal({ title = '', body = '', actions = [{ label: 'OK', kind: '
         close();
       } catch (e) {
         btn.classList.remove('loading');
-        toast(e?.message || 'Something went wrong', 'error');
+        toast(e?.message || t('common.somethingWentWrong'), 'error');
       }
     });
     if (a.autofocus) btn.dataset.autofocus = '1';
@@ -591,7 +605,10 @@ export function closeAllModals() {
 }
 
 /** Promise-based confirm dialog. Resolves true/false. */
-export function confirmDialog({ title = 'Are you sure?', message = '', confirmLabel = 'Confirm', cancelLabel = 'Cancel', danger = false } = {}) {
+export function confirmDialog({ title, message = '', confirmLabel, cancelLabel, danger = false } = {}) {
+  title = title ?? t('ui.confirmTitle');
+  confirmLabel = confirmLabel ?? t('common.confirm');
+  cancelLabel = cancelLabel ?? t('common.cancel');
   return new Promise((resolve) => {
     let result = false;
     modal({
@@ -616,7 +633,7 @@ export function confirmDialog({ title = 'Are you sure?', message = '', confirmLa
  */
 export function pageHeader({ title, subtitle, icon: iconName, actions = [], breadcrumbs } = {}) {
   const crumbs = breadcrumbs && breadcrumbs.length
-    ? h('nav', { class: 'breadcrumbs', 'aria-label': 'Breadcrumb' },
+    ? h('nav', { class: 'breadcrumbs', 'aria-label': t('ui.breadcrumb') },
       breadcrumbs.flatMap((b, i) => [
         i > 0 ? htmlToNode(icon('chevron-right')) : null,
         b.href ? h('a', { href: b.href }, b.label) : h('span', null, b.label),
@@ -634,7 +651,8 @@ export function pageHeader({ title, subtitle, icon: iconName, actions = [], brea
 }
 
 /** Empty state block. emptyState({ icon, title, text, action: {label, href|onClick, icon} }) */
-export function emptyState({ icon: iconName = 'info', emoji, title = 'Nothing here yet', text = '', action } = {}) {
+export function emptyState({ icon: iconName = 'info', emoji, title, text = '', action } = {}) {
+  if (title == null) title = t('ui.emptyTitle');
   let btn = null;
   if (action) {
     btn = h(action.href ? 'a' : 'button', { class: `btn ${action.kind ? 'btn-' + action.kind : 'btn-primary'}`, href: action.href, type: action.href ? null : 'button', onClick: action.onClick });
@@ -649,7 +667,8 @@ export function emptyState({ icon: iconName = 'info', emoji, title = 'Nothing he
 }
 
 /** Loading block with spinner and optional label. */
-export function loadingBlock(label = 'Loading…') {
+export function loadingBlock(label) {
+  if (label == null) label = t('common.loading');
   return h('div', { class: 'loading-center', role: 'status' }, h('div', { class: 'spinner spinner-lg' }), h('div', null, label));
 }
 
@@ -672,15 +691,16 @@ export function skeleton(kind = 'text', count = 3) {
  * Render a friendly "coming soon" card into root (used by placeholder pages).
  * Returns a cleanup function.
  */
-export function comingSoon(root, { title, icon: iconName = 'sparkles', text = 'This section is being built right now. Check back soon!' } = {}) {
+export function comingSoon(root, { title, icon: iconName = 'sparkles', text } = {}) {
+  if (text == null) text = t('ui.comingSoonText');
   const page = h('div', { class: 'page' },
     h('div', { class: 'card placeholder-card' },
       h('div', { class: 'empty-state-icon', html: icon(iconName) }),
-      h('h2', { class: 'mb-2' }, title || 'Coming soon'),
+      h('h2', { class: 'mb-2' }, title || t('ui.comingSoon')),
       h('p', { class: 'muted' }, text),
       h('div', { class: 'row', style: 'justify-content:center;margin-top:var(--sp-5)' },
-        h('a', { class: 'btn btn-primary', href: '#/play', html: icon('play') + '<span>Play a bot</span>' }),
-        h('a', { class: 'btn btn-ghost', href: '#/', html: icon('home') + '<span>Home</span>' }))));
+        h('a', { class: 'btn btn-primary', href: '#/play', html: icon('play') + `<span>${escapeHtml(t('ui.playABot'))}</span>` }),
+        h('a', { class: 'btn btn-ghost', href: '#/', html: icon('home') + `<span>${escapeHtml(t('nav.home'))}</span>` }))));
   root.appendChild(page);
   return () => page.remove();
 }

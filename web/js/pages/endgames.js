@@ -11,8 +11,9 @@ import {
   ensureLearnCss, chessAt, applyUci, moveUci, sideToMove, fenKey, miniBoardSvg, levelPill, timerSet,
   confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock, readStore, writeStore,
 } from './learn.js';
+import { t } from '../i18n.js';
 
-export const title = (params) => (params && params.id ? 'Endgame drill' : 'Endgames');
+export const title = (params) => (params && params.id ? t('endgames.drillTitle') : t('endgames.title'));
 
 const PROGRESS_KEY = 'gm.endgames.v1';
 const ENGINE_MOVETIME_MS = 500;
@@ -21,12 +22,18 @@ const MIN_THINK_MS = 350;
 const DRAW_SURVIVE_MOVES = 30;     // "draw" goal: hold this many of your own moves
 const LOST_CP = -800;              // user-POV eval below which a drill counts as lost
 
+// `label` / `blurb` are getters so they are translated at render time (never at import time).
+const categoryMeta = (key, emoji) => ({
+  emoji,
+  get label() { return t(`endgames.categories.${key}.label`); },
+  get blurb() { return t(`endgames.categories.${key}.blurb`); },
+});
 const CATEGORY_META = {
-  basic: { label: 'Basic checkmates', emoji: '👑', blurb: 'Every player must know these mates.' },
-  pawn: { label: 'Pawn endings', emoji: '♟️', blurb: 'Opposition, key squares and the race to promote.' },
-  rook: { label: 'Rook endings', emoji: '🏰', blurb: 'The most common endings in real games.' },
-  minor: { label: 'Minor pieces', emoji: '🐴', blurb: 'Bishops and knights in the endgame.' },
-  queen: { label: 'Queen endings', emoji: '👸', blurb: 'Queen versus pawns and more.' },
+  basic: categoryMeta('basic', '👑'),
+  pawn: categoryMeta('pawn', '♟️'),
+  rook: categoryMeta('rook', '🏰'),
+  minor: categoryMeta('minor', '🐴'),
+  queen: categoryMeta('queen', '👸'),
 };
 const CATEGORY_ORDER = ['basic', 'pawn', 'rook', 'minor', 'queen'];
 
@@ -42,7 +49,7 @@ function markDone(id, moves, validIds) {
 
 function goalOf(d) { return d && d.goal === 'draw' ? 'draw' : 'win'; }
 function goalBadge(goal) {
-  return h('span', { class: `lrn-goal ${goal}` }, goal === 'draw' ? 'Draw' : 'Win');
+  return h('span', { class: `lrn-goal ${goal}` }, goal === 'draw' ? t('endgames.goal.draw') : t('endgames.goal.win'));
 }
 function sortDrills(list) {
   const lv = { beginner: 0, intermediate: 1, advanced: 2, master: 3 };
@@ -73,8 +80,8 @@ async function mountList(root, bag, signal) {
   const page = h('div', { class: 'page' });
   root.appendChild(page);
   const header = pageHeader({
-    title: 'Endgame drills', icon: 'endgames',
-    subtitle: 'Practise must-know endgames against the engine at full strength. Reach the goal to complete a drill.',
+    title: t('endgames.listTitle'), icon: 'endgames',
+    subtitle: t('endgames.subtitle'),
   });
   page.replaceChildren(header, h('div', { class: 'eg-grid mt-6' }, skeleton('card', 6)));
 
@@ -82,7 +89,7 @@ async function mountList(root, bag, signal) {
   if (bag.disposed) return;
   const drills = sortDrills((Array.isArray(raw) ? raw : []).filter((d) => d && d.id && chessAt(d.fen)));
   if (!drills.length) {
-    page.replaceChildren(header, emptyState({ emoji: '🏁', title: 'No drills yet', text: 'Endgame drills appear here once data/endgames.json has entries.' }));
+    page.replaceChildren(header, emptyState({ emoji: '🏁', title: t('endgames.noDrills.title'), text: t('endgames.noDrills.text') }));
     return;
   }
   const db = progressDb();
@@ -93,11 +100,11 @@ async function mountList(root, bag, signal) {
   const hero = h('section', { class: 'lrn-hero mt-4' },
     h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, doneCount === drills.length ? '🏆' : '🏁'),
     h('div', { style: 'min-width:0' },
-      h('div', { class: 'lrn-hero-kicker' }, firstOpen ? 'Next drill' : 'All drills complete'),
-      h('div', { class: 'lrn-hero-title' }, firstOpen ? firstOpen.title : 'You mastered every drill!'),
-      h('p', { class: 'lrn-hero-sub' }, `${doneCount} of ${drills.length} drills completed`),
+      h('div', { class: 'lrn-hero-kicker' }, firstOpen ? t('endgames.nextDrill') : t('endgames.allComplete')),
+      h('div', { class: 'lrn-hero-title' }, firstOpen ? firstOpen.title : t('endgames.masteredAll')),
+      h('p', { class: 'lrn-hero-sub' }, t('endgames.drillsCompleted', { done: doneCount, total: drills.length })),
       h('div', { class: 'progress progress-sm' }, h('div', { class: 'progress-bar', style: `width:${pct}%` }))),
-    firstOpen ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(firstOpen.id)}`, html: icon('play') + '<span>Start drill</span>' }) : null);
+    firstOpen ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(firstOpen.id)}`, html: icon('play') + `<span>${escapeHtml(t('endgames.startDrill'))}</span>` }) : null);
 
   const cats = [...new Set(drills.map((d) => d.category))].sort((a, b) => {
     const ia = CATEGORY_ORDER.indexOf(a); const ib = CATEGORY_ORDER.indexOf(b);
@@ -107,7 +114,7 @@ async function mountList(root, bag, signal) {
   const chips = h('div', { class: 'chip-row mt-6' });
   const sections = h('div');
   const renderChips = () => chips.replaceChildren(
-    ...[['all', 'All'], ...cats.map((c) => [c, `${(CATEGORY_META[c] || {}).emoji || '♟️'} ${(CATEGORY_META[c] || {}).label || c}`])].map(([k, label]) =>
+    ...[['all', t('endgames.all')], ...cats.map((c) => [c, `${(CATEGORY_META[c] || {}).emoji || '♟️'} ${(CATEGORY_META[c] || {}).label || c}`])].map(([k, label]) =>
       h('button', { type: 'button', class: ['chip', active === k && 'active'], 'aria-pressed': active === k ? 'true' : 'false', onClick: () => { active = k; renderChips(); renderSections(); } }, label)));
   const renderSections = () => sections.replaceChildren(...cats.filter((c) => active === 'all' || c === active).map((c) => {
     const meta = CATEGORY_META[c] || { label: c, emoji: '♟️', blurb: '' };
@@ -117,7 +124,7 @@ async function mountList(root, bag, signal) {
       h('div', { class: 'lrn-section-head' },
         h('span', { class: 'lrn-section-emoji', 'aria-hidden': 'true' }, meta.emoji),
         h('div', null,
-          h('h2', null, meta.label, ' ', h('span', { class: 'lrn-count' }, `· ${done}/${list.length} done`)),
+          h('h2', null, meta.label, ' ', h('span', { class: 'lrn-count' }, t('endgames.doneCount', { done, total: list.length }))),
           meta.blurb ? h('div', { class: 'muted text-sm' }, meta.blurb) : null)),
       h('div', { class: 'eg-grid' }, list.map((d) => drillCard(d, db[d.id]))));
   }));
@@ -129,25 +136,25 @@ async function mountList(root, bag, signal) {
 function drillCard(d, rec) {
   const done = rec && rec.done;
   return h('a', { class: 'card card-link eg-card', href: `#/endgames/${encodeURIComponent(d.id)}`, title: d.title },
-    done ? h('span', { class: 'lrn-check', html: icon('check'), 'aria-label': 'Completed' }) : null,
+    done ? h('span', { class: 'lrn-check', html: icon('check'), 'aria-label': t('endgames.completed') }) : null,
     h('div', { html: miniBoardSvg(d.fen, sideToMove(d.fen)) }),
     h('h3', { class: 'eg-card-title' }, d.title),
     d.description ? h('p', { class: 'eg-card-desc' }, d.description) : null,
     h('div', { class: 'eg-card-meta' }, goalBadge(goalOf(d)), levelPill(d.level),
-      done && rec.best ? h('span', { class: 'text-xs subtle' }, `Best: ${rec.best} moves`) : null));
+      done && rec.best ? h('span', { class: 'text-xs subtle' }, t('endgames.bestMoves', { count: rec.best })) : null));
 }
 
 // ===========================================================================
 // Drill
 // ===========================================================================
 async function mountDrill(root, id, bag, signal) {
-  root.appendChild(loadingBlock('Setting up the drill…'));
+  root.appendChild(loadingBlock(t('endgames.loading')));
   const raw = await api.get('/api/endgames', { signal });
   if (bag.disposed) return;
   const drills = sortDrills((Array.isArray(raw) ? raw : []).filter((d) => d && d.id && chessAt(d.fen)));
   const drill = drills.find((d) => d.id === id);
   if (!drill) {
-    root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: 'Drill not found', text: 'We could not find this endgame drill.', action: { label: 'All drills', href: '#/endgames' } })));
+    root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: t('endgames.notFound.title'), text: t('endgames.notFound.text'), action: { label: t('endgames.allDrills'), href: '#/endgames' } })));
     return;
   }
   const validIds = new Set(drills.map((d) => d.id));
@@ -178,28 +185,28 @@ async function mountDrill(root, id, bag, signal) {
   // ------------------------------------------------------------------ layout
   const boardSlot = h('div', { class: 'board-slot' });
   const boardWrap = h('div', { class: 'board-row lrn-board-wrap' }, boardSlot);
-  const thinking = h('span', { class: 'eg-thinking', hidden: true, 'aria-label': 'Engine is thinking' }, h('i'), h('i'), h('i'));
+  const thinking = h('span', { class: 'eg-thinking', hidden: true, 'aria-label': t('endgames.thinkingAria') }, h('i'), h('i'), h('i'));
   const topBar = h('div', { class: 'player-bar' },
     h('div', { class: 'avatar', 'aria-hidden': 'true' }, '🤖'),
     h('div', { style: 'min-width:0' },
-      h('div', { class: 'player-name' }, 'Engine ', h('span', { class: 'player-rating' }, '(full strength)')),
-      h('div', { class: 'player-captures' }, engineColor === 'white' ? 'White' : 'Black')),
+      h('div', { class: 'player-name' }, t('endgames.engine'), ' ', h('span', { class: 'player-rating' }, t('endgames.fullStrength'))),
+      h('div', { class: 'player-captures' }, engineColor === 'white' ? t('endgames.white') : t('endgames.black'))),
     h('div', { class: 'clock-slot' }, thinking));
   const bottomBar = h('div', { class: 'player-bar' },
     h('div', { class: 'avatar', 'aria-hidden': 'true' }, '🙂'),
     h('div', { style: 'min-width:0' },
-      h('div', { class: 'player-name' }, 'You'),
-      h('div', { class: 'player-captures' }, userColor === 'white' ? 'White' : 'Black')));
+      h('div', { class: 'player-name' }, t('endgames.you')),
+      h('div', { class: 'player-captures' }, userColor === 'white' ? t('endgames.white') : t('endgames.black'))));
 
-  const goalText = goal === 'win' ? `${userColor === 'white' ? 'White' : 'Black'} to play and win` : `${userColor === 'white' ? 'White' : 'Black'} to play and draw`;
-  const goalSub = goal === 'win' ? 'Deliver checkmate against best defence.' : `Reach a draw — or survive ${DRAW_SURVIVE_MOVES} moves without losing.`;
+  const goalText = t(`endgames.banner.${userColor}${goal === 'win' ? 'Win' : 'Draw'}`);
+  const goalSub = goal === 'win' ? t('endgames.banner.winSub') : t('endgames.banner.drawSub', { count: DRAW_SURVIVE_MOVES });
   const banner = h('div', { class: `eg-banner ${goal}` },
     goalBadge(goal),
     h('div', null, h('div', { class: 'eg-banner-title' }, goalText), h('div', { class: 'eg-banner-sub' }, goalSub)));
 
   const feedback = h('div', { class: 'lrn-feedback', role: 'status', 'aria-live': 'polite' });
   const resultBox = h('div');
-  const movesEl = h('div', { class: 'eg-movelist', 'aria-label': 'Moves' });
+  const movesEl = h('div', { class: 'eg-movelist', 'aria-label': t('endgames.movesAria') });
   const technique = Array.isArray(drill.technique) ? drill.technique.filter(Boolean) : [];
 
   const body = h('div', { class: 'panel-body' },
@@ -208,21 +215,21 @@ async function mountDrill(root, id, bag, signal) {
     feedback,
     resultBox,
     technique.length ? h('div', null,
-      h('div', { class: 'op-block-title', html: icon('hint') + '<span>Technique</span>' }),
-      h('ol', { class: 'eg-technique' }, technique.map((t) => h('li', { html: `<span>${mdLite(t).replace(/^<p>|<\/p>$/g, '')}</span>` })))) : null,
-    h('div', { class: 'op-block-title', html: icon('list') + '<span>Moves</span>' }),
+      h('div', { class: 'op-block-title', html: icon('hint') + `<span>${escapeHtml(t('endgames.technique'))}</span>` }),
+      h('ol', { class: 'eg-technique' }, technique.map((step) => h('li', { html: `<span>${mdLite(step).replace(/^<p>|<\/p>$/g, '')}</span>` })))) : null,
+    h('div', { class: 'op-block-title', html: icon('list') + `<span>${escapeHtml(t('endgames.moves'))}</span>` }),
     movesEl);
 
-  const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + '<span>Hint</span>', onClick: () => showHint() });
-  const undoBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('undo') + '<span>Undo</span>', onClick: () => undo() });
-  const resetBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + '<span>Reset</span>', onClick: () => reset() });
-  const flipBtn = h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': 'Flip board', 'data-tooltip': 'Flip board', html: icon('flip'), onClick: () => board.flip() });
+  const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + `<span>${escapeHtml(t('endgames.hint'))}</span>`, onClick: () => showHint() });
+  const undoBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('undo') + `<span>${escapeHtml(t('endgames.undo'))}</span>`, onClick: () => undo() });
+  const resetBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.reset'))}</span>`, onClick: () => reset() });
+  const flipBtn = h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': t('endgames.flip'), 'data-tooltip': t('endgames.flip'), html: icon('flip'), onClick: () => board.flip() });
   const footer = h('div', { class: 'panel-footer' }, hintBtn, undoBtn, resetBtn, flipBtn);
 
   const panelHeader = h('div', { class: 'panel-header' }, h('span', { 'aria-hidden': 'true' }, (CATEGORY_META[drill.category] || {}).emoji || '🏁'), h('span', { class: 'truncate' }, drill.title), h('span', { class: 'spacer' }), levelPill(drill.level));
   const panel = h('div', { class: 'panel grow' }, panelHeader, body, footer);
 
-  const head = breadcrumbs([{ label: 'Endgames', href: '#/endgames' }, { label: (CATEGORY_META[drill.category] || {}).label || drill.category }, { label: drill.title }]);
+  const head = breadcrumbs([{ label: t('endgames.title'), href: '#/endgames' }, { label: (CATEGORY_META[drill.category] || {}).label || drill.category }, { label: drill.title }]);
 
   const layout = h('div', { class: 'game-layout no-eval eg-drill' },
     h('div', { class: 'game-main' }, topBar, boardWrap, bottomBar),
@@ -256,7 +263,7 @@ async function mountDrill(root, id, bag, signal) {
       nodes.push(h('span', { class: ['m', i === sans.length - 1 && 'last'] }, sanOf(s)));
       if (!isWhite) no++;
     });
-    if (!nodes.length) nodes.push(h('span', { class: 'subtle' }, 'Your move — good luck!'));
+    if (!nodes.length) nodes.push(h('span', { class: 'subtle' }, t('endgames.goodLuck')));
     movesEl.replaceChildren(...nodes);
   }
 
@@ -275,27 +282,27 @@ async function mountDrill(root, id, bag, signal) {
     if (game.isCheckmate()) {
       const loser = game.turn(); // side to move is mated
       return loser === userChar
-        ? { result: 'lost', reason: 'You were checkmated.' }
-        : { result: 'won', reason: goal === 'win' ? 'Checkmate! You converted the endgame.' : 'Checkmate — even better than a draw!' };
+        ? { result: 'lost', reason: t('endgames.reason.mated') }
+        : { result: 'won', reason: goal === 'win' ? t('endgames.reason.mateWin') : t('endgames.reason.mateDraw') };
     }
     let drawReason = null;
-    if (game.isStalemate()) drawReason = 'Stalemate — the king had no legal moves.';
-    else if (game.isInsufficientMaterial()) drawReason = 'Draw by insufficient material.';
-    else if (game.isThreefoldRepetition()) drawReason = 'Draw by threefold repetition.';
-    else if (game.isDrawByFiftyMoves && game.isDrawByFiftyMoves()) drawReason = 'Draw by the 50-move rule.';
-    else if (game.isDraw()) drawReason = 'The game is drawn.';
+    if (game.isStalemate()) drawReason = t('endgames.reason.stalemate');
+    else if (game.isInsufficientMaterial()) drawReason = t('endgames.reason.insufficient');
+    else if (game.isThreefoldRepetition()) drawReason = t('endgames.reason.threefold');
+    else if (game.isDrawByFiftyMoves && game.isDrawByFiftyMoves()) drawReason = t('endgames.reason.fifty');
+    else if (game.isDraw()) drawReason = t('endgames.reason.drawn');
     if (drawReason) {
       return goal === 'draw'
-        ? { result: 'won', reason: `${drawReason} You held the draw!` }
-        : { result: 'lost', reason: `${drawReason} You needed to win this one.` };
+        ? { result: 'won', reason: `${drawReason} ${t('endgames.reason.heldDraw')}` }
+        : { result: 'lost', reason: `${drawReason} ${t('endgames.reason.neededWin')}` };
     }
     if (goal === 'win') {
       // The user's side has only a king left → no way to win.
       const onlyKing = game.board().flat().filter((p) => p && p.color === userChar).every((p) => p.type === 'k');
-      if (onlyKing) return { result: 'lost', reason: 'You have no pieces left to checkmate with.' };
+      if (onlyKing) return { result: 'lost', reason: t('endgames.reason.noPieces') };
     }
     if (goal === 'draw' && game.turn() === userChar && userMoveCount() >= DRAW_SURVIVE_MOVES) {
-      return { result: 'won', reason: `You survived ${DRAW_SURVIVE_MOVES} moves against the engine — that's a draw!` };
+      return { result: 'won', reason: t('endgames.reason.survived', { count: DRAW_SURVIVE_MOVES }) };
     }
     return null;
   }
@@ -313,23 +320,25 @@ async function mountDrill(root, id, bag, signal) {
       setFeedback(feedback, null);
       resultBox.replaceChildren(h('div', { class: 'lrn-complete' },
         h('div', { class: 'lrn-complete-badge', html: icon('trophy') }),
-        h('h2', null, 'Drill complete!'),
-        h('p', null, `${reason} ${moves} move${moves === 1 ? '' : 's'}${hintsUsed ? `, ${hintsUsed} hint${hintsUsed === 1 ? '' : 's'}` : ''}. Best: ${rec.best}.`),
+        h('h2', null, t('endgames.complete')),
+        h('p', null, `${reason} ${hintsUsed
+          ? t('endgames.summaryHints', { moves: t('endgames.movesCount', { count: moves }), count: hintsUsed, best: rec.best })
+          : t('endgames.summary', { count: moves, best: rec.best })}`),
         h('div', { class: 'lrn-nav' },
-          nextDrill ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(nextDrill.id)}`, html: '<span>Next drill</span>' + icon('chevron-right') }) : h('a', { class: 'btn btn-primary btn-lg', href: '#/endgames', html: icon('grid') + '<span>All drills</span>' }),
-          h('button', { class: 'btn btn-secondary', type: 'button', html: icon('refresh') + '<span>Play again</span>', onClick: () => reset() }))));
+          nextDrill ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(nextDrill.id)}`, html: `<span>${escapeHtml(t('endgames.nextDrill'))}</span>` + icon('chevron-right') }) : h('a', { class: 'btn btn-primary btn-lg', href: '#/endgames', html: icon('grid') + `<span>${escapeHtml(t('endgames.allDrills'))}</span>` }),
+          h('button', { class: 'btn btn-secondary', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.playAgain'))}</span>`, onClick: () => reset() }))));
     } else {
       sfx('wrong');
       flashClass(boardSlot, 'shake', timers, 420);
       setFeedback(feedback, null);
       resultBox.replaceChildren(h('div', { class: 'lrn-complete' },
         h('div', { class: 'lrn-complete-badge fail', html: icon('x') }),
-        h('h2', null, 'Not quite'),
+        h('h2', null, t('endgames.notQuite')),
         h('p', null, reason),
         h('div', { class: 'lrn-nav' },
-          h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + '<span>Try again</span>', onClick: () => reset() }),
-          sans.length ? h('button', { class: 'btn btn-secondary', type: 'button', html: icon('undo') + '<span>Undo last move</span>', onClick: () => undo() }) : null,
-          h('a', { class: 'btn btn-ghost', href: `#/analysis?fen=${encodeURIComponent(startFen)}`, html: icon('analysis') + '<span>Study in analysis</span>' }))));
+          h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.tryAgain'))}</span>`, onClick: () => reset() }),
+          sans.length ? h('button', { class: 'btn btn-secondary', type: 'button', html: icon('undo') + `<span>${escapeHtml(t('endgames.undoLast'))}</span>`, onClick: () => undo() }) : null,
+          h('a', { class: 'btn btn-ghost', href: `#/analysis?fen=${encodeURIComponent(startFen)}`, html: icon('analysis') + `<span>${escapeHtml(t('endgames.study'))}</span>` }))));
     }
     resultBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
@@ -357,7 +366,7 @@ async function mountDrill(root, id, bag, signal) {
       botIdPromise = api.get('/api/bots', { signal: sig }).then((bots) => {
         const list = (Array.isArray(bots) ? bots : []).filter((b) => b && b.id && b.category !== 'coach');
         list.sort((a, b) => (b.elo || 0) - (a.elo || 0));
-        if (!list.length) throw new Error('No bots available');
+        if (!list.length) throw new Error(t('endgames.errors.noBots'));
         return list[0].id;
       }).catch((e) => { botIdPromise = null; throw e; });
     }
@@ -376,7 +385,7 @@ async function mountDrill(root, id, bag, signal) {
     const botId = await strongestBotId(sig);
     const historyUcis = game.history({ verbose: true }).map(moveUci);
     const bm = await api.post('/api/bot/move', { bot_id: botId, start_fen: startFen, moves: historyUcis }, { signal: sig, timeout: 15000 });
-    if (!bm || !bm.uci) throw new Error('The engine did not return a move');
+    if (!bm || !bm.uci) throw new Error(t('endgames.errors.noMove'));
     return { uci: bm.uci, score: null };
   }
 
@@ -403,8 +412,8 @@ async function mountDrill(root, id, bag, signal) {
       busy = false;
       syncControls();
       board.setInteractive(false, null);
-      setFeedback(feedback, 'bad', `The engine could not move: ${escapeHtml(e && e.message ? e.message : 'unknown error')}.`);
-      feedback.appendChild(h('button', { class: 'btn btn-sm btn-secondary', type: 'button', style: 'margin-left:auto', onClick: () => { setFeedback(feedback, null); engineTurn(); } }, 'Retry'));
+      setFeedback(feedback, 'bad', t('endgames.engineError', { error: escapeHtml(e && e.message ? e.message : t('endgames.unknownError')) }));
+      feedback.appendChild(h('button', { class: 'btn btn-sm btn-secondary', type: 'button', style: 'margin-left:auto', onClick: () => { setFeedback(feedback, null); engineTurn(); } }, t('endgames.retry')));
       return;
     }
     const elapsed = performance.now() - started;
@@ -414,7 +423,7 @@ async function mountDrill(root, id, bag, signal) {
     const m = applyUci(game, res.uci);
     if (!m) {
       busy = false; syncControls();
-      setFeedback(feedback, 'bad', 'The engine suggested an illegal move. Try Undo or Reset.');
+      setFeedback(feedback, 'bad', escapeHtml(t('endgames.illegal')));
       return;
     }
     sans.push(m.san);
@@ -425,10 +434,10 @@ async function mountDrill(root, id, bag, signal) {
     const out = outcome();
     if (out) { finish(out); return; }
     if (userPovLost(res.score)) {
-      finish({ result: 'lost', reason: goal === 'win' ? 'The advantage slipped away — the engine is now winning.' : 'The engine has a winning position now.' });
+      finish({ result: 'lost', reason: goal === 'win' ? t('endgames.reason.slipped') : t('endgames.reason.engineWinning') });
       return;
     }
-    if (game.inCheck()) setFeedback(feedback, 'warn', 'Check! Get your king to safety.');
+    if (game.inCheck()) setFeedback(feedback, 'warn', escapeHtml(t('endgames.check')));
     syncControls();
   }
 
@@ -438,7 +447,7 @@ async function mountDrill(root, id, bag, signal) {
     if (hintStage === 0) {
       hintStage = 1;
       hintsUsed++;
-      setFeedback(feedback, 'warn', mdLite(drill.hint || 'Think about the technique list below.').replace(/^<p>|<\/p>$/g, '') + ' <span class="subtle">(Press Hint again for the best move.)</span>');
+      setFeedback(feedback, 'warn', mdLite(drill.hint || t('endgames.defaultHint')).replace(/^<p>|<\/p>$/g, '') + ` <span class="subtle">${escapeHtml(t('endgames.hintAgain'))}</span>`);
       return;
     }
     const fen = game.fen();
@@ -453,14 +462,14 @@ async function mountDrill(root, id, bag, signal) {
         const info = await api.post('/api/engine/analyze', { fen, movetime_ms: HINT_MOVETIME_MS, multipv: 1 }, { signal: hintCtrl.signal, timeout: 15000 });
         const line = info && info.lines && info.lines[0];
         const uci = line && line.moves && line.moves[0];
-        if (!uci) throw new Error('No hint available');
+        if (!uci) throw new Error(t('endgames.hintFailed'));
         const c = chessAt(fen); const mv = applyUci(c, uci);
         best = { uci, san: mv ? mv.san : uci };
         if (hintCache.size > 64) hintCache.clear();
         hintCache.set(key, best);
       } catch (e) {
         if (isAbort(e) || bag.disposed) return;
-        setFeedback(feedback, 'bad', 'Could not get a hint from the engine right now.');
+        setFeedback(feedback, 'bad', escapeHtml(t('endgames.hintFailed')));
         return;
       } finally {
         if (!bag.disposed) hintBtn.classList.remove('loading');
@@ -470,7 +479,7 @@ async function mountDrill(root, id, bag, signal) {
     hintStage = 2;
     board.setArrows([{ from: best.uci.slice(0, 2), to: best.uci.slice(2, 4), color: 'green' }]);
     board.setHighlights([{ square: best.uci.slice(0, 2), kind: 'hint' }]);
-    setFeedback(feedback, 'warn', `The engine suggests <strong>${escapeHtml(sanOf(best.san))}</strong>.`);
+    setFeedback(feedback, 'warn', t('endgames.engineSuggests', { san: escapeHtml(sanOf(best.san)) }));
   }
 
   function cancelEngine() {
@@ -497,7 +506,7 @@ async function mountDrill(root, id, bag, signal) {
     board.setPosition(game.fen(), { animate: true, lastMove: last ? [last.from, last.to] : null, sound: false });
     board.clearArrows(); board.setHighlights([]);
     resultBox.replaceChildren();
-    setFeedback(feedback, 'info', 'Move taken back. Your turn.');
+    setFeedback(feedback, 'info', escapeHtml(t('endgames.takenBack')));
     renderMoves();
     syncControls();
   }
@@ -519,8 +528,8 @@ async function mountDrill(root, id, bag, signal) {
 
   bag.on(window, 'keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const t = e.target;
-    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const tgt = e.target;
+    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
     if (document.querySelector('.modal-backdrop')) return;
     if (e.key === 'f' || e.key === 'F') board.flip();
     else if (e.key === 'h' || e.key === 'H') showHint();

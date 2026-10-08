@@ -3,6 +3,7 @@
 pub mod api;
 pub mod cache;
 pub mod error;
+pub mod lang;
 pub mod puzzles;
 pub mod state;
 pub mod web;
@@ -56,6 +57,7 @@ fn panic_response(_err: Box<dyn std::any::Any + Send + 'static>) -> Response {
 /// Build the full application router.
 pub fn app(state: AppState, web_dir: &Path) -> Router {
     let api = api::router()
+        .layer(axum::middleware::from_fn(lang::localize_errors))
         .layer(DefaultBodyLimit::max(MAX_BODY_BYTES))
         .layer(SetResponseHeaderLayer::if_not_present(
             header::CACHE_CONTROL,
@@ -86,7 +88,7 @@ pub fn app(state: AppState, web_dir: &Path) -> Router {
             Method::DELETE,
             Method::OPTIONS,
         ])
-        .allow_headers([header::CONTENT_TYPE, header::ACCEPT])
+        .allow_headers([header::CONTENT_TYPE, header::ACCEPT, header::ACCEPT_LANGUAGE])
         .max_age(Duration::from_secs(3600));
 
     Router::new()

@@ -1,0 +1,864 @@
+{
+  "french-exchange": {
+    "name": "Defensa Francesa: Variante del Cambio",
+    "family": "Defensa Francesa",
+    "description": "Las blancas liberan la tensión con una estructura de peones simétrica. Sencilla y sólida, aunque a menudo tablífera.",
+    "ideas": ["Estructura simétrica", "Desarrollo libre de ambos alfiles", "Lucha por la columna e abierta"]
+  },
+  "french-tarrasch": {
+    "name": "Defensa Francesa: Variante Tarrasch",
+    "family": "Defensa Francesa",
+    "description": "Las blancas desarrollan el caballo a d2 y evitan la clavada de la Winawer. Las negras suelen responder ...c5 o ...Nf6.",
+    "ideas": ["Evitar la clavada ...Bb4", "Dejar c3 libre para el peón", "Control sólido del centro"]
+  },
+  "french-tarrasch-open": {
+    "name": "Francesa Tarrasch: Variante Abierta",
+    "family": "Defensa Francesa",
+    "description": "Las negras golpean d4 de inmediato y a menudo aceptan un peón de dama aislado a cambio de piezas activas.",
+    "ideas": ["Golpear d4 con ...c5", "Posiciones de peón de dama aislado", "Piezas activas que compensan la estructura"]
+  },
+  "french-tarrasch-closed": {
+    "name": "Francesa Tarrasch: Variante Cerrada",
+    "family": "Defensa Francesa",
+    "description": "Las blancas ganan espacio con e5 y apoyan d4 con c3; las negras atacan la cadena con ...c5 y ...f6.",
+    "ideas": ["Lucha contra la cadena de peones", "Rupturas ...c5 y ...f6", "Espacio en el flanco de rey para las blancas"]
+  },
+  "french-rubinstein": {
+    "name": "Defensa Francesa: Variante Rubinstein",
+    "family": "Defensa Francesa",
+    "description": "Las negras ceden el centro para desarrollarse con libertad. Sólida pero pasiva; las blancas obtienen una ventaja pequeña y duradera.",
+    "ideas": ["Liberar las piezas", "...Nd7 y ...Ngf6", "Sólida pero pasiva"]
+  },
+  "french-paulsen": {
+    "name": "Defensa Francesa: Variante Paulsen",
+    "family": "Defensa Francesa",
+    "description": "La jugada principal: las blancas defienden e4 con el caballo. Las negras eligen entre la Winawer (...Bb4), la Clásica (...Nf6) y la Rubinstein (...dxe4).",
+    "ideas": ["Defender e4 con una pieza", "Desarrollo rápido", "Preparar e5"]
+  },
+  "french-winawer": {
+    "name": "Defensa Francesa: Variante Winawer",
+    "family": "Defensa Francesa",
+    "description": "Las negras clavan el caballo de c3 y a menudo entregan el alfil por él, dañando los peones blancos. Muy aguda y estratégicamente compleja.",
+    "ideas": ["Clavar el caballo de c3", "Doblar los peones c blancos", "Contraatacar con ...c5 y ...Qc7"],
+    "traps": ["Tras 7.Qg4 las negras deben elegir entre ...O-O y el agudo sacrificio de peón con ...Qc7"]
+  },
+  "french-winawer-main": {
+    "name": "Francesa Winawer: Línea Principal",
+    "family": "Defensa Francesa",
+    "description": "La estructura principal de la Winawer: las blancas tienen la pareja de alfiles y espacio en el flanco de rey; las negras, mejor estructura y juego en el flanco de dama.",
+    "ideas": ["Las blancas atacan con Qg4", "Las negras juegan ...Ne7, ...Qc7, ...Qa5", "Lucha entre alfiles y estructura"]
+  },
+  "french-classical": {
+    "name": "Defensa Francesa: Variante Clásica",
+    "family": "Defensa Francesa",
+    "description": "Las negras desarrollan el caballo y atacan e4. Las blancas eligen Bg5 (clásica), e5 (Steinitz) u otros planes.",
+    "ideas": ["Presionar e4", "Desarrollo natural", "Rupturas ...c5 y ...f6 tras e5"]
+  },
+  "french-steinitz": {
+    "name": "Defensa Francesa: Variante Steinitz",
+    "family": "Defensa Francesa",
+    "description": "Las blancas ganan espacio con e5 y lo apoyan con f4, formando una amplia cadena de peones y preparando un ataque en el flanco de rey.",
+    "ideas": ["Gran cadena de peones e5/f4/d4", "Ataque en el flanco de rey", "Las negras golpean con ...c5, ...Nc6, ...Qb6"]
+  },
+  "french-mccutcheon": {
+    "name": "Defensa Francesa: Variante MacCutcheon",
+    "family": "Defensa Francesa",
+    "description": "En lugar de romper la clavada, las negras contraclavan el caballo de c3, lo que lleva a un juego agudo y desequilibrado.",
+    "ideas": ["Contraclavada con ...Bb4", "Juego táctico agudo", "Dañar la estructura blanca"]
+  },
+  "french-classical-main": {
+    "name": "Francesa Clásica: Línea Principal",
+    "family": "Defensa Francesa",
+    "description": "Las blancas cambian los alfiles de casillas oscuras y conservan la ventaja de espacio de e5. Las negras juegan ...c5 y ...a6 para jugar en el flanco de dama.",
+    "ideas": ["Cambiar el alfil bueno de casillas oscuras", "f4 y Nf3 apoyan e5", "Contrajuego negro en el flanco de dama"]
+  },
+  "caro-kann-defense": {
+    "name": "Defensa Caro-Kann",
+    "family": "Defensa Caro-Kann",
+    "description": "Una defensa muy sólida: las negras preparan ...d5 sin encerrar el alfil de casillas claras. Ideal si te gustan las posiciones seguras y bien estructuradas.",
+    "ideas": ["Preparar ...d5 con ...c6", "Desarrollar el alfil fuera de la cadena de peones", "Estructura sólida y buenos finales"],
+    "traps": ["Mate de la coz: 3.Nc3 dxe4 4.Nxe4 Nd7 5.Qe2 Ngf6?? 6.Nd6#"]
+  },
+  "caro-kann-advance": {
+    "name": "Caro-Kann: Variante del Avance",
+    "family": "Defensa Caro-Kann",
+    "description": "Las blancas ganan espacio con e5. Las negras desarrollan el alfil a f5 y atacan la cadena con ...c5, o con ...e6 y ...c5.",
+    "ideas": ["Espacio blanco en el flanco de rey", "Esquema negro con ...Bf5 y ...e6", "Ruptura ...c5 contra d4"]
+  },
+  "caro-kann-advance-short": {
+    "name": "Caro-Kann Avance: Variante Short",
+    "family": "Defensa Caro-Kann",
+    "description": "El sistema tranquilo de Nigel Short: las blancas se desarrollan con calma, enrocan y buscan c4 o una presión lenta. Poco riesgo y ventaja estable.",
+    "ideas": ["Desarrollo tranquilo y enroque", "Planes con c4 o Nbd2-b3", "Ventaja de espacio"]
+  },
+  "caro-kann-classical": {
+    "name": "Caro-Kann: Variante Clásica",
+    "family": "Defensa Caro-Kann",
+    "description": "Las negras desarrollan el alfil ganando tiempo sobre el caballo. Una línea principal clásica y muy sólida, a la que también se llega por 3.Nd2.",
+    "ideas": ["El alfil se desarrolla ganando tiempo", "Esquema sólido ...e6/...Ngf6/...Nbd7", "A veces enroque largo"],
+    "traps": ["Tras 6.Ng3 Bg6 7.h4, las negras juegan 7...h6 para que el alfil pueda retirarse a h7 cuando llegue h5"]
+  },
+  "caro-kann-classical-main": {
+    "name": "Caro-Kann Clásica: Línea Principal",
+    "family": "Defensa Caro-Kann",
+    "description": "La tabiya clásica: el peón blanco de h5 gana espacio en el flanco de rey, mientras las negras tienen una estructura sana.",
+    "ideas": ["Las blancas enrocan largo", "Las negras enrocan largo o corto", "Lucha por e5 y e4"]
+  },
+  "caro-kann-karpov": {
+    "name": "Caro-Kann: Variante Karpov",
+    "family": "Defensa Caro-Kann",
+    "description": "Las negras preparan ...Ngf6 para poder cambiar el caballo de e4 sin quedarse con peones doblados. Muy sólida; la favorita de Karpov.",
+    "ideas": ["Preparar ...Ngf6", "Mantener una estructura sana", "Juego lento y sólido"],
+    "traps": ["5.Qe2 Ngf6?? 6.Nd6#: el famoso mate de la coz", "5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6? 8.Nxe6! es un sacrificio conocido"]
+  },
+  "caro-kann-bronstein-larsen": {
+    "name": "Caro-Kann: Variante Bronstein-Larsen",
+    "family": "Defensa Caro-Kann",
+    "description": "Las negras aceptan peones doblados para abrir la columna g y buscar ataque. Dinámica y arriesgada.",
+    "ideas": ["Columna g abierta", "Dinámica de la pareja de alfiles", "Juego agresivo en el flanco de rey"]
+  },
+  "caro-kann-exchange": {
+    "name": "Caro-Kann: Variante del Cambio",
+    "family": "Defensa Caro-Kann",
+    "description": "Las blancas cambian en d5 y desarrollan el alfil a d3 para jugar en el flanco de rey. Se parece a la Variante del Cambio del Gambito de Dama Rehusado con colores invertidos.",
+    "ideas": ["Esquema con c3 y Bf4", "Ataque de minorías para las negras", "Juego sencillo y estratégico"]
+  },
+  "caro-kann-panov": {
+    "name": "Caro-Kann: Ataque Panov-Botvinnik",
+    "family": "Defensa Caro-Kann",
+    "description": "Las blancas atacan d5 con c4, lo que a menudo lleva a posiciones de peón de dama aislado con piezas activas.",
+    "ideas": ["Peón de dama aislado y piezas activas", "Opciones de ataque en el flanco de rey", "Presión sobre d5"]
+  },
+  "caro-kann-two-knights": {
+    "name": "Caro-Kann: Ataque de los Dos Caballos",
+    "family": "Defensa Caro-Kann",
+    "description": "Las blancas desarrollan ambos caballos antes de d4, manteniendo la flexibilidad y evitando las líneas principales.",
+    "ideas": ["Desarrollo flexible", "La clavada ...Bg4 es habitual", "Evitar la teoría"]
+  },
+  "caro-kann-fantasy": {
+    "name": "Caro-Kann: Variante Fantasía",
+    "family": "Defensa Caro-Kann",
+    "description": "Las blancas apoyan e4 con el peón f, manteniendo un gran centro y a veces ofreciendo un gambito. Aguda y poco habitual.",
+    "ideas": ["Mantener un gran centro de peones", "Desarrollo rápido", "Juego agudo"]
+  },
+  "scandinavian-defense": {
+    "name": "Defensa Escandinava",
+    "family": "Defensa Escandinava",
+    "description": "Las negras desafían e4 de inmediato. La dama recaptura pronto en d5, pero la estructura sencilla la hace fácil de aprender.",
+    "ideas": ["Desafío inmediato al centro", "Desarrollo sencillo: ...Nf6, ...Bf5, ...e6, ...c6", "Poca teoría"],
+    "traps": ["Tras 2...Qxd5 3.Nc3 la dama debe moverse perdiendo un tiempo: elige una casilla segura"]
+  },
+  "scandinavian-qa5": {
+    "name": "Defensa Escandinava: Línea Principal (Qa5)",
+    "family": "Defensa Escandinava",
+    "description": "La Escandinava clásica: la dama va a a5, clava el caballo de c3 y se mantiene activa.",
+    "ideas": ["Clavar el caballo de c3 desde a5", "...Nf6, ...Bf5, ...c6, ...e6", "Estructura sólida tipo Caro-Kann"],
+    "traps": ["Cuidado con los ataques a la descubierta Bd2 + Nd5 sobre la dama de a5", "Los trucos con b4 pueden atrapar a la dama"]
+  },
+  "scandinavian-qd6": {
+    "name": "Defensa Escandinava: Gubinsky-Melts (Qd6)",
+    "family": "Defensa Escandinava",
+    "description": "Una ubicación moderna de la dama: en d6 está centralizada y apoya esquemas con ...a6 y ...Nf6.",
+    "ideas": ["La dama en d6 controla casillas centrales", "Esquemas con ...a6, ...Nf6, ...g6", "Evitar que persigan a la dama"],
+    "traps": ["Nb5 ataca a la dama y a c7: a menudo hace falta ...a6 o ...c6"]
+  },
+  "scandinavian-qd8": {
+    "name": "Defensa Escandinava: Variante Qd8",
+    "family": "Defensa Escandinava",
+    "description": "La dama vuelve a casa, la casilla más segura. Las negras están sólidas pero algo pasivas.",
+    "ideas": ["Máxima seguridad para la dama", "...Nf6, ...g6 o ...c6", "Estructura sólida"]
+  },
+  "scandinavian-modern": {
+    "name": "Defensa Escandinava: Variante Moderna",
+    "family": "Defensa Escandinava",
+    "description": "Las negras recapturan con el caballo en lugar de con la dama, o entregan el peón a cambio de desarrollo.",
+    "ideas": ["Recapturar con el caballo", "Evitar mover pronto la dama", "Opciones de gambito"]
+  },
+  "scandinavian-portuguese": {
+    "name": "Defensa Escandinava: Gambito Portugués",
+    "family": "Defensa Escandinava",
+    "description": "Las negras entregan el peón de d5 a cambio de un desarrollo rápido y opciones de ataque contra el flanco de dama blanco.",
+    "ideas": ["Gambito por desarrollo", "Clavada con ...Bg4", "Juego agresivo de piezas"]
+  },
+  "scandinavian-icelandic": {
+    "name": "Defensa Escandinava: Gambito Islandés-Palme",
+    "family": "Defensa Escandinava",
+    "description": "Las negras sacrifican un peón a cambio de una gran ventaja en desarrollo. Aguda y agresiva.",
+    "ideas": ["Gambito para abrir líneas", "Desarrollo rápido", "Atacar al rey blanco"]
+  },
+  "pirc-defense": {
+    "name": "Defensa Pirc",
+    "family": "Defensa Pirc",
+    "description": "Una defensa hipermoderna: las negras dejan que las blancas levanten un gran centro y luego lo atacan con piezas y con ...e5 o ...c5.",
+    "ideas": ["Fianchetto del alfil de rey", "Atacar el centro más tarde con ...e5/...c5", "Juego flexible y de contraataque"],
+    "traps": ["El Ataque 150 (Be3, Qd2, Bh6) es un plan peligroso para las blancas"]
+  },
+  "pirc-austrian": {
+    "name": "Defensa Pirc: Ataque Austriaco",
+    "family": "Defensa Pirc",
+    "description": "Las blancas levantan un centro enorme con f4, buscando e5 y un ataque en el flanco de rey. La respuesta más aguda a la Pirc.",
+    "ideas": ["Enorme centro de peones", "Avance e5 para expulsar el caballo de f6", "Ataque en el flanco de rey"]
+  },
+  "pirc-classical": {
+    "name": "Defensa Pirc: Variante Clásica",
+    "family": "Defensa Pirc",
+    "description": "Las blancas se desarrollan con naturalidad y enrocan. Juego de poco riesgo con una ventaja central duradera.",
+    "ideas": ["Desarrollo natural", "Mantener el control del centro", "Planes lentos con h3/a4"]
+  },
+  "pirc-150-attack": {
+    "name": "Defensa Pirc: Ataque 150",
+    "family": "Defensa Pirc",
+    "description": "Las blancas juegan Be3, Qd2, Bh6 y h4-h5: un plan sencillo y agresivo, fácil de aprender.",
+    "ideas": ["Cambiar el alfil de g7 con Bh6", "Avalancha de peones h4-h5", "Enroque largo"]
+  },
+  "modern-defense": {
+    "name": "Defensa Moderna",
+    "family": "Defensa Moderna",
+    "description": "Las negras hacen el fianchetto de inmediato y retrasan el desarrollo del caballo a f6. Muy flexible e hipermoderna.",
+    "ideas": ["Fianchetto temprano", "Mantener flexible el caballo", "Contraatacar el centro más tarde"]
+  },
+  "modern-defense-standard": {
+    "name": "Defensa Moderna: Línea Estándar",
+    "family": "Defensa Moderna",
+    "description": "El esquema estándar de la Moderna: las negras permiten un centro amplio y esperan el momento justo para contraatacar con ...c6, ...b5 o ...e5.",
+    "ideas": ["Expansión en el flanco de dama con ...c6 y ...b5", "Rupturas centrales ...e5 o ...c5", "Flanco de rey flexible"]
+  },
+  "alekhine-defense": {
+    "name": "Defensa Alekhine",
+    "family": "Defensa Alekhine",
+    "description": "Las negras provocan el avance de los peones blancos para atacarlos después. Una defensa provocadora e hipermoderna.",
+    "ideas": ["Provocar e5 y la sobreextensión", "Minar el centro con ...d6", "Presión de piezas sobre e5"],
+    "traps": ["El Ataque de los Cuatro Peones puede arrollar a las negras si se descuidan"]
+  },
+  "alekhine-four-pawns": {
+    "name": "Defensa Alekhine: Ataque de los Cuatro Peones",
+    "family": "Defensa Alekhine",
+    "description": "Las blancas ocupan todo el centro con cuatro peones. Si aguanta, las negras quedan aplastadas; si no, se convierte en un objetivo.",
+    "ideas": ["Centro máximo", "Asfixia por espacio", "Las negras deben golpear rápido con ...dxe5, ...Nc6, ...Bf5"]
+  },
+  "alekhine-exchange": {
+    "name": "Defensa Alekhine: Variante del Cambio",
+    "family": "Defensa Alekhine",
+    "description": "Las blancas liberan la tensión con exd6, lo que lleva a una partida más tranquila con una pequeña ventaja de espacio.",
+    "ideas": ["Simplificar el centro", "Ventaja de espacio con c4/d4", "Juego de poco riesgo"]
+  },
+  "alekhine-modern": {
+    "name": "Defensa Alekhine: Variante Moderna",
+    "family": "Defensa Alekhine",
+    "description": "Las blancas se desarrollan con normalidad en vez de perseguir al caballo. Una línea principal sólida con una ventaja de espacio duradera.",
+    "ideas": ["Desarrollarse con calma", "Mantener el peón de e5", "Evitar la sobreextensión"]
+  },
+  "nimzowitsch-defense": {
+    "name": "Defensa Nimzowitsch",
+    "family": "Defensa poco común",
+    "description": "Las negras desarrollan el caballo de dama para atacar d4 y e5, invitando a transponer a 1.e4 e5 o a estructuras inusuales.",
+    "ideas": ["Presionar d4", "Continuaciones con ...d5 o ...e5", "Posiciones inusuales"]
+  },
+  "owens-defense": {
+    "name": "Defensa Owen",
+    "family": "Defensa poco común",
+    "description": "Las negras hacen el fianchetto del alfil de dama para presionar e4 a distancia.",
+    "ideas": ["Presión sobre e4 por la gran diagonal", "Ideas con ...e6 y ...Bb4", "Flexible"]
+  },
+  "st-george-defense": {
+    "name": "Defensa San Jorge",
+    "family": "Defensa poco común",
+    "description": "Las negras juegan pronto ...a6 y ...b5. Se hizo famosa cuando Tony Miles venció con ella al campeón del mundo Karpov en 1980.",
+    "ideas": ["Expansión en el flanco de dama con ...b5", "...Bb7 contra e4", "Arma sorpresa"]
+  },
+  "borg-defense": {
+    "name": "Defensa Borg",
+    "family": "Defensa poco común",
+    "description": "Una respuesta extravagante (la «Grob» al revés) que debilita el flanco de rey negro para hacer el fianchetto.",
+    "ideas": ["Presión de ...Bg7 en la gran diagonal", "Factor sorpresa", "Muy arriesgada"],
+    "traps": ["2.d4 h6 3.h4! socava el peón de g5"]
+  },
+  "queens-pawn-game": {
+    "name": "Apertura de peón de dama",
+    "family": "Apertura de peón de dama",
+    "description": "Las negras imitan a las blancas y mantienen un firme control del centro. La respuesta más clásica a 1.d4.",
+    "ideas": ["Reclamar el centro", "Desarrollar ...Nf6, ...e6 o ...c6", "Prepararse para responder a c4 con solidez"]
+  },
+  "queens-pawn-zukertort": {
+    "name": "Apertura de peón de dama: Variante Zukertort",
+    "family": "Apertura de peón de dama",
+    "description": "Las blancas desarrollan primero el caballo y conservan opciones de sistemas con c4, Bf4 o e3.",
+    "ideas": ["Desarrollo flexible", "Mantener las opciones c4/Bf4/e3", "Control sólido de e5"]
+  },
+  "london-system": {
+    "name": "Sistema Londres",
+    "family": "Sistema Londres",
+    "description": "Un sistema sólido en el que las blancas juegan d4, Bf4, e3, Nf3, c3 y Bd3 contra casi todo. Fácil de aprender y muy popular en línea.",
+    "ideas": ["El mismo esquema en cada partida", "Alfil a f4 antes de e3", "Ideas con Ne5 y ataque en el flanco de rey"],
+    "traps": ["...c5 y ...Qb6 atacando b2 es la prueba crítica de las negras", "Tras Bd3, vigila ...Nh5, que busca cambiar el alfil de f4"]
+  },
+  "london-system-indian": {
+    "name": "Sistema Londres contra ...Nf6",
+    "family": "Sistema Londres",
+    "description": "El esquema Londres contra las defensas indias. Las blancas sacan rápido el alfil antes de jugar e3.",
+    "ideas": ["Bf4, e3, Nf3, c3, Bd3", "Estructura sólida", "Evitar la teoría de las líneas principales"]
+  },
+  "jobava-london": {
+    "name": "Sistema Londres Jobava",
+    "family": "Sistema Londres",
+    "description": "Un Londres agresivo en el que el caballo va a c3, preparando Nb5, e3 y a veces el enroque largo.",
+    "ideas": ["Nb5 atacando c7", "Enroque largo y ataque en el flanco de rey", "Londres agresivo"],
+    "traps": ["A menudo hace falta ...a6 para frenar los trucos de Nb5 contra c7"]
+  },
+  "colle-system": {
+    "name": "Sistema Colle",
+    "family": "Sistema Colle",
+    "description": "Un sistema sencillo: las blancas juegan e3, Bd3, Nbd2, c3, O-O y preparan e4 para abrir el centro y atacar en el flanco de rey.",
+    "ideas": ["Preparar la ruptura e4", "El alfil de d3 apunta a h7", "Ideas clásicas de sacrificio Bxh7+"],
+    "traps": ["El sacrificio griego Bxh7+ es un patrón de ataque típico del Colle"]
+  },
+  "colle-zukertort": {
+    "name": "Sistema Colle-Zukertort",
+    "family": "Sistema Colle",
+    "description": "Las blancas hacen el fianchetto del alfil de dama en b2 y mantienen el centro del Colle. El alfil barre la gran diagonal hacia el rey negro.",
+    "ideas": ["Bb2 en la gran diagonal", "Apoyo con Ne5 y f4", "Ataque en el flanco de rey"]
+  },
+  "stonewall-attack": {
+    "name": "Ataque Stonewall",
+    "family": "Apertura de peón de dama",
+    "description": "Las blancas colocan peones en d4, e3, f4 y c3, y luego atacan el flanco de rey con Ne5 y Qf3/Rf3.",
+    "ideas": ["Peones en c3, d4, e3, f4", "Casilla fuerte en e5 con Ne5", "Ataque en el flanco de rey"]
+  },
+  "blackmar-diemer-gambit": {
+    "name": "Gambito Blackmar-Diemer",
+    "family": "Apertura de peón de dama",
+    "description": "Las blancas entregan un peón para abrir la columna f y acelerar el desarrollo. Un favorito de los jugadores de club atacantes.",
+    "ideas": ["Columna f abierta", "Desarrollo rápido: Nf3, Bd3, O-O, Qe1-h4", "Atacar el flanco de rey"]
+  },
+  "veresov-attack": {
+    "name": "Ataque Richter-Veresov",
+    "family": "Apertura de peón de dama",
+    "description": "Las blancas se desarrollan rápido con Nc3 y Bg5, buscando f3 y e4. Inusual, agresivo y con poca teoría.",
+    "ideas": ["Clavar el caballo de f6", "Preparar e4", "Posible enroque largo"]
+  },
+  "queens-gambit": {
+    "name": "Gambito de Dama",
+    "family": "Gambito de Dama",
+    "description": "Las blancas ofrecen el peón c para desviar el peón negro de d5 del centro. No es un gambito real: las negras rara vez pueden quedarse con el peón.",
+    "ideas": ["Atacar d5 con c4", "Formar un centro con e4 o e3", "Desarrollar Nc3, Nf3, Bg5"],
+    "traps": ["En el Gambito de Dama Aceptado, intentar sostener el peón de c4 con ...b5 suele perder por tácticas con a4 y Qf3"]
+  },
+  "queens-gambit-accepted": {
+    "name": "Gambito de Dama Aceptado",
+    "family": "Gambito de Dama",
+    "description": "Las negras toman el peón de c4, cediendo el centro temporalmente, y luego contraatacan con ...c5 y ...e6.",
+    "ideas": ["No intentes conservar el peón", "Contraatacar con ...c5", "Desarrollo libre"],
+    "traps": ["3.e3 b5? 4.a4 c6 5.axb5 cxb5 6.Qf3! ataca la torre de a8 por la gran diagonal y gana material"]
+  },
+  "qga-classical": {
+    "name": "Gambito de Dama Aceptado: Variante Clásica",
+    "family": "Gambito de Dama",
+    "description": "La línea principal: las negras dejan recapturar a las blancas y desafían d4 con ...c5. Son habituales las posiciones de peón de dama aislado.",
+    "ideas": ["...c5 contra el centro blanco", "Expansión con ...a6 y ...b5", "Luchas con peón d aislado"]
+  },
+  "qga-central": {
+    "name": "Gambito de Dama Aceptado: Variante Central",
+    "family": "Gambito de Dama",
+    "description": "Las blancas forman de inmediato el centro completo e4/d4 y luego recuperan c4. Las negras contraatacan con ...e5, ...Nf6 o ...c5.",
+    "ideas": ["Gran centro", "Recuperar c4 con Bxc4", "Ventaja de espacio"]
+  },
+  "queens-gambit-declined": {
+    "name": "Gambito de Dama Rehusado",
+    "family": "Gambito de Dama",
+    "description": "Las negras defienden d5 con solidez mediante ...e6. Una de las defensas más respetadas del ajedrez, jugada en muchos Campeonatos del Mundo.",
+    "ideas": ["Sostener d5 con ...e6", "...Be7, ...Nf6, ...O-O", "Liberar el juego con ...c5 o con ...dxc4 y ...e5"],
+    "traps": ["La Trampa del Elefante: 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5! 7.Bxd8 Bb4+ 8.Qd2 Bxd2+ 9.Kxd2 Kxd8 gana una pieza"]
+  },
+  "qgd-normal": {
+    "name": "Gambito de Dama Rehusado: Defensa Normal",
+    "family": "Gambito de Dama",
+    "description": "La posición clásica del Gambito de Dama Rehusado con ambos caballos desarrollados. Las blancas eligen sistemas con Bg5, Bf4, cxd5 o Nf3.",
+    "ideas": ["Defender d5 con solidez", "Desarrollarse y enrocar", "Preparar ...c5 o ...dxc4"],
+    "traps": ["Trampa del Elefante tras 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5!"]
+  },
+  "qgd-exchange": {
+    "name": "Gambito de Dama Rehusado: Variante del Cambio",
+    "family": "Gambito de Dama",
+    "description": "Las blancas cambian en d5 para fijar la estructura negra y luego lanzan el famoso ataque de minorías con b4-b5.",
+    "ideas": ["Ataque de minorías b4-b5", "Presión sobre c6 y d5", "Las negras juegan en el flanco de rey"]
+  },
+  "qgd-orthodox": {
+    "name": "Gambito de Dama Rehusado: Defensa Ortodoxa",
+    "family": "Gambito de Dama",
+    "description": "La línea principal clásica del Gambito de Dama Rehusado: sólida pero algo pasiva. Las negras esperan la liberadora ...c5, o ...dxc4 y ...e5.",
+    "ideas": ["Sólida pero apretada", "Maniobras liberadoras ...dxc4, ...Nd5", "Batalla estratégica lenta"]
+  },
+  "qgd-tartakower": {
+    "name": "Gambito de Dama Rehusado: Defensa Tartakower",
+    "family": "Gambito de Dama",
+    "description": "Las negras hacen el fianchetto del alfil de dama para resolver la pieza problemática clásica del Gambito de Dama Rehusado. La usaron Kasparov y Karpov.",
+    "ideas": ["...b6 y ...Bb7", "Resolver el problema del alfil de casillas claras", "Estructuras con peones colgantes"]
+  },
+  "qgd-lasker": {
+    "name": "Gambito de Dama Rehusado: Defensa Lasker",
+    "family": "Gambito de Dama",
+    "description": "Las negras cambian piezas con ...Ne4 para aliviar la posición apretada del Gambito de Dama Rehusado. Muy sólida y tablífera.",
+    "ideas": ["Cambiar piezas para liberar la posición", "Estructura sólida", "Igualar con seguridad"]
+  },
+  "qgd-cambridge-springs": {
+    "name": "Gambito de Dama Rehusado: Defensa Cambridge Springs",
+    "family": "Gambito de Dama",
+    "description": "La dama negra ataca el caballo clavado de c3 y el alfil de g5. Llena de trampas y activa.",
+    "ideas": ["Presionar el caballo clavado de c3", "Ideas con ...Bb4 y ...Ne4", "Aprovechar la ausencia del alfil Bg5"],
+    "traps": ["Un juego descuidado de las blancas pierde una pieza ante ...dxc4 y ...Ne4", "La Trampa del Elefante es posible antes"]
+  },
+  "qgd-ragozin": {
+    "name": "Gambito de Dama Rehusado: Defensa Ragozin",
+    "family": "Gambito de Dama",
+    "description": "Un esquema tipo Nimzoindia dentro del Gambito de Dama Rehusado: las negras clavan el caballo de c3 para lograr piezas activas.",
+    "ideas": ["Clavar el caballo de c3", "Piezas activas", "Estructura flexible"]
+  },
+  "qgd-tarrasch": {
+    "name": "Defensa Tarrasch",
+    "family": "Gambito de Dama",
+    "description": "Las negras aceptan un peón de dama aislado a cambio de juego libre de piezas. El Dr. Tarrasch la consideraba la única defensa correcta.",
+    "ideas": ["Aceptar un peón de dama aislado", "Desarrollo activo", "Actividad de piezas antes que estructura"]
+  },
+  "semi-tarrasch": {
+    "name": "Defensa Semi-Tarrasch",
+    "family": "Gambito de Dama",
+    "description": "Las negras recapturan con el caballo para evitar el peón aislado. Las blancas suelen obtener un centro móvil con e4.",
+    "ideas": ["Evitar el peón de dama aislado", "Presionar el centro blanco", "Desarrollo sólido"]
+  },
+  "qgd-bf4": {
+    "name": "Gambito de Dama Rehusado: 5.Bf4",
+    "family": "Gambito de Dama",
+    "description": "El sistema moderno con Bf4: las blancas desarrollan el alfil fuera de la cadena de peones y a menudo juegan e3 y c5, o maniobran con calma.",
+    "ideas": ["Alfil fuera de la cadena", "A veces espacio con c5", "Presión sobre c7 y el flanco de dama"]
+  },
+  "qgd-alatortsev": {
+    "name": "Gambito de Dama Rehusado: Variante Alatortsev",
+    "family": "Gambito de Dama",
+    "description": "Las negras retrasan ...Nf6 para evitar la Variante del Cambio con esquemas de Nge2. Un sutil juego de orden de jugadas.",
+    "ideas": ["Finura en el orden de jugadas", "Evitar ciertas líneas del Cambio", "Estructuras sólidas del Gambito de Dama Rehusado"]
+  },
+  "albin-countergambit": {
+    "name": "Contragambito Albin",
+    "family": "Gambito de Dama",
+    "description": "Las negras sacrifican el peón e a cambio de un peón incómodo en d4 y un desarrollo rápido. Llena de trampas y agresiva.",
+    "ideas": ["Peón incómodo en d4", "Desarrollo rápido", "Enroque largo y ataque"],
+    "traps": ["La Trampa de Lasker: 3.dxe5 d4 4.e3? Bb4+ 5.Bd2 dxe3! 6.Bxb4?? exf2+ 7.Ke2 fxg1=N+! gana"]
+  },
+  "chigorin-defense": {
+    "name": "Defensa Chigorin",
+    "family": "Gambito de Dama",
+    "description": "Las negras desarrollan las piezas con agresividad en vez de construir una estructura de peones, buscando presión de piezas sobre d4.",
+    "ideas": ["Presión de piezas sobre d4", "...Bg4 y ...e5", "Posiciones desequilibradas"]
+  },
+  "baltic-defense": {
+    "name": "Defensa Báltica",
+    "family": "Gambito de Dama",
+    "description": "Las negras desarrollan el alfil de casillas claras antes de ...e6, resolviendo la pieza problemática clásica del Gambito de Dama Rehusado.",
+    "ideas": ["Desarrollar pronto el alfil de c8", "Después ...e6 y ...c6", "Cuidado con la debilidad de b7"],
+    "traps": ["4.Qb3 atacando b7 es una prueba directa"]
+  },
+  "slav-defense": {
+    "name": "Defensa Eslava",
+    "family": "Defensa Eslava",
+    "description": "Las negras defienden d5 con ...c6, dejando libre el alfil de c8. Sólida y dinámica, la han jugado muchos campeones del mundo.",
+    "ideas": ["Apoyar d5 con ...c6", "Desarrollar el alfil a f5 o g4", "Ideas con ...dxc4 y ...b5"]
+  },
+  "slav-exchange": {
+    "name": "Defensa Eslava: Variante del Cambio",
+    "family": "Defensa Eslava",
+    "description": "Las blancas simplifican a una estructura simétrica. Sólida y tablífera, pero las blancas conservan una ligera iniciativa.",
+    "ideas": ["Estructura simétrica", "Esquema con Bf4, e3, Nc3", "Aprovechar el tiempo extra"]
+  },
+  "slav-czech": {
+    "name": "Defensa Eslava: Variante Checa",
+    "family": "Defensa Eslava",
+    "description": "Las negras toman en c4 y desarrollan el alfil a f5. Las blancas recuperan el peón y luchan por e4.",
+    "ideas": ["Tomar c4 y luego desarrollarse", "Alfil en f5", "Lucha por e4"]
+  },
+  "slav-chebanenko": {
+    "name": "Defensa Eslava: Variante Chebanenko",
+    "family": "Defensa Eslava",
+    "description": "La flexible Eslava con ...a6: las negras preparan ...b5 para ganar espacio en el flanco de dama y mantienen muchas opciones.",
+    "ideas": ["Preparar ...b5", "Desarrollo flexible", "Espacio en el flanco de dama"]
+  },
+  "semi-slav": {
+    "name": "Defensa Semieslava",
+    "family": "Defensa Eslava",
+    "description": "Combinando ...c6 y ...e6, las negras forman un triángulo sólido. Lleva a algunas de las líneas más agudas del ajedrez (Merano, Botvinnik).",
+    "ideas": ["Apoyo sólido de d5", "Ideas con ...dxc4 y ...b5", "Contrajuego agudo"]
+  },
+  "semi-slav-meran": {
+    "name": "Semieslava: Variante Merano",
+    "family": "Defensa Eslava",
+    "description": "Las negras toman en c4 y se expanden con ...b5, ganando tiempo y espacio en el flanco de dama. Teoría rica y dinámica.",
+    "ideas": ["Expansión en el flanco de dama", "...Bb7 y ...c5", "Lucha contra e4-e5"]
+  },
+  "semi-slav-botvinnik": {
+    "name": "Semieslava: Sistema Botvinnik",
+    "family": "Defensa Eslava",
+    "description": "Una de las aperturas más agudas del ajedrez: las negras conservan el peón de más mientras las blancas atacan con e5. Analizada a fondo.",
+    "ideas": ["Sostener el peón de c4", "Táctica compleja", "Ataques mutuos"]
+  },
+  "semi-slav-moscow": {
+    "name": "Semieslava: Variante Moscú",
+    "family": "Defensa Eslava",
+    "description": "Las negras preguntan de inmediato al alfil por sus intenciones. Tras Bxf6 las negras tienen la pareja de alfiles y una posición sólida.",
+    "ideas": ["Obtener la pareja de alfiles", "Estructura sólida", "Evitar la Botvinnik"]
+  },
+  "semi-slav-marshall-gambit": {
+    "name": "Semieslava: Gambito Marshall",
+    "family": "Defensa Eslava",
+    "description": "Las blancas sacrifican el peón e a cambio de desarrollo y presión en las casillas oscuras contra el orden de jugadas Noteboom/Triángulo.",
+    "ideas": ["Gambito por desarrollo", "Ataque en las casillas oscuras", "Juego agudo"]
+  },
+  "catalan-opening": {
+    "name": "Apertura Catalana",
+    "family": "Apertura Catalana",
+    "description": "Las blancas combinan d4/c4 con un fianchetto en el flanco de rey, presionando a largo plazo el flanco de dama negro. Una favorita de Kramnik y Carlsen.",
+    "ideas": ["El alfil de g2 presiona d5 y b7", "Presión a largo plazo en el flanco de dama", "Juego posicional tranquilo pero potente"]
+  },
+  "catalan-open": {
+    "name": "Apertura Catalana: Variante Abierta",
+    "family": "Apertura Catalana",
+    "description": "Las negras toman el peón de c4; las blancas lo recuperan con Qa4 o Ne5 y mantienen la presión en la gran diagonal.",
+    "ideas": ["Tomar c4 y sostenerlo con ...a6/...b5", "Las blancas recuperan el peón y presionan b7", "Las negras buscan ...c5"]
+  },
+  "catalan-closed": {
+    "name": "Apertura Catalana: Variante Cerrada",
+    "family": "Apertura Catalana",
+    "description": "Las negras mantienen el punto d5; el juego es lento y posicional, con las blancas presionando en el flanco de dama.",
+    "ideas": ["Peón sólido en d5", "...c6 y ...b6", "Largas maniobras"]
+  },
+  "indian-defense": {
+    "name": "Defensa India",
+    "family": "Defensa India",
+    "description": "Las negras desarrollan un caballo y controlan e4, manteniendo opciones de India de Rey, Nimzoindia, Grünfeld y más.",
+    "ideas": ["Controlar e4 con una pieza", "Flexible: elige tu sistema después", "Enfoque hipermoderno"]
+  },
+  "trompowsky-attack": {
+    "name": "Ataque Trompowsky",
+    "family": "Ataque Trompowsky",
+    "description": "Las blancas clavan de inmediato (o amenazan capturar) el caballo de f6, evitando la teoría india principal.",
+    "ideas": ["Dañar la estructura negra con Bxf6", "Desarrollo rápido", "Evitar la teoría"],
+    "traps": ["2...Ne4 ataca el alfil de g5; 3.Bf4 o 3.h4 son las respuestas principales"]
+  },
+  "torre-attack": {
+    "name": "Ataque Torre",
+    "family": "Ataque Torre",
+    "description": "Las blancas juegan Nf3 y Bg5 con e3, Nbd2 y c3: un sistema sólido con pegada táctica.",
+    "ideas": ["Clavar el caballo de f6", "Ruptura e4", "Esquema sólido"]
+  },
+  "indian-normal": {
+    "name": "Defensa India: Variante Normal",
+    "family": "Defensa India",
+    "description": "Las negras preparan ...d5, ...Bb4 o ...b6, manteniendo opciones de Nimzoindia, India de Dama y Gambito de Dama Rehusado.",
+    "ideas": ["Flexible", "Preparar ...Bb4 o ...d5", "Estructura sólida"]
+  },
+  "nimzo-indian": {
+    "name": "Defensa Nimzoindia",
+    "family": "Defensa Nimzoindia",
+    "description": "Las negras clavan el caballo de c3 para luchar por e4. Una de las defensas más respetadas del ajedrez, rica en ideas estratégicas.",
+    "ideas": ["Clavar el caballo de c3 para controlar e4", "Entregar el alfil a cambio de peones doblados", "Estructura de peones flexible"]
+  },
+  "nimzo-classical": {
+    "name": "Nimzoindia: Variante Clásica",
+    "family": "Defensa Nimzoindia",
+    "description": "Las blancas defienden c3 con la dama para recapturar sin peones doblados, buscando la pareja de alfiles.",
+    "ideas": ["Evitar peones doblados", "Pareja de alfiles tras a3", "Las negras juegan ...O-O, ...d5 o ...c5"]
+  },
+  "nimzo-rubinstein": {
+    "name": "Nimzoindia: Variante Rubinstein",
+    "family": "Defensa Nimzoindia",
+    "description": "La flexible e3: las blancas se desarrollan con calma con Bd3 y Ne2/Nf3, preparándose para responder a la clavada de forma posicional.",
+    "ideas": ["Desarrollo flexible", "Ne2 para evitar peones doblados", "Centro sólido"]
+  },
+  "nimzo-saemisch": {
+    "name": "Nimzoindia: Variante Sämisch",
+    "family": "Defensa Nimzoindia",
+    "description": "Las blancas fuerzan el cambio en c3 y aceptan peones doblados a cambio de la pareja de alfiles y un gran centro.",
+    "ideas": ["Pareja de alfiles y centro", "Planes con f3 y e4", "Las negras apuntan a c4"]
+  },
+  "nimzo-kasparov": {
+    "name": "Nimzoindia: Variante Kasparov",
+    "family": "Defensa Nimzoindia",
+    "description": "Las blancas se desarrollan con naturalidad, a menudo seguidas de g3, manteniendo la flexibilidad.",
+    "ideas": ["Desarrollo natural", "Fianchetto con g3", "Flexible"]
+  },
+  "nimzo-leningrad": {
+    "name": "Nimzoindia: Variante Leningrado",
+    "family": "Defensa Nimzoindia",
+    "description": "Las blancas contraclavan el caballo de f6, lo que lleva a un juego agudo.",
+    "ideas": ["Contraclavada", "Juego agudo", "Ideas con el avance d5"]
+  },
+  "queens-indian": {
+    "name": "Defensa India de Dama",
+    "family": "Defensa India de Dama",
+    "description": "Las negras hacen el fianchetto del alfil de dama para controlar e4. Sólida y flexible; se juega cuando las blancas evitan la Nimzoindia con Nf3.",
+    "ideas": ["Controlar e4 con ...Bb7", "Estructura sólida", "Igualar y luego superar al rival"]
+  },
+  "qid-fianchetto": {
+    "name": "India de Dama: Variante del Fianchetto",
+    "family": "Defensa India de Dama",
+    "description": "Las blancas responden al alfil negro con su propio fianchetto y luchan por la gran diagonal.",
+    "ideas": ["Batalla de fianchettos en la gran diagonal", "...Ba6 de las negras ataca c4", "Maniobras lentas"]
+  },
+  "qid-petrosian": {
+    "name": "India de Dama: Variante Petrosian",
+    "family": "Defensa India de Dama",
+    "description": "Las blancas impiden ...Bb4 y preparan Nc3 y d5. Kasparov la usó como un arma poderosa.",
+    "ideas": ["Impedir ...Bb4", "Nc3 y avance d5", "Ventaja de espacio"]
+  },
+  "bogo-indian": {
+    "name": "Defensa Bogoindia",
+    "family": "Defensa Bogoindia",
+    "description": "Las negras dan un jaque para cambiar o descolocar las piezas blancas. Sólida y con menos teoría que la Nimzoindia.",
+    "ideas": ["Jaque para estorbar el desarrollo", "Cambiar los alfiles de casillas oscuras", "Estructura sólida"]
+  },
+  "kings-indian-defense": {
+    "name": "Defensa India de Rey",
+    "family": "Defensa India de Rey",
+    "description": "Las negras hacen el fianchetto y dejan que las blancas levanten un gran centro, para contraatacar con ...e5 o ...c5. El arma de Fischer y Kasparov.",
+    "ideas": ["Fianchetto del alfil de rey", "Golpear con ...e5 o ...c5", "Ataque en el flanco de rey tras ...f5"]
+  },
+  "kid-normal": {
+    "name": "Defensa India de Rey: Variante Normal",
+    "family": "Defensa India de Rey",
+    "description": "La posición principal de la India de Rey: las blancas tienen un gran centro y eligen entre la Clásica, la Sämisch, los Cuatro Peones y otros sistemas.",
+    "ideas": ["...O-O y ...e5", "Ataque en el flanco de rey con ...f5", "Las blancas atacan en el flanco de dama"]
+  },
+  "kid-classical": {
+    "name": "Defensa India de Rey: Variante Clásica",
+    "family": "Defensa India de Rey",
+    "description": "La línea principal: las blancas se desarrollan con naturalidad y las negras golpean el centro con ...e5. Lleva a famosas posiciones de carrera.",
+    "ideas": ["...e5 para luchar por el centro", "Centro cerrado tras d5", "Ataques en flancos opuestos"],
+    "traps": ["8.dxe5 dxe5 9.Qxd8 Rxd8: el final está más o menos igualado, no es ganador para las blancas"]
+  },
+  "kid-mar-del-plata": {
+    "name": "India de Rey: Variante Mar del Plata",
+    "family": "Defensa India de Rey",
+    "description": "La línea más famosa de la India de Rey: las blancas atacan en el flanco de dama y las negras lanzan una avalancha en el flanco de rey con ...f5-f4-g5.",
+    "ideas": ["Carrera de avalanchas de peones", "...Nd7/Ne8, ...f5, ...f4, ...g5", "Las blancas juegan c5 y Nb5"]
+  },
+  "kid-petrosian": {
+    "name": "India de Rey: Sistema Petrosian",
+    "family": "Defensa India de Rey",
+    "description": "Las blancas cierran el centro de inmediato con d5 y luego juegan Bg5 para frenar ...f5.",
+    "ideas": ["Cerrar pronto el centro", "Contención con Bg5", "Expansión en el flanco de dama"]
+  },
+  "kid-saemisch": {
+    "name": "India de Rey: Variante Sämisch",
+    "family": "Defensa India de Rey",
+    "description": "Las blancas apoyan e4 con f3, preparan Be3, Qd2 y a menudo el enroque largo con una avalancha de peones en el flanco de rey.",
+    "ideas": ["Apoyo sólido de e4", "Be3/Qd2 y avalancha g4-h4", "Limitar ...f5 de las negras"]
+  },
+  "kid-four-pawns": {
+    "name": "India de Rey: Ataque de los Cuatro Peones",
+    "family": "Defensa India de Rey",
+    "description": "Las blancas levantan un centro gigante con cuatro peones. Las negras deben responder rápido con ...c5 y ...e6.",
+    "ideas": ["Centro máximo", "Avance e5", "Las negras lo minan con ...c5"]
+  },
+  "kid-fianchetto": {
+    "name": "India de Rey: Variante del Fianchetto",
+    "family": "Defensa India de Rey",
+    "description": "Las blancas también hacen el fianchetto, reduciendo las opciones de ataque negras y planteando una partida posicional.",
+    "ideas": ["Fianchetto simétrico", "Juego posicional", "Limitar el ataque negro en el flanco de rey"]
+  },
+  "kid-averbakh": {
+    "name": "India de Rey: Variante Averbakh",
+    "family": "Defensa India de Rey",
+    "description": "Las blancas clavan con Bg5 para desalentar ...e5 y mantener opciones de ataque con h4.",
+    "ideas": ["Frenar ...e5", "Clavada con Bg5", "Planes flexibles"]
+  },
+  "grunfeld-defense": {
+    "name": "Defensa Grünfeld",
+    "family": "Defensa Grünfeld",
+    "description": "Las negras dejan que las blancas formen un gran centro y luego lo atacan con piezas y ...c5. Dinámica y con mucha teoría.",
+    "ideas": ["Atacar el centro blanco con piezas", "...c5 y ...Nc6", "Alfil de g7 contra d4"]
+  },
+  "grunfeld-exchange": {
+    "name": "Grünfeld: Variante del Cambio",
+    "family": "Defensa Grünfeld",
+    "description": "Las blancas ocupan el centro con e4 tras cambiar caballos. Las negras presionan d4 con ...c5, ...Nc6 y ...Bg4.",
+    "ideas": ["Gran centro de peones", "Las negras atacan d4", "Esquema blanco con Bc4 y Ne2"]
+  },
+  "grunfeld-russian": {
+    "name": "Grünfeld: Sistema Ruso",
+    "family": "Defensa Grünfeld",
+    "description": "Las blancas atacan d5 con la dama para forzar ...dxc4 y luego forman el centro con e4.",
+    "ideas": ["Presionar d5", "Formar el centro tras ...dxc4", "Qxc4 y e4"]
+  },
+  "grunfeld-bf4": {
+    "name": "Grünfeld: 4.Bf4",
+    "family": "Defensa Grünfeld",
+    "description": "Las blancas desarrollan el alfil y presionan c7, evitando las líneas principales del Cambio.",
+    "ideas": ["Presión sobre c7", "Desarrollo sólido", "Evitar la teoría principal"]
+  },
+  "old-indian": {
+    "name": "Defensa India Antigua",
+    "family": "Defensa India Antigua",
+    "description": "Las negras juegan ...d6 y ...e5 sin fianchetto, lo que lleva a estructuras sólidas similares a la India de Rey.",
+    "ideas": ["...e5 y ...Nbd7", "Estructura sólida", "Alfil a e7"]
+  },
+  "budapest-gambit": {
+    "name": "Gambito Budapest",
+    "family": "Gambito Budapest",
+    "description": "Las negras entregan el peón e a cambio de piezas activas y a menudo lo recuperan con ...Ng4. Lleno de trampas y divertido.",
+    "ideas": ["Recuperar e5 con ...Ng4 y ...Nc6", "Piezas activas", "Trucos con Bb4+"],
+    "traps": ["3.dxe5 Ng4 4.Bf4 Nc6 5.Nf3 Bb4+ 6.Nbd2 Qe7 7.a3 Ngxe5 8.axb4?? Nd3#: el famoso mate de la coz"]
+  },
+  "fajarowicz-gambit": {
+    "name": "Gambito Budapest: Variante Fajarowicz",
+    "family": "Gambito Budapest",
+    "description": "Las negras colocan el caballo en e4 en lugar de g4, buscando un desarrollo rápido y táctica.",
+    "ideas": ["Caballo activo en e4", "Ideas con ...Bb4+ y ...Qh4", "Desarrollo rápido"]
+  },
+  "benoni-defense": {
+    "name": "Benoni Moderna",
+    "family": "Defensa Benoni",
+    "description": "Las negras crean una estructura desequilibrada con mayoría en el flanco de dama frente a la mayoría central blanca. Aguda y dinámica.",
+    "ideas": ["Mayoría en el flanco de dama con ...b5", "Fianchetto en g7", "Juego activo de piezas"],
+    "traps": ["El Ataque Taimanov con f4 y Bb5+ es muy peligroso para las negras"]
+  },
+  "benoni-main": {
+    "name": "Benoni Moderna: Línea Principal",
+    "family": "Defensa Benoni",
+    "description": "La tabiya clásica de la Benoni. Las blancas planean e5 y las negras juegan ...a6, ...b5 y ...Re8.",
+    "ideas": ["Las blancas empujan e5", "Las negras juegan ...b5", "Batallas tácticas en la columna e"]
+  },
+  "czech-benoni": {
+    "name": "Benoni Checa",
+    "family": "Defensa Benoni",
+    "description": "Las negras cierran el centro con ...e5, buscando maniobras lentas y las rupturas ...f5 o ...b5.",
+    "ideas": ["Centro cerrado", "Rupturas ...f5 o ...b5", "Juego estratégico"]
+  },
+  "old-benoni": {
+    "name": "Benoni Antigua",
+    "family": "Defensa Benoni",
+    "description": "Las negras atacan d4 de inmediato con el peón c. Tras d5 surgen posiciones desequilibradas de tipo Benoni.",
+    "ideas": ["Desafiar d4 de inmediato", "Estructuras Benoni", "Factor sorpresa"]
+  },
+  "benko-gambit": {
+    "name": "Gambito Benko",
+    "family": "Gambito Benko",
+    "description": "Las negras sacrifican un peón del flanco de dama a cambio de presión duradera en las columnas a y b. Un gran gambito posicional.",
+    "ideas": ["Abrir las columnas a y b para las torres", "Fianchetto del alfil en g7", "Presión a largo plazo"]
+  },
+  "benko-accepted": {
+    "name": "Gambito Benko Aceptado",
+    "family": "Gambito Benko",
+    "description": "Las blancas toman ambos peones. Las negras recapturan en a6 y obtienen presión duradera en el flanco de dama.",
+    "ideas": ["Presión sobre a2 y b2", "Alfil en g7", "Torres en a8 y b8"]
+  },
+  "dutch-defense": {
+    "name": "Defensa Holandesa",
+    "family": "Defensa Holandesa",
+    "description": "Las negras controlan e4 con el peón f y buscan un ataque en el flanco de rey. Ambiciosa, pero algo debilitante.",
+    "ideas": ["Controlar e4", "Ataque en el flanco de rey", "Esquemas Leningrado, Stonewall o Clásico"],
+    "traps": ["2.Bg5 y 2.e4 (Gambito Staunton) son intentos antiholandesa agresivos", "Vigila la diagonal e8-h5: trucos con Qh5+"]
+  },
+  "dutch-leningrad": {
+    "name": "Defensa Holandesa: Variante Leningrado",
+    "family": "Defensa Holandesa",
+    "description": "Las negras combinan ...f5 con un fianchetto de India de Rey, buscando ...e5 y un ataque en el flanco de rey.",
+    "ideas": ["Ruptura ...e5", "Fianchetto en el flanco de rey", "Juego dinámico"]
+  },
+  "dutch-stonewall": {
+    "name": "Defensa Holandesa: Variante Stonewall",
+    "family": "Defensa Holandesa",
+    "description": "Las negras forman un muro de peones en c6-d5-e6-f5, controlan e4 y planean un ataque en el flanco de rey.",
+    "ideas": ["El muro de peones controla e4", "Caballo a e4", "Ataque en el flanco de rey con ...Qe8-h5"],
+    "traps": ["El agujero de e5 es una debilidad: las blancas instalan ahí un caballo"]
+  },
+  "dutch-classical": {
+    "name": "Defensa Holandesa: Variante Clásica",
+    "family": "Defensa Holandesa",
+    "description": "Las negras mantienen el peón d en d6, preparando ...e5 y ...Qe8-h5.",
+    "ideas": ["Ruptura ...e5", "Ataque con ...Qe8-h5", "Flexible"]
+  },
+  "staunton-gambit": {
+    "name": "Defensa Holandesa: Gambito Staunton",
+    "family": "Defensa Holandesa",
+    "description": "Las blancas golpean de inmediato el peón de f5, ofreciendo un peón a cambio de un desarrollo rápido.",
+    "ideas": ["Abrir líneas contra el rey negro", "Desarrollo rápido", "Presión con Bg5 y Nc3"]
+  },
+  "englund-gambit": {
+    "name": "Gambito Englund",
+    "family": "Gambito Englund",
+    "description": "Un gambito dudoso con una trampa famosa. Las negras sacrifican e5 a cambio de desarrollo y trucos.",
+    "ideas": ["Desarrollo rápido", "Dama a e7 para presionar e5", "Juego basado en trampas"],
+    "traps": ["2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+ 5.Bd2 Qxb2 6.Bc3?? Bb4! 7.Qd2 Bxc3 8.Qxc3 Qc1#: la famosa trampa"]
+  },
+  "english-reversed-sicilian": {
+    "name": "Apertura Inglesa: Siciliana Invertida",
+    "family": "Apertura Inglesa",
+    "description": "Las blancas plantean una Siciliana con colores invertidos, así que tienen un tiempo extra en una estructura de tipo siciliano.",
+    "ideas": ["...Nc6, ...Nf6, ...d5 o ...g6", "Control del centro", "Lucha por d4"]
+  },
+  "english-symmetrical": {
+    "name": "Apertura Inglesa: Variante Simétrica",
+    "family": "Apertura Inglesa",
+    "description": "Las negras imitan la jugada blanca. El juego es lento y estratégico, con muchas transposiciones.",
+    "ideas": ["Simetría", "Fianchettos en ambos bandos", "Esquemas Erizo"]
+  },
+  "english-four-knights": {
+    "name": "Apertura Inglesa: Cuatro Caballos",
+    "family": "Apertura Inglesa",
+    "description": "Los cuatro caballos están desarrollados; las blancas juegan g3, e3 o d4 para luchar por el centro.",
+    "ideas": ["Desarrollar los caballos", "Lucha por d4/d5", "Fianchetto con g3"]
+  },
+  "english-botvinnik": {
+    "name": "Apertura Inglesa: Sistema Botvinnik",
+    "family": "Apertura Inglesa",
+    "description": "Las blancas forman una estructura cerrada con peones en c4, d3 y e4, tomando el control de d5.",
+    "ideas": ["Dominio de d5", "Expansión en el flanco de rey con f4", "Juego estratégico"]
+  },
+  "english-anglo-indian": {
+    "name": "Apertura Inglesa: Defensa Anglo-India",
+    "family": "Apertura Inglesa",
+    "description": "Las negras desarrollan primero el caballo y mantienen opciones de India de Rey, Nimzoindia o esquemas simétricos.",
+    "ideas": ["Flexible", "...e6, ...g6 o ...c5", "Herramienta de transposición"]
+  },
+  "english-mikenas": {
+    "name": "Apertura Inglesa: Variante Mikenas-Carls",
+    "family": "Apertura Inglesa",
+    "description": "Las blancas empujan pronto e4, evitando las líneas de Nimzoindia y Gambito de Dama Rehusado. Aguda y desequilibrada.",
+    "ideas": ["Ocupar el centro", "Avance e5", "Juego agudo"]
+  },
+  "english-hedgehog": {
+    "name": "Apertura Inglesa: Erizo",
+    "family": "Apertura Inglesa",
+    "description": "Las negras colocan los peones en la sexta fila como las púas de un erizo, esperando romper con ...b5 o ...d5.",
+    "ideas": ["Esquema compacto", "Rupturas ...b5 o ...d5", "Paciencia"]
+  },
+  "english-agincourt": {
+    "name": "Apertura Inglesa: Defensa Agincourt",
+    "family": "Apertura Inglesa",
+    "description": "Las negras preparan ...d5 con un esquema tipo Gambito de Dama Rehusado, o transponen a estructuras de Nimzoindia o India de Dama.",
+    "ideas": ["Esquema con ...d5", "Sólida", "Transposiciones"]
+  },
+  "reti-main": {
+    "name": "Apertura Réti: Línea Principal",
+    "family": "Apertura Réti",
+    "description": "Las blancas atacan d5 desde el flanco, fieles al estilo hipermoderno.",
+    "ideas": ["Atacar d5 con c4", "Fianchetto con g3", "Juego central flexible"]
+  },
+  "kings-indian-attack": {
+    "name": "Ataque Indio de Rey",
+    "family": "Apertura Réti",
+    "description": "Las blancas juegan un esquema de India de Rey con un tiempo extra: Nf3, g3, Bg2, O-O, d3, Nbd2 y e4. Fácil de aprender.",
+    "ideas": ["El mismo esquema en cada partida", "e4-e5 y ataque en el flanco de rey", "Poca teoría"]
+  },
+  "froms-gambit": {
+    "name": "Apertura Bird: Gambito From",
+    "family": "Apertura Bird",
+    "description": "Las negras sacrifican el peón e para abrir líneas contra el rey blanco debilitado. Llena de trampas.",
+    "ideas": ["Abrir líneas hacia el rey blanco", "Ideas con ...Bd6 y ...g5", "Ataque rápido"],
+    "traps": ["2.fxe5 d6 3.exd6 Bxd6 4.Nf3 g5! amenaza ...g4 y ...Bg3#", "Mates del estilo 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3#"]
+  },
+  "bird-dutch": {
+    "name": "Apertura Bird: Variante Holandesa",
+    "family": "Apertura Bird",
+    "description": "Las negras ocupan el centro y se desarrollan de forma clásica. Las blancas juegan Nf3, e3, b3 y Bb2.",
+    "ideas": ["Asegurar el control de e4", "Desarrollo clásico", "Estructura sólida"]
+  }
+}

@@ -3,6 +3,7 @@
 // Score is white-POV: {cp: 35} | {mate: 3} | {mate: -2} | null (unknown).
 
 import { winPercent } from '../ui.js';
+import { t } from '../i18n.js';
 
 let cssInjected = false;
 function ensureCss() {
@@ -33,18 +34,18 @@ function shortLabel(score) {
 }
 
 function describe(score) {
-  if (!score || typeof score !== 'object') return 'Evaluation unavailable';
+  if (!score || typeof score !== 'object') return t('ui.evalbar.unavailable');
   if (typeof score.mate === 'number') {
-    if (score.mate === 0) return 'Checkmate';
-    const side = score.mate > 0 ? 'White' : 'Black';
-    return `${side} can force checkmate in ${Math.abs(score.mate)}`;
+    if (score.mate === 0) return t('ui.evalbar.checkmate');
+    const side = score.mate > 0 ? 'white' : 'black';
+    return t(`ui.evalbar.${side}.mate`, { count: Math.abs(score.mate) });
   }
   const cp = Number(score.cp) || 0;
   const p = Math.abs(cp) / 100;
-  const side = cp > 0 ? 'White' : 'Black';
-  if (p < 0.3) return `Equal position (${cp >= 0 ? '+' : '-'}${p.toFixed(1)})`;
-  const how = p < 1 ? 'is slightly better' : p < 2.5 ? 'is better' : 'is winning';
-  return `${side} ${how} (${cp > 0 ? '+' : '-'}${p.toFixed(1)})`;
+  const side = cp > 0 ? 'white' : 'black';
+  if (p < 0.3) return t('ui.evalbar.equal', { eval: `${cp >= 0 ? '+' : '-'}${p.toFixed(1)}` });
+  const how = p < 1 ? 'slightlyBetter' : p < 2.5 ? 'better' : 'winning';
+  return t(`ui.evalbar.${side}.${how}`, { eval: `${cp > 0 ? '+' : '-'}${p.toFixed(1)}` });
 }
 
 export class EvalBar {
@@ -65,7 +66,7 @@ export class EvalBar {
     root.setAttribute('role', 'meter');
     root.setAttribute('aria-valuemin', '0');
     root.setAttribute('aria-valuemax', '100');
-    root.setAttribute('aria-label', 'Evaluation bar');
+    root.setAttribute('aria-label', t('ui.evalbar.label'));
     const fill = document.createElement('div');
     fill.className = 'gm-evalbar-fill';
     const mid = document.createElement('div');

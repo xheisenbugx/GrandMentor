@@ -5,6 +5,8 @@ use std::time::Duration;
 use serde_json::{json, Value};
 use shakmaty::{Chess, File, Position, Rank, Square};
 
+use gm_content::Lang;
+
 use crate::{coach, describe, tactics, ChatRequest};
 
 pub(crate) const API_URL: &str = "https://api.anthropic.com/v1/messages";
@@ -27,6 +29,18 @@ How to answer:
 - Explain the *why*: the idea, plan, or tactic (fork, pin, skewer, hanging piece, back-rank weakness, king safety, center control, development, passed pawns, open files). Turn engine numbers into plain words (+1.0 is roughly a pawn's worth).
 - Be encouraging and concise: usually 2 to 5 short sentences or a few bullet points, under 150 words. No headings. Avoid jargon, or explain it in a few words when you use it.
 - Stay on chess. If the question is not about chess, gently steer back to the game.";
+
+/// System prompt with the answer-language instruction for `lang`.
+pub(crate) fn system_prompt(lang: Lang) -> String {
+    let language = match lang {
+        Lang::En => "- Answer in English.",
+        Lang::Es => "- Answer in Spanish (español), the student's language, even if parts of the context are in English. \
+Address the student informally with \"tú\" in a warm, encouraging tone. Use standard Spanish chess terms: rey, dama, torre, alfil, \
+caballo, peón, jaque, jaque mate, enroque, clavada, ataque doble, enfilada, pieza colgada, peón pasado, columna abierta, \
+apertura, medio juego, final. Keep moves in English SAN exactly as given (e.g. **Nf3**, **O-O**); never translate move notation.",
+    };
+    format!("{SYSTEM_PROMPT}\n{language}")
+}
 
 /// True for models that accept `output_config.effort`.
 fn supports_effort(model: &str) -> bool {
@@ -106,11 +120,11 @@ pub(crate) fn build_context(req: &ChatRequest) -> String {
             if !legal.is_empty() {
                 s.push_str(&format!("Legal moves for {}: {}\n", coach::side_name(pos.turn()), legal.join(" ")));
             }
-            let notes = describe::describe(&pos);
+            let notes = describe::describe(&pos, Lang::En);
             if !notes.is_empty() {
                 s.push_str("Coach notes (rule-based, reliable):\n");
                 for n in notes {
-                    s.push_str(&format!("- {n}\n"));
+                    s.push_str(&format!("- {}\n", n.text));
                 }
             }
         }
@@ -174,11 +188,11 @@ pub(crate) fn build_messages(req: &ChatRequest) -> Vec<Value> {
     msgs.into_iter().map(|(role, text)| json!({"role": role, "content": text})).collect()
 }
 
-pub(crate) fn build_body(model: &str, req: &ChatRequest, extras: bool) -> Value {
+pub(crate) fn build_body(model: &str, req: &ChatRequest, extras: bool, lang: Lang) -> Value {
     let mut body = json!({
         "model": model,
         "max_tokens": MAX_TOKENS,
-        "system": SYSTEM_PROMPT,
+        "system": system_prompt(lang),
         "messages": build_messages(req),
     });
     if extras {
@@ -232,8 +246,17 @@ pub(crate) fn parse_response(v: &Value) -> Result<String, LlmError> {
     Ok(text)
 }
 
-pub(crate) async fn call(client: &reqwest::Client, url: &str, api_key: &str, model: &str, req: &ChatRequest, extras: bool) -> Result<String, LlmError> {
-    let body = build_body(model, req, extras);
+#[allow(clippy::too_many_arguments)]
+pub(crate) async fn call(
+    client: &reqwest::Client,
+    url: &str,
+    api_key: &str,
+    model: &str,
+    req: &ChatRequest,
+    extras: bool,
+    lang: Lang,
+) -> Result<String, LlmError> {
+    let body = build_body(model, req, extras, lang);
     let mut rb = client
         .post(url)
         .timeout(REQUEST_TIMEOUT)
@@ -276,7 +299,10 @@ mod tests {
 
     #[test]
     fn body_shape() {
-        let body = build_body("claude-opus-5-5", &req(), true);
+        let body = build_body("claude-opus-5-5", &req(), true, Lang::En);
+        assert!(body["system"].as_str().unwrap_or("").ends_with("Answer in English."));
+        let es = build_body("claude-opus-5-5", &req(), true, Lang::Es);
+        assert!(es["system"].as_str().unwrap_or("").contains("Answer in Spanish"));
         assert_eq!(body["model"], "claude-opus-5-5");
         assert_eq!(body["output_config"]["effort"], "low");
         assert_eq!(body["fallbacks"], "default");
@@ -292,7 +318,7 @@ mod tests {
         assert!(last.contains("+0.30: Nc6 Bb5 a6"));
         assert!(last.contains("Legal moves for Black:"));
         assert!(last.contains("8 | r n b q k b n r"));
-        let plain = build_body("claude-haiku-4-5", &req(), true);
+        let plain = build_body("claude-haiku-4-5", &req(), true, Lang::En);
         assert!(plain.get("output_config").is_none());
         assert!(plain.get("fallbacks").is_none());
     }

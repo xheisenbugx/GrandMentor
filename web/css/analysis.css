@@ -37,10 +37,13 @@
    Analysis — side panel
    ====================================================================== */
 .an-actions {
-  display: flex; flex-wrap: wrap; gap: 2px; padding: var(--sp-2);
+  display: flex; flex-wrap: nowrap; gap: 2px; padding: var(--sp-2);
   border-bottom: 1px solid var(--divider); background: var(--surface-sunken); flex: none;
 }
-.an-act { flex: 1 1 auto; justify-content: center; gap: 6px; padding-inline: var(--sp-2); }
+/* One row in every language: labels shrink (ellipsis) before anything wraps; tooltips carry the full text. */
+.an-act { flex: 1 1 auto; min-width: 0; justify-content: center; gap: 4px; padding-inline: 4px; }
+.an-act span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-act svg { flex: none; }
 .an-act svg { width: 16px; height: 16px; }
 
 /* Engine card */

@@ -37,32 +37,6 @@ impl Picker {
     }
 }
 
-/// Fill `{a}`, `{b}`, ... placeholders.
-pub fn fill(template: &str, vars: &[(&str, &str)]) -> String {
-    let mut out = template.to_string();
-    for (k, v) in vars {
-        out = out.replace(&format!("{{{k}}}"), v);
-    }
-    out
-}
-
-/// Uppercase the first character.
-pub fn capitalize(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-        None => String::new(),
-    }
-}
-
-/// "a" / "an" for a noun.
-pub fn article(noun: &str) -> &'static str {
-    match noun.chars().next() {
-        Some('a' | 'e' | 'i' | 'o' | 'u') => "an",
-        _ => "a",
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,7 +46,5 @@ mod tests {
         let a = Picker::new(&["fen", "e2e4"]);
         let b = Picker::new(&["fen", "e2e4"]);
         assert_eq!(a.pick(1, &["x", "y", "z"]), b.pick(1, &["x", "y", "z"]));
-        assert_eq!(fill("{a} and {b}", &[("a", "1"), ("b", "2")]), "1 and 2");
-        assert_eq!(capitalize("hello"), "Hello");
     }
 }

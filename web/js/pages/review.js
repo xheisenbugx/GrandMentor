@@ -19,34 +19,39 @@ import { EvalGraph, ensureAnalysisCss } from '../components/evalgraph.js';
 import { MentorPanel } from '../components/mentor.js';
 import { playSound } from '../components/sound.js';
 import { START_FEN, uciSquares, fenPly, numberedLine } from './analysis.js';
+import { t, formatNumber } from '../i18n.js';
 
-export const title = 'Game Review';
+export function title() { return t('review.title'); }
 
 const TABLE_ORDER = ['brilliant', 'great', 'best', 'excellent', 'good', 'book', 'inaccuracy', 'mistake', 'miss', 'blunder'];
 const RETRY_CLASSES = new Set(['inaccuracy', 'mistake', 'miss', 'blunder']);
 const GOOD_RETRY = new Set(['brilliant', 'great', 'best', 'excellent']);
 const SHOW_BEST = new Set(['inaccuracy', 'mistake', 'miss', 'blunder', 'good', 'excellent']);
-const PHRASE = {
-  brilliant: 'is brilliant', great: 'is a great move', best: 'is best', excellent: 'is excellent',
-  good: 'is good', book: 'is a book move', inaccuracy: 'is an inaccuracy', mistake: 'is a mistake',
-  miss: 'is a miss', blunder: 'is a blunder', forced: 'is forced',
-};
-const LOADING_STEPS = [
-  'Reading the opening…',
-  'Checking every move with the engine…',
-  'Looking for tactics you missed…',
-  'Spotting your best moves…',
-  'Searching for brilliant ideas…',
-  'Writing your coach report…',
-];
-const TIPS = [
-  'Accuracy measures how close your moves were to the engine’s best moves.',
-  'A blunder (??) is a move that throws away a big part of your advantage.',
-  'Brilliant moves (!!) are usually good piece sacrifices that are hard to find.',
-  'Key moments are the turning points of the game — retry them to learn the most.',
-  'Book moves are well-known opening moves played by strong players.',
-  'A “miss” means you overlooked a chance to win material or the game.',
-];
+const PHRASE_CLASSES = new Set(['brilliant', 'great', 'best', 'excellent', 'good', 'book', 'inaccuracy', 'mistake', 'miss', 'blunder', 'forced']);
+
+/** Whole-sentence verdict for a classification, e.g. "Nf3 is a blunder"; `fallback` when unknown. */
+function phrase(cls, move, fallback = null) {
+  if (PHRASE_CLASSES.has(cls)) return t(`review.phrase.${cls}`, { move });
+  return fallback ? t(`review.phrase.${fallback}`, { move }) : '';
+}
+
+/** Same sentence as DOM nodes, with the move rendered by `moveNode` where {move} sits. */
+function phraseNodes(cls, moveNode) {
+  if (!PHRASE_CLASSES.has(cls)) return [moveNode];
+  return withNode(t(`review.phrase.${cls}`), 'move', moveNode);
+}
+
+/** Split a message on {name} and put `node` in its place (keeps translated word order). */
+function withNode(msg, name, node) {
+  const parts = String(msg).split(`{${name}}`);
+  const out = [];
+  parts.forEach((p, i) => { if (i) out.push(node.cloneNode ? (i === 1 ? node : node.cloneNode(true)) : node); if (p) out.push(p); });
+  return out;
+}
+
+// Resolved at render time so a language switch is picked up (never at import).
+const loadingSteps = () => t('review.loading.steps');
+const loadingTips = () => t('review.loading.tips');
 
 function coachAvatar(size = '') {
   return h('div', { class: `avatar ${size} rv-coach-avatar` }, '🎓');
@@ -64,25 +69,25 @@ export async function mount(root, { params = {} } = {}) {
 
   const gameId = String(params.gameId || '').trim();
   if (!/^\d{1,18}$/.test(gameId)) {
-    page.appendChild(errorCard('We could not find that game', 'The link looks broken. Pick a game from your library to review it.'));
+    page.appendChild(errorCard(t('review.error.badLinkTitle'), t('review.error.badLinkText')));
     return bag.dispose;
   }
 
   // 1) Game record ---------------------------------------------------------
   let game;
-  page.appendChild(h('div', { class: 'page' }, h('div', { class: 'loading-center' }, h('div', { class: 'spinner spinner-lg' }), 'Loading game…')));
+  page.appendChild(h('div', { class: 'page' }, h('div', { class: 'loading-center' }, h('div', { class: 'spinner spinner-lg' }), t('review.loading.game'))));
   try {
     game = await api.get(`/api/games/${gameId}`, { signal: ctrl.signal });
   } catch (e) {
     if (isAbort(e) || bag.disposed) return bag.dispose;
-    page.replaceChildren(errorCard(e.status === 404 ? 'Game not found' : 'Could not load the game', e.status === 404 ? 'It may have been deleted.' : e.message));
+    page.replaceChildren(errorCard(t(e.status === 404 ? 'review.error.notFoundTitle' : 'review.error.loadTitle'), e.status === 404 ? t('review.error.notFoundText') : e.message));
     return bag.dispose;
   }
   if (bag.disposed) return bag.dispose;
   if (!Array.isArray(game.moves) || !game.moves.length) {
     page.replaceChildren(h('div', { class: 'page' }, emptyState({
-      emoji: '♟', title: 'Nothing to review yet', text: 'This game has no moves. Play a few moves and come back for a coach review!',
-      action: { label: 'Play a bot', href: '#/play', icon: 'play' },
+      emoji: '♟', title: t('review.error.emptyTitle'), text: t('review.error.emptyText'),
+      action: { label: t('review.error.playBot'), href: '#/play', icon: 'play' },
     })));
     return bag.dispose;
   }
@@ -113,28 +118,30 @@ export async function mount(root, { params = {} } = {}) {
     const estMs = 2500 + plies * 260;
     const bar = h('div', { class: 'progress-bar rv-progress-bar', style: 'width:2%' });
     const pct = h('div', { class: 'rv-load-pct tabular' }, '0%');
-    const stepText = h('div', { class: 'rv-load-step' }, LOADING_STEPS[0]);
-    const tip = h('div', { class: 'rv-load-tip' }, h('span', { html: icon('hint') }), h('span', null, TIPS[Math.floor(Math.random() * TIPS.length)]));
-    const cancelBtn = h('a', { class: 'btn btn-ghost btn-sm', href: '#/library' }, 'Cancel');
+    const STEPS = loadingSteps();
+    const TIPS = loadingTips();
+    const stepText = h('div', { class: 'rv-load-step' }, STEPS[0]);
+    let tipIdx = Math.floor(Math.random() * TIPS.length);
+    const tip = h('div', { class: 'rv-load-tip' }, h('span', { html: icon('hint') }), h('span', null, TIPS[tipIdx]));
+    const cancelBtn = h('a', { class: 'btn btn-ghost btn-sm', href: '#/library' }, t('review.loading.cancel'));
     const minis = h('div', { class: 'rv-load-dots' }, game.moves.slice(0, 60).map((_, i) => h('span', { style: { '--i': i } })));
     const view = h('div', { class: 'page rv-loading' },
       h('div', { class: 'card rv-load-card pop-in' },
         h('div', { class: 'rv-load-coach' }, h('div', { class: 'rv-load-ring' }), coachAvatar('avatar-xl')),
-        h('h2', { class: 'rv-load-title' }, 'Analyzing your game…'),
-        h('div', { class: 'muted' }, `${game.white} vs ${game.black} · ${Math.ceil(plies / 2)} moves`),
+        h('h2', { class: 'rv-load-title' }, t('review.loading.title')),
+        h('div', { class: 'muted' }, t('review.loading.subtitle', { white: game.white, black: game.black, moves: t('review.loading.moves', { count: Math.ceil(plies / 2) }) })),
         minis,
         h('div', { class: 'rv-load-progress' }, h('div', { class: 'progress progress-lg' }, bar), pct),
         stepText, tip, cancelBtn));
     page.replaceChildren(view);
 
     const t0 = performance.now();
-    let tipIdx = 0;
     const iv = setInterval(() => {
-      const t = (performance.now() - t0) / estMs;
-      const p = Math.min(0.96, 1 - Math.exp(-2.2 * t));
+      const elapsed = (performance.now() - t0) / estMs;
+      const p = Math.min(0.96, 1 - Math.exp(-2.2 * elapsed));
       bar.style.width = `${(p * 100).toFixed(1)}%`;
       pct.textContent = `${Math.round(p * 100)}%`;
-      stepText.textContent = LOADING_STEPS[Math.min(LOADING_STEPS.length - 1, Math.floor(p * LOADING_STEPS.length))];
+      stepText.textContent = STEPS[Math.min(STEPS.length - 1, Math.floor(p * STEPS.length))];
       const lit = Math.floor(p * minis.childElementCount);
       for (let i = 0; i < minis.childElementCount; i++) minis.children[i].classList.toggle('lit', i < lit);
     }, 180);
@@ -148,22 +155,22 @@ export async function mount(root, { params = {} } = {}) {
       if (bag.disposed) return null;
       bar.style.width = '100%';
       pct.textContent = '100%';
-      stepText.textContent = 'Done! Preparing your report…';
+      stepText.textContent = t('review.loading.done');
       for (const d of minis.children) d.classList.add('lit');
       const r = normalizeReview(res);
-      if (!r) throw new Error('The review came back empty.');
+      if (!r) throw new Error(t('review.error.reviewEmpty'));
       await new Promise((resolve) => bag.timeout(resolve, 350));
       return bag.disposed ? null : r;
     } catch (e) {
       stop();
       if (isAbort(e) || bag.disposed) return null;
-      const retry = h('button', { class: 'btn btn-primary', type: 'button', html: icon('refresh') + '<span>Try again</span>' });
+      const retry = h('button', { class: 'btn btn-primary', type: 'button', html: icon('refresh') + spanHtml(t('review.error.tryAgain')) });
       page.replaceChildren(h('div', { class: 'page' }, h('div', { class: 'card placeholder-card error-card' },
         h('div', { class: 'empty-state-icon', html: icon('alert') }),
-        h('h2', { class: 'mb-2' }, 'The review could not finish'),
-        h('p', { class: 'muted' }, e.message || 'Something went wrong.'),
+        h('h2', { class: 'mb-2' }, t('review.error.failedTitle')),
+        h('p', { class: 'muted' }, e.message || t('review.error.generic')),
         h('div', { class: 'row', style: 'justify-content:center;margin-top:var(--sp-5)' }, retry,
-          h('a', { class: 'btn btn-ghost', href: `#/analysis?game=${gameId}`, html: icon('analysis') + '<span>Open in analysis</span>' })))));
+          h('a', { class: 'btn btn-ghost', href: `#/analysis?game=${gameId}`, html: icon('analysis') + spanHtml(t('review.error.openAnalysis')) })))));
       const onRetry = async () => {
         retry.removeEventListener('click', onRetry);
         const r = await runReview();
@@ -207,7 +214,7 @@ export async function mount(root, { params = {} } = {}) {
       return h('div', { class: 'player-bar' }, avatarFor(color),
         h('div', { style: 'min-width:0' },
           h('div', { class: 'player-name' }, color === 'white' ? game.white : game.black,
-            h('span', { class: 'player-rating' }, ` · ${color === 'white' ? 'White' : 'Black'}`))),
+            h('span', { class: 'player-rating' }, ` · ${t(color === 'white' ? 'review.side.white' : 'review.side.black')}`))),
         h('div', { class: 'clock-slot' }, h('span', { class: 'badge rv-acc-chip', style: { '--acc': accColor(s.accuracy) } }, `${fmtAcc(s.accuracy)}%`)));
     };
     const topSlot = h('div', { class: 'rv-bar-slot' });
@@ -224,8 +231,8 @@ export async function mount(root, { params = {} } = {}) {
     const main = h('div', { class: 'game-main' }, topSlot, h('div', { class: 'board-row' }, evalSlot, boardSlot), bottomSlot);
 
     // ---- panel ----
-    const tabR = h('button', { class: 'tab active', role: 'tab', type: 'button', 'aria-selected': 'true', html: icon('chart') + '<span>Review</span>' });
-    const tabC = h('button', { class: 'tab', role: 'tab', type: 'button', 'aria-selected': 'false', html: icon('chat') + '<span>Ask the coach</span>' });
+    const tabR = h('button', { class: 'tab active', role: 'tab', type: 'button', 'aria-selected': 'true', html: icon('chart') + spanHtml(t('review.tabs.review')) });
+    const tabC = h('button', { class: 'tab', role: 'tab', type: 'button', 'aria-selected': 'false', html: icon('chat') + spanHtml(t('review.tabs.coach')) });
     const graphHost = h('div', { class: 'rv-graph' });
     const reportView = h('div', { class: 'rv-report' });
     const walkCard = h('div', { class: 'rv-walk-card' });
@@ -240,12 +247,12 @@ export async function mount(root, { params = {} } = {}) {
       h('div', { class: 'tabs rv-tabs', role: 'tablist' }, tabR, tabC), reviewTab, chatTab);
 
     const nav = (ic, label) => h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': label, 'data-tooltip': label, html: icon(ic) });
-    const bFirst = nav('first', 'Start (Home)');
-    const bPrev = nav('chevron-left', 'Previous (←)');
-    const bNext = nav('chevron-right', 'Next (→)');
-    const bLast = nav('last', 'End (End)');
-    const bFlip = nav('flip', 'Flip board');
-    const bAnalyze = h('a', { class: 'btn btn-ghost btn-icon', 'aria-label': 'Open in analysis board', 'data-tooltip': 'Analyse this position', html: icon('analysis') });
+    const bFirst = nav('first', t('review.nav.first'));
+    const bPrev = nav('chevron-left', t('review.nav.prev'));
+    const bNext = nav('chevron-right', t('review.nav.next'));
+    const bLast = nav('last', t('review.nav.last'));
+    const bFlip = nav('flip', t('review.nav.flip'));
+    const bAnalyze = h('a', { class: 'btn btn-ghost btn-icon', 'aria-label': t('review.nav.analyse'), 'data-tooltip': t('review.nav.analyseTip'), html: icon('analysis') });
     const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip, bAnalyze);
     const aside = h('aside', { class: 'game-panel' }, panel, toolbar);
 
@@ -290,8 +297,8 @@ export async function mount(root, { params = {} } = {}) {
         if (m) lines.push(`${formatScore(m.eval_after)}: played ${m.san} (${m.classification}); best was ${m.best_move_san} — ${m.best_line_san.slice(0, 8).join(' ')}`);
         return { fen, moves_san: moves.slice(0, p).map((x) => x.san), engine_lines: lines };
       },
-      greeting: 'Curious about a move? Step to it on the board and ask me — for example *“Why was this a mistake?”*',
-      suggestions: ['Why was this move bad?', 'What was the idea of the best move?', 'What should I learn from this game?', 'What is the plan here?'],
+      greeting: t('review.mentor.greeting'),
+      suggestions: t('review.mentor.suggestions'),
     });
     bag.add(() => mentor.destroy());
     bag.add(onSettingsChange((s, key) => {
@@ -310,8 +317,8 @@ export async function mount(root, { params = {} } = {}) {
           h('div', { class: 'rv-acc-name truncate' }, color === 'white' ? game.white : game.black),
           h('div', { class: 'rv-acc-ring', style: { '--value': Math.round(s.accuracy), '--acc': accColor(s.accuracy) } },
             h('span', { class: 'rv-acc-value tabular' }, fmtAcc(s.accuracy))),
-          h('div', { class: 'rv-acc-label' }, 'Accuracy'),
-          s.estimated_elo ? h('div', { class: 'rv-elo' }, h('span', { class: 'subtle text-xs' }, 'Game rating'), h('strong', { class: 'tabular' }, String(s.estimated_elo))) : null);
+          h('div', { class: 'rv-acc-label' }, t('review.report.accuracy')),
+          s.estimated_elo ? h('div', { class: 'rv-elo' }, h('span', { class: 'subtle text-xs' }, t('review.report.gameRating')), h('strong', { class: 'tabular' }, String(s.estimated_elo))) : null);
       };
       const opening = rv.opening?.name || game.opening_name;
       const keyChips = rv.key_moments.filter((p) => p >= 1 && p <= n).slice(0, 12).map((p) => {
@@ -322,9 +329,9 @@ export async function mount(root, { params = {} } = {}) {
       reportView.replaceChildren(...[
         h('div', { class: 'mentor-row rv-summary' }, coachAvatar('avatar-lg'),
           h('div', { class: 'bubble bubble-mentor md', html: mdLite(rv.summary || defaultSummary()) })),
-        h('div', { class: 'rv-acc-row' }, accCard('white'), h('div', { class: 'rv-vs' }, 'vs'), accCard('black')),
+        h('div', { class: 'rv-acc-row' }, accCard('white'), h('div', { class: 'rv-vs' }, t('review.report.vs')), accCard('black')),
         opening ? h('div', { class: 'rv-opening', html: icon('book') + `<span></span>` }) : null,
-        h('div', { class: 'rv-cls-table', role: 'table', 'aria-label': 'Move classifications' },
+        h('div', { class: 'rv-cls-table', role: 'table', 'aria-label': t('review.report.classifications') },
           h('div', { class: 'rv-cls-row head', role: 'row' },
             h('span', { role: 'columnheader' }, game.white), h('span', { role: 'columnheader' }), h('span', { role: 'columnheader' }, game.black)),
           order.map((k) => {
@@ -336,7 +343,7 @@ export async function mount(root, { params = {} } = {}) {
               h('span', { class: 'rv-cls-count' + (b ? '' : ' zero'), role: 'cell' }, String(b)));
           })),
         keyChips.length ? h('div', { class: 'rv-keys' },
-          h('div', { class: 'rv-section-title', html: icon('target') + '<span>Key moments</span>' }),
+          h('div', { class: 'rv-section-title', html: icon('target') + spanHtml(t('review.report.keyMoments')) }),
           h('div', { class: 'chip-row' }, keyChips)) : null,
       ].filter(Boolean));
       const op = reportView.querySelector('.rv-opening span');
@@ -349,7 +356,7 @@ export async function mount(root, { params = {} } = {}) {
 
     function defaultSummary() {
       const ua = game.user_color === 'black' ? rv.black.accuracy : rv.white.accuracy;
-      return `You played with **${fmtAcc(ua)}% accuracy**. Let's walk through the game together and find the key moments.`;
+      return t('review.report.defaultSummary', { accuracy: fmtAcc(ua) });
     }
 
     // ---- mode / tabs ----
@@ -362,28 +369,28 @@ export async function mount(root, { params = {} } = {}) {
       if (mode === 'walk') { renderWalk(); moveList.setCurrent(st.ply); }
     }
 
-    function setTab(t) {
-      st.tab = t;
-      tabR.classList.toggle('active', t === 'review');
-      tabC.classList.toggle('active', t === 'chat');
-      tabR.setAttribute('aria-selected', String(t === 'review'));
-      tabC.setAttribute('aria-selected', String(t === 'chat'));
-      reviewTab.hidden = t !== 'review';
-      chatTab.hidden = t !== 'chat';
+    function setTab(which) {
+      st.tab = which;
+      tabR.classList.toggle('active', which === 'review');
+      tabC.classList.toggle('active', which === 'chat');
+      tabR.setAttribute('aria-selected', String(which === 'review'));
+      tabC.setAttribute('aria-selected', String(which === 'chat'));
+      reviewTab.hidden = which !== 'review';
+      chatTab.hidden = which !== 'chat';
     }
     bag.on(tabR, 'click', () => setTab('review'));
     bag.on(tabC, 'click', () => setTab('chat'));
 
     function renderFooter() {
       if (st.mode === 'report') {
-        footer.replaceChildren(h('button', { class: 'btn btn-primary btn-lg btn-block rv-start', type: 'button', dataset: { act: 'start' }, html: icon('play') + '<span>Start Review</span>' }));
+        footer.replaceChildren(h('button', { class: 'btn btn-primary btn-lg btn-block rv-start', type: 'button', dataset: { act: 'start' }, html: icon('play') + spanHtml(t('review.footer.start')) }));
       } else {
         footer.replaceChildren(
           st.explore
-            ? h('button', { class: 'btn btn-ghost btn-icon rv-back-game', type: 'button', dataset: { act: 'explore-exit' }, 'aria-label': 'Back to game', 'data-tooltip': 'Back to game', html: icon('undo') })
-            : h('button', { class: 'btn btn-ghost btn-icon', type: 'button', dataset: { act: 'report' }, 'aria-label': 'Back to report', 'data-tooltip': 'Back to report', html: icon('chart') }),
-          h('button', { class: 'btn btn-secondary rv-nav-btn', type: 'button', dataset: { act: 'prev' }, disabled: !st.explore && st.ply <= 0, html: icon('chevron-left') + '<span>Prev</span>' }),
-          h('button', { class: 'btn btn-primary rv-nav-btn', type: 'button', dataset: { act: 'next' }, disabled: st.explore ? st.explore.idx >= st.explore.line.length : st.ply >= n, html: '<span>Next</span>' + icon('chevron-right') }));
+            ? h('button', { class: 'btn btn-ghost btn-icon rv-back-game', type: 'button', dataset: { act: 'explore-exit' }, 'aria-label': t('review.footer.backToGame'), 'data-tooltip': t('review.footer.backToGame'), html: icon('undo') })
+            : h('button', { class: 'btn btn-ghost btn-icon', type: 'button', dataset: { act: 'report' }, 'aria-label': t('review.footer.backToReport'), 'data-tooltip': t('review.footer.backToReport'), html: icon('chart') }),
+          h('button', { class: 'btn btn-secondary rv-nav-btn', type: 'button', dataset: { act: 'prev' }, disabled: !st.explore && st.ply <= 0, html: icon('chevron-left') + spanHtml(t('review.footer.prev')) }),
+          h('button', { class: 'btn btn-primary rv-nav-btn', type: 'button', dataset: { act: 'next' }, disabled: st.explore ? st.explore.idx >= st.explore.line.length : st.ply >= n, html: spanHtml(t('review.footer.next')) + icon('chevron-right') }));
       }
     }
     bag.on(footer, 'click', (e) => {
@@ -449,8 +456,8 @@ export async function mount(root, { params = {} } = {}) {
         const opening = rv.opening?.name || game.opening_name;
         walkCard.replaceChildren(h('div', { class: 'mentor-row rv-coach' }, coachAvatar('avatar-lg'),
           h('div', { class: 'bubble bubble-mentor' },
-            h('div', { class: 'rv-walk-head' }, h('strong', null, 'Let’s review your game!')),
-            h('div', { class: 'md', html: mdLite(`Press **Next** (or the → key) to step through every move. I’ll point out the best moves, the mistakes and what you could have played instead.\n\nWant to test an idea? **Move any piece on the board** to try your own line — I’ll check it with the engine.${opening ? `\n\nOpening: **${escapeMd(opening)}**` : ''}`) }))));
+            h('div', { class: 'rv-walk-head' }, h('strong', null, t('review.walk.introTitle'))),
+            h('div', { class: 'md', html: mdLite(t('review.walk.intro') + (opening ? `\n\n${t('review.walk.opening', { name: escapeMd(opening) })}` : '')) }))));
         return;
       }
       const m = moves[p - 1];
@@ -459,30 +466,30 @@ export async function mount(root, { params = {} } = {}) {
       const showBest = m.best_move_san && m.best_move_uci !== m.uci && SHOW_BEST.has(m.classification);
       const actions = [];
       if (Array.isArray(m.best_line_san) && m.best_line_san.length && m.best_move_uci !== m.uci && m.classification !== 'book' && m.classification !== 'forced') {
-        actions.push(h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'line' }, html: icon('play-circle') + '<span>Show line</span>' }));
+        actions.push(h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'line' }, html: icon('play-circle') + spanHtml(t('review.walk.showLine')) }));
       }
       if (RETRY_CLASSES.has(m.classification) && m.best_move_uci && m.best_move_uci !== m.uci) {
-        actions.push(h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'retry' }, html: icon('refresh') + '<span>Retry</span>' }));
+        actions.push(h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'retry' }, html: icon('refresh') + spanHtml(t('review.walk.retry')) }));
       }
       if (keySet.size) {
         const nextKey = rv.key_moments.find((k) => k > p);
-        if (nextKey) actions.push(h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'key', ply: nextKey }, html: icon('target') + '<span>Next key moment</span>' }));
+        if (nextKey) actions.push(h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'key', ply: nextKey }, html: icon('target') + spanHtml(t('review.walk.nextKey')) }));
       }
       walkCard.replaceChildren(
         h('div', { class: 'mentor-row rv-coach pop-in', dataset: { cls: m.classification } }, coachAvatar('avatar-lg'),
           h('div', { class: 'bubble bubble-mentor rv-bubble' },
             h('div', { class: 'rv-walk-head' },
               classificationBadge(m.classification, { large: true }),
-              h('span', { class: 'rv-walk-title' }, h('strong', null, moveLabel(p, formatSan(m.san, getSettings().moveNotation))), ` ${PHRASE[m.classification] || ''}`),
+              h('span', { class: 'rv-walk-title' }, ...phraseNodes(m.classification, h('strong', null, moveLabel(p, formatSan(m.san, getSettings().moveNotation))))),
               h('span', { class: 'spacer' }),
               h('span', { class: 'engine-score' + (isNegScore(m.eval_after) ? ' neg' : '') }, formatScore(m.eval_after))),
-            isKey ? h('div', { class: 'badge badge-warning rv-key-tag', html: icon('target') + '<span>Key moment</span>' }) : null,
+            isKey ? h('div', { class: 'badge badge-warning rv-key-tag', html: icon('target') + spanHtml(t('review.walk.keyMoment')) }) : null,
             h('div', { class: 'md rv-expl', html: mdLite(m.explanation || meta.description) }),
             m.classification === 'book' && m.opening_name ? h('div', { class: 'rv-book', html: icon('book') + '<span></span>' }) : null,
-            showBest ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), 'Best was ', h('strong', null, formatSan(m.best_move_san, getSettings().moveNotation)),
-              h('span', { class: 'subtle' }, ` (${formatScore(rv.evals[p - 1])} before your move)`)) : null,
+            showBest ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), ...withNode(t('review.walk.bestWas'), 'move', h('strong', null, formatSan(m.best_move_san, getSettings().moveNotation))),
+              h('span', { class: 'subtle' }, ` ${t('review.walk.evalBefore', { eval: formatScore(rv.evals[p - 1]) })}`)) : null,
             actions.length ? h('div', { class: 'row-wrap rv-actions' }, actions) : null,
-            h('div', { class: 'rv-try-tip subtle text-xs', html: icon('hint') + '<span>Move a piece on the board to try your own line from here.</span>' }))));
+            h('div', { class: 'rv-try-tip subtle text-xs', html: icon('hint') + spanHtml(t('review.walk.tryTip')) }))));
       const bk = walkCard.querySelector('.rv-book span');
       if (bk) bk.textContent = m.opening_name;
     }
@@ -530,9 +537,9 @@ export async function mount(root, { params = {} } = {}) {
         if (abs % 2 === 0 || i === 0) tokens.push(h('span', { class: 'rv-line-num' }, `${Math.floor(abs / 2) + 1}${abs % 2 === 0 ? '.' : '…'}`));
         tokens.push(h('span', { class: 'rv-line-move', dataset: { i } }, formatSan(s, notation)));
       });
-      const stopBtn = h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'aria-label': 'Stop', html: icon('close') });
+      const stopBtn = h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'aria-label': t('review.walk.stop'), html: icon('close') });
       stopBtn.addEventListener('click', () => { stopLine(); showPly(st.ply, false); });
-      lineBanner.replaceChildren(h('span', { class: 'rv-line-label', html: icon('play-circle') + '<span>Best line</span>' }), h('span', { class: 'rv-line-moves' }, tokens), stopBtn);
+      lineBanner.replaceChildren(h('span', { class: 'rv-line-label', html: icon('play-circle') + spanHtml(t('review.walk.bestLine')) }), h('span', { class: 'rv-line-moves' }, tokens), stopBtn);
       lineBanner.hidden = false;
       let i = 0;
       const stepFn = () => {
@@ -574,7 +581,7 @@ export async function mount(root, { params = {} } = {}) {
       board.setPosition(m.fen_before, { animate: false, lastMove: null });
       board.setInteractive(true, color);
       evalBar.set(rv.evals[p - 1] || { cp: 0 });
-      renderRetryCard(`Find a better move for **${color === 'white' ? 'White' : 'Black'}**. In the game, ${escapeMd(m.san)} ${PHRASE[m.classification] || 'was played'}.`, 'info');
+      renderRetryCard(t(color === 'white' ? 'review.retry.promptWhite' : 'review.retry.promptBlack', { played: phrase(m.classification, escapeMd(m.san), 'played') }), 'info');
     }
 
     function renderRetryCard(text, kind) {
@@ -582,13 +589,13 @@ export async function mount(root, { params = {} } = {}) {
       walkCard.replaceChildren(h('div', { class: `mentor-row rv-coach pop-in rv-retry kind-${kind}` }, coachAvatar('avatar-lg'),
         h('div', { class: 'bubble bubble-mentor rv-bubble' },
           h('div', { class: 'rv-walk-head' }, h('span', { class: 'rv-retry-icon', html: icon(kind === 'success' ? 'check-circle' : kind === 'error' ? 'x-circle' : 'target') }),
-            h('strong', null, kind === 'success' ? 'Well done!' : kind === 'error' ? 'Not quite' : 'Your turn — retry')),
+            h('strong', null, t(kind === 'success' ? 'review.retry.titleSuccess' : kind === 'error' ? 'review.retry.titleError' : 'review.retry.titleTurn'))),
           h('div', { class: 'md rv-expl', html: mdLite(text) }),
           h('div', { class: 'row-wrap rv-actions' },
-            r && !r.solved ? h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'hint' }, html: icon('hint') + '<span>Hint</span>' }) : null,
-            r && !r.solved ? h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'answer' }, html: icon('eye') + '<span>Show answer</span>' }) : null,
-            h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'stop-retry' }, html: icon('undo') + '<span>Back to game</span>' }),
-            r?.solved && st.ply < n ? h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'key', ply: st.ply + 1 }, html: '<span>Continue</span>' + icon('chevron-right') }) : null))));
+            r && !r.solved ? h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'hint' }, html: icon('hint') + spanHtml(t('review.retry.hint')) }) : null,
+            r && !r.solved ? h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'answer' }, html: icon('eye') + spanHtml(t('review.retry.showAnswer')) }) : null,
+            h('button', { class: 'btn btn-ghost btn-sm', type: 'button', dataset: { act: 'stop-retry' }, html: icon('undo') + spanHtml(t('review.retry.backToGame')) }),
+            r?.solved && st.ply < n ? h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'key', ply: st.ply + 1 }, html: spanHtml(t('review.retry.continue')) + icon('chevron-right') }) : null))));
     }
 
     function retryHint() {
@@ -596,7 +603,7 @@ export async function mount(root, { params = {} } = {}) {
       if (!r) return;
       const sq = uciSquares(r.move.best_move_uci);
       if (sq) board.setHighlights([{ square: sq[0], kind: 'hint' }]);
-      renderRetryCard('Look at the highlighted piece — it has a strong move.', 'info');
+      renderRetryCard(t('review.retry.hintText'), 'info');
     }
 
     function retryAnswer() {
@@ -606,7 +613,7 @@ export async function mount(root, { params = {} } = {}) {
       if (sq) board.setArrows([{ from: sq[0], to: sq[1], color: 'green' }]);
       r.solved = true;
       board.setInteractive(false, null);
-      renderRetryCard(`The best move was **${escapeMd(r.move.best_move_san)}**. Line: ${escapeMd(numberedLine(r.move.best_line_san, ply0 + r.ply - 1, getSettings().moveNotation, 8))}`, 'info');
+      renderRetryCard(t('review.retry.answer', { move: escapeMd(r.move.best_move_san), line: escapeMd(numberedLine(r.move.best_line_san, ply0 + r.ply - 1, getSettings().moveNotation, 8)) }), 'info');
     }
 
     function onRetryMove(mv) {
@@ -616,11 +623,11 @@ export async function mount(root, { params = {} } = {}) {
       r.tries++;
       board.clearHighlights();
       if (uci === r.move.best_move_uci) {
-        retrySuccess(mv, 'best', `**${escapeMd(mv.san)}** is the best move! ${r.tries === 1 ? 'First try — impressive.' : 'You got there.'}`);
+        retrySuccess(mv, 'best', t(r.tries === 1 ? 'review.retry.bestFirstTry' : 'review.retry.bestLater', { move: escapeMd(mv.san) }));
         return true;
       }
       if (uci === r.move.uci) {
-        retryFail(mv, r.move.classification, `That's the move you played in the game (${escapeMd(mv.san)}). Look for something better!`);
+        retryFail(mv, r.move.classification, t('review.retry.sameAsGame', { move: escapeMd(mv.san) }));
         return true;
       }
       // Ask the server how good the alternative is.
@@ -632,13 +639,13 @@ export async function mount(root, { params = {} } = {}) {
           if (bag.disposed || st.retry !== r) return;
           r.busy = false;
           const cls = String(res?.classification || '');
-          if (GOOD_RETRY.has(cls)) retrySuccess(mv, cls, `**${escapeMd(mv.san)}** ${PHRASE[cls] || 'works'} too! ${res?.explanation ? escapeMdKeep(res.explanation) : ''}`);
-          else retryFail(mv, cls || 'inaccuracy', `${escapeMd(mv.san)} ${PHRASE[cls] || 'is not the best'}. ${res?.explanation ? escapeMdKeep(res.explanation) : 'Try again!'}`);
+          if (GOOD_RETRY.has(cls)) retrySuccess(mv, cls, t('review.retry.alsoGood', { verdict: phrase(cls, `**${escapeMd(mv.san)}**`, 'works'), explanation: res?.explanation ? escapeMdKeep(res.explanation) : '' }).trim());
+          else retryFail(mv, cls || 'inaccuracy', t('review.retry.notGood', { verdict: phrase(cls, escapeMd(mv.san), 'notBest'), explanation: res?.explanation ? escapeMdKeep(res.explanation) : t('review.retry.tryAgain') }));
         })
         .catch((e) => {
           if (isAbort(e) || bag.disposed || st.retry !== r) return;
           r.busy = false;
-          retryFail(mv, null, "I couldn't check that move right now. Try the best move or press *Show answer*.");
+          retryFail(mv, null, t('review.retry.checkFailed'));
         });
       return true;
     }
@@ -795,12 +802,12 @@ export async function mount(root, { params = {} } = {}) {
 
     function engineLineNodes(info, ex) {
       const top = info?.lines?.[0];
-      if (!top) return [h('span', { class: 'spinner spinner-sm' }), h('span', { class: 'subtle' }, ' Engine is thinking…')];
+      if (!top) return [h('span', { class: 'spinner spinner-sm' }), h('span', { class: 'subtle' }, ` ${t('review.explore.thinking')}`)];
       const absPly = ply0 + ex.basePly + ex.idx;
       return [
         h('span', { class: 'engine-score' + (isNegScore(top.score) ? ' neg' : '') }, formatScore(top.score)),
         h('span', { class: 'rv-explore-pv' }, numberedLine(top.san || [], absPly, getSettings().moveNotation, 8)),
-        h('span', { class: 'subtle text-xs' }, ` · depth ${info.depth}`),
+        h('span', { class: 'subtle text-xs' }, ` ${t('review.explore.depth', { depth: info.depth })}`),
       ];
     }
 
@@ -817,28 +824,29 @@ export async function mount(root, { params = {} } = {}) {
           m.cls ? classificationBadge(m.cls) : null, formatSan(m.san, notation)));
       });
       const verdict = cur.pending
-        ? h('div', { class: 'rv-expl subtle' }, h('span', { class: 'spinner spinner-sm' }), ' Checking your move…')
+        ? h('div', { class: 'rv-expl subtle' }, h('span', { class: 'spinner spinner-sm' }), ` ${t('review.explore.checking')}`)
         : cur.cls
           ? h('div', null,
             h('div', { class: 'rv-walk-head' }, classificationBadge(cur.cls, { large: true }),
-              h('span', { class: 'rv-walk-title' }, h('strong', null, formatSan(cur.san, notation)), ` ${PHRASE[cur.cls] || ''}`)),
+              h('span', { class: 'rv-walk-title' }, ...phraseNodes(cur.cls, h('strong', null, formatSan(cur.san, notation))))),
             cur.expl ? h('div', { class: 'md rv-expl', html: mdLite(escapeMdKeep(cur.expl)) }) : null,
             cur.best && !GOOD_RETRY.has(cur.cls) && cur.cls !== 'book' && cur.cls !== 'forced'
-              ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), 'Best was ', h('strong', null, formatSan(cur.best, notation))) : null)
+              ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), ...withNode(t('review.walk.bestWas'), 'move', h('strong', null, formatSan(cur.best, notation)))) : null)
           : null;
-      const fromLabel = ex.basePly === 0 ? 'the starting position' : `after ${moveLabel(ex.basePly, formatSan(moves[ex.basePly - 1].san, notation))}`;
+      const fromText = ex.basePly === 0 ? t('review.explore.fromStart')
+        : t('review.explore.fromMove', { move: moveLabel(ex.basePly, formatSan(moves[ex.basePly - 1].san, notation)) });
       walkCard.replaceChildren(h('div', { class: 'mentor-row rv-coach rv-explore pop-in' }, coachAvatar('avatar-lg'),
         h('div', { class: 'bubble bubble-mentor rv-bubble' },
           h('div', { class: 'rv-walk-head' }, h('span', { class: 'rv-explore-icon', html: icon('analysis') }),
-            h('strong', null, 'Your own line'), h('span', { class: 'spacer' }),
-            h('span', { class: 'badge rv-explore-tag' }, 'Not in the game')),
-          h('div', { class: 'subtle text-xs rv-explore-from' }, `Branching from ${fromLabel}. Keep moving pieces to go deeper, or use ← to step back.`),
+            h('strong', null, t('review.explore.title')), h('span', { class: 'spacer' }),
+            h('span', { class: 'badge rv-explore-tag' }, t('review.explore.notInGame'))),
+          h('div', { class: 'subtle text-xs rv-explore-from' }, fromText),
           h('div', { class: 'rv-explore-line' }, chips),
           verdict,
           h('div', { class: 'rv-explore-engine' }, ...engineLineNodes(ex.info, ex)),
           h('div', { class: 'row-wrap rv-actions' },
-            h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'explore-undo' }, html: icon('undo') + '<span>Undo move</span>' }),
-            h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'explore-exit' }, html: icon('arrow-left') + '<span>Back to game</span>' })))));
+            h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'explore-undo' }, html: icon('undo') + spanHtml(t('review.explore.undo')) }),
+            h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'explore-exit' }, html: icon('arrow-left') + spanHtml(t('review.explore.backToGame')) })))));
     }
 
     function exploreUndo() {
@@ -863,8 +871,8 @@ export async function mount(root, { params = {} } = {}) {
     bag.on(bFlip, 'click', flip);
     bag.on(window, 'keydown', (e) => {
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-      const t = e.target;
-      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      const tgt = e.target;
+      if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
       if (document.querySelector('.modal-backdrop')) return;
       if (e.key === 'ArrowLeft') { e.preventDefault(); stepBack(); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); stepForward(); }
@@ -881,7 +889,7 @@ export async function mount(root, { params = {} } = {}) {
   function errorCard(titleText, text) {
     return h('div', { class: 'page' }, emptyState({
       icon: 'alert', title: titleText, text,
-      action: { label: 'Go to library', href: '#/library', icon: 'library' },
+      action: { label: t('review.error.goLibrary'), href: '#/library', icon: 'library' },
     }));
   }
 }
@@ -922,8 +930,14 @@ function normalizeReview(r) {
 
 function fmtAcc(a) {
   const v = Number(a) || 0;
-  return v >= 99.95 ? '100' : v.toFixed(1);
+  return v >= 99.95 ? formatNumber(100) : formatNumber(v, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
+
+/** Text as a <span> HTML string (escaped), for buttons built with `html: icon(..) + ...`. */
+function spanHtml(text) {
+  return h('span', null, text).outerHTML;
+}
+
 
 function accColor(a) {
   const v = Number(a) || 0;

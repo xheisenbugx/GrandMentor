@@ -1,0 +1,16 @@
+{
+  "basics": {
+    "title": "Fundamentos del ajedrez",
+    "description": "Aprende las reglas.",
+    "lessons": {
+      "pawn": {
+        "summary": "Cómo se mueven los peones.",
+        "steps": [
+          { "text": "Los peones avanzan hacia delante." },
+          { "text": "Avanza el peón dos casillas.", "task": { "prompt": "Juega e4", "hint": "¡Dos casillas!", "success": "¡Genial!", "solution": ["e2e3"] } }
+        ]
+      }
+    }
+  },
+  "unknown-course": { "title": "Nada" }
+}

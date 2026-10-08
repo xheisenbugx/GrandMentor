@@ -13,11 +13,12 @@ use serde_json::{json, Value};
 use shakmaty::Position;
 
 use gm_analysis::GameReview;
-use gm_content::{Opening, OpeningMatch, Puzzle};
+use gm_content::{Lang, Opening, OpeningMatch, Puzzle};
 use gm_engine::{fen_key, parse_fen, to_fen, EnginePool, Score, SearchInfo, SearchLimits};
 use gm_store::{GamePatch, GameQuery, NewGame, ProfilePatch, Store};
 
 use crate::error::{ApiError, ApiJson, ApiPath, ApiQuery, ApiResult};
+use crate::lang::ReqLang;
 use crate::puzzles::{today_utc, ThemeCount};
 use crate::state::{AppState, PositionInsight};
 
@@ -204,8 +205,8 @@ async fn health(State(st): State<AppState>) -> Json<Value> {
     }))
 }
 
-async fn bots() -> Json<Vec<gm_bots::BotProfile>> {
-    Json(gm_bots::list())
+async fn bots(ReqLang(lang): ReqLang) -> Json<Vec<gm_bots::BotProfile>> {
+    Json(gm_bots::list(lang))
 }
 
 #[derive(Deserialize, Default)]
@@ -218,9 +219,10 @@ struct BotMoveReq {
 
 async fn bot_move(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(req): ApiJson<BotMoveReq>,
 ) -> ApiResult<Json<gm_bots::BotMove>> {
-    if !gm_bots::list().iter().any(|b| b.id == req.bot_id) {
+    if !gm_bots::exists(&req.bot_id) {
         return Err(ApiError::not_found(format!(
             "unknown bot: {:?}",
             req.bot_id
@@ -232,7 +234,7 @@ async fn bot_move(
     }
     let content = Arc::clone(&st.content);
     let mv = with_engine(&st.pool, move |engine| {
-        gm_bots::choose_move(engine, &content, &req.bot_id, &req.start_fen, &req.moves)
+        gm_bots::choose_move(engine, &content, &req.bot_id, &req.start_fen, &req.moves, lang)
     })
     .await?
     .map_err(ApiError::bad_request)?;
@@ -320,12 +322,13 @@ async fn run_review(
     start_fen: String,
     moves: Vec<String>,
     depth: u8,
+    lang: Lang,
 ) -> ApiResult<GameReview> {
     let pool = st.pool.clone();
     let content = Arc::clone(&st.content);
     // Spawned so a panic in the analysis crate becomes a 500 rather than a dropped connection.
     tokio::spawn(async move {
-        gm_analysis::review_game(&pool, content, &start_fen, &moves, depth, None).await
+        gm_analysis::review_game(&pool, content, &start_fen, &moves, depth, None, lang).await
     })
     .await
     .map_err(|e| {
@@ -338,8 +341,15 @@ async fn run_review(
     .map_err(ApiError::bad_request)
 }
 
+/// Re-localize a review's text (explanations, summary, opening names) without the engine.
+async fn relocalized(st: &AppState, review: GameReview, lang: Lang) -> ApiResult<GameReview> {
+    let content = Arc::clone(&st.content);
+    blocking(move || gm_analysis::relocalize(&review, &content, lang)).await
+}
+
 async fn review(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(req): ApiJson<ReviewReq>,
 ) -> ApiResult<Json<GameReview>> {
     let depth = req
@@ -352,13 +362,25 @@ async fn review(
             .await?
             .ok_or_else(|| ApiError::not_found(format!("game {id} not found")))?;
         if !req.force {
-            if let Some(cached) = game
+            if let Some((cached, cached_lang)) = game
                 .review_json
                 .as_deref()
-                .and_then(|j| serde_json::from_str::<GameReview>(j).ok())
+                .and_then(gm_analysis::from_stored_json)
             {
                 if cached.moves.len() == game.moves.len().min(MAX_REVIEW_PLIES) {
-                    return Ok(Json(cached));
+                    if cached_lang == lang {
+                        return Ok(Json(cached));
+                    }
+                    // Same game, other language: rewrite only the text, never re-run the engine.
+                    let review = relocalized(&st, cached, lang).await?;
+                    let patch = GamePatch {
+                        review_json: gm_analysis::to_stored_json(&review, lang),
+                        ..Default::default()
+                    };
+                    if let Err(e) = store_op(&st.store, move |s| s.update_game(id, &patch)).await {
+                        tracing::warn!("could not cache relocalized review for game {id}: {}", e.message);
+                    }
+                    return Ok(Json(review));
                 }
             }
         }
@@ -370,9 +392,9 @@ async fn review(
         let mut moves = game.moves.clone();
         moves.truncate(MAX_REVIEW_PLIES);
         validate_moves(&start_fen, &moves, MAX_REVIEW_PLIES)?;
-        let review = run_review(&st, start_fen, moves, depth).await?;
+        let review = run_review(&st, start_fen, moves, depth, lang).await?;
         let patch = GamePatch {
-            review_json: serde_json::to_string(&review).ok(),
+            review_json: gm_analysis::to_stored_json(&review, lang),
             accuracy_white: Some(review.white.accuracy),
             accuracy_black: Some(review.black.accuracy),
             ..Default::default()
@@ -415,11 +437,17 @@ async fn review(
     let key = format!("{depth}|{start_fen}|{}", moves.join(","));
     if !req.force {
         if let Some(hit) = st.review_cache.get(&key) {
-            return Ok(Json((*hit).clone()));
+            let (cached_lang, cached) = &*hit;
+            if *cached_lang == lang {
+                return Ok(Json(cached.clone()));
+            }
+            let review = relocalized(&st, cached.clone(), lang).await?;
+            st.review_cache.insert(key, Arc::new((lang, review.clone())));
+            return Ok(Json(review));
         }
     }
-    let review = run_review(&st, start_fen, moves, depth).await?;
-    st.review_cache.insert(key, Arc::new(review.clone()));
+    let review = run_review(&st, start_fen, moves, depth, lang).await?;
+    st.review_cache.insert(key, Arc::new((lang, review.clone())));
     Ok(Json(review))
 }
 
@@ -429,6 +457,7 @@ async fn review(
 
 async fn mentor_chat(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(mut req): ApiJson<gm_mentor::ChatRequest>,
 ) -> ApiResult<Json<gm_mentor::ChatResponse>> {
     req.question = clip(req.question.trim(), 2_000);
@@ -454,7 +483,7 @@ async fn mentor_chat(
         t.text = clip(&t.text, 4_000);
     }
     let mentor = Arc::clone(&st.mentor);
-    let resp = tokio::spawn(async move { mentor.chat(req).await })
+    let resp = tokio::spawn(async move { mentor.chat(req, lang).await })
         .await
         .map_err(|_| ApiError::internal("mentor error"))?;
     Ok(Json(resp))
@@ -481,13 +510,14 @@ struct ExplainResp {
 
 async fn mentor_explain(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(req): ApiJson<ExplainReq>,
 ) -> ApiResult<Json<ExplainResp>> {
     let pos = parse_position(&req.fen)?;
     let fen = to_fen(&pos);
     let uci = req.move_uci.trim().to_string();
     gm_engine::uci_to_move(&pos, &uci).map_err(ApiError::bad_request)?;
-    let review = run_review(&st, fen, vec![uci], 12).await?;
+    let review = run_review(&st, fen, vec![uci], 12, lang).await?;
     let m = review
         .moves
         .into_iter()
@@ -520,6 +550,7 @@ struct PositionResp {
 
 async fn mentor_position(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiQuery(q): ApiQuery<FenQuery>,
 ) -> ApiResult<Json<PositionResp>> {
     let fen = opt_trim(&q.fen).ok_or_else(|| ApiError::bad_request("missing `fen`"))?;
@@ -527,8 +558,15 @@ async fn mentor_position(
     let fen = to_fen(&pos);
     let key = fen_key(&fen);
     if let Some(hit) = st.position_cache.get(&key) {
+        // The engine part is language-independent; ideas are cheap rule-based text.
+        let ideas = if hit.lang == lang {
+            hit.ideas
+        } else {
+            let f = fen.clone();
+            blocking(move || gm_mentor::describe_position(&f, lang)).await?
+        };
         return Ok(Json(PositionResp {
-            ideas: hit.ideas,
+            ideas,
             eval: hit.eval,
             best_line_san: hit.best_line_san,
         }));
@@ -537,7 +575,7 @@ async fn mentor_position(
     let _guard = StopOnDrop(Arc::clone(&stop));
     let fen2 = fen.clone();
     let insight = with_engine(&st.pool, move |engine| {
-        let ideas = gm_mentor::describe_position(&fen2);
+        let ideas = gm_mentor::describe_position(&fen2, lang);
         let limits = SearchLimits {
             depth: Some(16),
             movetime_ms: Some(800),
@@ -550,6 +588,7 @@ async fn mentor_position(
             .map(|l| l.san.iter().take(8).cloned().collect())
             .unwrap_or_default();
         PositionInsight {
+            lang,
             ideas,
             eval: info.score(),
             best_line_san: best,
@@ -581,6 +620,7 @@ struct GamesQueryRaw {
 
 async fn list_games(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiQuery(q): ApiQuery<GamesQueryRaw>,
 ) -> ApiResult<Json<Vec<gm_store::GameSummary>>> {
     let query = GameQuery {
@@ -595,9 +635,28 @@ async fn list_games(
         ),
         offset: parse_opt::<u32>("offset", &q.offset)?,
     };
-    Ok(Json(
-        store_op(&st.store, move |s| s.list_games(&query)).await?,
-    ))
+    let mut games = store_op(&st.store, move |s| s.list_games(&query)).await?;
+    for g in &mut games {
+        localize_opening_name(&st, lang, &mut g.opening_name);
+    }
+    Ok(Json(games))
+}
+
+/// Opening names are stored in the language the game was saved in; show them in the reader's.
+/// Unknown names (e.g. from an imported PGN's Opening tag) are returned unchanged.
+fn localize_opening_name(st: &AppState, lang: Lang, name: &mut Option<String>) {
+    let Some(stored) = name.as_deref() else { return };
+    let id = Lang::ALL.iter().find_map(|&l| {
+        st.content
+            .localized(l)
+            .openings
+            .iter()
+            .find(|o| o.name == stored)
+            .map(|o| o.id.clone())
+    });
+    if let Some(o) = id.and_then(|id| st.content.localized(lang).opening(&id).map(|o| o.name.clone())) {
+        *name = Some(o);
+    }
 }
 
 /// Deepest named opening reached in the first 30 plies.
@@ -621,6 +680,7 @@ fn detect_opening(
 
 async fn create_game(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(mut g): ApiJson<NewGame>,
 ) -> ApiResult<(StatusCode, Json<gm_store::GameRecord>)> {
     if g.result.trim().is_empty() {
@@ -644,7 +704,7 @@ async fn create_game(
         .as_deref()
         .is_none_or(|s| s.trim().is_empty())
     {
-        let content = Arc::clone(&st.content);
+        let content = st.content.localized(lang);
         let moves = g.moves.clone();
         g.opening_name = blocking(move || detect_opening(&content, &start, &moves)).await?;
     }
@@ -654,12 +714,14 @@ async fn create_game(
 
 async fn get_game(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiPath(id): ApiPath<i64>,
 ) -> ApiResult<Json<gm_store::GameRecord>> {
-    store_op(&st.store, move |s| s.get_game(id))
+    let mut g = store_op(&st.store, move |s| s.get_game(id))
         .await?
-        .map(Json)
-        .ok_or_else(|| ApiError::not_found(format!("game {id} not found")))
+        .ok_or_else(|| ApiError::not_found(format!("game {id} not found")))?;
+    localize_opening_name(&st, lang, &mut g.opening_name);
+    Ok(Json(g))
 }
 
 async fn update_game(
@@ -751,13 +813,14 @@ struct PgnReq {
 
 async fn import_games(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiJson(req): ApiJson<PgnReq>,
 ) -> ApiResult<Json<Vec<gm_store::GameRecord>>> {
     if req.pgn.trim().is_empty() {
         return Err(ApiError::bad_request("`pgn` must not be empty"));
     }
     let store = st.store.clone();
-    let content = Arc::clone(&st.content);
+    let content = st.content.localized(lang);
     let games = blocking(move || {
         store.import_pgn_with(&req.pgn, |fen, moves| {
             let start = gm_engine::parse_fen(fen).ok()?;
@@ -920,9 +983,10 @@ struct CourseSummary {
     lessons: Vec<LessonSummary>,
 }
 
-async fn courses(State(st): State<AppState>) -> Json<Vec<CourseSummary>> {
+async fn courses(State(st): State<AppState>, ReqLang(lang): ReqLang) -> Json<Vec<CourseSummary>> {
     Json(
         st.content
+            .localized(lang)
             .courses
             .iter()
             .map(|c| CourseSummary {
@@ -949,9 +1013,11 @@ async fn courses(State(st): State<AppState>) -> Json<Vec<CourseSummary>> {
 
 async fn course(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiPath(id): ApiPath<String>,
 ) -> ApiResult<Json<gm_content::Course>> {
     st.content
+        .localized(lang)
         .course(&id)
         .cloned()
         .map(Json)
@@ -1010,7 +1076,15 @@ struct OpeningsQuery {
     level: Option<String>,
 }
 
-fn opening_matches(o: &Opening, q: Option<&str>, side: Option<&str>, level: Option<&str>) -> bool {
+/// Filter on the English source entry `o`; the search text also matches the localized name
+/// and family `loc` (so "italiana" and "Italian" both find the Italian Game).
+fn opening_matches(
+    o: &Opening,
+    loc: &Opening,
+    q: Option<&str>,
+    side: Option<&str>,
+    level: Option<&str>,
+) -> bool {
     if let Some(side) = side {
         if !o.side.eq_ignore_ascii_case(side) {
             return false;
@@ -1027,6 +1101,8 @@ fn opening_matches(o: &Opening, q: Option<&str>, side: Option<&str>, level: Opti
             let q = q.to_lowercase();
             o.name.to_lowercase().contains(&q)
                 || o.family.to_lowercase().contains(&q)
+                || loc.name.to_lowercase().contains(&q)
+                || loc.family.to_lowercase().contains(&q)
                 || o.eco.to_lowercase().starts_with(&q)
                 || o.moves.to_lowercase().starts_with(&q)
         }
@@ -1035,17 +1111,21 @@ fn opening_matches(o: &Opening, q: Option<&str>, side: Option<&str>, level: Opti
 
 async fn openings(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiQuery(q): ApiQuery<OpeningsQuery>,
 ) -> Json<Vec<Opening>> {
     let (qs, side, level) = (opt_trim(&q.q), opt_trim(&q.side), opt_trim(&q.level));
     let side = side.filter(|s| !s.eq_ignore_ascii_case("all") && !s.eq_ignore_ascii_case("both"));
     let level = level.filter(|s| !s.eq_ignore_ascii_case("all"));
+    let loc = st.content.localized(lang);
+    // Views keep the source order (overlays never add, drop or reorder entries).
     let mut out: Vec<Opening> = st
         .content
         .openings
         .iter()
-        .filter(|o| opening_matches(o, qs, side, level))
-        .cloned()
+        .zip(&loc.openings)
+        .filter(|(o, l)| opening_matches(o, l, qs, side, level))
+        .map(|(_, l)| l.clone())
         .collect();
     out.sort_by(|a, b| {
         b.popularity
@@ -1057,9 +1137,11 @@ async fn openings(
 
 async fn opening(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiPath(id): ApiPath<String>,
 ) -> ApiResult<Json<Opening>> {
     st.content
+        .localized(lang)
         .opening(&id)
         .cloned()
         .map(Json)
@@ -1068,29 +1150,32 @@ async fn opening(
 
 async fn opening_lookup(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiQuery(q): ApiQuery<FenQuery>,
 ) -> ApiResult<Json<Option<OpeningMatch>>> {
     let fen = opt_trim(&q.fen).ok_or_else(|| ApiError::bad_request("missing `fen`"))?;
     let fen = to_fen(&parse_position(fen)?);
-    let key = fen_key(&fen);
+    let key = format!("{lang}|{}", fen_key(&fen));
     if let Some(hit) = st.opening_cache.get(&key) {
         return Ok(Json(hit));
     }
-    let content = Arc::clone(&st.content);
+    let content = st.content.localized(lang);
     let m = blocking(move || content.lookup_opening(&fen)).await?;
     st.opening_cache.insert(key, m.clone());
     Ok(Json(m))
 }
 
-async fn endgames(State(st): State<AppState>) -> Json<Vec<gm_content::EndgameDrill>> {
-    Json(st.content.endgames.clone())
+async fn endgames(State(st): State<AppState>, ReqLang(lang): ReqLang) -> Json<Vec<gm_content::EndgameDrill>> {
+    Json(st.content.localized(lang).endgames.clone())
 }
 
 async fn endgame(
     State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
     ApiPath(id): ApiPath<String>,
 ) -> ApiResult<Json<gm_content::EndgameDrill>> {
     st.content
+        .localized(lang)
         .endgame(&id)
         .cloned()
         .map(Json)

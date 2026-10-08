@@ -13,8 +13,9 @@ import { Board } from '../components/board.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MentorPanel } from '../components/mentor.js';
 import { ensureAnalysisCss } from '../components/evalgraph.js';
+import { t, formatNumber } from '../i18n.js';
 
-export const title = 'Analysis';
+export function title() { return t('analysis.title'); }
 
 export const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const MAX_NODES = 4000;
@@ -150,7 +151,7 @@ class MoveTree {
   }
 
   static deserialize(data) {
-    const t = new MoveTree(data.fen);
+    const tree = new MoveTree(data.fen);
     const walk = (parent, list) => {
       if (!Array.isArray(list)) return;
       for (const item of list) {
@@ -158,36 +159,58 @@ class MoveTree {
         const c = new Chess(parent.fen);
         const m = playUci(c, item[0]);
         if (!m) continue;
-        const r = t.add(parent, { san: m.san, uci: moveUci(m), fen: c.fen() });
+        const r = tree.add(parent, { san: m.san, uci: moveUci(m), fen: c.fen() });
         if (!r) return;
         walk(r.node, item[1]);
       }
     };
-    walk(t.root, data.tree);
-    return t;
+    walk(tree.root, data.tree);
+    return tree;
   }
 }
 
-/** Validate a FEN for analysis. Returns error string or null. */
+// chess.js validateFen() messages (English) → our translated keys.
+const FEN_ERROR_KEYS = [
+  [/six space-delimited fields/, 'sixFields'],
+  [/move number/, 'moveNumber'],
+  [/half move counter/, 'halfMove'],
+  [/illegal en-passant|en-passant square/, 'enPassant'],
+  [/castling/, 'castling'],
+  [/side-to-move/, 'sideToMove'],
+  [/8 '\/'-delimited rows/, 'eightRows'],
+  [/piece data is invalid/, 'pieceData'],
+  [/missing .* king/, 'missingKing'],
+  [/too many .* kings/, 'tooManyKings'],
+  [/pawns are on the edge/, 'pawnsEdge'],
+];
+
+function libFenError(msg) {
+  const m = String(msg || '').replace(/^Invalid FEN: /, '');
+  const hit = FEN_ERROR_KEYS.find(([re]) => re.test(m));
+  if (hit) return t(`analysis.fen.${hit[1]}`);
+  return m.charAt(0).toUpperCase() + m.slice(1) + '.';
+}
+
+/** Validate a FEN for analysis. Returns a (translated) error string or null. */
 export function fenError(fen) {
   const f = String(fen || '').trim();
-  if (!f) return 'Please enter a FEN.';
+  if (!f) return t('analysis.fen.empty');
   const v = validateFen(f);
-  if (!v.ok) { const m = v.error.replace(/^Invalid FEN: /, ''); return m.charAt(0).toUpperCase() + m.slice(1) + '.'; }
+  if (!v.ok) return libFenError(v.error);
   const rows = f.split(/\s+/)[0].split('/');
-  if (/[pP]/.test(rows[0]) || /[pP]/.test(rows[7])) return 'Pawns cannot stand on the first or last rank.';
+  if (/[pP]/.test(rows[0]) || /[pP]/.test(rows[7])) return t('analysis.fen.pawnsBackRank');
   const count = (re) => (f.split(/\s+/)[0].match(re) || []).length;
-  if (count(/K/g) !== 1 || count(/k/g) !== 1) return 'Each side needs exactly one king.';
-  if (count(/[PNBRQK]/g) > 16 || count(/[pnbrqk]/g) > 16) return 'Too many pieces for one side (max 16).';
-  if (count(/P/g) > 8 || count(/p/g) > 8) return 'Too many pawns (max 8 per side).';
+  if (count(/K/g) !== 1 || count(/k/g) !== 1) return t('analysis.fen.kings');
+  if (count(/[PNBRQK]/g) > 16 || count(/[pnbrqk]/g) > 16) return t('analysis.fen.tooManyPieces');
+  if (count(/P/g) > 8 || count(/p/g) > 8) return t('analysis.fen.tooManyPawns');
   try {
     const parts = f.split(/\s+/);
     parts[1] = parts[1] === 'w' ? 'b' : 'w';
     parts[3] = '-';
-    if (new Chess(parts.join(' ')).inCheck()) return 'The side that is not to move is in check — that cannot happen.';
+    if (new Chess(parts.join(' ')).inCheck()) return t('analysis.fen.wrongSideInCheck');
     new Chess(f);
   } catch (e) {
-    return String(e?.message || e).replace(/^Invalid FEN: /, '');
+    return libFenError(e?.message || e);
   }
   return null;
 }
@@ -226,15 +249,15 @@ export async function mount(root, { query = {} } = {}) {
   state.cur = state.tree.root;
 
   // ---- DOM skeleton -----------------------------------------------------
-  const openingName = h('div', { class: 'an-opening-name' }, 'Starting position');
+  const openingName = h('div', { class: 'an-opening-name' }, t('analysis.opening.start'));
   const openingEco = h('span', { class: 'an-opening-eco' });
   const openingBar = h('div', { class: 'player-bar an-opening' },
     h('div', { class: 'an-opening-icon', html: icon('book') }),
     h('div', { class: 'an-opening-text' }, openingEco, openingName));
 
   const turnDot = h('span', { class: 'an-turn-dot' });
-  const turnText = h('span', { class: 'an-turn-text' }, 'White to move');
-  const fenInput = h('input', { class: 'input input-sm mono an-fen-input', spellcheck: 'false', 'aria-label': 'FEN of the current position', title: 'FEN — paste one and press Enter to load it' });
+  const turnText = h('span', { class: 'an-turn-text' }, t('analysis.status.whiteToMove'));
+  const fenInput = h('input', { class: 'input input-sm mono an-fen-input', spellcheck: 'false', 'aria-label': t('analysis.status.fenLabel'), title: t('analysis.status.fenTip') });
   const statusBar = h('div', { class: 'player-bar an-status' }, h('div', { class: 'an-turn' }, turnDot, turnText), fenInput);
 
   const evalSlot = h('div', { class: 'evalbar-slot' });
@@ -242,49 +265,50 @@ export async function mount(root, { query = {} } = {}) {
   const main = h('div', { class: 'game-main' }, openingBar, h('div', { class: 'board-row' }, evalSlot, boardSlot), statusBar);
 
   // Engine card
-  const engineSwitch = h('input', { type: 'checkbox', checked: state.engineOn, 'aria-label': 'Engine on/off' });
+  const engineSwitch = h('input', { type: 'checkbox', checked: state.engineOn, 'aria-label': t('analysis.engine.toggle') });
   const engineDepth = h('span', { class: 'badge an-depth' }, '–');
   const engineScore = h('span', { class: 'an-score' }, '0.0');
   const engineNps = h('span', { class: 'subtle text-xs an-nps' });
-  const bestToggle = h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'data-tooltip': 'Best-move arrow', 'aria-label': 'Toggle best-move arrow', 'aria-pressed': 'true', html: icon('eye') });
+  const bestToggle = h('button', { class: 'btn btn-ghost btn-icon btn-sm', type: 'button', 'data-tooltip': t('analysis.engine.bestArrow'), 'aria-label': t('analysis.engine.bestArrowToggle'), 'aria-pressed': 'true', html: icon('eye') });
   const linesBox = h('div', { class: 'an-lines' });
   const engineCard = h('div', { class: 'an-engine' },
     h('div', { class: 'an-engine-head' },
       h('label', { class: 'switch' }, engineSwitch, h('span', { class: 'switch-track' })),
       engineScore,
-      h('div', { class: 'an-engine-meta' }, h('span', { class: 'semibold text-sm' }, 'Engine'), engineNps),
+      h('div', { class: 'an-engine-meta' }, h('span', { class: 'semibold text-sm' }, t('analysis.engine.name')), engineNps),
       h('span', { class: 'spacer' }),
       engineDepth, bestToggle),
     linesBox);
 
   const bookBox = h('div', { class: 'an-book', hidden: true });
-  const treeBox = h('div', { class: 'move-tree', role: 'list', 'aria-label': 'Moves and variations' });
+  const treeBox = h('div', { class: 'move-tree', role: 'list', 'aria-label': t('analysis.tree.label') });
   const varActions = h('div', { class: 'an-var-actions', hidden: true });
 
   const analysisTab = h('div', { class: 'an-tab-body' }, engineCard, bookBox, h('div', { class: 'an-tree-wrap' }, treeBox), varActions);
   const mentorHost = h('div', { class: 'an-mentor-host' });
-  const ideasBtn = h('button', { class: 'btn btn-secondary btn-sm', type: 'button', html: icon('hint') + '<span>Ideas for this position</span>' });
+  const spanHtml = (text) => h('span', null, text).outerHTML;
+  const ideasBtn = h('button', { class: 'btn btn-secondary btn-sm', type: 'button', html: icon('hint') + spanHtml(t('analysis.mentor.ideasButton')) });
   const mentorTab = h('div', { class: 'an-tab-body an-mentor-tab', hidden: true }, h('div', { class: 'row-sm an-mentor-actions' }, ideasBtn), mentorHost);
 
-  const tabA = h('button', { class: 'tab active', role: 'tab', 'aria-selected': 'true', type: 'button', html: icon('analysis') + '<span>Analysis</span>' });
-  const tabM = h('button', { class: 'tab', role: 'tab', 'aria-selected': 'false', type: 'button', html: icon('mentor') + '<span>Mentor</span>' });
+  const tabA = h('button', { class: 'tab active', role: 'tab', 'aria-selected': 'true', type: 'button', html: icon('analysis') + spanHtml(t('analysis.tabs.analysis')) });
+  const tabM = h('button', { class: 'tab', role: 'tab', 'aria-selected': 'false', type: 'button', html: icon('mentor') + spanHtml(t('analysis.tabs.mentor')) });
   const tabs = h('div', { class: 'tabs an-tabs', role: 'tablist' }, tabA, tabM);
 
-  const actBtn = (ic, label, tip) => h('button', { class: 'btn btn-ghost btn-sm an-act', type: 'button', 'data-tooltip': tip, 'aria-label': tip, html: icon(ic) + `<span>${label}</span>` });
-  const bNew = actBtn('refresh', 'New', 'Start a new analysis');
-  const bLoad = actBtn('upload', 'Load', 'Load FEN, PGN or a saved game');
-  const bSetup = actBtn('edit', 'Setup', 'Set up a position');
-  const bCopy = actBtn('copy', 'Copy', 'Copy FEN or PGN');
-  const bSave = actBtn('save', 'Save', 'Save to your library');
-  const reviewLink = h('a', { class: 'btn btn-ghost btn-sm an-act', hidden: true, html: icon('chart') + '<span>Review</span>' });
+  const actBtn = (ic, label, tip) => h('button', { class: 'btn btn-ghost btn-sm an-act', type: 'button', 'data-tooltip': tip, 'aria-label': tip, html: icon(ic) + spanHtml(label) });
+  const bNew = actBtn('refresh', t('analysis.actions.new'), t('analysis.actions.newTip'));
+  const bLoad = actBtn('upload', t('analysis.actions.load'), t('analysis.actions.loadTip'));
+  const bSetup = actBtn('edit', t('analysis.actions.setup'), t('analysis.actions.setupTip'));
+  const bCopy = actBtn('copy', t('analysis.actions.copy'), t('analysis.actions.copyTip'));
+  const bSave = actBtn('save', t('analysis.actions.save'), t('analysis.actions.saveTip'));
+  const reviewLink = h('a', { class: 'btn btn-ghost btn-sm an-act', hidden: true, html: icon('chart') + spanHtml(t('analysis.actions.review')) });
   const actions = h('div', { class: 'an-actions' }, bNew, bLoad, bSetup, bCopy, bSave, reviewLink);
 
   const nav = (ic, label) => h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': label, 'data-tooltip': label, html: icon(ic) });
-  const bFirst = nav('first', 'First move (Home)');
-  const bPrev = nav('chevron-left', 'Previous (←)');
-  const bNext = nav('chevron-right', 'Next (→)');
-  const bLast = nav('last', 'Last move (End)');
-  const bFlip = nav('flip', 'Flip board (F)');
+  const bFirst = nav('first', t('analysis.nav.first'));
+  const bPrev = nav('chevron-left', t('analysis.nav.prev'));
+  const bNext = nav('chevron-right', t('analysis.nav.next'));
+  const bLast = nav('last', t('analysis.nav.last'));
+  const bFlip = nav('flip', t('analysis.nav.flip'));
   const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip);
 
   const panel = h('div', { class: 'panel grow an-panel' }, actions, tabs, analysisTab, mentorTab);
@@ -319,7 +343,7 @@ export async function mount(root, { query = {} } = {}) {
       moves_san: state.tree.path(state.cur).map((n) => n.san),
       engine_lines: state.linesFen === state.cur.fen ? state.lines.map((l) => `${formatScore(l.score)}: ${(l.san || []).slice(0, 8).join(' ')}`) : [],
     }),
-    greeting: "Hi! I'm your coach. Make moves on the board and ask me anything — **plans**, **threats**, or why a move is good or bad. Tap *Ideas for this position* for a quick summary.",
+    greeting: t('analysis.mentor.greeting'),
   });
   bag.add(() => mentor.destroy());
 
@@ -339,8 +363,8 @@ export async function mount(root, { query = {} } = {}) {
     if (!first) {
       frag.appendChild(h('div', { class: 'move-tree-empty' },
         h('div', { class: 'move-tree-empty-icon', html: icon('knight') }),
-        h('div', null, 'Make a move on the board to start analysing.'),
-        h('div', { class: 'subtle text-xs' }, 'Playing a different move from an earlier position creates a variation.')));
+        h('div', null, t('analysis.tree.empty')),
+        h('div', { class: 'subtle text-xs' }, t('analysis.tree.emptyHint'))));
     } else {
       renderLine(frag, first, 0, notation);
     }
@@ -405,8 +429,8 @@ export async function mount(root, { query = {} } = {}) {
     const inVar = state.cur.parent && !state.tree.isMainline(state.cur);
     varActions.hidden = !state.cur.parent;
     varActions.replaceChildren(...[
-      inVar ? h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onClick: promoteCur, html: icon('chevron-up') + '<span>Promote variation</span>' }) : null,
-      h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onClick: deleteCur, html: icon('trash') + '<span>Delete from here</span>' }),
+      inVar ? h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onClick: promoteCur, html: icon('chevron-up') + spanHtml(t('analysis.tree.promote')) }) : null,
+      h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onClick: deleteCur, html: icon('trash') + spanHtml(t('analysis.tree.deleteFromHere')) }),
     ].filter(Boolean));
   }
 
@@ -454,7 +478,7 @@ export async function mount(root, { query = {} } = {}) {
     if (!m) return false;
     const r = state.tree.add(state.cur, { san: m.san, uci: moveUci(m), fen: c.fen() });
     if (!r) {
-      toast('This analysis is very large — delete some variations to add more moves.', 'warning');
+      toast(t('analysis.tree.full'), 'warning');
       return false;
     }
     // A board move is already shown (and animated) by the Board itself.
@@ -464,22 +488,23 @@ export async function mount(root, { query = {} } = {}) {
   }
 
   // ---- Status bar -------------------------------------------------------
-  function gameOverText(fen) {
+  /** Game-over state of a FEN: { text, mated } or null. */
+  function gameOver(fen) {
     let c;
     try { c = new Chess(fen); } catch { return null; }
-    if (c.isCheckmate()) return c.turn() === 'w' ? 'Checkmate — Black wins' : 'Checkmate — White wins';
-    if (c.isStalemate()) return 'Stalemate — draw';
-    if (c.isInsufficientMaterial()) return 'Draw — insufficient material';
-    if (c.isDrawByFiftyMoves()) return 'Draw — 50-move rule';
+    if (c.isCheckmate()) return { mated: true, text: t(c.turn() === 'w' ? 'analysis.status.checkmateBlackWins' : 'analysis.status.checkmateWhiteWins') };
+    if (c.isStalemate()) return { mated: false, text: t('analysis.status.stalemate') };
+    if (c.isInsufficientMaterial()) return { mated: false, text: t('analysis.status.insufficient') };
+    if (c.isDrawByFiftyMoves()) return { mated: false, text: t('analysis.status.fiftyMoves') };
     return null;
   }
 
   function renderStatus() {
     const fen = state.cur.fen;
     const white = fen.split(' ')[1] !== 'b';
-    const over = gameOverText(fen);
+    const over = gameOver(fen);
     turnDot.classList.toggle('black', !white);
-    turnText.textContent = over || `${white ? 'White' : 'Black'} to move`;
+    turnText.textContent = over ? over.text : t(white ? 'analysis.status.whiteToMove' : 'analysis.status.blackToMove');
     if (document.activeElement !== fenInput) fenInput.value = fen;
   }
 
@@ -545,9 +570,9 @@ export async function mount(root, { query = {} } = {}) {
       openingBar.classList.add('known');
     } else {
       openingEco.hidden = true;
-      openingName.textContent = isStart(state.tree.root.fen) && !state.tree.root.children.length ? 'Starting position'
-        : node === state.tree.root ? (isStart(node.fen) ? 'Starting position' : 'Custom position')
-          : (isStart(state.tree.root.fen) ? 'Out of the opening book' : 'Custom position');
+      openingName.textContent = t(isStart(state.tree.root.fen) && !state.tree.root.children.length ? 'analysis.opening.start'
+        : node === state.tree.root ? (isStart(node.fen) ? 'analysis.opening.start' : 'analysis.opening.custom')
+          : (isStart(state.tree.root.fen) ? 'analysis.opening.outOfBook' : 'analysis.opening.custom'));
       openingBar.classList.remove('known');
     }
     renderBook(match?.continuations || []);
@@ -559,7 +584,7 @@ export async function mount(root, { query = {} } = {}) {
     if (!list.length) { bookBox.replaceChildren(); return; }
     const notation = getSettings().moveNotation;
     bookBox.replaceChildren(
-      h('div', { class: 'an-book-title', html: icon('book') + '<span>Popular book moves</span>' }),
+      h('div', { class: 'an-book-title', html: icon('book') + spanHtml(t('analysis.opening.bookMoves')) }),
       h('div', { class: 'chip-row' }, list.map((b) => h('button', {
         class: 'chip an-book-move', type: 'button', title: b.name || '', dataset: { uci: b.uci },
       }, h('strong', null, formatSan(b.san, notation)), b.name ? h('span', { class: 'an-book-name' }, b.name.replace(/^.*?:\s*/, '')) : null))),
@@ -588,15 +613,15 @@ export async function mount(root, { query = {} } = {}) {
       refreshArrows();
       return;
     }
-    const over = gameOverText(fen);
+    const over = gameOver(fen);
     if (over) {
       engine.stop();
       state.lines = []; state.linesFen = fen; state.depth = 0;
-      const mated = over.startsWith('Checkmate');
+      const mated = over.mated;
       const score = mated ? { mate: 0 } : { cp: 0 };
       evalBar.set(score, { fen });
       engineScore.textContent = mated ? '#' : '½';
-      renderLines(over);
+      renderLines(over.text);
       refreshArrows();
       return;
     }
@@ -621,17 +646,17 @@ export async function mount(root, { query = {} } = {}) {
     }, (err) => {
       if (bag.disposed) return;
       engineCard.classList.remove('thinking');
-      renderLines(`Engine unavailable: ${err}`);
+      renderLines(t('analysis.engine.unavailable', { error: err }));
     });
   }
 
   function renderLines(message) {
     const notation = getSettings().moveNotation;
     if (!state.engineOn) {
-      engineDepth.textContent = 'Off';
+      engineDepth.textContent = t('analysis.engine.off');
       engineNps.textContent = '';
       engineScore.textContent = '–';
-      linesBox.replaceChildren(h('div', { class: 'an-lines-msg' }, 'Engine is off. Turn it on to see the best moves and evaluation.'));
+      linesBox.replaceChildren(h('div', { class: 'an-lines-msg' }, t('analysis.engine.offMessage')));
       return;
     }
     if (message) {
@@ -643,7 +668,7 @@ export async function mount(root, { query = {} } = {}) {
     const fresh = state.linesFen === state.cur.fen;
     if (!fresh || !state.lines.length) {
       engineDepth.textContent = '…';
-      engineNps.textContent = 'Thinking…';
+      engineNps.textContent = t('analysis.engine.thinking');
       linesBox.replaceChildren(...[0, 1, 2].map(() => h('div', { class: 'engine-line skeleton-line' }, h('span', { class: 'skeleton skeleton-text' }))));
       return;
     }
@@ -651,19 +676,19 @@ export async function mount(root, { query = {} } = {}) {
     evalBar.set(top.score);
     engineScore.textContent = formatScore(top.score);
     engineScore.classList.toggle('neg', isNeg(top.score));
-    engineDepth.textContent = `Depth ${state.depth}`;
-    engineNps.textContent = state.nps ? `${formatNps(state.nps)} positions/s` : '';
+    engineDepth.textContent = t('analysis.engine.depth', { depth: state.depth });
+    engineNps.textContent = state.nps ? t('analysis.engine.nps', { nps: formatNps(state.nps) }) : '';
     const ply0 = state.cur.ply;
     linesBox.replaceChildren(...state.lines.map((l, i) => h('div', {
       class: 'engine-line' + (i === state.hoverLine ? ' hover' : ''), role: 'button', tabindex: 0,
-      dataset: { i }, title: 'Click to play this move',
+      dataset: { i }, title: t('analysis.engine.playLine'),
     },
     h('span', { class: 'engine-score' + (isNeg(l.score) ? ' neg' : '') }, formatScore(l.score)),
     h('span', { class: 'engine-moves' }, numberedLine(l.san || [], ply0, notation, 14)))));
   }
 
   const isNeg = (s) => (typeof s?.mate === 'number' ? s.mate < 0 : (s?.cp || 0) < 0);
-  const formatNps = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(n));
+  const formatNps = (n) => formatNumber(n, { notation: 'compact', maximumFractionDigits: 1 });
 
   bag.on(linesBox, 'click', (e) => {
     const row = e.target.closest('.engine-line[data-i]');
@@ -716,15 +741,15 @@ export async function mount(root, { query = {} } = {}) {
   });
 
   // ---- Tabs ---------------------------------------------------------------
-  function setTab(t) {
-    state.tab = t;
-    tabA.classList.toggle('active', t === 'analysis');
-    tabM.classList.toggle('active', t === 'mentor');
-    tabA.setAttribute('aria-selected', String(t === 'analysis'));
-    tabM.setAttribute('aria-selected', String(t === 'mentor'));
-    analysisTab.hidden = t !== 'analysis';
-    mentorTab.hidden = t !== 'mentor';
-    if (t === 'analysis') markCurrent();
+  function setTab(which) {
+    state.tab = which;
+    tabA.classList.toggle('active', which === 'analysis');
+    tabM.classList.toggle('active', which === 'mentor');
+    tabA.setAttribute('aria-selected', String(which === 'analysis'));
+    tabM.setAttribute('aria-selected', String(which === 'mentor'));
+    analysisTab.hidden = which !== 'analysis';
+    mentorTab.hidden = which !== 'mentor';
+    if (which === 'analysis') markCurrent();
   }
   bag.on(tabA, 'click', () => setTab('analysis'));
   bag.on(tabM, 'click', () => setTab('mentor'));
@@ -738,13 +763,13 @@ export async function mount(root, { query = {} } = {}) {
     const fen = state.cur.fen;
     try {
       const res = await api.get('/api/mentor/position' + qs({ fen }), { signal: ideasCtrl.signal, timeout: 30000 });
-      const ideas = Array.isArray(res?.ideas) && res.ideas.length ? res.ideas : ['This position is balanced — develop your pieces and keep your king safe.'];
-      mentor.say(ideas, { title: `Ideas (eval ${formatScore(res?.eval)})`, kind: 'idea' });
+      const ideas = Array.isArray(res?.ideas) && res.ideas.length ? res.ideas : [t('analysis.mentor.ideasFallback')];
+      mentor.say(ideas, { title: t('analysis.mentor.ideasTitle', { eval: formatScore(res?.eval) }), kind: 'idea' });
       if (Array.isArray(res?.best_line_san) && res.best_line_san.length) {
-        mentor.say(`**Best line:** ${numberedLine(res.best_line_san, fenPly(fen), getSettings().moveNotation, 10)}`);
+        mentor.say(t('analysis.mentor.bestLine', { line: numberedLine(res.best_line_san, fenPly(fen), getSettings().moveNotation, 10) }));
       }
     } catch (e) {
-      if (!isAbort(e)) mentor.say(`I couldn't look at this position right now (${e.message}).`, { kind: 'error' });
+      if (!isAbort(e)) mentor.say(t('analysis.mentor.ideasError', { error: e.message }), { kind: 'error' });
     } finally {
       ideasBtn.classList.remove('loading');
     }
@@ -783,34 +808,34 @@ export async function mount(root, { query = {} } = {}) {
   function loadFen(raw) {
     const fen = normalizeFen(raw);
     const err = fenError(fen);
-    if (err) { toast(`Invalid FEN: ${err}`, 'error'); return false; }
+    if (err) { toast(t('analysis.fen.invalid', { error: err }), 'error'); return false; }
     setTree(new MoveTree(new Chess(fen).fen()));
     persist();
     return true;
   }
 
   function treeFromMoves(startFen, ucis) {
-    const t = new MoveTree(startFen);
+    const tree = new MoveTree(startFen);
     const c = new Chess(startFen);
-    let node = t.root;
+    let node = tree.root;
     for (const u of ucis.slice(0, MAX_NODES - 1)) {
       const m = playUci(c, u);
       if (!m) break;
-      node = t.add(node, { san: m.san, uci: moveUci(m), fen: c.fen() }).node;
+      node = tree.add(node, { san: m.san, uci: moveUci(m), fen: c.fen() }).node;
     }
-    return t;
+    return tree;
   }
 
   function loadPgn(text) {
     const raw = String(text || '').slice(0, MAX_PGN_CHARS).trim();
-    if (!raw) { toast('Paste a PGN first.', 'warning'); return false; }
+    if (!raw) { toast(t('analysis.load.pastePgnFirst'), 'warning'); return false; }
     // Only the first game of a multi-game PGN.
     const first = raw.split(/\n\s*\n(?=\s*\[Event\s)/)[0];
     const c = new Chess();
     try {
       c.loadPgn(first);
     } catch (e) {
-      toast(`Could not read that PGN: ${String(e?.message || e).slice(0, 160)}`, 'error');
+      toast(t('analysis.load.pgnError', { error: String(e?.message || e).slice(0, 160) }), 'error');
       return false;
     }
     const headers = (typeof c.getHeaders === 'function' ? c.getHeaders() : c.header()) || {};
@@ -826,19 +851,19 @@ export async function mount(root, { query = {} } = {}) {
       const g = await api.get(`/api/games/${encodeURIComponent(id)}`, { signal: ctrl.signal });
       if (bag.disposed) return;
       const start = g.start_fen && g.start_fen !== 'start' ? g.start_fen : START_FEN;
-      if (fenError(start)) throw new Error('The saved game has an invalid start position');
+      if (fenError(start)) throw new Error(t('analysis.load.badStart'));
       const headers = { White: g.white, Black: g.black, Result: g.result, Event: 'GrandMentor game' };
       if (g.user_color === 'black') { board.setOrientation('black'); evalBar.setOrientation('black'); }
       setTree(treeFromMoves(start, Array.isArray(g.moves) ? g.moves : []), { headers, gameId: g.id, ply: ply ?? 'end' });
-      toast(`Loaded ${g.white} vs ${g.black}`, 'success', { duration: 2000 });
+      toast(t('analysis.load.loaded', { white: g.white, black: g.black }), 'success', { duration: 2000 });
     } catch (e) {
-      if (!isAbort(e)) toast(`Could not load that game: ${e.message}`, 'error');
+      if (!isAbort(e)) toast(t('analysis.load.gameError', { error: e.message }), 'error');
     }
   }
 
   // ---- PGN export ------------------------------------------------------
   function toPgn() {
-    const t = state.tree;
+    const tree = state.tree;
     const hd = state.headers || {};
     const today = new Date();
     const date = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
@@ -846,7 +871,7 @@ export async function mount(root, { query = {} } = {}) {
       ['Event', hd.Event || 'Analysis'], ['Site', 'GrandMentor'], ['Date', hd.Date || date],
       ['White', hd.White || '?'], ['Black', hd.Black || '?'], ['Result', hd.Result || '*'],
     ];
-    if (t.root.fen !== START_FEN) tags.push(['SetUp', '1'], ['FEN', t.root.fen]);
+    if (tree.root.fen !== START_FEN) tags.push(['SetUp', '1'], ['FEN', tree.root.fen]);
     const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     const line = (start) => {
       const toks = [];
@@ -865,7 +890,7 @@ export async function mount(root, { query = {} } = {}) {
       }
       return toks;
     };
-    const toks = t.root.children[0] ? line(t.root.children[0]) : [];
+    const toks = tree.root.children[0] ? line(tree.root.children[0]) : [];
     toks.push(hd.Result || '*');
     let out = ''; let cur = '';
     for (const tok of toks.join(' ').split(' ')) {
@@ -882,12 +907,12 @@ export async function mount(root, { query = {} } = {}) {
   bag.add(() => { closeModal?.(); closeModal = null; });
 
   function openLoadModal() {
-    const ta = h('textarea', { class: 'textarea mono an-load-text', rows: 8, placeholder: 'Paste a FEN or a PGN here…', spellcheck: 'false' });
-    const gamesBox = h('div', { class: 'an-load-games' }, h('div', { class: 'subtle text-sm' }, 'Loading your games…'));
-    const tPaste = h('button', { class: 'active', type: 'button' }, 'FEN / PGN');
-    const tGames = h('button', { type: 'button' }, 'My games');
+    const ta = h('textarea', { class: 'textarea mono an-load-text', rows: 8, placeholder: t('analysis.load.placeholder'), spellcheck: 'false' });
+    const gamesBox = h('div', { class: 'an-load-games' }, h('div', { class: 'subtle text-sm' }, t('analysis.load.loadingGames')));
+    const tPaste = h('button', { class: 'active', type: 'button' }, t('analysis.load.tabPaste'));
+    const tGames = h('button', { type: 'button' }, t('analysis.load.tabGames'));
     const seg = h('div', { class: 'segmented block' }, tPaste, tGames);
-    const pastePane = h('div', { class: 'stack-sm' }, ta, h('div', { class: 'help' }, 'We detect the format automatically. PGN variations are ignored; only the main line is loaded.'));
+    const pastePane = h('div', { class: 'stack-sm' }, ta, h('div', { class: 'help' }, t('analysis.load.help')));
     const gamesPane = h('div', { hidden: true }, gamesBox);
     const body = h('div', { class: 'stack' }, seg, pastePane, gamesPane);
     let gamesLoaded = false;
@@ -899,7 +924,7 @@ export async function mount(root, { query = {} } = {}) {
         gamesLoaded = true;
         api.get('/api/games' + qs({ limit: 30 }), { signal: lctrl.signal }).then((list) => {
           if (!Array.isArray(list) || !list.length) {
-            gamesBox.replaceChildren(h('div', { class: 'subtle text-sm' }, 'No saved games yet. Play a bot and your games appear here.'));
+            gamesBox.replaceChildren(h('div', { class: 'subtle text-sm' }, t('analysis.load.noGames')));
             return;
           }
           gamesBox.replaceChildren(h('div', { class: 'card card-flush list' }, list.map((g) => h('button', {
@@ -908,8 +933,8 @@ export async function mount(root, { query = {} } = {}) {
           },
           h('span', { class: `result ${resultClass(g)}` }, resultLetter(g)),
           h('div', { class: 'list-row-main' },
-            h('div', { class: 'list-row-title' }, `${g.white} vs ${g.black}`),
-            h('div', { class: 'list-row-sub' }, [g.opening_name, `${Math.ceil((g.move_count || 0) / 2)} moves`, g.result].filter(Boolean).join(' · '))),
+            h('div', { class: 'list-row-title' }, t('analysis.load.vs', { white: g.white, black: g.black })),
+            h('div', { class: 'list-row-sub' }, [g.opening_name, t('analysis.load.moves', { count: Math.ceil((g.move_count || 0) / 2) }), g.result].filter(Boolean).join(' · '))),
           h('span', { html: icon('chevron-right') })))));
         }).catch((e) => {
           if (!isAbort(e)) gamesBox.replaceChildren(h('div', { class: 'callout callout-danger' }, e.message));
@@ -919,15 +944,15 @@ export async function mount(root, { query = {} } = {}) {
     tPaste.addEventListener('click', () => showTab(false));
     tGames.addEventListener('click', () => showTab(true));
     const m = modal({
-      title: 'Load a position or game',
+      title: t('analysis.load.title'),
       body,
       onClose: () => lctrl.abort(),
       actions: [
-        { label: 'Cancel', kind: 'ghost' },
+        { label: t('analysis.load.cancel'), kind: 'ghost' },
         {
-          label: 'Load', kind: 'primary', onClick: () => {
+          label: t('analysis.load.load'), kind: 'primary', onClick: () => {
             const text = ta.value.trim();
-            if (!text) { toast('Paste a FEN or PGN first.', 'warning'); return false; }
+            if (!text) { toast(t('analysis.load.pasteFirst'), 'warning'); return false; }
             const looksFen = /^[pnbrqkPNBRQK1-8]+(\/[pnbrqkPNBRQK1-8]+){7}(\s|$)/.test(text);
             return looksFen ? loadFen(text) : loadPgn(text);
           },
@@ -945,18 +970,18 @@ export async function mount(root, { query = {} } = {}) {
   }
   function resultLetter(g) {
     const c = resultClass(g);
-    return c === 'result-win' ? 'W' : c === 'result-loss' ? 'L' : (g.result === '*' ? '–' : '½');
+    return c === 'result-win' ? t('analysis.load.resultWin') : c === 'result-loss' ? t('analysis.load.resultLoss') : (g.result === '*' ? '–' : '½');
   }
 
   function openCopyMenu() {
     const m = modal({
-      title: 'Copy position',
+      title: t('analysis.copy.title'),
       body: h('div', { class: 'stack' },
-        h('div', { class: 'field' }, h('label', { class: 'label' }, 'FEN (current position)'), h('div', { class: 'fen an-copy-fen' }, state.cur.fen)),
-        h('div', { class: 'field' }, h('label', { class: 'label' }, 'PGN (with variations)'), h('pre', { class: 'an-copy-pgn mono' }, toPgn()))),
+        h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.copy.fenLabel')), h('div', { class: 'fen an-copy-fen' }, state.cur.fen)),
+        h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.copy.pgnLabel')), h('pre', { class: 'an-copy-pgn mono' }, toPgn()))),
       actions: [
-        { label: 'Copy FEN', kind: 'ghost', icon: 'copy', onClick: () => { copyText(state.cur.fen, 'FEN copied'); } },
-        { label: 'Copy PGN', kind: 'primary', icon: 'copy', onClick: () => { copyText(toPgn(), 'PGN copied'); } },
+        { label: t('analysis.copy.copyFen'), kind: 'ghost', icon: 'copy', onClick: () => { copyText(state.cur.fen, t('analysis.copy.fenCopied')); } },
+        { label: t('analysis.copy.copyPgn'), kind: 'primary', icon: 'copy', onClick: () => { copyText(toPgn(), t('analysis.copy.pgnCopied')); } },
       ],
     });
     trackModal(() => m.close());
@@ -965,26 +990,26 @@ export async function mount(root, { query = {} } = {}) {
   function openSaveModal() {
     const ml = state.tree.mainline();
     const hd = state.headers || {};
-    const white = h('input', { class: 'input', value: hd.White && hd.White !== '?' ? hd.White : 'White', maxlength: 60 });
-    const black = h('input', { class: 'input', value: hd.Black && hd.Black !== '?' ? hd.Black : 'Black', maxlength: 60 });
-    const result = h('select', { class: 'select' }, ['*', '1-0', '0-1', '1/2-1/2'].map((r) => h('option', { value: r, selected: (hd.Result || '*') === r }, r === '*' ? 'Unfinished / analysis' : r)));
-    const notes = h('textarea', { class: 'textarea', rows: 3, maxlength: 2000, placeholder: 'What did you learn here? (optional)' });
+    const white = h('input', { class: 'input', value: hd.White && hd.White !== '?' ? hd.White : t('analysis.save.white'), maxlength: 60 });
+    const black = h('input', { class: 'input', value: hd.Black && hd.Black !== '?' ? hd.Black : t('analysis.save.black'), maxlength: 60 });
+    const result = h('select', { class: 'select' }, ['*', '1-0', '0-1', '1/2-1/2'].map((r) => h('option', { value: r, selected: (hd.Result || '*') === r }, r === '*' ? t('analysis.save.unfinished') : r)));
+    const notes = h('textarea', { class: 'textarea', rows: 3, maxlength: 2000, placeholder: t('analysis.save.notesPlaceholder') });
     const m = modal({
-      title: 'Save to your library',
+      title: t('analysis.save.title'),
       body: h('div', { class: 'stack' },
         h('div', { class: 'form-row' },
-          h('div', { class: 'field' }, h('label', { class: 'label' }, 'White'), white),
-          h('div', { class: 'field' }, h('label', { class: 'label' }, 'Black'), black)),
-        h('div', { class: 'field' }, h('label', { class: 'label' }, 'Result'), result),
-        h('div', { class: 'field' }, h('label', { class: 'label' }, 'Notes'), notes),
-        h('div', { class: 'help' }, `Saves the main line (${ml.length} half-moves). Variations stay here on the analysis board.`)),
+          h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.save.white')), white),
+          h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.save.black')), black)),
+        h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.save.result')), result),
+        h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.save.notes')), notes),
+        h('div', { class: 'help' }, t('analysis.save.help', { count: ml.length }))),
       actions: [
-        { label: 'Cancel', kind: 'ghost' },
+        { label: t('analysis.save.cancel'), kind: 'ghost' },
         {
-          label: 'Save game', kind: 'primary', icon: 'save', onClick: async () => {
+          label: t('analysis.save.submit'), kind: 'primary', icon: 'save', onClick: async () => {
             try {
               const g = await api.post('/api/games', {
-                white: white.value.trim() || 'White', black: black.value.trim() || 'Black',
+                white: white.value.trim() || t('analysis.save.white'), black: black.value.trim() || t('analysis.save.black'),
                 result: result.value, termination: result.value === '*' ? 'analysis' : '',
                 start_fen: state.tree.root.fen, moves: ml.map((n) => n.uci),
                 bot_id: null, user_color: null, time_control: null,
@@ -995,10 +1020,10 @@ export async function mount(root, { query = {} } = {}) {
               state.gameId = g.id;
               reviewLink.hidden = false;
               reviewLink.href = `#/review/${encodeURIComponent(g.id)}`;
-              toast('Saved to your library', 'success');
+              toast(t('analysis.save.saved'), 'success');
               return true;
             } catch (e) {
-              if (!isAbort(e)) toast(`Could not save: ${e.message}`, 'error');
+              if (!isAbort(e)) toast(t('analysis.save.error', { error: e.message }), 'error');
               return false;
             }
           },
@@ -1016,7 +1041,7 @@ export async function mount(root, { query = {} } = {}) {
   bag.on(bLoad, 'click', openLoadModal);
   bag.on(bCopy, 'click', openCopyMenu);
   bag.on(bSave, 'click', () => {
-    if (!state.tree.root.children.length) { toast('Make some moves first — then save them to your library.', 'info'); return; }
+    if (!state.tree.root.children.length) { toast(t('analysis.save.makeMovesFirst'), 'info'); return; }
     openSaveModal();
   });
   bag.on(bSetup, 'click', () => {
@@ -1032,8 +1057,8 @@ export async function mount(root, { query = {} } = {}) {
   bag.on(bFlip, 'click', flip);
   bag.on(window, 'keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const t = e.target;
-    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const tgt = e.target;
+    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
     if (document.querySelector('.modal-backdrop')) return;
     const map = { ArrowLeft: step.prev, ArrowRight: step.next, Home: step.first, End: step.last };
     if (map[e.key]) { e.preventDefault(); map[e.key](); return; }
@@ -1074,7 +1099,7 @@ export async function mount(root, { query = {} } = {}) {
     } catch { restored = null; }
     setTree(restored || new MoveTree(START_FEN), { ply: restored ? 'end' : null });
     if (restored && restored.root.children.length) {
-      toast('Restored your last analysis. Press "New" to start fresh.', 'info', { duration: 2500 });
+      toast(t('analysis.load.restored'), 'info', { duration: 2500 });
     }
   }
 
@@ -1087,7 +1112,7 @@ export async function mount(root, { query = {} } = {}) {
 const PALETTE = ['wK', 'wQ', 'wR', 'wB', 'wN', 'wP', 'bK', 'bQ', 'bR', 'bB', 'bN', 'bP'];
 const FEN_CHAR = { wK: 'K', wQ: 'Q', wR: 'R', wB: 'B', wN: 'N', wP: 'P', bK: 'k', bQ: 'q', bR: 'r', bB: 'b', bN: 'n', bP: 'p' };
 const CHAR_CODE = Object.fromEntries(Object.entries(FEN_CHAR).map(([k, v]) => [v, k]));
-const PIECE_NAMES = { K: 'king', Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', P: 'pawn' };
+const pieceLabel = (code) => t(`analysis.setup.pieces.${code}`);
 
 function placementToArray(placement) {
   const arr = new Array(64).fill(null);
@@ -1132,25 +1157,25 @@ export function openSetupEditor(fen, orientation, onApply) {
   };
   let dragCleanup = null;
 
-  const boardEl = h('div', { class: 'se-board', role: 'grid', 'aria-label': 'Position editor board' });
+  const boardEl = h('div', { class: 'se-board', role: 'grid', 'aria-label': t('analysis.setup.boardLabel') });
   const paletteW = h('div', { class: 'se-palette' });
   const paletteB = h('div', { class: 'se-palette' });
   const errorBox = h('div', { class: 'callout callout-danger se-error', hidden: true });
   const fenField = h('input', { class: 'input input-sm mono', spellcheck: 'false', 'aria-label': 'FEN' });
-  const turnW = h('button', { type: 'button' }, 'White to move');
-  const turnB = h('button', { type: 'button' }, 'Black to move');
+  const turnW = h('button', { type: 'button' }, t('analysis.setup.whiteToMove'));
+  const turnB = h('button', { type: 'button' }, t('analysis.setup.blackToMove'));
   const castleBoxes = ['K', 'Q', 'k', 'q'].map((c) => {
     const input = h('input', { type: 'checkbox' });
     input.addEventListener('change', () => { if (input.checked) st.castling.add(c); else st.castling.delete(c); update(); });
-    const label = { K: 'White O-O', Q: 'White O-O-O', k: 'Black O-O', q: 'Black O-O-O' }[c];
+    const label = t({ K: 'analysis.setup.castleWK', Q: 'analysis.setup.castleWQ', k: 'analysis.setup.castleBK', q: 'analysis.setup.castleBQ' }[c]);
     return { c, input, el: h('label', { class: 'checkbox' }, input, ` ${label}`) };
   });
 
   const toolBtn = (code, label, html) => h('button', { class: 'se-tool', type: 'button', dataset: { tool: code }, 'aria-label': label, title: label, html });
-  const moveTool = toolBtn('move', 'Move pieces (drag)', icon('grid'));
-  const eraseTool = toolBtn('erase', 'Eraser', icon('trash'));
+  const moveTool = toolBtn('move', t('analysis.setup.moveTool'), icon('grid'));
+  const eraseTool = toolBtn('erase', t('analysis.setup.eraser'), icon('trash'));
   for (const code of PALETTE) {
-    const b = toolBtn(code, `${code[0] === 'w' ? 'White' : 'Black'} ${PIECE_NAMES[code[1]]}`, `<img src="${pieceUrl(code)}" alt="" draggable="false">`);
+    const b = toolBtn(code, pieceLabel(code), `<img src="${pieceUrl(code)}" alt="" draggable="false">`);
     (code[0] === 'w' ? paletteW : paletteB).appendChild(b);
   }
   paletteW.prepend(moveTool);
@@ -1177,7 +1202,7 @@ export function openSetupEditor(fen, orientation, onApply) {
       const idx = st.flipped ? 63 - i : i;
       const light = (Math.floor(idx / 8) + (idx % 8)) % 2 === 0;
       const p = st.arr[idx];
-      const sq = h('div', { class: `se-sq ${light ? 'light' : 'dark'}`, dataset: { idx }, role: 'gridcell', 'aria-label': `${sqName(idx)}${p ? ' ' + p : ''}` });
+      const sq = h('div', { class: `se-sq ${light ? 'light' : 'dark'}`, dataset: { idx }, role: 'gridcell', 'aria-label': `${sqName(idx)}${p ? ' ' + pieceLabel(p) : ''}` });
       if (p) sq.appendChild(h('img', { src: pieceUrl(p), alt: '', draggable: 'false' }));
       if (i % 8 === 0) sq.appendChild(h('span', { class: 'se-coord rank' }, String(8 - Math.floor(idx / 8))));
       if (i >= 56) sq.appendChild(h('span', { class: 'se-coord file' }, 'abcdefgh'[idx % 8]));
@@ -1286,7 +1311,7 @@ export function openSetupEditor(fen, orientation, onApply) {
   fenField.addEventListener('keydown', (e) => e.stopPropagation());
   fenField.addEventListener('change', () => {
     const p = fenField.value.trim().split(/\s+/);
-    if (!p[0] || p[0].split('/').length !== 8) { errorBox.hidden = false; errorBox.textContent = 'That FEN does not have 8 ranks.'; return; }
+    if (!p[0] || p[0].split('/').length !== 8) { errorBox.hidden = false; errorBox.textContent = t('analysis.fen.eightRanks'); return; }
     st.arr = placementToArray(p[0]);
     st.turn = p[1] === 'b' ? 'b' : 'w';
     st.castling = new Set((p[2] || '').replace('-', '').split('').filter((c) => 'KQkq'.includes(c)));
@@ -1294,41 +1319,43 @@ export function openSetupEditor(fen, orientation, onApply) {
   });
 
   const smallBtn = (ic, label, fn) => {
-    const b = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', html: icon(ic) + `<span>${label}</span>` });
+    const b = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', html: icon(ic) });
+    b.appendChild(h('span', null, label));
     b.addEventListener('click', fn);
     return b;
   };
   const tools = h('div', { class: 'row-wrap se-quick' },
-    smallBtn('refresh', 'Starting position', () => {
+    smallBtn('refresh', t('analysis.setup.startPos'), () => {
       const p = START_FEN.split(' ');
       st.arr = placementToArray(p[0]); st.turn = 'w'; st.castling = new Set(['K', 'Q', 'k', 'q']); update();
     }),
-    smallBtn('trash', 'Clear board', () => {
+    smallBtn('trash', t('analysis.setup.clear'), () => {
       st.arr = new Array(64).fill(null); st.castling.clear(); update();
     }),
-    smallBtn('flip', 'Flip', () => { st.flipped = !st.flipped; update(); }));
+    smallBtn('flip', t('analysis.setup.flip'), () => { st.flipped = !st.flipped; update(); }));
 
   const body = h('div', { class: 'setup-editor' },
     h('div', { class: 'se-left' }, paletteB, boardEl, paletteW),
     h('div', { class: 'se-right stack' },
-      h('p', { class: 'muted text-sm' }, 'Drag pieces from the palette onto the board, or pick a piece and tap squares. Drag a piece off the board (or right-click it) to remove it.'),
+      h('p', { class: 'muted text-sm' }, t('analysis.setup.help')),
       tools,
-      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Side to move'), h('div', { class: 'segmented block' }, turnW, turnB)),
-      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Castling rights'), h('div', { class: 'se-castling' }, castleBoxes.map((c) => c.el))),
-      h('div', { class: 'field' }, h('label', { class: 'label' }, 'FEN'), fenField),
+      h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.setup.sideToMove')), h('div', { class: 'segmented block' }, turnW, turnB)),
+      h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.setup.castlingRights')), h('div', { class: 'se-castling' }, castleBoxes.map((c) => c.el))),
+      h('div', { class: 'field' }, h('label', { class: 'label' }, t('analysis.setup.fen')), fenField),
       errorBox));
 
   update();
   const m = modal({
-    title: 'Set up a position',
+    title: t('analysis.setup.title'),
     size: 'lg',
     body,
     className: 'setup-modal',
     onClose: () => { dragCleanup?.(); },
     actions: [
-      { label: 'Cancel', kind: 'ghost' },
+      { label: t('analysis.setup.cancel'), kind: 'ghost' },
       {
-        label: 'Analyse this position', kind: 'primary', icon: 'analysis', onClick: () => {
+        label: t('analysis.setup.apply'),
+ kind: 'primary', icon: 'analysis', onClick: () => {
           const err = update();
           if (err) {
             errorBox.classList.remove('shake'); void errorBox.offsetWidth; errorBox.classList.add('shake');

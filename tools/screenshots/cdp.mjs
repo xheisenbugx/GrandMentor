@@ -4,6 +4,7 @@ import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 
 export const BASE = process.env.BASE || 'http://localhost:8097';
+const CDP_PORT = Number(process.env.CDP_PORT) || 9333;
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export { sleep };
@@ -11,11 +12,11 @@ export { sleep };
 export async function launch(scratch, width = 1440, height = 900) {
   const profile = path.join(scratch, 'chrome-profile');
   rmSync(profile, { recursive: true, force: true });
-  const proc = spawn(CHROME, ['--headless=new', '--remote-debugging-port=9333', `--user-data-dir=${profile}`,
+  const proc = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${profile}`,
     '--no-first-run', '--hide-scrollbars', '--force-device-scale-factor=1', `--window-size=${width},${height}`, 'about:blank'], { stdio: 'ignore' });
   let targets;
   for (let i = 0; i < 50; i++) {
-    try { targets = await (await fetch('http://127.0.0.1:9333/json')).json(); if (targets.find((t) => t.type === 'page')) break; } catch {}
+    try { targets = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json`)).json(); if (targets.find((t) => t.type === 'page')) break; } catch {}
     await sleep(200);
   }
   const page = targets.find((t) => t.type === 'page');

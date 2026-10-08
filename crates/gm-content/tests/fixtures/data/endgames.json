@@ -1,0 +1,3 @@
+[
+  {"id":"kq-vs-k","title":"Queen Mate","category":"basic","level":"beginner","fen":"8/8/8/4k3/8/8/8/3QK3 w - - 0 1","goal":"win","description":"Mate with the queen.","hint":"Box the king.","technique":["Restrict","Bring the king"]}
+]

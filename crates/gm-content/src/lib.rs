@@ -1,9 +1,17 @@
 //! gm-content: loads & validates `data/*.json` (openings, puzzles, courses, endgames) and
 //! answers opening-book queries. Types are defined by `docs/CONTRACT.md` §3.
+//!
+//! Also home of [`Lang`] (the user-facing language shared by every crate), the chess
+//! vocabulary helpers in [`words`], and the translation overlays in `data/i18n/<lang>/`
+//! (see [`Content::localized`] and `docs/I18N.md`).
 
+mod lang;
 mod openings;
+pub mod overlay;
+pub mod words;
 
 use std::path::Path;
+use std::sync::{Arc, OnceLock, Weak};
 
 use anyhow::Context as _;
 use serde::de::DeserializeOwned;
@@ -12,7 +20,9 @@ use shakmaty::{Chess, Position};
 
 use gm_engine::{move_to_uci, parse_fen, san_to_move, to_fen, uci_to_move};
 
-pub use openings::{OpeningBook, OpeningIndex};
+pub use lang::Lang;
+pub use openings::{start_name, OpeningBook, OpeningIndex, START_ID, START_NAME};
+pub use overlay::{Overlay, OverlayStats};
 
 // ---------------------------------------------------------------------------------------------
 // Types
@@ -163,6 +173,43 @@ pub struct Content {
     /// Opening book index over `openings` (not serialized; see `rebuild_opening_index`).
     #[serde(skip)]
     pub opening_index: OpeningIndex,
+    /// Language of the text in this instance (`En` for the source content).
+    #[serde(skip)]
+    pub lang: Lang,
+    /// Per-language views (see [`Content::localized`]). Opaque; public only so that
+    /// `Content { .., ..Default::default() }` works outside this crate.
+    #[serde(skip)]
+    pub views: LocalizedViews,
+}
+
+/// Shared table of per-language views, built once from the English source.
+#[derive(Debug, Default)]
+struct Slots {
+    /// Overlay per language, in `Lang::ALL` order.
+    overlays: Vec<Overlay>,
+    /// Views in `Lang::ALL` order (built all at once so every view can reach every other).
+    built: OnceLock<Vec<Arc<Content>>>,
+}
+
+/// Handle to the per-language views. The source content owns the table; views hold a weak
+/// reference back to it, so there are no reference cycles. The default (hand-built content)
+/// owns an empty table, so its views are built once on first use and then shared.
+#[derive(Clone, Debug)]
+pub struct LocalizedViews {
+    own: Option<Arc<Slots>>,
+    parent: Weak<Slots>,
+}
+
+impl Default for LocalizedViews {
+    fn default() -> Self {
+        LocalizedViews::with_overlays(Vec::new())
+    }
+}
+
+impl LocalizedViews {
+    fn with_overlays(overlays: Vec<Overlay>) -> Self {
+        LocalizedViews { own: Some(Arc::new(Slots { overlays, built: OnceLock::new() })), parent: Weak::new() }
+    }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -364,7 +411,100 @@ impl Content {
             endgames.len()
         );
         let opening_index = OpeningIndex::build(&openings);
-        Ok(Content { openings, puzzles, courses, endgames, opening_index })
+        let i18n_dir = dir.join("i18n");
+        let overlays = Lang::ALL
+            .into_iter()
+            .map(|lang| {
+                let (ov, bad) = overlay::load_overlay(&i18n_dir, lang);
+                if bad > 0 {
+                    tracing::warn!("i18n/{lang}: {bad} overlay entries or files could not be parsed");
+                }
+                ov
+            })
+            .collect();
+        let content = Content {
+            openings,
+            puzzles,
+            courses,
+            endgames,
+            opening_index,
+            lang: Lang::En,
+            views: LocalizedViews::with_overlays(overlays),
+        };
+        // Precompute every language view now (bounded: one view per supported language).
+        let _ = content.localized(Lang::En);
+        Ok(content)
+    }
+
+    /// Like [`Content::load`] but with overlays read from `i18n_dir` instead of `dir/i18n`.
+    pub fn load_with_i18n(dir: &Path, i18n_dir: &Path) -> anyhow::Result<Content> {
+        let mut c = Content::load(dir)?;
+        let overlays = Lang::ALL.into_iter().map(|l| overlay::load_overlay(i18n_dir, l).0).collect();
+        c.views = LocalizedViews::with_overlays(overlays);
+        let _ = c.localized(Lang::En);
+        Ok(c)
+    }
+
+    /// The content in `lang`: course/lesson/step text, opening names/descriptions/ideas/traps
+    /// and endgame text replaced by the `data/i18n/<lang>/` overlays, falling back to English
+    /// for anything missing. Moves, FENs, arrows and solutions are always the English source's.
+    /// The opening book of the returned view reports localized names.
+    ///
+    /// Views are built once (at load for [`Content::load`]; on first use for hand-built
+    /// content) and shared; calling this on a view returns the sibling view. Views reflect the
+    /// source content at the time they were built ([`Content::rebuild_opening_index`] resets them).
+    pub fn localized(&self, lang: Lang) -> Arc<Content> {
+        let idx = Lang::ALL.iter().position(|l| *l == lang).unwrap_or(0);
+        let slots = match (&self.views.own, self.views.parent.upgrade()) {
+            (Some(own), _) => Arc::clone(own),
+            (None, Some(parent)) => parent,
+            (None, None) => {
+                // A view whose source was dropped: rebuild from this instance (rare; uncached).
+                let own = Arc::new(Slots { overlays: Vec::new(), built: OnceLock::new() });
+                let views = self.build_views(&own);
+                return Arc::clone(&views[idx]);
+            }
+        };
+        let views = slots.built.get_or_init(|| self.build_views(&slots));
+        Arc::clone(&views[idx])
+    }
+
+    fn build_views(&self, slots: &Arc<Slots>) -> Vec<Arc<Content>> {
+        let empty = Overlay::default();
+        Lang::ALL
+            .into_iter()
+            .enumerate()
+            .map(|(i, lang)| {
+                let mut c = Content {
+                    openings: self.openings.clone(),
+                    puzzles: self.puzzles.clone(),
+                    courses: self.courses.clone(),
+                    endgames: self.endgames.clone(),
+                    opening_index: OpeningIndex::default(),
+                    lang,
+                    views: LocalizedViews { own: None, parent: Arc::downgrade(slots) },
+                };
+                let ov = slots.overlays.get(i).unwrap_or(&empty);
+                if !ov.is_empty() {
+                    let st = overlay::apply_overlay(&mut c, ov);
+                    tracing::info!(
+                        "i18n/{lang}: {} overlay entries applied, {} ignored (unknown ids or surplus steps)",
+                        st.applied,
+                        st.ignored
+                    );
+                }
+                c.opening_index = OpeningIndex::build_lang(&c.openings, lang);
+                Arc::new(c)
+            })
+            .collect()
+    }
+
+    /// Name data for an opening id in this content's language (also knows the start position).
+    pub fn opening_ref(&self, id: &str) -> Option<OpeningRef> {
+        if id == START_ID {
+            return Some(OpeningRef { id: START_ID.to_string(), eco: String::new(), name: start_name(self.lang).to_string() });
+        }
+        self.opening(id).map(|o| OpeningRef { id: o.id.clone(), eco: o.eco.clone(), name: o.name.clone() })
     }
 
     /// Deepest named opening matching the position (key = first 4 FEN fields) + book continuations.
@@ -389,7 +529,9 @@ impl Content {
 
     /// Rebuild the opening index after mutating `openings` (the index is otherwise immutable).
     pub fn rebuild_opening_index(&mut self) {
-        self.opening_index = OpeningIndex::build(&self.openings);
+        self.opening_index = OpeningIndex::build_lang(&self.openings, self.lang);
+        let overlays = self.views.own.as_ref().map(|s| s.overlays.clone()).unwrap_or_default();
+        self.views = LocalizedViews::with_overlays(overlays);
     }
 
     pub fn opening(&self, id: &str) -> Option<&Opening> {

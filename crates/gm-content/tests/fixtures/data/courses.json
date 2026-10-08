@@ -1,0 +1,9 @@
+[
+  {"id":"basics","title":"Chess Basics","category":"basics","level":"beginner","description":"Learn the rules.","icon":"♟️","lessons":[
+    {"id":"pawn","title":"The Pawn","summary":"How pawns move.","steps":[
+      {"text":"Pawns move forward.","fen":"4k3/8/8/8/8/8/4P3/4K3 w - - 0 1","arrows":[{"from":"e2","to":"e4","color":"green"}]},
+      {"text":"Push the pawn two squares.","fen":"4k3/8/8/8/8/8/4P3/4K3 w - - 0 1","task":{"kind":"moves","prompt":"Play e4","solution":["e2e4"],"hint":"Two squares!","success":"Great!"}},
+      {"text":"Untranslated step."}
+    ]}
+  ]}
+]

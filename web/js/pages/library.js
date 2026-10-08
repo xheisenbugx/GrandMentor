@@ -5,11 +5,32 @@
 import { api, qs, isAbort } from '../api.js';
 import {
   h, icon, pageHeader, emptyState, skeleton, disposables, debounce, modal, confirmDialog,
-  toast, formatRelative, formatDate, escapeHtml,
+  toast, escapeHtml,
 } from '../ui.js';
 import { getSetting, pieceUrl } from '../settings.js';
+import { t, getLocale, formatDateIntl } from '../i18n.js';
 
-export const title = 'Library';
+export const title = () => t('library.title');
+
+/** Locale-aware "Mar 3, 2026". */
+export function formatGameDate(date) {
+  return formatDateIntl(date, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/** Locale-aware relative time ("5 minutes ago" / "hace 5 minutos"); older dates fall back to a short date. */
+export function formatRelativeIntl(date) {
+  const d = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 45) return t('library.time.justNow');
+  let rtf;
+  try { rtf = new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }); } catch { rtf = null; }
+  const rel = (v, unit) => (rtf ? rtf.format(-v, unit) : formatGameDate(d));
+  if (diff < 3600) return rel(Math.max(1, Math.round(diff / 60)), 'minute');
+  if (diff < 86400) return rel(Math.round(diff / 3600), 'hour');
+  if (diff < 604800) return rel(Math.max(1, Math.round(diff / 86400)), 'day');
+  return formatDateIntl(d, { month: 'short', day: 'numeric', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
+}
 
 // ---------------------------------------------------------------------------
 // Shared hub helpers
@@ -63,7 +84,7 @@ function squareXY(sq, flip) {
  * Lightweight static board as an SVG string (one element, no listeners).
  * fenBoardSvg(fen, { orientation: 'white'|'black', lastMove: 'e2e4' | ['e2','e4'], label })
  */
-export function fenBoardSvg(fen, { orientation = 'white', lastMove = null, label = 'Chess position', pieceSet } = {}) {
+export function fenBoardSvg(fen, { orientation = 'white', lastMove = null, label, pieceSet } = {}) {
   const flip = orientation === 'black';
   const placement = String(fen || START_FEN).trim().split(/\s+/)[0] || '';
   const set = pieceSet || getSetting('pieceSet') || 'cburnett';
@@ -93,7 +114,7 @@ export function fenBoardSvg(fen, { orientation = 'white', lastMove = null, label
       if (p) hl += `<rect class="hub-sq-last" x="${p.x}" y="${p.y}" width="1" height="1"/>`;
     }
   }
-  return `<svg class="hub-mini-board" viewBox="0 0 8 8" role="img" aria-label="${escapeHtml(label)}" shape-rendering="crispEdges">`
+  return `<svg class="hub-mini-board" viewBox="0 0 8 8" role="img" aria-label="${escapeHtml(label ?? t('library.board.position'))}" shape-rendering="crispEdges">`
     + `<rect class="hub-sq-l" width="8" height="8"/><path class="hub-sq-d" d="${DARK_PATH}"/>${hl}`
     + `<g shape-rendering="auto">${pieces}</g></svg>`;
 }
@@ -194,22 +215,19 @@ export function gameOutcome(g) {
   return (r === '1-0') === (uc === 'white') ? 'win' : 'loss';
 }
 
-const OUTCOME_META = {
-  win: { cls: 'result-win', short: 'W', label: 'Won' },
-  loss: { cls: 'result-loss', short: 'L', label: 'Lost' },
-  draw: { cls: 'result-draw', short: '½', label: 'Draw' },
-  ongoing: { cls: 'result-draw', short: '…', label: 'Unfinished' },
-  white: { cls: 'result-draw', short: '1-0', label: 'White won' },
-  black: { cls: 'result-draw', short: '0-1', label: 'Black won' },
+// Labels resolve at render time via t('library.outcome.<key>') / t('library.outcomeShort.<key>').
+const OUTCOME_CLS = {
+  win: 'result-win', loss: 'result-loss', draw: 'result-draw', ongoing: 'result-draw', white: 'result-draw', black: 'result-draw',
 };
 
 /** Small result marker element (W / L / ½). */
 export function resultMarker(g) {
-  const m = OUTCOME_META[gameOutcome(g)];
-  return h('span', { class: `result ${m.cls}`, title: m.label, 'aria-label': m.label }, m.short);
+  const o = gameOutcome(g);
+  const label = t(`library.outcome.${o}`);
+  return h('span', { class: `result ${OUTCOME_CLS[o]}`, title: label, 'aria-label': label }, t(`library.outcomeShort.${o}`));
 }
 
-export function outcomeLabel(g) { return OUTCOME_META[gameOutcome(g)].label; }
+export function outcomeLabel(g) { return t(`library.outcome.${gameOutcome(g)}`); }
 
 /** User's accuracy in a game (or null). */
 export function userAccuracy(g) {
@@ -219,9 +237,9 @@ export function userAccuracy(g) {
 
 /** Accuracy pill element. */
 export function accuracyPill(acc) {
-  if (acc == null) return h('span', { class: 'hub-acc hub-acc-none', title: 'Not reviewed yet' }, '—');
+  if (acc == null) return h('span', { class: 'hub-acc hub-acc-none', title: t('library.accuracy.notReviewed') }, '—');
   const tier = acc >= 85 ? 'hi' : acc >= 65 ? 'mid' : 'lo';
-  return h('span', { class: `hub-acc hub-acc-${tier}`, title: 'Your accuracy' }, acc.toFixed(1));
+  return h('span', { class: `hub-acc hub-acc-${tier}`, title: t('library.accuracy.yours') }, acc.toFixed(1));
 }
 
 /** "You vs Martin" style title. */
@@ -230,9 +248,9 @@ export function gameTitle(g, botsById) {
   if (uc === 'white' || uc === 'black') {
     const opp = uc === 'white' ? g.black : g.white;
     const bot = g.bot_id && botsById ? botsById.get(g.bot_id) : null;
-    return `You vs ${bot?.name || opp || 'Opponent'}`;
+    return t('library.gameTitle.you', { opponent: bot?.name || opp || t('library.gameTitle.opponent') });
   }
-  return `${g.white || 'White'} vs ${g.black || 'Black'}`;
+  return t('library.gameTitle.players', { white: g.white || t('library.gameTitle.white'), black: g.black || t('library.gameTitle.black') });
 }
 
 export function fullMoves(g) {
@@ -252,11 +270,12 @@ const MAX_TAGS = 12;
 // Remember filters while the app is open (small, bounded state).
 const remembered = { search: '', outcome: 'all', botId: '', favorite: false, sort: 'newest' };
 
+// Sort labels: t('library.sort.<key>') at render time.
 const SORTS = {
-  newest: { label: 'Newest first', fn: (a, b) => cmpStr(b.created_at, a.created_at) || b.id - a.id },
-  oldest: { label: 'Oldest first', fn: (a, b) => cmpStr(a.created_at, b.created_at) || a.id - b.id },
-  longest: { label: 'Most moves', fn: (a, b) => (b.move_count || 0) - (a.move_count || 0) },
-  accuracy: { label: 'Best accuracy', fn: (a, b) => (userAccuracy(b) ?? -1) - (userAccuracy(a) ?? -1) },
+  newest: { fn: (a, b) => cmpStr(b.created_at, a.created_at) || b.id - a.id },
+  oldest: { fn: (a, b) => cmpStr(a.created_at, b.created_at) || a.id - b.id },
+  longest: { fn: (a, b) => (b.move_count || 0) - (a.move_count || 0) },
+  accuracy: { fn: (a, b) => (userAccuracy(b) ?? -1) - (userAccuracy(a) ?? -1) },
 };
 function cmpStr(a, b) { return String(a || '').localeCompare(String(b || '')); }
 
@@ -298,7 +317,7 @@ export async function mount(root) {
     if (!g) return;
     gameFinalPosition(g, { signal }).then((pos) => {
       if (signal.aborted || !el.isConnected) return;
-      el.innerHTML = fenBoardSvg(pos.fen, { orientation: g.user_color === 'black' ? 'black' : 'white', lastMove: pos.lastMove, label: `Final position of ${gameTitle(g, state.botsById)}` });
+      el.innerHTML = fenBoardSvg(pos.fen, { orientation: g.user_color === 'black' ? 'black' : 'white', lastMove: pos.lastMove, label: t('library.board.finalPosition', { title: gameTitle(g, state.botsById) }) });
       el.classList.remove('loading');
     }).catch((e) => {
       if (isAbort(e) || !el.isConnected) return;
@@ -308,22 +327,22 @@ export async function mount(root) {
   }
 
   // ---- Layout ----------------------------------------------------------------
-  const importBtn = h('button', { class: 'btn btn-primary', type: 'button', html: icon('upload') + '<span>Import PGN</span>', onClick: () => openImport() });
-  const searchInput = h('input', { class: 'input', type: 'search', placeholder: 'Search players, openings, notes…', value: state.search, 'aria-label': 'Search games', maxlength: '100' });
-  const outcomeSeg = h('div', { class: 'segmented', role: 'group', 'aria-label': 'Result filter' },
-    [['all', 'All'], ['win', 'Won'], ['loss', 'Lost'], ['draw', 'Drawn']].map(([v, l]) =>
+  const importBtn = h('button', { class: 'btn btn-primary', type: 'button', html: icon('upload') + `<span>${escapeHtml(t('library.importPgn'))}</span>`, onClick: () => openImport() });
+  const searchInput = h('input', { class: 'input', type: 'search', placeholder: t('library.search.placeholder'), value: state.search, 'aria-label': t('library.search.label'), maxlength: '100' });
+  const outcomeSeg = h('div', { class: 'segmented', role: 'group', 'aria-label': t('library.filter.label') },
+    [['all', t('library.filter.all')], ['win', t('library.filter.won')], ['loss', t('library.filter.lost')], ['draw', t('library.filter.drawn')]].map(([v, l]) =>
       h('button', { type: 'button', class: state.outcome === v ? 'active' : null, dataset: { v }, 'aria-pressed': String(state.outcome === v) }, l)));
-  const botSelect = h('select', { class: 'select', 'aria-label': 'Opponent filter' }, h('option', { value: '' }, 'All opponents'));
-  const favChip = h('button', { type: 'button', class: ['chip', state.favorite && 'active'], 'aria-pressed': String(state.favorite), html: icon('star', { size: 16 }) + '<span>Favorites</span>' });
-  const sortSelect = h('select', { class: 'select', 'aria-label': 'Sort games' },
-    Object.entries(SORTS).map(([v, s]) => h('option', { value: v, selected: v === state.sort }, s.label)));
+  const botSelect = h('select', { class: 'select', 'aria-label': t('library.filter.opponentLabel') }, h('option', { value: '' }, t('library.filter.allOpponents')));
+  const favChip = h('button', { type: 'button', class: ['chip', state.favorite && 'active'], 'aria-pressed': String(state.favorite), html: icon('star', { size: 16 }) + `<span>${escapeHtml(t('library.filter.favorites'))}</span>` });
+  const sortSelect = h('select', { class: 'select', 'aria-label': t('library.sort.label') },
+    Object.keys(SORTS).map((v) => h('option', { value: v, selected: v === state.sort }, t(`library.sort.${v}`))));
   const summaryEl = h('div', { class: 'hub-lib-summary', 'aria-live': 'polite' });
   const listEl = h('div', { class: 'hub-game-list' });
-  const moreBtn = h('button', { class: 'btn btn-secondary', type: 'button', hidden: true }, 'Load more games');
+  const moreBtn = h('button', { class: 'btn btn-secondary', type: 'button', hidden: true }, t('library.loadMore'));
   const footer = h('div', { class: 'hub-lib-footer' }, moreBtn);
 
   const page = h('div', { class: 'page hub-page' },
-    pageHeader({ title: 'Library', subtitle: 'Every game you play is saved here. Review, analyze, star and annotate them.', icon: 'library', actions: [importBtn] }),
+    pageHeader({ title: t('library.title'), subtitle: t('library.subtitle'), icon: 'library', actions: [importBtn] }),
     h('div', { class: 'card hub-lib-filters' },
       h('div', { class: 'input-group hub-lib-search', html: icon('search') }, searchInput),
       outcomeSeg,
@@ -397,7 +416,7 @@ export async function mount(root) {
       state.error = null;
     } catch (e) {
       if (isAbort(e) || req.signal.aborted) return;
-      state.error = e?.message || 'Could not load your games.';
+      state.error = e?.message || t('library.errors.load');
     } finally {
       signal.removeEventListener('abort', onOuter);
       if (listReq === req) { state.loading = false; moreBtn.classList.remove('loading'); listReq = null; }
@@ -406,7 +425,7 @@ export async function mount(root) {
   }
 
   function normalize(g) {
-    return { ...g, tags: Array.isArray(g.tags) ? g.tags.filter((t) => typeof t === 'string' && t) : [], notes: typeof g.notes === 'string' ? g.notes : '' };
+    return { ...g, tags: Array.isArray(g.tags) ? g.tags.filter((tag) => typeof tag === 'string' && tag) : [], notes: typeof g.notes === 'string' ? g.notes : '' };
   }
 
   function visibleGames() {
@@ -420,11 +439,11 @@ export async function mount(root) {
     for (const g of state.games) { const o = gameOutcome(g); if (o in counts) counts[o]++; }
     const total = state.games.length;
     summaryEl.replaceChildren(
-      h('span', { class: 'semibold' }, `${list.length} ${list.length === 1 ? 'game' : 'games'}`),
+      h('span', { class: 'semibold' }, t('library.summary.games', { count: list.length })),
       total ? h('span', { class: 'hub-lib-counts' },
-        h('span', { class: 'hub-dot hub-dot-win' }), `${counts.win} won`,
-        h('span', { class: 'hub-dot hub-dot-draw' }), `${counts.draw} drawn`,
-        h('span', { class: 'hub-dot hub-dot-loss' }), `${counts.loss} lost`) : null);
+        h('span', { class: 'hub-dot hub-dot-win' }), t('library.summary.won', { count: counts.win }),
+        h('span', { class: 'hub-dot hub-dot-draw' }), t('library.summary.drawn', { count: counts.draw }),
+        h('span', { class: 'hub-dot hub-dot-loss' }), t('library.summary.lost', { count: counts.loss })) : null);
   }
 
   function renderList() {
@@ -433,7 +452,7 @@ export async function mount(root) {
     moreBtn.hidden = !state.hasMore;
     if (state.error && !state.games.length) {
       summaryEl.textContent = '';
-      listEl.replaceChildren(emptyState({ icon: 'wifi-off', title: 'We couldn’t load your games', text: state.error, action: { label: 'Try again', icon: 'refresh', onClick: reload } }));
+      listEl.replaceChildren(emptyState({ icon: 'wifi-off', title: t('library.errors.loadTitle'), text: state.error, action: { label: t('library.errors.retry'), icon: 'refresh', onClick: reload } }));
       return;
     }
     const list = visibleGames();
@@ -441,8 +460,8 @@ export async function mount(root) {
     if (!list.length) {
       const filtered = state.search || state.botId || state.favorite || state.outcome !== 'all';
       listEl.replaceChildren(filtered
-        ? emptyState({ icon: 'filter', title: 'No games match these filters', text: 'Try a different search or clear the filters.', action: { label: 'Clear filters', kind: 'secondary', onClick: clearFilters } })
-        : emptyState({ emoji: '♟️', title: 'No saved games yet', text: 'Play a bot and your games will appear here automatically. You can also import games from a PGN file.', action: { label: 'Play a bot', href: '#/play', icon: 'play' } }));
+        ? emptyState({ icon: 'filter', title: t('library.empty.filteredTitle'), text: t('library.empty.filteredText'), action: { label: t('library.empty.clearFilters'), kind: 'secondary', onClick: clearFilters } })
+        : emptyState({ emoji: '♟️', title: t('library.empty.title'), text: t('library.empty.text'), action: { label: t('library.empty.playBot'), href: '#/play', icon: 'play' } }));
       return;
     }
     const frag = document.createDocumentFragment();
@@ -452,8 +471,8 @@ export async function mount(root) {
   }
 
   function observeThumbs(scope) {
-    for (const t of scope.querySelectorAll('.hub-thumb.loading')) {
-      if (io) io.observe(t); else fillThumb(t);
+    for (const el of scope.querySelectorAll('.hub-thumb.loading')) {
+      if (io) io.observe(el); else fillThumb(el);
     }
   }
 
@@ -475,16 +494,16 @@ export async function mount(root) {
     const orientation = g.user_color === 'black' ? 'black' : 'white';
     const thumb = h('a', {
       class: ['hub-thumb', !cached && 'loading'], href: `#/review/${g.id}`, dataset: { id: g.id },
-      'aria-label': `Review ${gameTitle(g, state.botsById)}`,
+      'aria-label': t('library.row.reviewAria', { title: gameTitle(g, state.botsById) }),
       html: cached ? fenBoardSvg(cached.fen, { orientation, lastMove: cached.lastMove }) : '',
     });
     const meta = [
       g.opening_name || null,
-      `${fullMoves(g)} moves`,
+      t('library.row.moves', { count: fullMoves(g) }),
       g.time_control && g.time_control !== '-' ? g.time_control : null,
-      formatRelative(g.created_at) || null,
+      formatRelativeIntl(g.created_at) || null,
     ].filter(Boolean);
-    const tags = g.tags.length ? h('div', { class: 'hub-tags' }, g.tags.map((t) => h('span', { class: 'badge hub-tag' }, `#${t}`))) : null;
+    const tags = g.tags.length ? h('div', { class: 'hub-tags' }, g.tags.map((tag) => h('span', { class: 'badge hub-tag' }, `#${tag}`))) : null;
     const notes = g.notes ? h('p', { class: 'hub-game-notes', title: g.notes }, g.notes) : null;
     const acc = userAccuracy(g);
     const actBtn = (action, ic, label, extra = {}) => h('button', { type: 'button', class: 'btn btn-ghost btn-icon btn-sm', dataset: { action, id: g.id }, 'aria-label': label, 'data-tooltip': label, html: icon(ic), ...extra });
@@ -496,20 +515,21 @@ export async function mount(root) {
           bot ? h('span', { class: 'avatar avatar-xs', 'aria-hidden': 'true' }, bot.avatar || '🤖') : null,
           h('a', { class: 'truncate', href: `#/review/${g.id}` }, gameTitle(g, state.botsById)),
           bot ? h('span', { class: 'muted text-sm nowrap' }, `(${bot.elo})`) : null),
-        h('div', { class: 'hub-game-sub muted text-sm', title: formatDate(g.created_at) }, meta.join(' · ')),
+        h('div', { class: 'hub-game-sub muted text-sm', title: formatGameDate(g.created_at) }, meta.join(' · ')),
         tags, notes),
-      h('div', { class: 'hub-game-acc' }, h('span', { class: 'subtle text-xs' }, 'Accuracy'), accuracyPill(acc)),
+      h('div', { class: 'hub-game-acc' }, h('span', { class: 'subtle text-xs' }, t('library.row.accuracy')), accuracyPill(acc)),
       h('div', { class: 'hub-game-actions' },
         h('button', {
           type: 'button', class: ['btn btn-ghost btn-icon btn-sm hub-star', g.favorite && 'on'], dataset: { action: 'fav', id: g.id },
-          'aria-pressed': String(!!g.favorite), 'aria-label': g.favorite ? 'Remove from favorites' : 'Add to favorites',
+          'aria-pressed': String(!!g.favorite), 'aria-label': g.favorite ? t('library.row.unfavorite') : t('library.row.favorite'),
+          'data-tooltip': g.favorite ? t('library.row.unfavorite') : t('library.row.favorite'),
           html: icon(g.favorite ? 'star-filled' : 'star'),
         }),
-        h('a', { class: 'btn btn-primary btn-sm', href: `#/review/${g.id}`, html: icon('sparkles', { size: 16 }) + '<span>Review</span>' }),
-        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `#/analysis?game=${g.id}`, 'aria-label': 'Analyze', 'data-tooltip': 'Analyze', html: icon('analysis') }),
-        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `/api/games/${g.id}/pgn`, download: `grandmentor-game-${g.id}.pgn`, 'aria-label': 'Download PGN', 'data-tooltip': 'Download PGN', html: icon('download') }),
-        actBtn('edit', 'edit', 'Notes & tags'),
-        actBtn('delete', 'trash', 'Delete game')));
+        h('a', { class: 'btn btn-primary btn-sm', href: `#/review/${g.id}`, html: icon('sparkles', { size: 16 }) + `<span>${escapeHtml(t('library.row.review'))}</span>` }),
+        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `#/analysis?game=${g.id}`, 'aria-label': t('library.row.analyze'), 'data-tooltip': t('library.row.analyze'), html: icon('analysis') }),
+        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `/api/games/${g.id}/pgn`, download: `grandmentor-game-${g.id}.pgn`, 'aria-label': t('library.row.download'), 'data-tooltip': t('library.row.download'), html: icon('download') }),
+        actBtn('edit', 'edit', t('library.row.notes')),
+        actBtn('delete', 'trash', t('library.row.delete'))));
   }
 
   function replaceRow(g) {
@@ -540,40 +560,40 @@ export async function mount(root) {
       const rec = await api.put(`/api/games/${g.id}`, { favorite: next }, { signal });
       if (rec && typeof rec === 'object') { g.updated_at = rec.updated_at || g.updated_at; }
       if (state.favorite && !next) { state.games = state.games.filter((x) => x.id !== g.id); renderList(); }
-      toast(next ? 'Added to favorites' : 'Removed from favorites', 'success', { duration: 1800 });
+      toast(next ? t('library.toast.favAdded') : t('library.toast.favRemoved'), 'success', { duration: 1800 });
     } catch (e) {
       if (isAbort(e)) return;
       g.favorite = !next;
       replaceRow(g);
-      toast(e?.message || 'Could not update favorite', 'error');
+      toast(e?.message || t('library.toast.favError'), 'error');
     }
   }
 
   function openEdit(g) {
-    const notesEl = h('textarea', { class: 'textarea', rows: '5', maxlength: '5000', placeholder: 'What did you learn from this game? e.g. “Castle earlier!”' });
+    const notesEl = h('textarea', { class: 'textarea', rows: '5', maxlength: '5000', placeholder: t('library.edit.notesPlaceholder') });
     notesEl.value = g.notes || '';
-    const tagsEl = h('input', { class: 'input', placeholder: 'e.g. endgame, sicilian, comeback', value: g.tags.join(', '), maxlength: '300' });
+    const tagsEl = h('input', { class: 'input', placeholder: t('library.edit.tagsPlaceholder'), value: g.tags.join(', '), maxlength: '300' });
     const preview = h('div', { class: 'hub-tags' });
-    const updatePreview = () => preview.replaceChildren(...parseTags(tagsEl.value).map((t) => h('span', { class: 'badge hub-tag' }, `#${t}`)));
+    const updatePreview = () => preview.replaceChildren(...parseTags(tagsEl.value).map((tag) => h('span', { class: 'badge hub-tag' }, `#${tag}`)));
     tagsEl.addEventListener('input', updatePreview); // freed with the modal DOM
     updatePreview();
     const body = h('div', { class: 'stack' },
-      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Notes'), notesEl),
-      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Tags'), tagsEl,
-        h('div', { class: 'help' }, 'Separate tags with commas. Use them to group games you want to study.'), preview));
+      h('div', { class: 'field' }, h('label', { class: 'label' }, t('library.edit.notes')), notesEl),
+      h('div', { class: 'field' }, h('label', { class: 'label' }, t('library.edit.tags')), tagsEl,
+        h('div', { class: 'help' }, t('library.edit.tagsHelp')), preview));
     openModal = modal({
-      title: `Notes · ${gameTitle(g, state.botsById)}`,
+      title: t('library.edit.title', { title: gameTitle(g, state.botsById) }),
       body,
       actions: [
-        { label: 'Cancel', kind: 'ghost' },
+        { label: t('library.actions.cancel'), kind: 'ghost' },
         {
-          label: 'Save', kind: 'primary', icon: 'save',
+          label: t('library.actions.save'), kind: 'primary', icon: 'save',
           onClick: async () => {
             const patch = { notes: notesEl.value.slice(0, 5000), tags: parseTags(tagsEl.value) };
             const rec = await api.put(`/api/games/${g.id}`, patch, { signal });
             Object.assign(g, patch, rec && typeof rec === 'object' ? { updated_at: rec.updated_at || g.updated_at } : {});
             replaceRow(g);
-            toast('Notes saved', 'success');
+            toast(t('library.edit.saved'), 'success');
           },
         },
       ],
@@ -583,9 +603,10 @@ export async function mount(root) {
 
   async function deleteGame(g) {
     const ok = await confirmDialog({
-      title: 'Delete this game?',
-      message: `“${gameTitle(g, state.botsById)}” and its review will be removed permanently. This can’t be undone.`,
-      confirmLabel: 'Delete game',
+      title: t('library.delete.title'),
+      message: t('library.delete.message', { title: gameTitle(g, state.botsById) }),
+      confirmLabel: t('library.delete.confirm'),
+      cancelLabel: t('library.actions.cancel'),
       danger: true,
     });
     if (!ok || signal.aborted) return;
@@ -594,25 +615,25 @@ export async function mount(root) {
       state.games = state.games.filter((x) => x.id !== g.id);
       state.offset = Math.max(0, state.offset - 1);
       renderList();
-      toast('Game deleted', 'success');
+      toast(t('library.delete.done'), 'success');
     } catch (e) {
-      if (!isAbort(e)) toast(e?.message || 'Could not delete the game', 'error');
+      if (!isAbort(e)) toast(e?.message || t('library.delete.error'), 'error');
     }
   }
 
   function openImport() {
-    const ta = h('textarea', { class: 'textarea mono hub-pgn-input', rows: '10', placeholder: '[Event "Casual game"]\n[White "Me"]\n[Black "Friend"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 …', spellcheck: 'false' });
+    const ta = h('textarea', { class: 'textarea mono hub-pgn-input', rows: '10', placeholder: t('library.import.placeholder'), spellcheck: 'false' });
     const fileInput = h('input', { type: 'file', accept: '.pgn,.txt,application/x-chess-pgn,text/plain', class: 'sr-only' });
-    const fileName = h('span', { class: 'muted text-sm truncate' }, 'No file chosen');
-    const pickBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('folder') + '<span>Choose a .pgn file</span>' });
-    const drop = h('div', { class: 'hub-drop' }, ta, h('div', { class: 'hub-drop-hint subtle text-xs' }, 'Tip: you can drop a .pgn file here'));
+    const fileName = h('span', { class: 'muted text-sm truncate' }, t('library.import.noFile'));
+    const pickBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('folder') + `<span>${escapeHtml(t('library.import.chooseFile'))}</span>` });
+    const drop = h('div', { class: 'hub-drop' }, ta, h('div', { class: 'hub-drop-hint subtle text-xs' }, t('library.import.dropHint')));
     const readFile = async (file) => {
       if (!file) return;
-      if (file.size > MAX_PGN_BYTES) { toast('That file is too large (max 4 MB).', 'warning'); return; }
+      if (file.size > MAX_PGN_BYTES) { toast(t('library.import.fileTooLarge'), 'warning'); return; }
       try {
         ta.value = await file.text();
         fileName.textContent = file.name;
-      } catch { toast('Could not read that file', 'error'); }
+      } catch { toast(t('library.import.readError'), 'error'); }
     };
     pickBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => readFile(fileInput.files?.[0]));
@@ -620,25 +641,25 @@ export async function mount(root) {
     drop.addEventListener('dragleave', () => drop.classList.remove('over'));
     drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); readFile(e.dataTransfer?.files?.[0]); });
     const body = h('div', { class: 'stack' },
-      h('p', { class: 'muted' }, 'Paste one or more games in PGN format (the standard chess file format used by chess.com, lichess and others), or upload a file.'),
+      h('p', { class: 'muted' }, t('library.import.intro')),
       drop,
       h('div', { class: 'row-sm' }, pickBtn, fileInput, fileName));
     openModal = modal({
-      title: 'Import games',
+      title: t('library.import.title'),
       size: 'lg',
       body,
       actions: [
-        { label: 'Cancel', kind: 'ghost' },
+        { label: t('library.actions.cancel'), kind: 'ghost' },
         {
-          label: 'Import', kind: 'primary', icon: 'upload',
+          label: t('library.import.submit'), kind: 'primary', icon: 'upload',
           onClick: async () => {
             const pgn = ta.value.trim();
-            if (!pgn) { toast('Paste a PGN or choose a file first', 'warning'); ta.focus(); return false; }
-            if (pgn.length > MAX_PGN_BYTES) { toast('That PGN is too large (max 4 MB).', 'warning'); return false; }
+            if (!pgn) { toast(t('library.import.empty'), 'warning'); ta.focus(); return false; }
+            if (pgn.length > MAX_PGN_BYTES) { toast(t('library.import.pgnTooLarge'), 'warning'); return false; }
             const res = await api.post('/api/games/import', { pgn }, { signal, timeout: 120000 });
             const n = Array.isArray(res) ? res.length : 0;
-            if (!n) { toast('No games were found in that PGN', 'warning'); return false; }
-            toast(`Imported ${n} ${n === 1 ? 'game' : 'games'}`, 'success');
+            if (!n) { toast(t('library.import.noneFound'), 'warning'); return false; }
+            toast(t('library.import.imported', { count: n }), 'success');
             reload();
             return true;
           },
@@ -655,8 +676,8 @@ export async function mount(root) {
 function parseTags(text) {
   const out = [];
   for (const raw of String(text || '').split(',')) {
-    const t = raw.trim().replace(/^#+/, '').replace(/\s+/g, '-').toLowerCase().slice(0, 24);
-    if (t && !out.includes(t)) out.push(t);
+    const tag = raw.trim().replace(/^#+/, '').replace(/\s+/g, '-').toLowerCase().slice(0, 24);
+    if (tag && !out.includes(tag)) out.push(tag);
     if (out.length >= MAX_TAGS) break;
   }
   return out;

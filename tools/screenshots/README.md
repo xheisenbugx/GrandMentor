@@ -21,3 +21,4 @@ node tools/screenshots/capture.mjs /tmp/gm-chrome /tmp/gm-shots play,review
 Scenes: `home play review analysis puzzle learn openings endgames profile library light mobile`.
 `BASE` overrides the server URL (default `http://localhost:8097`).
 Use `b.shot()` for a screenshot and `b.record(file, async () => { ... })` for a GIF when adding scenes.
+`CDP_PORT` overrides the Chrome DevTools port (default 9333) so several captures can run in parallel.

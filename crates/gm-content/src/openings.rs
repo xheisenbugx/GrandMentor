@@ -15,16 +15,25 @@ use shakmaty::{Chess, Position};
 
 use gm_engine::{fen_key, move_to_san, parse_fen, to_fen, uci_to_move};
 
-use crate::{BookMove, Opening, OpeningMatch, OpeningRef};
+use crate::{BookMove, Lang, Opening, OpeningMatch, OpeningRef};
 
 /// Name reported for the initial position (which is "in book" but not a named opening).
 pub const START_NAME: &str = "Starting Position";
 pub const START_ID: &str = "starting-position";
 
+/// [`START_NAME`] in `lang`.
+pub fn start_name(lang: Lang) -> &'static str {
+    match lang {
+        Lang::En => START_NAME,
+        Lang::Es => "Posición inicial",
+    }
+}
+
 /// Lazily-built, cheaply clonable handle to the opening book. Lives inside `Content`.
 #[derive(Clone, Default)]
 pub struct OpeningIndex {
     cell: OnceLock<Arc<OpeningBook>>,
+    lang: Lang,
 }
 
 impl std::fmt::Debug for OpeningIndex {
@@ -39,14 +48,20 @@ impl std::fmt::Debug for OpeningIndex {
 impl OpeningIndex {
     /// Builds an index for `openings` right away.
     pub fn build(openings: &[Opening]) -> Self {
+        Self::build_lang(openings, Lang::En)
+    }
+
+    /// Builds an index whose start position is named in `lang` (opening names come from
+    /// `openings`, which may already be localized).
+    pub fn build_lang(openings: &[Opening], lang: Lang) -> Self {
         let cell = OnceLock::new();
-        let _ = cell.set(Arc::new(OpeningBook::build(openings)));
-        OpeningIndex { cell }
+        let _ = cell.set(Arc::new(OpeningBook::build_lang(openings, lang)));
+        OpeningIndex { cell, lang }
     }
 
     /// Returns the book, building it from `openings` on first use.
     pub fn get(&self, openings: &[Opening]) -> &OpeningBook {
-        self.cell.get_or_init(|| Arc::new(OpeningBook::build(openings)))
+        self.cell.get_or_init(|| Arc::new(OpeningBook::build_lang(openings, self.lang)))
     }
 }
 
@@ -78,16 +93,22 @@ pub struct OpeningBook {
     /// (plies, popularity) per entry in `refs`, used to rank candidates.
     rank: Vec<(usize, u8)>,
     start: u32,
+    start_name: &'static str,
 }
 
 impl OpeningBook {
     pub fn build(openings: &[Opening]) -> Self {
+        Self::build_lang(openings, Lang::En)
+    }
+
+    pub fn build_lang(openings: &[Opening], lang: Lang) -> Self {
         let mut book = OpeningBook {
             keys: HashMap::with_capacity(openings.len() * 8),
             nodes: Vec::with_capacity(openings.len() * 8),
             refs: Vec::with_capacity(openings.len()),
             rank: Vec::with_capacity(openings.len()),
             start: 0,
+            start_name: start_name(lang),
         };
         let start_pos = Chess::default();
         book.start = book.node_for(fen_key(&to_fen(&start_pos)));
@@ -216,7 +237,7 @@ impl OpeningBook {
         let opening = match node.exact.or(node.inherited) {
             Some(o) => self.refs.get(o as usize)?.clone(),
             None if i == self.start => {
-                OpeningRef { id: START_ID.to_string(), eco: String::new(), name: START_NAME.to_string() }
+                OpeningRef { id: START_ID.to_string(), eco: String::new(), name: self.start_name.to_string() }
             }
             None => return None,
         };
