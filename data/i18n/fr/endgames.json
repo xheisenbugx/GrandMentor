@@ -1,0 +1,627 @@
+{
+  "kq-vs-k": {
+    "title": "Mat avec la dame",
+    "description": "Mate le roi seul avec ton roi et ta dame. C'est le mat élémentaire le plus important : tu dois pouvoir le réussir en moins de 10 coups.",
+    "hint": "Place la dame à un saut de cavalier du roi adverse pour l'enfermer, puis rapproche ton roi.",
+    "technique": [
+      "Réduis la cage du roi avec la dame (à un saut de cavalier, elle le suit comme un miroir)",
+      "Repousse le roi vers le bord",
+      "Rapproche ton roi : la dame ne peut pas mater seule",
+      "Laisse toujours un coup légal au roi jusqu'au mat (attention au pat !)"
+    ],
+    "pitfall": "Attention au pat : jusqu'à l'échec final, laisse toujours une case libre au roi noir.",
+    "lesson": [
+      "La dame ne peut pas mater toute seule. Utilise-la d'abord pour **réduire la cage** où vit le roi noir.",
+      "Ensuite, rapproche ton roi. Le mat se donne sur le bord, avec la dame **protégée par ton roi**.",
+      "Le grand piège, c'est le **pat** : ici, les Noirs n'ont aucun coup légal et ne sont pas en échec. C'est nulle !"
+    ]
+  },
+  "kq-vs-k-center": {
+    "title": "Mat avec la dame depuis le centre",
+    "description": "Le roi noir part du centre de l'échiquier. Repousse-le vers le bord et mate-le.",
+    "hint": "Qf6! enlève d'un coup tout un bloc de cases.",
+    "technique": [
+      "Restreins d'abord le roi avec la dame",
+      "Repousse le roi vers le bord",
+      "Mate avec la dame protégée par le roi"
+    ],
+    "pitfall": "Trop lent, ou pat. Garde la dame à un saut de cavalier du roi et fais venir ton roi en renfort.",
+    "lesson": [
+      "**Qf6!** contrôle d'un coup la 6e rangée et la colonne f. Le roi noir est enfermé dans une cage plus petite.",
+      "Continue à réduire la cage avec des coups de dame tranquilles, puis amène ton roi pour mater sur le bord."
+    ]
+  },
+  "kr-vs-k": {
+    "title": "Mat avec la tour",
+    "description": "Mate le roi seul avec le roi et la tour. Le roi doit aider, et l'opposition est la clé.",
+    "hint": "Coupe le roi avec ta tour le long d'une rangée, puis amène ton roi face au roi adverse.",
+    "technique": [
+      "Coupe le roi le long d'une rangée ou d'une colonne",
+      "Amène ton roi face au roi adverse (opposition)",
+      "Donne échec sur le bord quand les rois se font face",
+      "Joue un coup d'attente avec la tour pour prendre l'opposition"
+    ],
+    "pitfall": "La tour seule ne peut pas mater. Coupe le roi, amène ton roi face à lui et ne donne échec que lorsque les rois se font face.",
+    "lesson": [
+      "**Ra7!** coupe le roi noir sur la dernière rangée. Il ne pourra plus jamais revenir.",
+      "Maintenant, avance ton roi jusqu'à ce qu'il fasse face au roi noir. Quand les rois se font face, un échec de la tour sur le bord est **mat**."
+    ]
+  },
+  "kr-vs-k-center": {
+    "title": "Mat avec la tour depuis le centre",
+    "description": "Une version plus difficile : le roi adverse est centralisé. Enferme-le pas à pas.",
+    "hint": "Commence par Rh4 ou Rh5 pour couper le roi, puis approche avec ton roi.",
+    "technique": [
+      "Rends la cage plus petite à chaque coup de tour",
+      "Protège la tour avec ton roi quand elle est attaquée",
+      "Opposition + échec sur le bord = mat"
+    ],
+    "pitfall": "La cage n'a pas rétréci. Chaque coup de tour doit enlever une rangée ou une colonne, et garde la tour loin du roi noir.",
+    "lesson": [
+      "Commence par couper le roi : **Rh4** le maintient au-dessus de la 4e rangée.",
+      "Avance ton roi. Quand les rois se font face, donne échec ; sinon, rends la cage plus petite d'une rangée."
+    ]
+  },
+  "two-rooks-ladder": {
+    "title": "Deux tours : l'escalier",
+    "description": "Avec deux tours, tu n'as même pas besoin de ton roi. Repousse le roi adverse vers le bord comme si tu montais un escalier.",
+    "hint": "Une tour coupe une rangée, l'autre donne échec sur la rangée suivante. Garde les tours loin du roi.",
+    "technique": [
+      "La tour 1 coupe une rangée",
+      "La tour 2 donne échec sur la rangée suivante",
+      "Alterne les tours jusqu'à ce que le roi atteigne le bord",
+      "Si le roi attaque une tour, envoie-la à l'autre bout de l'échiquier"
+    ],
+    "pitfall": "Une tour s'est trop approchée du roi. Si le roi attaque une tour, envoie-la à l'autre bout de l'échiquier.",
+    "lesson": [
+      "Une tour garde une rangée, l'autre donne échec sur la suivante : **Rh4**, puis **Ra5+**.",
+      "Continue à monter l'escalier jusqu'à ce que le roi atteigne le bord : c'est alors mat."
+    ]
+  },
+  "two-bishops-mate": {
+    "title": "Mat avec les deux fous",
+    "description": "Deux fous côte à côte forment un mur que le roi ne peut pas franchir. Repousse-le dans un coin et mate-le.",
+    "hint": "Place les fous l'un à côté de l'autre au centre et utilise ton roi pour faire reculer le roi adverse.",
+    "technique": [
+      "Les fous côte à côte forment un mur diagonal infranchissable",
+      "Le roi aide à enlever des cases",
+      "Repousse le roi dans un coin",
+      "Attention au pat dans le coin"
+    ],
+    "pitfall": "Le roi s'est échappé de la zone du coin, ou c'était pat. Garde les fous côte à côte et pousse avec ton roi.",
+    "lesson": [
+      "Deux fous côte à côte forment un **mur diagonal** que le roi ne peut pas franchir.",
+      "Utilise ton roi pour repousser le roi adverse dans un coin. Voici à quoi ressemble la position finale."
+    ]
+  },
+  "bishop-knight-mate": {
+    "title": "Mat du fou et du cavalier",
+    "description": "Le mat élémentaire le plus difficile : il peut demander jusqu'à 33 coups. Tu ne peux forcer le mat que dans un coin de la **couleur du fou** (ici a8 ou h1).",
+    "hint": "Repousse d'abord le roi vers le bord, puis utilise la « manœuvre en W » du cavalier pour l'emmener vers un coin clair.",
+    "technique": [
+      "Centralise les trois pièces",
+      "Repousse le roi vers le bord",
+      "S'il fuit vers le mauvais coin (foncé), utilise la manœuvre en W du cavalier",
+      "Mate dans le coin de la couleur du fou (a8 ou h1)"
+    ],
+    "pitfall": "Tu ne peux forcer le mat que dans un coin de la couleur du fou. Emmène le roi là-bas avec la manœuvre en W du cavalier, et fais vite : la règle des 50 coups veille.",
+    "lesson": [
+      "Centralise d'abord les trois pièces et repousse le roi noir vers le bord.",
+      "Le mat n'est possible que dans un coin de la **couleur du fou** : ici a8 ou h1 (cases claires).",
+      "Si le roi fuit vers un mauvais coin (foncé), la **manœuvre en W** du cavalier le chasse le long du bord jusqu'au bon coin."
+    ]
+  },
+  "queen-vs-rook": {
+    "title": "Dame contre tour",
+    "description": "La dame contre la tour gagne, mais la technique est exigeante. Gagne la tour par une fourchette ou force le mat.",
+    "hint": "Vise la position de Philidor : mets le camp qui défend en zugzwang pour que la tour doive se séparer de son roi.",
+    "technique": [
+      "Garde ton roi près du roi adverse",
+      "Utilise le zugzwang : joue un coup d'attente avec la dame",
+      "Dès que la tour quitte le roi, cherche une fourchette de la dame (échec + tour)"
+    ],
+    "pitfall": "La tour a continué à donner échec ou a tendu un piège de pat. Garde ton roi proche et attends que la tour quitte son roi.",
+    "lesson": [
+      "La tour est collée à son roi. Utilise des échecs et des **coups d'attente de la dame** jusqu'à ce que les Noirs soient obligés de jouer et que la tour doive s'éloigner.",
+      "Dès que la tour se sépare de son roi, cherche un **échec qui fait fourchette** sur le roi et la tour."
+    ]
+  },
+  "kp-key-squares": {
+    "title": "Roi et pion : les cases clés",
+    "description": "Fais promouvoir ton pion. Avec ton roi devant le pion sur la 5e rangée, tu peux toujours atteindre une case clé.",
+    "hint": "Joue Kd6 ou Kf6 : le roi devant le pion gagne.",
+    "technique": [
+      "Le roi devant le pion, pas derrière",
+      "Atteins une case clé (d6, e6 ou f6)",
+      "Utilise l'opposition quand les rois se rencontrent"
+    ],
+    "pitfall": "Le roi noir s'est placé devant ton pion avec l'opposition : c'est nulle. Garde ton roi devant le pion et atteins une case clé en premier.",
+    "lesson": [
+      "**Cases clés** : si ton roi atteint d6, e6 ou f6, le pion va à promotion quoi que fassent les Noirs.",
+      "Le roi d'abord, le pion ensuite : ne pousse le pion que lorsque ton roi a ouvert le chemin."
+    ]
+  },
+  "kp-opposition": {
+    "title": "Prendre l'opposition",
+    "description": "Un seul coup gagne. Prends l'opposition et escorte le pion.",
+    "hint": "Ke3! : place-toi face au roi noir avec une case entre les deux rois.",
+    "technique": [
+      "Rois sur la même colonne avec une case entre eux = opposition",
+      "Le camp qui n'a PAS le trait a l'opposition",
+      "Débordement : quand le roi adverse s'écarte, avance de l'autre côté"
+    ],
+    "pitfall": "Tu as perdu l'opposition : le roi noir s'est placé face au tien alors que c'était à toi de jouer, et il a bloqué le pion.",
+    "lesson": [
+      "**Opposition** : les rois se font face avec une case entre eux. Le camp qui n'est *pas* obligé de jouer gagne le face-à-face.",
+      "Après **Ke3**, les Noirs doivent céder le passage, et ton roi rejoint une case clé : d4, e4 ou f4."
+    ]
+  },
+  "kp-king-sixth": {
+    "title": "Le roi sur la 6e rangée",
+    "description": "Ton roi est à côté de son pion. Un seul coup gagne, les autres font nulle.",
+    "hint": "Kb6 : le roi devant le pion sur la 6e rangée gagne toujours.",
+    "technique": [
+      "Le roi sur la 6e rangée devant le pion gagne, quelle que soit l'opposition",
+      "Pousse ensuite le pion avec le soutien du roi"
+    ],
+    "pitfall": "Pousser le pion trop tôt permet au roi noir de le bloquer. Le roi d'abord, le pion ensuite.",
+    "lesson": [
+      "Avec ton roi sur la 6e rangée **devant** le pion, c'est toujours gagnant, peu importe qui a le trait.",
+      "Depuis b6, ton roi contrôle les cases devant le pion et peut l'accompagner jusqu'à b8."
+    ]
+  },
+  "kp-defend-opposition": {
+    "title": "Défendre : garder l'opposition",
+    "description": "Tu es en défense. Garde ton roi devant le pion et utilise l'opposition pour faire nulle.",
+    "hint": "Reste sur la colonne e, devant le pion. Quand le roi blanc arrive sur la 6e rangée, prends l'opposition.",
+    "technique": [
+      "Reste juste devant le pion",
+      "Recule tout droit (vers e8), pas sur le côté",
+      "Quand le roi blanc atteint la 6e rangée, prends l'opposition",
+      "Si le pion arrive sur la 7e rangée avec échec, va sur la case du coin devant lui"
+    ],
+    "pitfall": "Le roi blanc s'est placé devant le pion, sur une case clé. Garde ton roi face à lui et, quand il avance, prends l'opposition.",
+    "lesson": [
+      "Ta place est **juste devant le pion**. Reste sur la colonne e et fais face au roi blanc.",
+      "Si le pion atteint e7 avec ton roi en e8, les Blancs ne peuvent que te mettre pat : voici la position de nulle."
+    ]
+  },
+  "rook-pawn-draw": {
+    "title": "Pion de la tour : file dans le coin",
+    "description": "Le pion de la tour est le plus faible de tous. Si le roi qui défend atteint le coin, il ne peut plus jamais en être chassé.",
+    "hint": "Garde ton roi en a8, b8 ou tout près : les Blancs ne peuvent que te mettre pat.",
+    "technique": [
+      "Amène le roi dans le coin, devant le pion",
+      "Fais des allers-retours entre a8 et b8/b7",
+      "La seule tentative des Blancs finit par un pat"
+    ],
+    "pitfall": "Ton roi a quitté la zone du coin. Contre un pion de la tour, reste en a8/b8 et ne t'éloigne jamais.",
+    "lesson": [
+      "Le pion de la tour est le plus faible : une fois que ton roi atteint le **coin**, il ne peut plus jamais en être chassé.",
+      "Fais simplement des allers-retours entre a8 et b8. La meilleure tentative des Blancs finit par un pat."
+    ]
+  },
+  "square-of-the-pawn": {
+    "title": "Le carré du pion",
+    "description": "Le roi blanc est loin. Ton roi peut-il rattraper le pion passé ?",
+    "hint": "Entre en diagonale dans le carré du pion : Kg7!",
+    "technique": [
+      "Trace le carré entre le pion et sa case de promotion",
+      "Si ton roi peut entrer dans le carré, il rattrape le pion",
+      "Les déplacements en diagonale sont aussi rapides qu'en ligne droite"
+    ],
+    "pitfall": "Ton roi est resté hors du carré du pion et n'a pas pu le rattraper.",
+    "lesson": [
+      "Trace un **carré** entre le pion et sa case de promotion. Si ton roi peut y entrer, il rattrape le pion.",
+      "**Kg7!** entre dans le carré. De là, fonce droit sur le pion."
+    ]
+  },
+  "reti-manoeuvre": {
+    "title": "La manœuvre de Réti",
+    "description": "La célèbre étude de Réti (1921). Le roi blanc semble désespérément loin des deux pions… et pourtant, c'est nulle !",
+    "hint": "Kg7! Le roi poursuit le pion h et s'approche de c6 en même temps, en marchant sur la diagonale.",
+    "technique": [
+      "Un roi qui avance en diagonale peut poursuivre deux objectifs à la fois",
+      "Menace de soutenir ton propre pion",
+      "Force les Noirs à perdre du temps, puis entre dans le carré du pion h"
+    ],
+    "pitfall": "Ton roi n'a poursuivi qu'un seul objectif. Marche sur la diagonale pour chasser le pion h et soutenir ton pion c en même temps.",
+    "lesson": [
+      "**Kg7!** : le roi descend la diagonale, il chasse le pion h **et** se dirige vers ton pion c.",
+      "Une marche en diagonale est aussi rapide qu'en ligne droite : un seul chemin remplit deux missions. Les Noirs doivent choisir, et dans les deux cas c'est nulle."
+    ]
+  },
+  "outside-passed-pawn": {
+    "title": "Le pion passé éloigné",
+    "description": "Ton pion a est loin des autres pions. Utilise-le comme leurre pour gagner les pions de l'aile roi.",
+    "hint": "Pousse le pion a. Quand le roi noir lui court après, emmène ton roi vers les pions de l'aile roi.",
+    "technique": [
+      "Le pion passé éloigné attire le roi adverse au loin",
+      "Ton roi attaque les pions restés derrière",
+      "Ne te presse pas d'aller à promotion si le roi est déjà dans le carré : sers-t'en comme leurre"
+    ],
+    "pitfall": "Ton roi n'a pas atteint les pions de l'aile roi à temps. Utilise le pion a comme appât, puis emmène ton roi directement vers l'autre aile.",
+    "lesson": [
+      "Ton pion a est loin des autres pions. Pousse-le : le roi noir doit courir pour l'arrêter.",
+      "Pendant que le roi noir est occupé sur la colonne a, **ton roi se régale** des pions de l'aile roi."
+    ]
+  },
+  "pawn-breakthrough": {
+    "title": "La percée de pions",
+    "description": "Trois pions contre trois, et les deux rois sont loin. Il existe une façon brillante de créer un pion passé.",
+    "hint": "b6!! : après axb6 c6! ou cxb6 a6!, un pion blanc va à promotion.",
+    "technique": [
+      "Sacrifie d'abord le pion du milieu",
+      "Puis sacrifie le deuxième pion pour ouvrir le chemin",
+      "Le dernier pion passe"
+    ],
+    "pitfall": "La percée ne marche qu'avec tes pions sur la 5e rangée et le roi adverse loin. Commence par b6!",
+    "lesson": [
+      "**b6!!** : si ...axb6, alors c6!, et si ...cxb6, alors a6!",
+      "L'un de tes pions perce, et le roi noir en h8 est trop loin pour l'arrêter."
+    ]
+  },
+  "wrong-bishop": {
+    "title": "Le mauvais pion de la tour",
+    "description": "Les Blancs ont un fou et un pion de plus, et pourtant c'est nulle : le fou ne contrôle pas la case de promotion h8.",
+    "hint": "Reste dans le coin. Fais des allers-retours entre h8 et g8 (ou g7). Les Blancs ne peuvent pas te chasser sans te mettre pat.",
+    "technique": [
+      "Pion de la tour + fou de la mauvaise couleur = nulle si le roi qui défend atteint le coin",
+      "Garde ton roi en h8/g8/g7",
+      "Ne quitte pas le coin"
+    ],
+    "pitfall": "Ton roi a quitté le coin. Contre le mauvais fou, le coin h8 est une forteresse : restes-y.",
+    "lesson": [
+      "Le fou blanc est de cases blanches, mais h8 est une case **noire**. Le fou ne pourra jamais chasser ton roi du coin.",
+      "Fais des allers-retours entre h8 et g8 (ou g7). Les Blancs ne peuvent que te mettre pat."
+    ]
+  },
+  "lucena": {
+    "title": "La position de Lucena",
+    "description": "La finale de tours gagnante la plus importante. Ton pion est sur la 7e rangée, ton roi devant lui, et le roi adverse est coupé.",
+    "hint": "Construis un pont : Rd4!, puis fais sortir le roi et interpose la tour sur la 4e rangée pour bloquer les échecs.",
+    "technique": [
+      "Monte ta tour sur la 4e rangée (Rd4)",
+      "Fais sortir ton roi de devant le pion",
+      "Quand les échecs arrivent, interpose la tour sur la colonne b (Rb4)",
+      "Va à promotion avec le pion"
+    ],
+    "pitfall": "Les échecs n'ont jamais cessé, ou le roi noir est revenu. Garde le roi noir coupé et construis le pont avec ta tour sur la 4e rangée.",
+    "lesson": [
+      "Ta tour coupe le roi noir du pion. Maintenant, **construis un pont** : Rd4!",
+      "Sors avec ton roi. Quand la tour noire donne échec, marche vers ta tour et **bloque l'échec sur la 4e rangée**."
+    ]
+  },
+  "philidor": {
+    "title": "La défense de Philidor",
+    "description": "Tu as un pion de moins. Utilise la défense de Philidor sur la troisième rangée pour tenir la nulle.",
+    "hint": "Garde ta tour sur la 6e rangée jusqu'à ce que le pion avance en e6, puis descends-la sur la 1re rangée et donne échec par-derrière.",
+    "technique": [
+      "La tour sur ta 3e rangée (ici la 6e) empêche le roi d'avancer",
+      "Garde ton roi devant le pion",
+      "Quand le pion atteint e6, donne des échecs par-derrière, depuis l'autre bout",
+      "Le roi blanc n'a plus d'abri"
+    ],
+    "pitfall": "Ta tour a quitté la 6e rangée trop tôt (ou trop tard), et le roi blanc a pu se placer devant le pion.",
+    "lesson": [
+      "**La défense de Philidor** : garde ta tour sur la **6e rangée**. Le roi blanc ne peut pas avancer sans s'exposer aux échecs.",
+      "Dès que le pion passe en e6, il n'abrite plus son roi : descends ta tour sur la 1re rangée et **donne échec par-derrière**."
+    ]
+  },
+  "vancura": {
+    "title": "La position de Vančura",
+    "description": "Tour contre tour et pion a. Avec la tour blanche devant le pion, la défense Vančura tient : attaque le pion par le côté.",
+    "hint": "Garde ta tour sur la 6e rangée pour attaquer a6 par le côté, et ton roi près de g7/h7.",
+    "technique": [
+      "La tour attaque le pion par le côté (depuis f6)",
+      "Ton roi reste en g7/h7, à l'abri des échecs de la tour sur la 7e rangée",
+      "Si le roi blanc s'approche, donne des échecs latéraux puis reviens sur la 6e rangée"
+    ],
+    "pitfall": "Ta tour a cessé d'attaquer le pion par le côté. Dans la Vančura, elle reste sur la 6e rangée jusqu'à pouvoir donner échec par-derrière.",
+    "lesson": [
+      "La tour blanche est coincée devant son pion. Attaque le pion a6 **par le côté** avec ta tour sur la 6e rangée.",
+      "Garde ton roi en g7/h7. Si le roi blanc vient protéger le pion, donne-lui échec par-derrière."
+    ]
+  },
+  "rook-behind-passer": {
+    "title": "La tour derrière le pion passé",
+    "description": "La règle de Tarrasch : la place des tours est derrière les pions passés. Ta tour soutient le pion a par-derrière, tandis que la tour noire est coincée passivement devant lui.",
+    "hint": "La tour noire ne peut pas quitter a7. Emmène ton roi vers l'aile dame (ou attaque les pions de l'aile roi) et les Noirs vont manquer de coups.",
+    "technique": [
+      "La tour derrière ton pion passé",
+      "Avance le pion pour immobiliser la tour noire",
+      "Active ton roi"
+    ],
+    "pitfall": "Ta tour ou ton roi a lâché prise. Garde la tour derrière le pion et utilise ton roi pour percer pendant que les Noirs sont immobilisés.",
+    "lesson": [
+      "**La règle de Tarrasch** : la place des tours est derrière les pions passés. Ta tour pousse le pion a tandis que la tour noire est coincée devant lui.",
+      "La tour noire ne peut pas bouger, alors ton roi avance. Bientôt, les Noirs n'auront plus de bons coups."
+    ]
+  },
+  "rook-vs-pawn": {
+    "title": "Tour contre pion",
+    "description": "Une tour bat généralement un pion, mais seulement si ton roi vient aider à temps. Arrête le pion et gagne-le.",
+    "hint": "Rapproche immédiatement ton roi du pion (Kd2!) et utilise la tour pour l'arrêter par-derrière ou sur la colonne b.",
+    "technique": [
+      "La tour derrière le pion ou devant sur son chemin",
+      "Rapproche ton roi du pion",
+      "Attention : si le pion va à promotion avec l'aide du roi adverse, ce peut être nulle"
+    ],
+    "pitfall": "Le pion est allé trop loin, ou ta tour a été attaquée. Le roi d'abord : rapproche-le tout de suite du pion.",
+    "lesson": [
+      "Ton roi doit revenir tout de suite : **Kd2!** La tour seule ne peut pas arrêter un pion soutenu par son roi.",
+      "Utilise ensuite la tour sur la colonne b pour arrêter le pion, puis gagne-le avec ton roi."
+    ]
+  },
+  "cut-off-king": {
+    "title": "Couper le roi",
+    "description": "Ta tour coupe le roi noir le long de la colonne d. Garde-le coupé et escorte le pion c.",
+    "hint": "Avance le roi avec le pion ; si les Noirs donnent des échecs latéraux, rapproche-toi de la tour pour les bloquer.",
+    "technique": [
+      "Le roi coupé ne peut pas aider sa tour",
+      "Le roi et le pion avancent ensemble",
+      "Vise la position de Lucena"
+    ],
+    "pitfall": "Le roi noir a traversé la colonne d. Garde-le coupé à tout prix.",
+    "lesson": [
+      "Ta tour sur la colonne d tient le roi noir hors du jeu. **Ne le laisse jamais traverser.**",
+      "Fais avancer le pion avec ton roi à ses côtés. Si les Noirs donnent des échecs latéraux, dirige-toi vers ta tour."
+    ]
+  },
+  "queen-vs-knight-pawn": {
+    "title": "Dame contre pion en 7e (pion du cavalier)",
+    "description": "Un pion sur la 7e rangée soutenu par son roi. Avec un pion du cavalier (ou un pion central), la dame gagne.",
+    "hint": "Donne échec et attaque le pion pour que le roi doive se placer devant lui. À chaque fois, rapproche ton roi d'une case.",
+    "technique": [
+      "Force le roi adverse à se placer devant son pion avec des échecs",
+      "Ça te donne un temps gratuit pour rapprocher ton roi",
+      "Recommence jusqu'à ce que ton roi aide à prendre le pion ou à mater"
+    ],
+    "pitfall": "Le pion est allé à promotion ou s'est échappé. Donne échec jusqu'à ce que le roi se place devant son pion, puis rapproche ton roi.",
+    "lesson": [
+      "Donne échec et attaque le pion jusqu'à ce que le roi noir doive se placer **devant lui** en b1.",
+      "Chaque fois que le roi bloque son propre pion, tu gagnes un coup gratuit : rapproche ton roi d'une case. Recommence."
+    ]
+  },
+  "triangulation-black": {
+    "title": "Triangulation avec les Noirs (Alburt–Kasparov 1978)",
+    "description": "Avec les Noirs, Kasparov a gagné cette finale grâce à la triangulation. Le roi blanc ne peut faire que des allers-retours entre f1, g1 et f2.",
+    "hint": "...Kf5! Kg1 Ke5! : ton roi revient en e4 avec le trait aux Blancs.",
+    "technique": [
+      "Trouve la position de zugzwang (roi noir en e4, trait aux Blancs)",
+      "Perds un temps avec un triangle du roi f5–e5–e4",
+      "Puis pénètre par f4 et g3 pour gagner le pion h3"
+    ],
+    "pitfall": "Tu n'as pas perdu le temps. Atteins cette même position avec le trait aux Blancs : ils sont alors en zugzwang.",
+    "lesson": [
+      "C'est un **zugzwang mutuel** : celui qui doit jouer perd du terrain. Perds un temps avec un triangle : ...Kf5, ...Ke5, ...Ke4.",
+      "Le roi blanc ne peut faire que des allers-retours, il ne peut donc pas t'imiter. Dès que les Blancs doivent céder, ton roi entre et le pion f va à promotion."
+    ]
+  },
+  "rook-triangulation": {
+    "title": "Triangulation avec la tour (Topalov–Karpov 2002)",
+    "description": "Même les tours peuvent perdre un temps. Les Blancs utilisent des échecs pour revenir à la même position avec le trait aux Noirs.",
+    "hint": "Rh7+ Kd8 Rh8+ Kd7 Rh6 : les Noirs sont maintenant en zugzwang.",
+    "technique": [
+      "Donne deux échecs qui ramènent la tour en h6",
+      "Le roi noir doit s'écarter du pion",
+      "Libère ensuite ton roi avec Ka7 et va à promotion"
+    ],
+    "pitfall": "Ton roi est resté coincé devant le pion. Perds un temps avec des échecs de la tour pour que les Noirs aient le trait dans cette position.",
+    "lesson": [
+      "Si les Noirs avaient le trait ici, ils perdraient. Utilise des échecs pour revenir avec le trait aux Noirs : **Rh7+ Kd8 Rh8+ Kd7 Rh6**.",
+      "En zugzwang, la tour ou le roi noir doit céder le passage, et ton pion va à promotion."
+    ]
+  },
+  "triangulation": {
+    "title": "La triangulation",
+    "description": "Avec le trait aux Noirs, cette position est perdue pour eux… mais c'est aux Blancs de jouer. Perds un temps avec le roi pour mettre les Noirs en zugzwang.",
+    "hint": "Ke5! Kc6 Kd4! Kd7 Kd5 : le roi fait le tour d'un triangle, alors que le roi noir ne peut faire que des allers-retours entre deux cases.",
+    "technique": [
+      "Reconnais le zugzwang mutuel",
+      "Fais faire à ton roi le tour d'un triangle de trois cases",
+      "Reviens à la même position avec le trait à l'adversaire",
+      "Puis pénètre avec Ke6–d6–e7–d7"
+    ],
+    "pitfall": "Tu as laissé le trait aux Noirs dans la position critique. Triangule : Ke5, Kd4, Kd5.",
+    "lesson": [
+      "Avec le trait aux Noirs, ce serait perdu pour eux. Fais faire à ton roi le tour d'un **triangle** (e5, d4, d5) et reviens avec le trait aux Noirs.",
+      "Le roi noir ne peut faire que des allers-retours entre deux cases, il ne peut donc pas copier ton triangle. Ensuite, ton roi pénètre."
+    ]
+  },
+  "kp-far-pawn": {
+    "title": "Roi et pion depuis le départ",
+    "description": "Même avec le pion sur sa case de départ, les Blancs gagnent, à condition que le roi ouvre la voie.",
+    "hint": "Kd2 ou Kf2 d'abord : le roi doit ouvrir la voie. Si tu pousses le pion trop tôt, les Noirs prennent l'opposition.",
+    "technique": [
+      "Le roi d'abord, le pion ensuite",
+      "Vise les cases clés d4, e4 et f4",
+      "Profite du choix d'avancer le pion d'une ou de deux cases pour gagner l'opposition"
+    ],
+    "pitfall": "Tu as poussé le pion trop tôt et le roi noir a pris l'opposition devant lui.",
+    "lesson": [
+      "**Le roi d'abord !** Ton roi doit ouvrir la voie : Kd2 ou Kf2, puis il monte devant le pion.",
+      "Atteins une case clé (d4, e4 ou f4) avant de pousser le pion."
+    ]
+  },
+  "two-connected-pawns": {
+    "title": "Deux pions contre le roi",
+    "description": "Deux pions gagnent généralement facilement. Avance-les ensemble, avec le soutien de ton roi.",
+    "hint": "Amène d'abord le roi ; des pions côte à côte se défendent l'un l'autre.",
+    "technique": [
+      "Des pions côte à côte contrôlent les cases devant eux",
+      "Si le roi attaque un pion, pousse l'autre",
+      "Utilise ton roi pour les escorter"
+    ],
+    "pitfall": "Un pion a été perdu. Garde les pions ensemble pour qu'ils se protègent, et fais venir ton roi en renfort.",
+    "lesson": [
+      "Amène d'abord ton roi : les pions avancent plus vite avec une escorte.",
+      "Avance les pions ensemble. Si le roi noir en attaque un, pousse l'autre pour qu'ils se défendent mutuellement."
+    ]
+  },
+  "right-bishop": {
+    "title": "Pion de la tour avec le bon fou",
+    "description": "Ici, le fou contrôle la case de promotion h8, qui est noire : le pion de la tour gagne. Attention au pat !",
+    "hint": "Contrôle g8/g7 avec le fou avant de pousser le pion en h7.",
+    "technique": [
+      "Le fou doit contrôler la case de promotion",
+      "Ne mets pas le roi pat dans le coin",
+      "Pousse h7 avec échec au bon moment"
+    ],
+    "pitfall": "Pat, ou pion perdu. Contrôle d'abord g8/g7 avec le fou, et laisse toujours un coup au roi noir.",
+    "lesson": [
+      "Ton fou contrôle la case **noire** h8 : ce pion de la tour gagne.",
+      "Attention au pat : ne laisse jamais le roi noir sans coup tant qu'il n'est pas en échec."
+    ]
+  },
+  "knight-and-pawn": {
+    "title": "Cavalier et pion contre roi",
+    "description": "Le cavalier et le pion gagnent facilement si le pion est protégé et soutenu par le roi.",
+    "hint": "Place le roi devant le pion ; utilise le cavalier pour tenir le roi noir à distance.",
+    "technique": [
+      "Protège le pion avec le roi ou le cavalier",
+      "Le roi devant le pion",
+      "Les échecs du cavalier font gagner des temps"
+    ],
+    "pitfall": "Le pion a été perdu, ou le roi noir l'a bloqué. Garde le pion protégé et ouvre la voie avec ton roi.",
+    "lesson": [
+      "Garde le pion protégé : le cavalier et le pion se défendent l'un l'autre, et le roi noir ne peut rien prendre.",
+      "Place ton roi devant le pion, puis pousse-le en utilisant le cavalier pour enlever des cases."
+    ]
+  },
+  "rook-vs-bishop-draw": {
+    "title": "Tour contre fou : le bon coin",
+    "description": "La tour contre le fou, c'est généralement nulle. Garde ton roi dans le coin que le fou ne contrôle PAS (h8 est une case noire, ton fou est de cases blanches).",
+    "hint": "Reste dans le coin h8 et utilise le fou pour bloquer les échecs en g8 ou h7.",
+    "technique": [
+      "Le coin sûr est celui de la couleur opposée à ton fou",
+      "Bloque les échecs de la tour avec le fou",
+      "Évite le coin de la couleur de ton fou : des filets de mat y apparaissent"
+    ],
+    "pitfall": "Ton roi est allé dans le mauvais coin, ou le fou s'est fait piéger. Reste dans le coin que le fou ne contrôle PAS.",
+    "lesson": [
+      "Ton fou est de cases blanches, donc le **coin sûr est le coin noir** : h8.",
+      "Bloque les échecs avec le fou en g8 ou h7 : dans le bon coin, tu ne perds jamais le fou."
+    ]
+  },
+  "rook-vs-knight-draw": {
+    "title": "Tour contre cavalier : restez ensemble",
+    "description": "La tour contre le cavalier, c'est nulle si le cavalier reste près de son roi. Un cavalier isolé et éloigné se fait piéger.",
+    "hint": "Ramène le cavalier vers ton roi (Nh3–f4 ou Ng4) et garde le roi au centre.",
+    "technique": [
+      "Garde le cavalier à côté du roi",
+      "Reste loin des coins",
+      "Ne laisse pas le cavalier se faire couper"
+    ],
+    "pitfall": "Le cavalier s'est éloigné de son roi et s'est fait piéger. Garde-le près de toi.",
+    "lesson": [
+      "Ton cavalier est loin de son roi, et le roi blanc est tout près de lui. Ramène-le à la maison : **...Nd3+**.",
+      "Cavalier à côté du roi = nulle. Un cavalier seul, loin de son roi, peut se faire piéger."
+    ]
+  },
+  "queen-vs-centre-pawn": {
+    "title": "Dame contre pion central",
+    "description": "Le pion noir est sur le point d'aller à promotion, mais contre un pion central la dame gagne grâce aux échecs et aux clouages.",
+    "hint": "Donne échec au roi jusqu'à ce qu'il doive se placer devant le pion, puis rapproche ton roi.",
+    "technique": [
+      "Approche-toi avec des échecs et des coups de dame qui attaquent le pion",
+      "Chaque fois que le roi bloque le pion, profite du temps gagné pour rapprocher ton roi",
+      "Termine en gagnant le pion ou en matant"
+    ],
+    "pitfall": "Le pion est allé à promotion. Donne échec jusqu'à ce que le roi se place devant son pion, puis rapproche ton roi.",
+    "lesson": [
+      "Utilise des échecs et des clouages pour forcer le roi noir à se placer devant son pion en **d1**.",
+      "Chaque fois que le roi bloque le pion, profite du coup gratuit pour rapprocher ton roi d'une case."
+    ]
+  },
+  "queen-vs-pawn-2": {
+    "title": "Dame contre pion : l'escalier",
+    "description": "Le roi noir soutient un pion du cavalier en b2. Arrête-le et gagne.",
+    "hint": "Garde le pion sous contrôle avec la dame (Qb1 le bloque pour de bon) et amène ton roi.",
+    "technique": [
+      "Contrôle la case de promotion",
+      "Fais venir ton roi en renfort",
+      "Ne permets pas de pat dans le coin"
+    ],
+    "pitfall": "Le pion est allé à promotion. Bloque la case de promotion avec ta dame, puis amène ton roi.",
+    "lesson": [
+      "**Qb1!** bloque le pion pour de bon.",
+      "Le pion étant arrêté, amène ton roi et ramasse-le."
+    ]
+  },
+  "opposition-distant": {
+    "title": "L'opposition à distance",
+    "description": "Le roi blanc veut passer devant son pion. Un seul coup l'en empêche : prendre l'opposition à distance.",
+    "hint": "Kd7! : même colonne que le roi blanc, avec trois cases entre vous.",
+    "technique": [
+      "Rois sur la même colonne avec un nombre impair de cases entre eux",
+      "Imite le roi blanc pendant qu'il s'approche",
+      "L'opposition à distance devient une opposition directe"
+    ],
+    "pitfall": "Le roi blanc est passé. Imite ses coups : même colonne, nombre impair de cases entre les rois.",
+    "lesson": [
+      "L'opposition marche aussi **à distance** : rois sur la même colonne avec un nombre impair de cases entre eux (3 ou 5).",
+      "Continue à imiter le roi blanc. Quand il s'approche, l'opposition à distance devient l'opposition normale, et les Blancs ne peuvent pas passer."
+    ]
+  },
+  "opposition-diagonal": {
+    "title": "L'opposition en diagonale",
+    "description": "Les rois sont éloignés. Un seul coup gagne : prendre l'opposition sur la diagonale.",
+    "hint": "Kc3! : sur la même diagonale que le roi noir, avec un nombre impair de cases entre les deux.",
+    "technique": [
+      "L'opposition marche aussi sur les diagonales",
+      "Garde l'opposition pendant que les rois se rapprochent",
+      "Atteins une case clé devant ton pion (d5, e5, f5)"
+    ],
+    "pitfall": "Tu as perdu l'opposition et le roi noir a bloqué ton pion.",
+    "lesson": [
+      "**L'opposition en diagonale** : rois sur la même diagonale avec un nombre impair de cases entre eux. **Kc3!** fait face au roi en g7.",
+      "Garde l'opposition pendant que les rois s'approchent, et atteins une case clé : d5, e5 ou f5."
+    ]
+  },
+  "square-race": {
+    "title": "La règle du carré",
+    "description": "Ton roi est loin, mais celui des Noirs aussi. Ton pion peut-il aller à promotion tout seul ?",
+    "hint": "b5! : pousse tout de suite, avant que le roi noir n'entre dans le carré.",
+    "technique": [
+      "Trace le carré entre le pion et sa rangée de promotion",
+      "Si le roi adverse ne peut pas y entrer, le pion va à promotion tout seul",
+      "Chaque poussée du pion rend le carré plus petit"
+    ],
+    "pitfall": "Tu as laissé au roi noir le temps d'entrer dans le carré du pion.",
+    "lesson": [
+      "**La règle du carré** : trace un carré entre ton pion et la 8e rangée. Le roi noir en g5 est juste à l'extérieur.",
+      "**b5!** rend tout de suite le carré plus petit, et le roi noir ne pourra jamais rattraper le pion."
+    ]
+  },
+  "queen-vs-bishop-pawn": {
+    "title": "Dame contre pion du fou : le piège du pat",
+    "description": "Tu défends avec un pion c sur la 7e rangée. Le roi blanc étant loin, un piège de pat te sauve.",
+    "hint": "Reste près du pion : Kc1 ou Kd1. Quand la dame bloque c1, file en a1 : prendre le pion serait pat.",
+    "technique": [
+      "Garde ton roi à côté du pion",
+      "Quand la dame bloque le pion, va dans le coin a1",
+      "Qxc2 serait alors pat"
+    ],
+    "pitfall": "Ton roi s'est éloigné du pion. Avec un pion du fou, reste près de c1/b1/a1 pour que le piège du pat fonctionne.",
+    "lesson": [
+      "Ici, le roi noir est dans le coin. Si la dame prend le pion en c2, c'est **pat** !",
+      "Alors reste à côté du pion et continue à menacer d'aller à promotion. Le roi blanc est trop loin pour aider."
+    ]
+  },
+  "queen-vs-rook-pawn": {
+    "title": "Dame contre pion de la tour : la forteresse du coin",
+    "description": "Tu as un pion a sur la 7e rangée. Le roi blanc étant loin, cache-toi dans le coin et c'est nulle.",
+    "hint": "Kb2! : reste à côté du pion. Si tu es repoussé en a1, les Blancs doivent te libérer, sinon c'est pat.",
+    "technique": [
+      "Reste à côté du pion (b1, b2)",
+      "Ton roi en a1, devant le pion, est protégé par le pat",
+      "Le roi blanc est trop loin pour aider"
+    ],
+    "pitfall": "Tu as quitté la zone du coin. Avec un pion de la tour sur la 7e rangée, garde ton roi en b1, b2 ou a1.",
+    "lesson": [
+      "Contre un pion de la tour, le coin est ton ami : avec ton roi en a1 devant le pion, les Noirs n'ont aucun coup : **pat**.",
+      "**Kb2!** garde ton roi à côté du pion. Le roi blanc est trop loin pour aider sa dame."
+    ]
+  }
+}
