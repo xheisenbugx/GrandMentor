@@ -108,9 +108,10 @@
 .gm-piece.gm-dragging {
   transition: none;
   z-index: 20;
-  filter: drop-shadow(0 0.8cqw 0.8cqw rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 0.6cqw 0.7cqw rgba(0, 0, 0, 0.3));
 }
-.gm-piece.gm-ghost { opacity: 0.3; transition: none; }
+/* Touch: a bigger piece floating above the finger, so you can see where it goes. */
+.gm-piece.gm-dragging.gm-touch { scale: 1.6; transform-origin: 50% 50%; }
 .gm-piece.gm-fading { opacity: 0; z-index: 1; }
 .gm-piece.gm-fade-in { animation: gm-fade-in var(--gm-anim) ease both; }
 .gm-piece.gm-hidden { visibility: hidden; }
