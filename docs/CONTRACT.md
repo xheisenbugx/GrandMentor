@@ -380,3 +380,88 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Backup & sync
+
+Whole-profile backup file, restore (merge or replace) and LAN device sync. Store logic:
+`crates/gm-store/src/backup.rs`; routes: `crates/gm-server/src/routes/backup.rs`; UI: the
+"Your data" card on Settings (`web/js/components/backup.js`, `createBackupSection() -> { el, destroy }`).
+
+### Backup file (format version 1)
+
+```json
+{ "format": "grandmentor-backup", "format_version": 1, "schema_version": 2,
+  "app_version": "0.1.0", "created_at": "2026-10-08T12:00:00Z",
+  "profile": { "name": "Alex", "...": "Profile fields" },
+  "tables": { "games": [ { "id": 1, "white": "Me", "...": "..." } ], "activity": [ "..." ] },
+  "browser": { "grandmentor.settings.v1": "{\"theme\":\"dark\"}", "gm.endgames.v1": "..." } }
+```
+
+* `tables` holds **every** user table (discovered with `pragma_table_list`; `sqlite_*` internals and
+  `backup_meta` excluded), rows as JSON objects keyed by column name. Tables added by new features
+  are included automatically. SQL values map to JSON null / integer / float / string; BLOBs to
+  `{"$blob": "<hex>"}`.
+* `browser` is added by the frontend: localStorage entries whose key starts with `grandmentor`,
+  `gm.`, `gm_` or `gm-` (string values, at most 512 KB in total). The server never stores it; preview
+  and import echo it back (sanitized) so the client can restore it.
+* Max size 200 MB (`MAX_BACKUP_BYTES`); files with `format_version` > 1 are rejected.
+
+### Endpoints
+
+| Method & path | Body | Response |
+|---|---|---|
+| `GET /api/backup/status` | — | `{ last_backup_at, last_restore_at, last_sync_at, tables: [{name, rows}], total_rows, schema_version, format_version }` (timestamps ISO or null) |
+| `GET /api/backup/export[?mark=false]` | — | the backup JSON (without `browser`), `Content-Disposition: attachment; filename="grandmentor-backup-YYYY-MM-DD.json"`. Records `last_backup_at` unless `mark=false`. |
+| `POST /api/backup/preview` | backup file (raw JSON, ≤ 200 MB) | `{ format_version, schema_version, current_schema_version, app_version, created_at, profile_name, tables: [{name, rows, known, current_rows}], total_rows, warnings: [Warning], browser }` |
+| `POST /api/backup/import?mode=merge\|replace[&confirm=replace][&source=sync]` | backup file | `ImportReport` = `{ mode, tables: [{name, inserted, updated, skipped, failed}], inserted, updated, skipped, failed, warnings: [Warning], browser }`. `mode=replace` requires `confirm=replace`; `source=sync` records `last_sync_at` instead of `last_restore_at`. |
+| `GET /api/sync/pair` | — | `{ active, code?, expires_in?, network_visible }` — local requests only |
+| `POST /api/sync/pair` | — | new pairing code (replaces any previous one): `{ active: true, code: "ABC-234", expires_in: 600, network_visible }` — local requests only |
+| `DELETE /api/sync/pair` | — | revokes the code — local requests only |
+| `GET /api/sync/snapshot` | header `X-GM-Pair: <code>` | backup JSON of this device (does not touch `last_backup_at`) |
+| `POST /api/sync/merge` | header `X-GM-Pair`, backup file | `ImportReport` (merge mode; `browser` is always `{}`) |
+
+`Warning` = `{ code, table?, column?, count }` with `code` one of `unknown_table` (skipped, `count`
+rows), `unknown_column` (skipped), `rows_failed` (`count` rows violated a constraint and were
+skipped), `newer_schema` (file from a newer DB schema) or `browser_dropped` (invalid browser entries
+left out). The UI translates them. Errors are `{ "error": "..." }`, localized via `Accept-Language`:
+400 bad / foreign file or unsupported version, 401 wrong or expired pairing code, 403 pairing
+requested from another machine, 413 too large.
+
+### Import semantics (always one transaction)
+
+* **Replace**: empties every user table, inserts the backup rows verbatim (original ids, only
+  columns known locally), drops rows with dangling foreign keys, keeps a profile row.
+* **Merge** (idempotent — merging the same file twice changes nothing):
+  * tables keyed by an auto-increment `INTEGER PRIMARY KEY` (games, puzzle_attempts, …): rows get
+    new local ids and are de-duplicated by content — games by `(start_fen, moves, created_at)`,
+    other tables by every column except the id and `updated_at`. Columns referencing those ids
+    through a declared foreign key, or any column named `game_id`, are remapped to the new ids.
+  * tables with a natural primary key (lesson_progress, activity, …): missing rows are inserted; an
+    existing row is overwritten only when the backup's `updated_at` is newer.
+  * `profile`: best-of counters (`rush_best`, `puzzles_solved`, `puzzles_failed`, at least the merged
+    attempt counts), rating / RD / streak from the side with the newer `last_active`, local name /
+    avatar / settings unless the local profile is still the default "Player".
+
+### Device sync and security
+
+Flow (device B, Settings → "Connect to another device"): B's browser fetches
+`A/api/sync/snapshot` with the pairing code and posts it to its own
+`/api/backup/import?mode=merge&source=sync` ("Bring here"), then posts its own
+`/api/backup/export?mark=false` to `A/api/sync/merge` ("Send there"). "Both ways" pulls first.
+
+* GrandMentor binds to `127.0.0.1` by default, so nothing is reachable from the network. To be a
+  sync source, device A must be started with `GM_HOST=0.0.0.0` (or a LAN address). That also
+  exposes the rest of the (unauthenticated) API to the LAN, as before — only do it on a trusted
+  network, and stop the server or restart it without `GM_HOST` afterwards.
+* Pairing codes (6 characters from a 32-letter alphabet, shown as `ABC-234`) live only in memory,
+  one at a time, for 10 minutes; 20 wrong attempts revoke the code. They can only be created, read
+  or revoked by requests from this machine (loopback peer address and, when present, a localhost
+  `Origin`).
+* `snapshot` / `merge` always require a valid `X-GM-Pair` header, with or without CORS.
+* CORS for non-local origins is granted **only** to `/api/sync/snapshot` and `/api/sync/merge`,
+  and only for requests carrying a currently valid code (preflights: when they announce the
+  `x-gm-pair` header). `GM_SYNC_ALLOW_ORIGINS=http://192.168.1.21:8080,...` restricts it further to
+  those origins. Every other endpoint keeps the localhost-only CORS policy.
+* Traffic is plain HTTP (code and data are not encrypted): use it on your own network.
+* The request body limit is raised to 200 MB only for `backup/preview`, `backup/import` and
+  `sync/merge` (everything else stays at 1 MB); parsing and database work run on the blocking pool.
