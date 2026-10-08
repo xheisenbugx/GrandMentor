@@ -1,156 +1,272 @@
+<div align="center">
+
+<img src="docs/media/logo.svg" width="96" alt="GrandMentor logo" />
+
 # GrandMentor
 
-A fast, local-first chess learning app modeled on chess.com. You can play friendly bots, review your games with a coach, solve tactics puzzles, take lessons, drill openings and endgames, and keep every game in a personal library.
+**Your friendly, lightning-fast chess coach — play, review, learn and improve.**
 
-The backend is a single Rust binary: an axum web server with its own alpha-beta engine, SQLite storage and a rule-based coach, plus an optional Claude-powered mentor. The frontend uses plain ES modules with no build step.
+Play charming bots, see who's winning at a glance, get every game reviewed by a mentor,
+and learn openings, tactics and endgames — all in one beautiful app that runs on your own computer.
 
-```
-cargo run --release -p gm-server      # then open http://localhost:8080
-```
+[![Rust](https://img.shields.io/badge/Rust-axum%20%2B%20tokio-b7410e?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Frontend](https://img.shields.io/badge/Frontend-vanilla%20JS%2C%20no%20build-f7df1e?logo=javascript&logoColor=black)](web/)
+[![SQLite](https://img.shields.io/badge/Storage-SQLite-003b57?logo=sqlite&logoColor=white)](crates/gm-store)
+[![Engine](https://img.shields.io/badge/Engine-~2M%20nodes%2Fs-81b64c)](crates/gm-engine)
+[![Puzzles](https://img.shields.io/badge/Puzzles-4%2C200-26c2a3)](data/puzzles.json)
+[![Mentor](https://img.shields.io/badge/Mentor-Claude%20optional-d97757?logo=anthropic&logoColor=white)](#-the-mentor)
 
----
+<br />
 
-## Features
+<img src="docs/media/play.gif" width="860" alt="Playing a game against Pawnny with live coach feedback, an eval bar and a two-step hint" />
 
-### Play
-- **16 bots** from Pawnny (250) to Titan (3000), plus two coach bots (Coach Mia 1000, Coach Leo 1700). Each bot has its own personality, avatar, greeting and chat lines. Weak bots blunder plausibly (shallow search, softmax over multi-PV, a style bias) rather than at random, and every bot uses the opening book.
-- **Assisted modes:** Friendly (hints, takebacks, eval bar and coach) or Challenge (no help), or pick each option yourself.
-- **Two-step hints**, like chess.com: the first press highlights the piece to move and the second shows the move.
-- **Live coach feedback** rates each of your moves: brilliant, great, best, excellent, good, book, inaccuracy, mistake, miss or blunder.
-- **Time controls** (or no clock), resign, draw offer, flip board, resume an unfinished game.
-- **Game-over card** with the result, the opening, and buttons for **Game Review**, Rematch and New bot. **Every game is saved automatically.**
+<sub>Playing Pawnny 🐣 in Friendly mode: live coach feedback on every move, the eval bar, and a two-step hint.</sub>
 
-### Analyze
-- **Game Review**, as on chess.com:
-  - per-side accuracy and estimated game rating
-  - classification counts and an eval graph with coloured dots
-  - key moments, then a move-by-move walkthrough with a coach bubble, square badges and the best line
-- **Analysis board:**
-  - live engine with 3 lines over a WebSocket, depth and speed display, best-move arrow
-  - **eval bar** showing who is winning
-  - move tree with variations, opening name and book moves
-  - FEN/PGN load, position setup, copy, save
-- **Mentor chat** on the review and analysis pages. Ask "what's the plan?" or "why was this a mistake?". It uses Claude when `ANTHROPIC_API_KEY` is set and falls back to an instant rule-based coach otherwise.
-
-### Learn
-- **Puzzles:** about 4,200 rated tactics from the Lichess database.
-  - Glicko-style puzzle rating, with themes and difficulty filters
-  - hint, solution and retry
-  - **Daily Puzzle** with a streak
-  - **Puzzle Rush** in 3 min, 5 min or Survival mode, with three strikes
-- **Lessons:** 10 courses and 58 lessons (basics, openings, middlegame, tactics, strategy, endgames). Interactive steps use arrows and highlights, and include "your turn" tasks. Progress is saved.
-- **Openings:** about 280 named openings with ideas, traps and popularity. Learn, explore and train each one, with spaced-repetition training of your repertoire from memory.
-- **Endgame drills:** 36 drills (basic mates, pawn, rook, minor-piece and queen endings). You play the position against the full-strength engine until you win or hold the draw, with a hint and technique notes for each.
-
-### Your stuff
-- **Library:** search, filter, sort, favourites, notes and tags. Import multi-game PGN (opening names are detected automatically), download PGN, delete.
-- **Profile:** games, win rate, average accuracy, puzzle-rating history, record against each bot, day streak and 27 achievements.
-- **Settings:**
-  - dark or light theme
-  - 5 board colours and 3 piece sets
-  - coordinates, legal-move dots, auto-queen, animation speed
-  - SAN or figurine notation, eval bar, sounds (synthesized with WebAudio, no audio files)
-
-### What the screens look like
-- **Home:** a greeting banner with your streak and puzzle rating, quick-start cards (Play a bot, Puzzle of the day, Continue learning, Analysis board), a row of bot avatars you can scroll sideways, recent games and a mini board with the daily puzzle.
-- **Play:** the board fills the left side, with the bot's avatar and speech bubble above it and an eval bar along its edge. The right panel holds the opening name, a coach feedback bubble, the move list with classification icons and big Hint / Takeback / Flip / Draw / Resign buttons.
-- **Game Review:** an eval graph at the top of the panel, a coach summary and two accuracy rings. The classification table comes next, then Start Review, which steps through the game move by move with badges drawn on the board.
-- **Mobile (390px):** the sidebar becomes a bottom tab bar, the board is full width, and panels stack under it. From 861 to 1100px wide, the sidebar collapses to icons.
+</div>
 
 ---
 
-## Quick start
+## ✨ Why GrandMentor?
 
-Requirements: a recent stable Rust toolchain (tested with 1.98). No Node and no database server are needed.
+Most chess sites are built for people who already play well. GrandMentor is built for **everyone else**.
 
-```bash
-git clone <this repo> GrandMentor && cd GrandMentor
-cargo run --release -p gm-server
-# → GrandMentor is running → open http://localhost:8080
-```
+- 🧸 **Gentle by default.** Bots greet you, chat with you and blunder like real humans at your level — not like a calculator that suddenly forgets how to play.
+- 🎓 **A mentor, not just an engine.** Every move gets a plain-language explanation: *"This hangs your bishop — Qxc4 wins it. Better was d4."*
+- ⚡ **Ridiculously fast.** A Rust engine searches ~2 million positions per second; a full game review takes about half a second.
+- 🔒 **Yours.** Runs locally, stores your games in a single SQLite file, no account, no ads, no tracking.
 
-Run the commands from the repository root so the default `./data` and `./web` paths resolve.
-The SQLite database (`./grandmentor.db`) is created on first run.
+---
 
-To enable the LLM mentor (optional):
+## 🎬 Tour
+
+### ♟️ Play against bots with personality
+
+Sixteen opponents from **Pawnny 🐣 (250)** to **Titan 🤖 (3000)**, plus two coach bots who explain their ideas.
+Pick your colour, a time control, and how much help you want — *Friendly* (hints, takebacks, eval bar, coach) or *Challenge* (just you and the board).
+
+<p align="center"><img src="docs/media/play-bots.png" width="860" alt="Bot selection screen" /></p>
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/play.png" alt="A game in progress with coach feedback and a hint arrow" /></td>
+<td width="50%">
+
+**While you play**
+- 📊 **Eval bar** shows who's winning, live
+- 💡 **Two-step hints** — first the piece, then the move
+- 🗣️ **Coach mode** rates each move (*best*, *inaccuracy*, *blunder*…) and says why
+- ↩️ Takebacks, draw offers, flip board, clocks from bullet to classical
+- 💾 Every game is **saved automatically** — resume unfinished ones anytime
+
+</td>
+</tr>
+</table>
+
+### 🔍 Game Review — like having a coach watch your game
+
+One click after the game ends. You get **accuracy** for both players, an **estimated rating**, an **eval graph**, **key moments**, and a move-by-move walkthrough with chess.com-style badges:
+**brilliant `!!`**, **great `!`**, **best ★**, excellent, good, book 📖, inaccuracy `?!`, mistake `?`, miss, **blunder `??`**.
+
+<p align="center"><img src="docs/media/review.gif" width="860" alt="Stepping through Morphy's Opera Game in Game Review" /></p>
+<p align="center"><sub>Walking through the finale of Morphy's famous <i>Opera Game</i> (1858) — badges on the board, coach bubble, synced eval bar.</sub></p>
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/review.png" alt="Game review summary with accuracy rings" /></td>
+<td width="50%"><img src="docs/media/review-walk.png" alt="Review walkthrough showing the final checkmate" /></td>
+</tr>
+</table>
+
+### 🧠 Analysis board
+
+A full analysis board with the engine's **top three lines**, best-move arrows, a variation tree, opening names, a position editor, and FEN/PGN import & export.
+Stuck? Switch to the **Mentor** tab and ask *"what's the plan here?"*.
+
+<p align="center"><img src="docs/media/analysis.png" width="860" alt="Analysis board with three engine lines at depth 27" /></p>
+
+### 🧩 Puzzles, Puzzle Rush and the Daily Puzzle
+
+**4,200 hand-picked tactics** from the Lichess puzzle database, rated from 400 to 2800 across 70+ themes (forks, pins, mates in 2, back-rank, sacrifices…).
+Your **puzzle rating** adapts as you solve. Race the clock in **Puzzle Rush** (3 min, 5 min or Survival — three strikes and you're out), or keep a streak with the **Daily Puzzle**.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/puzzle.gif" alt="Solving the daily puzzle: mate in two" /></td>
+<td width="50%"><img src="docs/media/puzzles.png" alt="Puzzle hub with modes and themes" /></td>
+</tr>
+</table>
+
+### 📚 Learn — from "how does the knight move?" to the Lucena position
+
+**10 courses · 58 interactive lessons.** Each lesson is a short story with arrows and highlights, then *your turn*: find the move on the board. Wrong? Get a gentle nudge and a hint. Right? A little celebration ✨.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/learn.png" alt="Learn hub with courses and progress" /></td>
+<td width="50%"><img src="docs/media/lesson.png" alt="A lesson on knight forks" /></td>
+</tr>
+</table>
+
+### 📖 Openings & ♚ Endgames
+
+- **~280 named openings** — ideas, traps, popularity, an **explorer** of book moves, and a **trainer** that quizzes you on your repertoire from memory.
+- **36 endgame drills** — from the basic queen mate to Lucena and Philidor — played against the full-strength engine until you win (or hold the draw).
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/openings.png" alt="Italian Game opening page" /></td>
+<td width="50%"><img src="docs/media/endgames.png" alt="Endgame drills grid" /></td>
+</tr>
+</table>
+
+### 🏠 Home, Library & Profile
+
+Your dashboard, every game you've ever played (search, favourites, notes, PGN import/export), and your progress: win rate, accuracy trend, puzzle-rating history, record vs each bot, streaks and achievements.
+
+<table>
+<tr>
+<td width="33%"><img src="docs/media/home.png" alt="Home dashboard" /></td>
+<td width="33%"><img src="docs/media/library.png" alt="Game library" /></td>
+<td width="33%"><img src="docs/media/profile.png" alt="Profile and stats" /></td>
+</tr>
+</table>
+
+### 🎨 Light mode, board themes & mobile
+
+Dark or light, five board colours, three piece sets, and a layout that works just as well on your phone.
+
+<table>
+<tr>
+<td width="56%"><img src="docs/media/settings-light.png" alt="Settings in light mode" /></td>
+<td width="22%"><img src="docs/media/mobile-home.png" alt="Home on mobile" /></td>
+<td width="22%"><img src="docs/media/mobile-review.png" alt="Game review on mobile" /></td>
+</tr>
+</table>
+
+---
+
+## 🎓 The Mentor
+
+GrandMentor's coach works **out of the box** with an instant, rule-based explainer that spots hanging pieces, forks, pins, missed mates, development and king safety.
+
+Want a deeper conversation? Set an Anthropic API key and the mentor chat is powered by **Claude**, grounded in the engine's analysis of your exact position (it never invents moves):
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 cargo run --release -p gm-server
 ```
 
-Tests, lints and the engine match tests:
+---
+
+## 🚀 Quick start
+
+You only need a recent stable **Rust** toolchain (tested with 1.98). No Node, no database server.
+
+```bash
+git clone https://github.com/xheisenbugx/GrandMentor.git
+cd GrandMentor
+cargo run --release -p gm-server
+# → open http://localhost:8080
+```
+
+Run from the repository root so `./data` and `./web` are found. Your games live in `./grandmentor.db`, created on first run.
+
+<details>
+<summary><b>⚙️ Configuration (environment variables)</b></summary>
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `GM_PORT` | `8080` | HTTP port |
+| `GM_HOST` | `127.0.0.1` | Bind address. `0.0.0.0` exposes it on your LAN — there is no authentication. |
+| `GM_DATA_DIR` | `./data` | Content JSON: openings, puzzles, courses, endgames |
+| `GM_DB` | `./grandmentor.db` | SQLite database file (WAL mode) |
+| `GM_WEB_DIR` | `./web` | Static frontend directory |
+| `GM_ENGINES` | cores − 1, clamped to 2–8 | Engines in the search pool, one thread each |
+| `GM_TT_MB` | `32` | Hash table per engine (MB). Memory ≈ `GM_ENGINES × GM_TT_MB`. |
+| `ANTHROPIC_API_KEY` | – | Enables the Claude-powered mentor chat |
+| `GM_MENTOR_MODEL` | `claude-opus-5-5` | Claude model used by the mentor |
+| `RUST_LOG` | `info` | Log filter |
+
+</details>
+
+<details>
+<summary><b>🧪 Tests & lints</b></summary>
 
 ```bash
 cargo test --workspace --release
 cargo clippy --workspace --all-targets
 cargo test -p gm-bots --release -- --ignored   # slow bot-vs-bot matches
+for f in $(find web/js -name '*.js'); do node --input-type=module --check < "$f"; done
 ```
 
-### Environment variables
-
-| Variable | Default | Meaning |
-|---|---|---|
-| `GM_PORT` | `8080` | HTTP port |
-| `GM_HOST` | `127.0.0.1` | Bind address. Use `0.0.0.0` to expose it on your LAN; there is no authentication. |
-| `GM_DATA_DIR` | `./data` | Content JSON: openings, puzzles, courses, endgames |
-| `GM_DB` | `./grandmentor.db` | SQLite database file (WAL mode) |
-| `GM_WEB_DIR` | `./web` | Static frontend directory |
-| `GM_ENGINES` | cores − 1, clamped to 2–8 | Number of engines in the search pool, each on its own thread |
-| `GM_TT_MB` | `32` | Transposition-table size per engine, in MB. Memory is about `GM_ENGINES × GM_TT_MB`. |
-| `ANTHROPIC_API_KEY` | – | Turns on the Claude-powered mentor chat. Without it, the rule-based coach answers. |
-| `GM_MENTOR_MODEL` | `claude-opus-5-5` | Claude model used by the mentor |
-| `RUST_LOG` | `info` | Log filter (tracing `EnvFilter`) |
+</details>
 
 ---
 
-## Architecture
+## 🏗️ How it's built
 
+```mermaid
+flowchart LR
+  subgraph Browser["🌐 Browser — vanilla ES modules, no build step"]
+    UI["Pages<br/>play · review · analysis · puzzles · learn"]
+    Board["Board · EvalBar · MoveList<br/>EvalGraph · Mentor chat"]
+  end
+  subgraph Server["🦀 grandmentor (Rust · axum)"]
+    API["REST /api/*"]
+    WS["WebSocket<br/>/api/engine/ws"]
+    Engine["gm-engine<br/>PVS · TT · LMR · PeSTO"]
+    Bots["gm-bots"]
+    Review["gm-analysis"]
+    Mentor["gm-mentor"]
+    Store["gm-store<br/>SQLite"]
+    Content["gm-content<br/>openings · puzzles · lessons"]
+  end
+  Claude(("Claude API<br/>optional"))
+  UI --> API
+  Board <--> WS
+  API --> Bots & Review & Mentor & Store & Content
+  WS --> Engine
+  Bots & Review --> Engine
+  Mentor -.-> Claude
 ```
-crates/
-  gm-engine/    PVS alpha-beta engine on shakmaty move generation.
-                Iterative deepening, aspiration windows, TT, null move, LMR, killers/history,
-                quiescence search with SEE, check extensions, tapered PeSTO-style evaluation,
-                mate and draw detection. EnginePool hands out engines on blocking threads.
-                About 2M nodes/s; depth 18–20 in 1s from the start position.
-  gm-content/   Loads and validates data/*.json; opening lookup by position and book moves
-  gm-bots/      Bot personas and human-like move choice (depth/nodes limits, softmax over MultiPV)
-  gm-analysis/  Game review: per-ply parallel analysis, lichess-style win%/accuracy,
-                chess.com-style classifications, key moments, summary
-  gm-mentor/    Rule-based explanations and position descriptions, plus optional Claude chat
-  gm-store/     SQLite (rusqlite, bundled): games, profile, puzzle rating, progress, stats;
-                PGN import and export
-  gm-server/    axum binary `grandmentor`: REST /api/*, WebSocket /api/engine/ws,
-                static files with gzip/br compression and cache headers, SPA fallback
-data/           openings.json  puzzles.json  courses.json  endgames.json
-web/            index.html, css/, js/app.js (hash router), js/api.js (REST + EngineClient),
-                js/components/ (board, evalbar, movelist, evalgraph, mentor, clock, sound),
-                js/pages/ (one module per route), vendor/chess.js, img/pieces/
-docs/           CONTRACT.md (API and JSON contract), FEATURES.md, STYLEGUIDE.md
-```
 
-`docs/CONTRACT.md` is the full integration contract: every endpoint, JSON shape and component API.
+| Crate | What it does |
+|---|---|
+| [`gm-engine`](crates/gm-engine) | Alpha-beta (PVS) engine on `shakmaty`: iterative deepening, aspiration windows, transposition table, null move, LMR, killers/history, quiescence with SEE, tapered PeSTO-style eval. **~2M nodes/s, depth 18–20 in 1 s.** |
+| [`gm-bots`](crates/gm-bots) | Bot personas and human-like move choice (depth/node limits, softmax over MultiPV, style bias, opening book) |
+| [`gm-analysis`](crates/gm-analysis) | Game review: parallel per-ply analysis, lichess-style win%/accuracy, chess.com-style classifications, key moments |
+| [`gm-mentor`](crates/gm-mentor) | Rule-based move explanations and position insights, plus optional Claude chat |
+| [`gm-store`](crates/gm-store) | SQLite: games, profile, puzzle rating, lesson progress, stats; PGN import/export |
+| [`gm-content`](crates/gm-content) | Loads and validates every opening, puzzle, lesson and drill (every move is checked for legality) |
+| [`gm-server`](crates/gm-server) | The `grandmentor` binary: REST + WebSocket + compressed static files |
 
-**Speed and memory:**
-- **Bounded memory:**
-  - every engine has a fixed-size transposition table
-  - server caches (reviews, position insights, opening lookups) are capped LRUs
-  - request bodies are size-limited, and movetime is capped at 10s over REST and 30s over the WebSocket
-- **Nothing blocks the async runtime:** searches and SQLite calls run on blocking threads.
-- **Searches can always be stopped:** every search takes an `AtomicBool` stop flag. A new `analyze`, a `stop` message, a socket close or server shutdown raises it, and a drop guard returns the engine to the pool.
-- **Frontend cleanup:** every page's `mount()` returns a cleanup function. Through a disposables bag it removes global listeners, timers, ResizeObservers, fetches (via AbortController), WebSockets and components, and every component has `destroy()`. The QA pass routed through all pages 10+ times and the counts of global listeners, intervals, sockets and observers stayed flat.
+The full API and JSON contract lives in [`docs/CONTRACT.md`](docs/CONTRACT.md).
+
+### Fast and leak-free by design
+
+- **Bounded memory** — fixed-size hash tables, capped LRU caches, size-limited requests, capped search times.
+- **Never blocks** — searches and SQLite calls run on blocking threads; the async runtime stays responsive.
+- **Always stoppable** — every search has a stop flag, raised on new requests, socket close or shutdown; engines always return to the pool.
+- **Clean frontend** — every page and component tears down its listeners, timers, observers, fetches and sockets. A QA pass routed through every page 10+ times with flat listener/socket/timer counts.
 
 ---
 
-## Attribution & licenses
+## 🤝 Contributing
 
-- **Puzzles:** the [Lichess puzzle database](https://database.lichess.org/#puzzles), CC0 1.0. Puzzle ids keep the Lichess id after the `lc_` prefix (`https://lichess.org/training/<id>`). See `data/ATTRIBUTION.md`.
-- **Pieces:** copied unmodified from [lichess-org/lila](https://github.com/lichess-org/lila). See `web/img/pieces/LICENSE.md`.
-  - **cburnett** by Colin M.L. Burnett, GPLv2+
-  - **merida** by Armando Hernandez Marroquin, GPLv2+
-  - **alpha** by Eric Bentzen, free for personal, non-commercial use only. Remove it if you ever distribute GrandMentor commercially.
-- **[chess.js](https://github.com/jhlywa/chess.js)** v1.4.0 by Jeff Hlywa, BSD-2-Clause, vendored at `web/vendor/chess.js`.
-- **[shakmaty](https://github.com/niklasf/shakmaty)** (GPL-3.0+) supplies move generation for the Rust engine.
-- The opening names follow the standard ECO classification.
+Contributions are welcome! Please read [`AGENTS.md`](AGENTS.md) — it describes the branch flow (PRs go into **`dev`**), the PR template (including the **"In plain words"** section and visual evidence), and the project conventions. It applies to humans and AI agents alike.
 
-GrandMentor is not affiliated with chess.com or lichess.org.
+---
+
+## 🙏 Credits
+
+- **Puzzles** — [Lichess puzzle database](https://database.lichess.org/#puzzles) (CC0). See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
+- **Pieces** — from [lichess-org/lila](https://github.com/lichess-org/lila): *cburnett* (Colin M.L. Burnett, GPLv2+), *merida* (Armando Hernandez Marroquin, GPLv2+), *alpha* (Eric Bentzen — personal, non-commercial use only). See [`web/img/pieces/LICENSE.md`](web/img/pieces/LICENSE.md).
+- **[chess.js](https://github.com/jhlywa/chess.js)** v1.4.0 (BSD-2-Clause) and **[shakmaty](https://github.com/niklasf/shakmaty)** (GPL-3.0+).
+- Opening names follow the standard ECO classification. The *Opera Game* in the screenshots is Morphy vs. Duke Karl / Count Isouard, Paris 1858.
+
+<div align="center">
+<br />
+<sub>GrandMentor is an independent project and is not affiliated with chess.com or lichess.org.</sub>
+<br /><br />
+<b>♞ Made with love for every player who has ever hung their queen. ♞</b>
+</div>
