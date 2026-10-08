@@ -102,7 +102,7 @@ where
 }
 
 /// Run a store operation on the blocking pool, mapping errors to `{error}`.
-async fn store_op<R, F>(store: &Store, f: F) -> ApiResult<R>
+pub(crate) async fn store_op<R, F>(store: &Store, f: F) -> ApiResult<R>
 where
     R: Send + 'static,
     F: FnOnce(&Store) -> anyhow::Result<R> + Send + 'static,
@@ -140,11 +140,11 @@ where
         })
 }
 
-fn parse_position(fen: &str) -> ApiResult<shakmaty::Chess> {
+pub(crate) fn parse_position(fen: &str) -> ApiResult<shakmaty::Chess> {
     parse_fen(fen).map_err(ApiError::bad_request)
 }
 
-fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<shakmaty::Chess> {
+pub(crate) fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<shakmaty::Chess> {
     if moves.len() > max {
         return Err(ApiError::bad_request(format!("too many moves (max {max})")));
     }
@@ -154,7 +154,7 @@ fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<sh
 }
 
 /// Truncate to at most `max` chars (on a char boundary).
-fn clip(s: &str, max: usize) -> String {
+pub(crate) fn clip(s: &str, max: usize) -> String {
     match s.char_indices().nth(max) {
         Some((i, _)) => s[..i].to_string(),
         None => s.to_string(),
