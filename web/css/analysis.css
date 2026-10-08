@@ -338,6 +338,32 @@
 .rv-best { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px 10px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--cls-best) 14%, transparent); font-size: var(--fs-sm); }
 .rv-best strong { color: var(--cls-best); }
 .rv-best-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cls-best); margin-right: 2px; }
+
+/* Explore your own line (Game Review). */
+.spinner.spinner-sm { width: 14px; height: 14px; border-width: 2px; display: inline-block; vertical-align: -2px; }
+.rv-try-tip { display: flex; align-items: center; gap: 6px; margin-top: var(--sp-2); }
+.rv-try-tip svg { width: 14px; height: 14px; flex: none; color: var(--cls-great); }
+.rv-explore .rv-bubble { border-left: 3px solid var(--cls-great); }
+.rv-explore-icon { display: inline-flex; color: var(--cls-great); }
+.rv-explore-icon svg { width: 18px; height: 18px; }
+.rv-explore-tag { background: color-mix(in srgb, var(--cls-great) 18%, transparent); color: var(--cls-great); font-weight: var(--fw-semibold); }
+.rv-explore-from { margin: 2px 0 var(--sp-2); }
+.rv-explore-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 4px; margin-bottom: var(--sp-2); }
+.rv-ex-move {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-xs);
+  border: 0; background: var(--surface-2); color: var(--text); font: inherit; font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold); cursor: pointer; transition: background var(--dur-fast) var(--ease);
+}
+.rv-ex-move:hover { background: var(--surface-3); }
+.rv-ex-move.on { background: color-mix(in srgb, var(--cls-great) 30%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--cls-great); }
+.rv-ex-move .cls-badge { min-width: 16px; height: 16px; font-size: 9px; }
+.rv-explore-engine {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: var(--sp-2);
+  padding: 6px 10px; border-radius: var(--r-sm); background: var(--surface-2); font-size: var(--fs-sm); min-height: 34px;
+}
+.rv-explore-pv { min-width: 0; overflow-wrap: anywhere; }
+.rv-walk.exploring .rv-movelist { display: none; }
+.rv-footer .rv-back-game { flex: none; }
 .rv-actions { gap: var(--sp-2); }
 .rv-actions .btn svg { width: 15px; height: 15px; }
 .rv-retry .rv-retry-icon { display: grid; place-items: center; }
