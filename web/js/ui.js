@@ -237,17 +237,11 @@ export function iconNode(name, opts) {
   return htmlToNode(icon(name, opts));
 }
 
-/** Brand mark (green rounded square with a white knight) as SVG string. */
+/** Brand mark (the crowned-knight app icon) as an <img> HTML string. */
 export function brandMark(size = 36) {
   const s = Number(size) || 36;
-  return `<svg class="brand-mark" width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="gm-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#95c95f"/><stop offset="1" stop-color="#6f9f3f"/></linearGradient></defs>
-<rect width="64" height="64" rx="16" fill="url(#gm-g)"/>
-<path d="M22 50h24c0-8.5-2.4-14.5-4.6-18.6 3.6-2.2 6-6.6 4.8-12.3-4.4.6-7.1 2-9.4 4.1L34.2 17l-3.7 6.6C25 26.4 22 31.6 22 37l5.8 1.3 6-4.3-1.4 6C29.5 42.4 22 45 22 50Z" fill="#fff"/>
-<rect x="18" y="51" width="32" height="5" rx="2.5" fill="#fff"/>
-<circle cx="35.4" cy="26.6" r="1.7" fill="#6f9f3f"/>
-<path d="M27 12.5l2.4 2.6 2.6-4.6 2.6 4.6 2.4-2.6-.9 5H27.9z" fill="#ffd75e"/>
-</svg>`;
+  const src = s > 64 ? '/img/icons/mark-128.png' : '/img/icons/mark-64.png';
+  return `<img class="brand-mark" src="${src}" width="${s}" height="${s}" alt="" aria-hidden="true" decoding="async">`;
 }
 
 // ---------------------------------------------------------------------------

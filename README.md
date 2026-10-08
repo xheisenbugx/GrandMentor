@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/media/logo.svg" width="96" alt="GrandMentor logo" />
+<img src="docs/media/app-icon.png" width="128" alt="GrandMentor app icon: a crowned knight" />
 
 # GrandMentor
 
