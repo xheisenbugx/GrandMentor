@@ -146,9 +146,9 @@ pub struct BookMove { pub uci: String, pub san: String, pub name: Option<String>
 /// User-facing language, shared by every crate (serde: "en" | "es"; default En).
 pub enum Lang { En, Es }
 impl Lang {
-  pub const ALL: [Lang; 2];
-  pub fn code(self) -> &'static str;                            // "en" | "es"
-  pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; unsupported -> None
+  pub const ALL: [Lang; 5];                                     // En, Es, Pt (pt-BR), Fr, De
+  pub fn code(self) -> &'static str;                            // "en" | "es" | "pt" | "fr" | "de"
+  pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; "pt-BR"/"pt-PT" -> Pt; "fr-CA" -> Fr; "de-AT"/"de-CH" -> De; unsupported -> None
   pub fn from_accept_language(h: &str) -> Option<Lang>;         // first supported range by q: "es-MX,es;q=0.9,en;q=0.8" -> Es
   pub fn negotiate(query: Option<&str>, accept_language: Option<&str>) -> Lang; // ?lang= > Accept-Language > En
 }
@@ -212,7 +212,7 @@ pub struct MoveContext { pub fen_before: String, pub played_uci: String, pub pla
   pub eval_before: Score, pub eval_after: Score, pub classification: String }
 pub fn explain_move(ctx: &MoveContext, lang: Lang) -> String;     // rule-based, instant, friendly, 1-3 sentences
 pub fn describe_position(fen: &str, lang: Lang) -> Vec<String>;   // plans / features: material, king safety, open files, hanging pieces...
-pub fn coach_answer(req: &ChatRequest, lang: Lang) -> ChatResponse; // rule-based; routes English and Spanish questions
+pub fn coach_answer(req: &ChatRequest, lang: Lang) -> ChatResponse; // rule-based; routes questions in every supported language
 pub struct ChatRequest { pub question: String, pub fen: String, pub moves_san: Vec<String>,
   pub engine_lines: Vec<String> /* e.g. "+0.45: Nf3 Nc6 Bb5" */, pub history: Vec<ChatTurn> }
 pub struct ChatTurn { pub role: String /* user|mentor */, pub text: String }
@@ -291,12 +291,12 @@ pub mod pgn { pub fn to_pgn(...) -> String; pub fn parse_pgn(text: &str) -> Resu
 
 Errors: HTTP 4xx/5xx with `{error: "message"}` (message in the request language, see below).
 
-**Language.** Every endpoint accepts `?lang=en|es`; otherwise the `Accept-Language` header picks the
+**Language.** Every endpoint accepts `?lang=en|es|pt|fr|de` (regional tags such as `pt-BR` map to their language); otherwise the `Accept-Language` header picks the
 first supported language by q-weight (`es-MX,es;q=0.9,en;q=0.8` → `es`); otherwise English. Only
 human text changes; JSON shapes, ids, enum values (`classification`, bot `style`/`category`,
 puzzle themes), SAN/UCI/FEN and numbers never do. Localized: bot `description`/`greeting` and
 move `chat`; mentor `explanation`, position `ideas` and rule-based chat (the LLM is told to answer in
-the language; questions are understood in English or Spanish); review `summary`, per-move
+the language; questions are understood in every supported language); review `summary`, per-move
 `explanation`, `opening.name` and `opening_name`; course/lesson/step/task text, opening
 `name`/`family`/`description`/`ideas`/`traps`, `BookMove.name` and the start position name in
 `/openings/lookup`, endgame text (all from `data/i18n/<lang>/` overlays with English fallback;

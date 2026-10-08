@@ -112,30 +112,55 @@ fn now_secs() -> i64 {
         .unwrap_or(0)
 }
 
-fn msg(lang: Lang, en: &str, es: &str) -> String {
+/// Pick the message for `lang` from `[en, es, pt, fr, de]`.
+fn msg(lang: Lang, s: [&str; 5]) -> String {
     match lang {
-        Lang::En => en.to_string(),
-        Lang::Es => es.to_string(),
+        Lang::En => s[0],
+        Lang::Es => s[1],
+        Lang::Pt => s[2],
+        Lang::Fr => s[3],
+        Lang::De => s[4],
     }
+    .to_string()
 }
 
 fn parse_side(lang: Lang, s: &str) -> ApiResult<Side> {
     Side::parse(s).ok_or_else(|| {
         ApiError::bad_request(msg(
             lang,
-            "`side` must be \"white\" or \"black\"",
-            "`side` debe ser \"white\" o \"black\"",
+            [
+                "`side` must be \"white\" or \"black\"",
+                "`side` debe ser \"white\" o \"black\"",
+                "`side` deve ser \"white\" ou \"black\"",
+                "`side` doit valoir \"white\" ou \"black\"",
+                "`side` muss \"white\" oder \"black\" sein",
+            ],
         ))
     })
 }
 
 fn rep_error(lang: Lang, e: RepError) -> ApiError {
     match e {
-        RepError::NotFound => ApiError::not_found(msg(lang, "repertoire move not found", "No se encontró esa jugada del repertorio")),
-        RepError::NoMoves => ApiError::bad_request(msg(lang, "no moves given", "No se indicó ninguna jugada")),
+        RepError::NotFound => ApiError::not_found(msg(
+            lang,
+            [
+                "repertoire move not found",
+                "No se encontró esa jugada del repertorio",
+                "Esse lance do repertório não foi encontrado",
+                "Ce coup du répertoire est introuvable",
+                "Dieser Repertoirezug wurde nicht gefunden",
+            ],
+        )),
+        RepError::NoMoves => ApiError::bad_request(msg(
+            lang,
+            ["no moves given", "No se indicó ninguna jugada", "Nenhum lance foi informado", "Aucun coup n'a été indiqué", "Es wurden keine Züge angegeben"],
+        )),
         RepError::TooDeep => ApiError::bad_request(match lang {
             Lang::En => format!("line too long (max {} plies)", gm_store::repertoire::MAX_PLY),
             Lang::Es => format!("Línea demasiado larga (máximo {} medias jugadas)", gm_store::repertoire::MAX_PLY),
+            Lang::Pt => format!("Linha longa demais (máximo de {} meios-lances)", gm_store::repertoire::MAX_PLY),
+            Lang::Fr => format!("Ligne trop longue ({} demi-coups maximum)", gm_store::repertoire::MAX_PLY),
+            Lang::De => format!("Linie zu lang (höchstens {} Halbzüge)", gm_store::repertoire::MAX_PLY),
         }),
         RepError::Full => ApiError::bad_request(match lang {
             Lang::En => format!(
@@ -146,20 +171,45 @@ fn rep_error(lang: Lang, e: RepError) -> ApiError {
                 "Tu repertorio está lleno (máximo {} jugadas por color)",
                 gm_store::repertoire::MAX_NODES_PER_SIDE
             ),
+            Lang::Pt => format!(
+                "Seu repertório está cheio (máximo de {} lances por cor)",
+                gm_store::repertoire::MAX_NODES_PER_SIDE
+            ),
+            Lang::Fr => format!(
+                "Ton répertoire est plein ({} coups maximum par couleur)",
+                gm_store::repertoire::MAX_NODES_PER_SIDE
+            ),
+            Lang::De => format!(
+                "Dein Repertoire ist voll (höchstens {} Züge pro Farbe)",
+                gm_store::repertoire::MAX_NODES_PER_SIDE
+            ),
         }),
         RepError::Illegal(i, m) => ApiError::bad_request(match lang {
             Lang::En => format!("move {i} is illegal: {m}"),
             Lang::Es => format!("La jugada {i} es ilegal: {m}"),
+            Lang::Pt => format!("O lance {i} é ilegal: {m}"),
+            Lang::Fr => format!("Le coup {i} est illégal : {m}"),
+            Lang::De => format!("Zug {i} ist illegal: {m}"),
         }),
         RepError::WrongSide => ApiError::bad_request(msg(
             lang,
-            "that move belongs to the other side's repertoire",
-            "Esa jugada pertenece al repertorio del otro color",
+            [
+                "that move belongs to the other side's repertoire",
+                "Esa jugada pertenece al repertorio del otro color",
+                "Esse lance pertence ao repertório da outra cor",
+                "Ce coup appartient au répertoire de l'autre couleur",
+                "Dieser Zug gehört zum Repertoire der anderen Farbe",
+            ],
         )),
         RepError::NotACard => ApiError::bad_request(msg(
             lang,
-            "only your own moves can be drilled",
-            "Solo se entrenan tus propias jugadas",
+            [
+                "only your own moves can be drilled",
+                "Solo se entrenan tus propias jugadas",
+                "Só os seus próprios lances podem ser treinados",
+                "Seuls tes propres coups peuvent être entraînés",
+                "Nur deine eigenen Züge können trainiert werden",
+            ],
         )),
     }
 }
@@ -274,6 +324,9 @@ async fn update_node(
         return Err(ApiError::bad_request(match lang {
             Lang::En => format!("note too long (max {} characters)", gm_store::repertoire::MAX_NOTE),
             Lang::Es => format!("Nota demasiado larga (máximo {} caracteres)", gm_store::repertoire::MAX_NOTE),
+            Lang::Pt => format!("Nota longa demais (máximo de {} caracteres)", gm_store::repertoire::MAX_NOTE),
+            Lang::Fr => format!("Note trop longue ({} caractères maximum)", gm_store::repertoire::MAX_NOTE),
+            Lang::De => format!("Notiz zu lang (höchstens {} Zeichen)", gm_store::repertoire::MAX_NOTE),
         }));
     }
     let now = now_secs();
@@ -400,6 +453,9 @@ async fn apply_starter(
         return Err(ApiError::not_found(match lang {
             Lang::En => format!("starter repertoire {id:?} not found"),
             Lang::Es => format!("No se encontró el repertorio inicial {id:?}"),
+            Lang::Pt => format!("O repertório inicial {id:?} não foi encontrado"),
+            Lang::Fr => format!("Répertoire de départ {id:?} introuvable"),
+            Lang::De => format!("Start-Repertoire {id:?} nicht gefunden"),
         }));
     };
     let side = *side;

@@ -126,4 +126,59 @@ fn hand_built_content_localizes_without_overlays() {
     let es = c.localized(Lang::Es);
     assert_eq!(es.lookup_opening(gm_engine::START_FEN).expect("start").opening.name, "Posición inicial");
     assert_eq!(c.lookup_opening(gm_engine::START_FEN).expect("start").opening.name, "Starting Position");
+    let de = c.localized(Lang::De);
+    assert_eq!(de.lookup_opening(gm_engine::START_FEN).expect("start").opening.name, "Ausgangsstellung");
+}
+
+/// New languages with a partial overlay (fr: one opening, some fields) or no folder at all
+/// (pt, de) still produce full views: every missing entry or field falls back to English,
+/// while the start position is named in the view's language.
+#[test]
+fn partial_or_missing_overlays_fall_back_per_entry() {
+    let base = Content::load(&fixture()).expect("load");
+    let fr = base.localized(Lang::Fr);
+    assert_eq!(fr.lang, Lang::Fr);
+    let o = fr.opening("italian-game").expect("opening");
+    assert_eq!(o.name, "Partie italienne");
+    assert_eq!(o.ideas, vec!["Roquer tôt"]);
+    assert_eq!(o.description, "Aim the bishop at f7.", "missing field falls back");
+    assert_eq!(o.traps, vec!["Fried Liver"]);
+    assert_eq!(o.uci, base.opening("italian-game").expect("en").uci);
+    assert_eq!(fr.opening("giuoco-piano").expect("o").name, "Giuoco Piano", "missing entry falls back");
+    assert_eq!(fr.course("basics").expect("c").title, "Chess Basics", "no courses overlay");
+    assert_eq!(fr.endgame("kq-vs-k").expect("e").title, base.endgame("kq-vs-k").expect("e").title);
+    assert_eq!(fr.lookup_opening(gm_engine::START_FEN).expect("start").opening.name, "Position initiale");
+
+    for (lang, start) in [(Lang::Pt, "Posição inicial"), (Lang::De, "Ausgangsstellung")] {
+        let v = base.localized(lang);
+        assert_eq!(v.lang, lang);
+        assert_eq!(v.course("basics").expect("c").title, "Chess Basics");
+        assert_eq!(v.opening("italian-game").expect("o").name, "Italian Game");
+        assert_eq!(v.courses.len(), base.courses.len());
+        assert_eq!(v.openings.len(), base.openings.len());
+        assert_eq!(v.endgames.len(), base.endgames.len());
+        assert_eq!(v.lookup_opening(gm_engine::START_FEN).expect("start").opening.name, start);
+        assert!(Arc::ptr_eq(&v, &fr.localized(lang)), "views reach their siblings");
+    }
+    let (ov, bad) = load_overlay(&fixture().join("i18n"), Lang::De);
+    assert!(ov.is_empty() && bad == 0, "a missing folder is an empty overlay");
+}
+
+/// Every language gets a complete view of the shipped data, whatever overlays exist for it.
+#[test]
+fn shipped_data_localizes_in_every_language() {
+    let data = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data");
+    let base = Content::load_with_i18n(&data, &data.join("i18n")).expect("load");
+    for lang in Lang::ALL {
+        let v = base.localized(lang);
+        assert_eq!(v.lang, lang);
+        assert_eq!(v.courses.len(), base.courses.len(), "{lang}");
+        assert_eq!(v.openings.len(), base.openings.len(), "{lang}");
+        assert_eq!(v.endgames.len(), base.endgames.len(), "{lang}");
+        for (a, b) in base.openings.iter().zip(&v.openings) {
+            assert_eq!(a.id, b.id);
+            assert_eq!(a.uci, b.uci, "{lang}: overlays never change moves");
+            assert!(!b.name.trim().is_empty(), "{lang}: {} has an empty name", a.id);
+        }
+    }
 }

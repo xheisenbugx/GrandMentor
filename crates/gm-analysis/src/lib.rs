@@ -400,10 +400,14 @@ fn move_label(m: &MoveReview, start_fullmove: u32, white_first: bool) -> String 
     }
 }
 
-fn t<'a>(lang: Lang, en: &'a str, es: &'a str) -> &'a str {
+/// Pick the string for `lang` from `[en, es, pt, fr, de]`.
+fn t(lang: Lang, s: [&'static str; 5]) -> &'static str {
     match lang {
-        Lang::En => en,
-        Lang::Es => es,
+        Lang::En => s[0],
+        Lang::Es => s[1],
+        Lang::Pt => s[2],
+        Lang::Fr => s[3],
+        Lang::De => s[4],
     }
 }
 
@@ -434,39 +438,98 @@ fn build_summary(
         .iter()
         .filter(|m| m.classification.is_error() && m.win_chance_loss >= 10.0)
         .max_by(|a, b| a.win_chance_loss.total_cmp(&b.win_chance_loss));
+    // German puts the verb right after a fronted phrase ("Nach der Eröffnung kippte die
+    // Partie"), so it uses whole-sentence templates with and without the opening instead of
+    // an `{op}` prefix.
+    let with_op = opening.is_some();
     let opener = match &opening {
-        Some(name) => fill(t(lang, "After a {o} opening, ", "Tras la apertura ({o}), "), &kv(&[("o", name)])),
+        Some(name) => fill(
+            t(lang, ["After a {o} opening, ", "Tras la apertura ({o}), ", "Depois da abertura ({o}), ", "Après l'ouverture ({o}), ", ""]),
+            &kv(&[("o", name)]),
+        ),
         None => String::new(),
     };
+    let de_head = if with_op { "Nach der Eröffnung ({o}) kippte die Partie" } else { "Die Partie kippte" };
     match worst {
         Some(m) => {
             let tpl = match (m.classification == Classification::Miss, m.best_move_san.is_empty()) {
-                (true, true) => t(lang, "{op}the game turned when {w} let a big chance slip with {l}.", "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l}."),
+                (true, true) => t(
+                    lang,
+                    [
+                        "{op}the game turned when {w} let a big chance slip with {l}.",
+                        "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l}.",
+                        "{op}a partida mudou quando {w} deixaram escapar uma grande oportunidade com {l}.",
+                        "{op}la partie a basculé quand {w} ont laissé passer une belle occasion avec {l}.",
+                        "{head}, als {w} mit {l} eine große Chance ausließ.",
+                    ],
+                ),
                 (true, false) => t(
                     lang,
-                    "{op}the game turned when {w} let a big chance slip with {l} — {b} was the move.",
-                    "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l} (la jugada era {b}).",
+                    [
+                        "{op}the game turned when {w} let a big chance slip with {l} — {b} was the move.",
+                        "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l} (la jugada era {b}).",
+                        "{op}a partida mudou quando {w} deixaram escapar uma grande oportunidade com {l} (o lance era {b}).",
+                        "{op}la partie a basculé quand {w} ont laissé passer une belle occasion avec {l} (il fallait jouer {b}).",
+                        "{head}, als {w} mit {l} eine große Chance ausließ – richtig war {b}.",
+                    ],
                 ),
-                (false, true) => t(lang, "{op}the game turned when {w} went wrong with {l}.", "{op}la partida cambió cuando {w} fallaron con {l}."),
+                (false, true) => t(
+                    lang,
+                    [
+                        "{op}the game turned when {w} went wrong with {l}.",
+                        "{op}la partida cambió cuando {w} fallaron con {l}.",
+                        "{op}a partida mudou quando {w} erraram com {l}.",
+                        "{op}la partie a basculé quand {w} se sont trompés avec {l}.",
+                        "{head}, als {w} mit {l} danebengriff.",
+                    ],
+                ),
                 (false, false) => t(
                     lang,
-                    "{op}the game turned when {w} went wrong with {l} — {b} was the move.",
-                    "{op}la partida cambió cuando {w} fallaron con {l} (la jugada era {b}).",
+                    [
+                        "{op}the game turned when {w} went wrong with {l} — {b} was the move.",
+                        "{op}la partida cambió cuando {w} fallaron con {l} (la jugada era {b}).",
+                        "{op}a partida mudou quando {w} erraram com {l} (o lance era {b}).",
+                        "{op}la partie a basculé quand {w} se sont trompés avec {l} (il fallait jouer {b}).",
+                        "{head}, als {w} mit {l} danebengriff – richtig war {b}.",
+                    ],
                 ),
             };
-            let s = fill(tpl, &kv(&[("op", &opener), ("w", &who(mover_side(m))), ("l", &label(m)), ("b", &m.best_move_san)]));
+            let o = opening.clone().unwrap_or_default();
+            let vars = kv(&[("head", de_head), ("op", &opener), ("w", &who(mover_side(m))), ("l", &label(m)), ("b", &m.best_move_san), ("o", &o)]);
+            // `{head}` contains `{o}`: fill twice.
+            let s = fill(&fill(tpl, &vars), &vars);
             sentences.push(capitalize(&s));
         }
         None if !review.moves.is_empty() => {
             let tpl = t(
                 lang,
-                "{op}both sides played a clean game without any serious mistakes.",
-                "{op}ambos bandos jugaron una partida limpia, sin errores graves.",
+                [
+                    "{op}both sides played a clean game without any serious mistakes.",
+                    "{op}ambos bandos jugaron una partida limpia, sin errores graves.",
+                    "{op}os dois lados jogaram uma partida limpa, sem erros graves.",
+                    "{op}les deux camps ont joué une partie propre, sans erreur grave.",
+                    if with_op {
+                        "Nach der Eröffnung ({o}) spielten beide Seiten eine saubere Partie ohne grobe Fehler."
+                    } else {
+                        "Beide Seiten spielten eine saubere Partie ohne grobe Fehler."
+                    },
+                ],
             );
-            sentences.push(capitalize(&fill(tpl, &kv(&[("op", &opener)]))));
+            let o = opening.clone().unwrap_or_default();
+            sentences.push(capitalize(&fill(tpl, &kv(&[("op", &opener), ("o", &o)]))));
         }
         None => sentences.push(
-            t(lang, "No moves were played yet — make some moves and review again!", "Todavía no se ha jugado nada: ¡haz algunas jugadas y vuelve a revisar!").to_string(),
+            t(
+                lang,
+                [
+                    "No moves were played yet — make some moves and review again!",
+                    "Todavía no se ha jugado nada: ¡haz algunas jugadas y vuelve a revisar!",
+                    "Nenhum lance foi jogado ainda: faça alguns lances e revise de novo!",
+                    "Aucun coup n'a encore été joué : joue quelques coups et relance la revue !",
+                    "Es wurden noch keine Züge gespielt – spiel ein paar Züge und starte die Analyse erneut!",
+                ],
+            )
+            .to_string(),
         ),
     }
 
@@ -476,25 +539,54 @@ fn build_summary(
             (Lang::En, _) => "Don't miss {W}'s brilliant {l} — a real sacrifice that works!",
             (Lang::Es, Color::White) => "¡No te pierdas la jugada brillante de las blancas, {l}: un sacrificio de verdad que funciona!",
             (Lang::Es, Color::Black) => "¡No te pierdas la jugada brillante de las negras, {l}: un sacrificio de verdad que funciona!",
+            (Lang::Pt, Color::White) => "Não perca o lance brilhante das brancas, {l}: um sacrifício de verdade que funciona!",
+            (Lang::Pt, Color::Black) => "Não perca o lance brilhante das pretas, {l}: um sacrifício de verdade que funciona!",
+            (Lang::Fr, Color::White) => "Ne manque pas le coup brillant des Blancs, {l} : un vrai sacrifice qui fonctionne !",
+            (Lang::Fr, Color::Black) => "Ne manque pas le coup brillant des Noirs, {l} : un vrai sacrifice qui fonctionne !",
+            (Lang::De, Color::White) => "Verpass nicht den brillanten Zug von Weiß, {l} – ein echtes Opfer, das funktioniert!",
+            (Lang::De, Color::Black) => "Verpass nicht den brillanten Zug von Schwarz, {l} – ein echtes Opfer, das funktioniert!",
         };
         sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(mover_side(m)))), ("l", &label(m))])));
     } else if final_pos.is_checkmate() {
         let winner = final_pos.turn().other();
         if let Some(last) = review.moves.last() {
-            let tpl = t(lang, "{W} finished it in style with checkmate on {l}.", "{W} remataron con estilo: jaque mate con {l}.");
+            let tpl = t(
+                lang,
+                [
+                    "{W} finished it in style with checkmate on {l}.",
+                    "{W} remataron con estilo: jaque mate con {l}.",
+                    "{W} finalizaram com estilo: xeque-mate com {l}.",
+                    "{W} ont conclu avec style : échec et mat avec {l}.",
+                    "{W} hat stilvoll mit {l} mattgesetzt.",
+                ],
+            );
             sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(winner))), ("l", &label(last))])));
         }
     } else if final_pos.is_stalemate() {
         sentences.push(
             t(
                 lang,
-                "The game ended in stalemate — always check your opponent has a move!",
-                "La partida terminó en ahogado: ¡comprueba siempre que tu rival tenga alguna jugada!",
+                [
+                    "The game ended in stalemate — always check your opponent has a move!",
+                    "La partida terminó en ahogado: ¡comprueba siempre que tu rival tenga alguna jugada!",
+                    "A partida terminou em afogamento: confira sempre se o adversário ainda tem algum lance!",
+                    "La partie s'est terminée par un pat : vérifie toujours que ton adversaire a encore un coup à jouer !",
+                    "Die Partie endete im Patt – achte immer darauf, dass dein Gegner noch einen Zug hat!",
+                ],
             )
             .to_string(),
         );
     } else if let Some(m) = review.moves.iter().find(|m| m.classification == Classification::Great) {
-        let tpl = t(lang, "{W} found a great move with {l}.", "{W} encontraron una gran jugada: {l}.");
+        let tpl = t(
+            lang,
+            [
+                "{W} found a great move with {l}.",
+                "{W} encontraron una gran jugada: {l}.",
+                "{W} encontraram um ótimo lance: {l}.",
+                "{W} ont trouvé un très bon coup : {l}.",
+                "{W} hat mit {l} einen starken Zug gefunden.",
+            ],
+        );
         sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(mover_side(m)))), ("l", &label(m))])));
     }
 
@@ -502,13 +594,49 @@ fn build_summary(
     if !review.moves.is_empty() {
         let (w, b) = (review.white.accuracy, review.black.accuracy);
         let verdict = if (w - b).abs() < 3.0 {
-            t(lang, "an evenly matched performance", "una actuación muy pareja")
+            t(
+                lang,
+                [
+                    "an evenly matched performance",
+                    "una actuación muy pareja",
+                    "um desempenho bem equilibrado",
+                    "une performance très équilibrée",
+                    "eine sehr ausgeglichene Leistung",
+                ],
+            )
         } else if w > b {
-            t(lang, "White was the more precise side", "las blancas fueron el bando más preciso")
+            t(
+                lang,
+                [
+                    "White was the more precise side",
+                    "las blancas fueron el bando más preciso",
+                    "as brancas foram o lado mais preciso",
+                    "les Blancs ont été les plus précis",
+                    "Weiß war die genauere Seite",
+                ],
+            )
         } else {
-            t(lang, "Black was the more precise side", "las negras fueron el bando más preciso")
+            t(
+                lang,
+                [
+                    "Black was the more precise side",
+                    "las negras fueron el bando más preciso",
+                    "as pretas foram o lado mais preciso",
+                    "les Noirs ont été les plus précis",
+                    "Schwarz war die genauere Seite",
+                ],
+            )
         };
-        let tpl = t(lang, "Accuracy: White {w}%, Black {b}% — {v}.", "Precisión: blancas {w} %, negras {b} %: {v}.");
+        let tpl = t(
+            lang,
+            [
+                "Accuracy: White {w}%, Black {b}% — {v}.",
+                "Precisión: blancas {w} %, negras {b} %: {v}.",
+                "Precisão: brancas {w}%, pretas {b}%: {v}.",
+                "Précision : Blancs {w} %, Noirs {b} % : {v}.",
+                "Genauigkeit: Weiß {w} %, Schwarz {b} % – {v}.",
+            ],
+        );
         sentences.push(fill(tpl, &kv(&[("w", &decimal1(w, lang)), ("b", &decimal1(b, lang)), ("v", verdict)])));
     }
     sentences.join(" ")
