@@ -380,3 +380,42 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Daily plan, streaks and goals
+
+All days are **UTC calendar days** (`YYYY-MM-DD`, SQLite `date('now')`), used consistently by the activity log,
+`profile.last_active` and every streak computation.
+
+**Streak — single source of truth** (`gm_store::activity::streak_in`): active days = days with a non-zero count in
+the `activity` table ∪ the run stored in `profile.last_active`/`profile.streak_days` (kept for streaks earned before
+the activity log existed; store writes and `log_activity` refresh it with the computed run). `current` counts back
+from today, or from yesterday when today has no activity yet (a streak only breaks after a whole missed day).
+`Profile.streak_days`, `Stats.streak_days` and `/api/daily` all read this value.
+
+Store (`gm_store::activity`): `log_activity(kind, n)`, `activity_days(days)`, `KINDS` (unchanged) plus
+`streak() -> Streak`, `daily_goal() -> DailyGoal`, `set_daily_goal(&DailyGoal)`, `daily_summary() -> DailySummary`.
+Goal table `daily_goal(id=1, kind, target)`; default `{kind:"minutes", target:10}`. Minutes are estimated per kind
+(`activity::minutes_per`: game/local_game 10, classic 5, lesson 4, endgame 3, puzzle/drill 2, reviews 1).
+
+| Method & path | Body | Response |
+|---|---|---|
+| GET `/api/daily` | – | `DailySummary` |
+| PUT `/api/daily/goal` | `{kind:"minutes"\|"activities", target}` (minutes 1..=240, activities 1..=100; else 400) | `DailySummary` |
+| GET `/api/activity?days=N` | N 1..=400 (default 84) | `{days, items:[{day, counts:{kind:n}, total}]}` (only active days, newest first) |
+| POST `/api/activity` | `{kind, n?=1}` (kind ∈ `KINDS`, n 1..=20; else 400) | `DailySummary` — for client-only activities (endgame drills, reading classics…) |
+
+```
+DailySummary { date: "YYYY-MM-DD", goal: {kind, target},
+  progress: {minutes, activities, value /* in goal unit */, target, ratio /* 0..1 */, met},
+  streak: {current, best, today_active}, last7: [{day, total, active}] /* oldest → today */,
+  today: {kind: count} }
+```
+
+**Frontend** — `web/js/components/daily.js`: `new DailyPanel(container)`, `.load({bots, courses, progress, games,
+dailyPuzzle, nextLesson})`, `.destroy()`; also exports `choosePlan`, `taskDone`, `seededRandom`, `heatLevel`,
+`ensureDailyCss()` (loads `web/css/daily.css`). Mounted on Home under the hero. The plan (3–5 tasks, ~10–15 min)
+is composed client-side from `/api/puzzles/daily`, `/api/mistakes/summary`, `/api/repertoire/summary`, courses +
+`/api/progress`, `/api/endgames`, `/api/adaptive/estimate` + `/api/bots` (missing endpoints are skipped), seeded by
+the UTC date and cached per day in `localStorage['grandmentor.daily.plan.v1']` so it is stable across reloads.
+A task is checked when today's count for its kind is > 0 (game task: `game` or `local_game`).
+Pages that finish a client-only activity should call `api.post('/api/activity', {kind})` (endgames.js does for `endgame`).

@@ -1,4 +1,4 @@
-// Home dashboard (#/): greeting + streak, big CTA cards, quick-play bots, puzzle rating,
+// Home dashboard (#/): greeting + streak, today's plan / goal / streak strip (components/daily.js), big CTA cards, quick-play bots, puzzle rating,
 // recent games, tip of the day and a mini daily-puzzle preview.
 
 import { api, isAbort } from '../api.js';
@@ -8,6 +8,7 @@ import {
   ensureHubCss, fenBoardSvg, playUci, resultMarker, outcomeLabel, userAccuracy, accuracyPill,
   gameTitle, fullMoves,
 } from './library.js';
+import { DailyPanel, ensureDailyCss } from '../components/daily.js';
 
 export const title = () => t('nav.routes.home');
 
@@ -67,7 +68,7 @@ function greetingNodes(key, name) {
 }
 
 export async function mount(root) {
-  await ensureHubCss();
+  await Promise.all([ensureHubCss(), ensureDailyCss()]);
   const bag = disposables();
   const ctrl = new AbortController();
   bag.add(() => ctrl.abort());
@@ -82,9 +83,11 @@ export async function mount(root) {
   const puzzleEl = h('div', { class: 'card hub-daily' }, h('div', { class: 'skeleton skeleton-board' }));
   const ratingEl = h('div', { class: 'card hub-rating-card' }, skeleton('text', 3));
   const tipEl = h('div', { class: 'card hub-tip' });
+  const dailyEl = h('div', { class: 'hub-daily-plan' });
 
   const page = h('div', { class: 'page hub-page hub-home' },
     heroEl,
+    dailyEl,
     ctaEl,
     h('section', { class: 'hub-section' },
       h('h2', { class: 'section-title' }, t('home.playABot'), h('a', { href: '#/play' }, t('common.seeAll'))),
@@ -99,6 +102,8 @@ export async function mount(root) {
         h('section', null, h('h2', { class: 'section-title' }, t('home.dailyPuzzle'), h('a', { href: '#/puzzles' }, t('home.morePuzzles'))), puzzleEl),
         ratingEl)));
   root.appendChild(page);
+  const dailyPanel = new DailyPanel(dailyEl);
+  bag.add(() => dailyPanel.destroy());
 
   // ---- Tip of the day (local, instant) -------------------------------------
   let tipIndex = dayOfYear() % TIP_IDS.length;
@@ -142,6 +147,8 @@ export async function mount(root) {
     offline = !profileR.ok && !gamesR.ok && !botsR.ok;
 
     renderHero();
+    dailyPanel.load({ bots, courses, progress, games, dailyPuzzle: daily, nextLesson: nextLesson() })
+      .catch((e) => { if (!isAbort(e)) console.error('[home] daily', e); });
     renderCtas();
     renderBots();
     renderRecent();
