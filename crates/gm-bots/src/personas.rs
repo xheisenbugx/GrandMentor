@@ -37,6 +37,11 @@ impl Style {
     }
 }
 
+/// Id of the adaptive bot whose strength follows the user's results.
+pub const ADAPTIVE_ID: &str = "adaptive";
+/// Starting level of the adaptive bot before any game has been played.
+pub const ADAPTIVE_START_ELO: u16 = 600;
+
 /// A bot's full definition (identity + chat lines per language).
 pub struct Persona {
     pub id: &'static str,
@@ -542,6 +547,41 @@ pub static PERSONAS: &[Persona] = &[
             winning: &["PROBABILIDAD DE VICTORIA EN AUMENTO.", "EVALUACIÓN: FAVORABLE."],
             losing: &["INESPERADO. IMPRESIONANTE, HUMANO.", "RECALIBRANDO... ERES FUERTE."],
             win: &["JAQUE MATE. BUENA PARTIDA, HUMANO. ¿OTRA?"],
+        },
+    },
+    // ---- adaptive --------------------------------------------------------------------------
+    // Sparky's `elo` is only the starting level: the server passes the stored adaptive level
+    // (see `choose_move_at`), which moves up after the user wins and down after a loss.
+    Persona {
+        id: ADAPTIVE_ID,
+        name: "Sparky",
+        elo: ADAPTIVE_START_ELO,
+        avatar: "⚡",
+        style: Style::Universal,
+        coach: false,
+        en: Lines {
+        description: "Grows with you! Sparky gets a little stronger every time you win and a little gentler when you lose, so every game is a fair fight.",
+        greeting: "Hey there! I'll match your level, so every game is close. Ready?",
+        opening: &["The {opening}! I'm learning this one too.", "Ooh, the {opening}. Let's see how it goes!"],
+        capture: &["Zap! Got one.", "I'll take that, thanks!"],
+        captured: &["Nice capture! You're getting sharper.", "Hey, I was using that!"],
+        blunder: &["Oops, that one was loose! Keep an eye on your pieces.", "Free piece? Zap!"],
+        check: &["Check! Zzzap!", "Check!"],
+        winning: &["I'm ahead, but you can still turn this around!"],
+        losing: &["Whoa, you're good! I'll level up for next time."],
+        win: &["Checkmate! Good fight. I'll go a bit easier next game."],
+        },
+        es: Lines {
+            description: "¡Crece contigo! Sparky se vuelve un poco más fuerte cada vez que ganas y un poco más suave cuando pierdes, para que cada partida sea pareja.",
+            greeting: "¡Hola! Me ajusto a tu nivel, así que cada partida será reñida. ¿Empezamos?",
+            opening: &["¡{opening}! Yo también la estoy aprendiendo.", "Uy, {opening}. ¡A ver qué tal sale!"],
+            capture: &["¡Zas! Me llevo una.", "¡Me la quedo, gracias!"],
+            captured: &["¡Buena captura! Cada vez juegas mejor.", "¡Oye, que la estaba usando!"],
+            blunder: &["¡Uy, esa estaba suelta! Vigila tus piezas.", "¿Pieza gratis? ¡Zas!"],
+            check: &["¡Jaque! ¡Bzzz!", "¡Jaque!"],
+            winning: &["Voy por delante, ¡pero todavía puedes darle la vuelta!"],
+            losing: &["¡Guau, qué bien juegas! Subiré de nivel para la próxima."],
+            win: &["¡Jaque mate! Buena pelea. En la próxima iré un poco más suave."],
         },
     },
     // ---- coaches ---------------------------------------------------------------------------

@@ -34,7 +34,11 @@ use gm_content::words::{fill, kv, PieceRef};
 use gm_content::Lang;
 use gm_engine::{move_to_san, move_to_uci, parse_fen, uci_to_move, Engine, Score, SearchLimits};
 
-pub use personas::Style;
+pub use personas::{Style, ADAPTIVE_ID, ADAPTIVE_START_ELO};
+
+/// Range the adaptive bot's level is kept in.
+pub const ADAPTIVE_MIN_ELO: u16 = 250;
+pub const ADAPTIVE_MAX_ELO: u16 = 2800;
 use personas::{Persona, PERSONAS};
 pub use strength::Strength;
 
@@ -115,6 +119,22 @@ pub fn choose_move(
 ) -> Result<BotMove, String> {
     let mut rng = StdRng::from_entropy();
     choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None, lang)
+}
+
+/// Like [`choose_move`], but plays at `elo` instead of the persona's own rating (used for the
+/// adaptive bot, whose level is stored per user). `elo` is clamped to
+/// `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO`; `None` behaves exactly like [`choose_move`].
+pub fn choose_move_at(
+    engine: &mut Engine,
+    content: &gm_content::Content,
+    bot_id: &str,
+    start_fen: &str,
+    moves: &[String],
+    elo: Option<u16>,
+    lang: Lang,
+) -> Result<BotMove, String> {
+    let mut rng = StdRng::from_entropy();
+    choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, None, elo, lang)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -414,8 +434,26 @@ pub(crate) fn choose_move_with<R: Rng>(
     movetime_cap_ms: Option<u64>,
     lang: Lang,
 ) -> Result<BotMove, String> {
+    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, movetime_cap_ms, None, lang)
+}
+
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn choose_move_inner<R: Rng>(
+    engine: &mut Engine,
+    content: &gm_content::Content,
+    bot_id: &str,
+    start_fen: &str,
+    moves: &[String],
+    rng: &mut R,
+    movetime_cap_ms: Option<u64>,
+    elo_override: Option<u16>,
+    lang: Lang,
+) -> Result<BotMove, String> {
     let started = Instant::now();
     let persona = personas::find(bot_id).ok_or_else(|| format!("unknown bot: {bot_id}"))?;
+    let elo = elo_override
+        .map(|e| e.clamp(ADAPTIVE_MIN_ELO, ADAPTIVE_MAX_ELO))
+        .unwrap_or(persona.elo);
     let game = replay(start_fen, moves)?;
     let pos = &game.pos;
     if pos.is_game_over() {
@@ -425,7 +463,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     if legal.is_empty() {
         return Err("game is over".into());
     }
-    let st = Strength::for_elo(persona.elo);
+    let st = Strength::for_elo(elo);
     let us = pos.turn();
     let ply = moves.len();
 
@@ -441,7 +479,7 @@ pub(crate) fn choose_move_with<R: Rng>(
         let cands = book::candidates(content, pos, persona.style);
         if !cands.is_empty() {
             // Strong players follow the main lines; weak ones pick flatter.
-            let sharp = 0.5 + f64::from(persona.elo.min(3000)) / 3000.0;
+            let sharp = 0.5 + f64::from(elo.min(3000)) / 3000.0;
             let w: Vec<f64> = cands.iter().map(|c| c.weight.powf(sharp)).collect();
             let c = &cands[weighted_pick(rng, &w)];
             if let Ok(m) = uci_to_move(pos, &c.uci) {
@@ -510,7 +548,7 @@ pub(crate) fn choose_move_with<R: Rng>(
                 if Some(h) != current_hash && game.history.contains(&h) {
                     if best > 50 {
                         s -= 150.0;
-                    } else if best < -150 && persona.elo >= 1200 {
+                    } else if best < -150 && elo >= 1200 {
                         s += 120.0;
                     }
                 }
@@ -524,7 +562,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     // ---- 4. Chat + think time -----------------------------------------------------------------
     let best_score = cands.first().map(|c| c.score);
     let chat = make_chat(rng, persona, &game, &chosen, chosen_score.or(best_score), best_score, lang);
-    let think = think_time(rng, persona.elo, legal.len(), &cands, pos.is_check(), started);
+    let think = think_time(rng, elo, legal.len(), &cands, pos.is_check(), started);
     Ok(finish(pos, &chosen, chat, think))
 }
 

@@ -301,7 +301,8 @@ export async function mount(root, { query = {} } = {}) {
   const bCopy = actBtn('copy', t('analysis.actions.copy'), t('analysis.actions.copyTip'));
   const bSave = actBtn('save', t('analysis.actions.save'), t('analysis.actions.saveTip'));
   const reviewLink = h('a', { class: 'btn btn-ghost btn-sm an-act', hidden: true, html: icon('chart') + spanHtml(t('analysis.actions.review')) });
-  const actions = h('div', { class: 'an-actions' }, bNew, bLoad, bSetup, bCopy, bSave, reviewLink);
+  const bPlayBot = actBtn('robot', t('analysis.actions.playBot'), t('analysis.actions.playBotTip'));
+  const actions = h('div', { class: 'an-actions' }, bNew, bLoad, bSetup, bCopy, bSave, bPlayBot, reviewLink);
 
   const nav = (ic, label) => h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': label, 'data-tooltip': label, html: icon(ic) });
   const bFirst = nav('first', t('analysis.nav.first'));
@@ -1040,6 +1041,8 @@ export async function mount(root, { query = {} } = {}) {
   });
   bag.on(bLoad, 'click', openLoadModal);
   bag.on(bCopy, 'click', openCopyMenu);
+  // "Play vs bot from here" (CONTRACT: #/play?fen=...; the side to move plays first).
+  bag.on(bPlayBot, 'click', () => { location.hash = `#/play?fen=${encodeURIComponent(state.cur.fen)}`; });
   bag.on(bSave, 'click', () => {
     if (!state.tree.root.children.length) { toast(t('analysis.save.makeMovesFirst'), 'info'); return; }
     openSaveModal();

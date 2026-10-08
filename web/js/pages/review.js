@@ -253,7 +253,16 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     const bLast = nav('last', t('review.nav.last'));
     const bFlip = nav('flip', t('review.nav.flip'));
     const bAnalyze = h('a', { class: 'btn btn-ghost btn-icon', 'aria-label': t('review.nav.analyse'), 'data-tooltip': t('review.nav.analyseTip'), html: icon('analysis') });
-    const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip, bAnalyze);
+    // "Take over from here": play this position against the same bot (CONTRACT: #/play?fen=).
+    const bPlayHere = h('a', { class: 'btn btn-ghost btn-icon', 'aria-label': t('review.nav.playFromHere'), 'data-tooltip': t('review.nav.playFromHereTip'), html: icon('robot') });
+    const setPlayHref = (fen) => {
+      const q = new URLSearchParams({ fen });
+      if (game.bot_id) q.set('bot', game.bot_id);
+      if (game.user_color === 'white' || game.user_color === 'black') q.set('color', game.user_color === 'black' ? 'b' : 'w');
+      bPlayHere.href = `#/play?${q}`;
+    };
+    setPlayHref(startFen);
+    const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip, bAnalyze, bPlayHere);
     const aside = h('aside', { class: 'game-panel' }, panel, toolbar);
 
     const layout = h('div', { class: 'game-layout review-layout' + (settings.showEvalBar === false ? ' no-eval' : ''), style: { '--panel-w': '420px' } }, main, aside);
@@ -446,6 +455,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       graph.setCurrent(p);
       moveList.setCurrent(p);
       bAnalyze.href = `#/analysis?game=${gameId}&ply=${p}`;
+      setPlayHref(p > 0 ? moves[p - 1].fen_after : startFen);
       if (st.mode === 'walk') { renderWalk(); renderFooter(); }
     }
 
@@ -775,6 +785,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       moveList.setCurrent(ex.basePly);
       graph.setCurrent(ex.basePly);
       bAnalyze.href = `#/analysis?fen=${encodeURIComponent(cur.fen)}`;
+      setPlayHref(cur.fen);
       ex.info = null;
       renderExploreCard();
       renderFooter();

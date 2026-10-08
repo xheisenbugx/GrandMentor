@@ -324,3 +324,24 @@ fn spanish_opening_chat_uses_localized_names() {
     }
     assert!(seen, "max never named an opening");
 }
+
+#[test]
+fn adaptive_bot_plays_at_requested_level() {
+    let content = Content::default();
+    let mut engine = Engine::new(4);
+    assert!(exists(ADAPTIVE_ID));
+    let p = get(ADAPTIVE_ID, Lang::Es).expect("adaptive bot");
+    assert_eq!(p.elo, ADAPTIVE_START_ELO);
+    let fen = "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4";
+    // At a strong level it finds the mate in one every time; out-of-range levels are clamped.
+    let mut rng = StdRng::seed_from_u64(3);
+    for elo in [2800u16, u16::MAX] {
+        let r = choose_move_inner(&mut engine, &content, ADAPTIVE_ID, fen, &[], &mut rng, Some(200), Some(elo), Lang::En)
+            .expect("move");
+        assert_eq!(r.uci, "h5f7");
+    }
+    for elo in [0u16, 250, 1200] {
+        let r = choose_move_at(&mut engine, &content, ADAPTIVE_ID, START_FEN, &[], Some(elo), Lang::En).expect("move");
+        assert!(!r.uci.is_empty());
+    }
+}
