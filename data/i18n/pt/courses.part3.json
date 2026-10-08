@@ -1,0 +1,430 @@
+{
+  "_comment": "Portuguese (pt-BR) overlay for the Board Vision and Guess the Move courses (see docs/I18N.md).",
+  "board-vision": {
+    "title": "Visão do tabuleiro",
+    "description": "Treine o olhar: nomeie qualquer casa num instante, conte o material, encontre peças soltas e compare lances candidatos.",
+    "lessons": {
+      "bv-coordinates": {
+        "title": "Cada casa tem um nome",
+        "summary": "Aprenda colunas e fileiras e encontre casas rapidinho.",
+        "steps": [
+          {
+            "text": "O tabuleiro é uma grade de **64 casas**. As verticais se chamam **colunas** e recebem letras de **a** a **h**, da esquerda para a direita, do ponto de vista das brancas. As horizontais se chamam **fileiras** e são numeradas de **1** a **8**, a partir do lado das brancas."
+          },
+          {
+            "text": "Para nomear uma casa, diga primeiro a **coluna e depois a fileira**. A casa destacada é **e4**: coluna *e*, fileira *4*. Todo lance de xadrez é escrito com esses nomes, então saber todos de cor deixa tudo mais fácil."
+          },
+          {
+            "text": "Sua vez! As letras e os números na borda do tabuleiro vão ajudar você.",
+            "task": {
+              "prompt": "Clique em cada casa assim que ela for anunciada.",
+              "success": "Que olhar! Você encontrou todas as casas.",
+              "hint": "Ache a letra da coluna na parte de baixo e depois conte até a fileira."
+            }
+          },
+          {
+            "text": "Agora um pouco mais rápido. As casas da borda enganam: **a** e **h** são as colunas das laterais; **1** e **8**, as fileiras do fundo.",
+            "task": {
+              "prompt": "Encontre estas casas.",
+              "success": "Perfeito! Você já lê o tabuleiro como um mapa."
+            }
+          }
+        ]
+      },
+      "bv-black-side": {
+        "title": "Vendo pelo lado das negras",
+        "summary": "Vire o tabuleiro e continue encontrando cada casa.",
+        "steps": [
+          {
+            "text": "Quando você joga de negras, o tabuleiro gira. Suas peças ficam nas fileiras **8** e **7**, embaixo, e a **coluna h** agora fica à sua esquerda. As casas não mudam de nome; só muda o seu ponto de vista."
+          },
+          {
+            "text": "Vamos praticar pelo lado das negras.",
+            "task": {
+              "prompt": "Clique em cada casa assim que ela for anunciada.",
+              "success": "Muito bem! O tabuleiro parece diferente, mas você se orientou.",
+              "hint": "Deste lado, a coluna **a** fica à direita e a fileira **1** fica em cima."
+            }
+          },
+          {
+            "text": "Duas dicas práticas: a casa do canto à sua **direita** é sempre **clara**, e cada dama começa na sua cor: a dama branca na casa clara **d1**, a dama negra na casa escura **d8**."
+          },
+          {
+            "text": "Hora do desafio: as coordenadas sumiram! Imagine as letras e os números.",
+            "task": {
+              "prompt": "Encontre estas casas sem as coordenadas.",
+              "success": "Impressionante! Isso é visão de tabuleiro de verdade.",
+              "hint": "Use os reis como referência: eles ficam em **e1** e **e8**."
+            }
+          },
+          {
+            "text": "O último: sem coordenadas e jogando de negras.",
+            "task": {
+              "prompt": "Encontre estas casas pelo lado das negras.",
+              "success": "Fantástico! Você encontra qualquer casa, de qualquer lado.",
+              "hint": "Os reis estão em **e8** (embaixo) e **e1** (em cima)."
+            }
+          }
+        ]
+      },
+      "bv-counting": {
+        "title": "Contando material",
+        "summary": "Some o valor das peças para ver quem está na frente.",
+        "steps": [
+          {
+            "text": "As peças têm um valor aproximado em pontos: **peão 1**, **cavalo 3**, **bispo 3**, **torre 5**, **dama 9**. O rei não tem preço, então não entra na conta.\n\nSome os pontos de cada lado e compare: esse é o equilíbrio de **material**."
+          },
+          {
+            "text": "Conte as peças dos dois lados.",
+            "task": {
+              "prompt": "Quem está na frente, e por quanto?",
+              "success": "Isso! As brancas têm um cavalo a mais: **+3**.",
+              "hint": "Os peões estão iguais. Compare os cavalos."
+            }
+          },
+          {
+            "text": "Peças diferentes desta vez. Some com cuidado.",
+            "task": {
+              "prompt": "Quem está na frente, e por quanto?",
+              "success": "Exato: duas torres (10) contra torre e bispo (8), então **as negras estão +2**. Ganhar uma torre por um bispo ou cavalo se chama **ganhar a qualidade**.",
+              "hint": "A torre vale 5 e o bispo, 3."
+            }
+          },
+          {
+            "text": "Uma dama contra um time de peças menores. Quem tem mais?",
+            "task": {
+              "prompt": "Quem está na frente, e por quanto?",
+              "success": "Igual! Uma dama (9) vale mais ou menos uma torre, um bispo e um peão (5 + 3 + 1). Peças diferentes, mesmo total.",
+              "hint": "Conte os peões também: as negras têm um a mais."
+            }
+          },
+          {
+            "text": "Contar depois de cada captura evita que você entregue peças de graça. Mas lembre-se: material não é tudo. **O xeque-mate vale mais que qualquer quantidade de peças a mais!**"
+          }
+        ]
+      },
+      "bv-hanging": {
+        "title": "Encontre a peça pendurada",
+        "summary": "Encontre peças que podem ser capturadas de graça.",
+        "steps": [
+          {
+            "text": "Uma peça está **pendurada** quando uma peça inimiga a ataca e nada a defende, ou quando uma peça **mais barata** a ataca. Aqui, o cavalo negro de c6 está atacado pelo bispo e não tem defensor.\n\nAntes de cada lance, pergunte a si mesmo: *quais peças estão penduradas?*"
+          },
+          {
+            "text": "A dama negra acabou de saltar para b6.",
+            "task": {
+              "prompt": "Clique na peça pendurada das brancas.",
+              "success": "Isso! O **peão de b2** está atacado pela dama e nada o defende. Um lance como **Qb3** ou **Qc2** resolve o problema.",
+              "hint": "Siga as linhas da dama a partir de b6."
+            }
+          },
+          {
+            "text": "As brancas acabaram de capturar em d5 com o cavalo. Você joga de negras.",
+            "task": {
+              "prompt": "Clique na peça pendurada das brancas.",
+              "success": "Correto! Nada defende o **cavalo de d5**. Seu cavalo de f6 parece cravado, mas **Nxd5!** funciona: se **Bxd8**, então **Bb4+** recupera a dama e você fica com uma peça a mais. Esta é a famosa **Armadilha do Elefante**.",
+              "hint": "Qual peça branca está bem ao lado das suas peças?"
+            }
+          },
+          {
+            "text": "**Checagem contra erros graves:** antes de jogar, olhe cada peça, suas e do adversário, e pergunte o que ela ataca e o que a defende. Leva poucos segundos e salva muitas partidas."
+          }
+        ]
+      },
+      "bv-many-hanging": {
+        "title": "Mais de uma peça solta",
+        "summary": "Encontre todas as peças penduradas, dos dois lados.",
+        "steps": [
+          {
+            "text": "Às vezes **mais de uma** peça está pendurada, e elas podem ser de qualquer um dos lados. Clique em todas e depois aperte **Verificar**."
+          },
+          {
+            "text": "O cavalo negro acabou de saltar para f6.",
+            "task": {
+              "prompt": "Encontre **as duas** peças penduradas das brancas.",
+              "success": "Exato: a **dama de h5** e o **peão de e4** estão os dois atacados. Mas antes de salvá-los, sempre procure xeques: aqui **Qxf7#** é xeque-mate!",
+              "hint": "O que o cavalo de f6 ataca?"
+            }
+          },
+          {
+            "text": "Os peões são ótimos atacantes porque são as peças que menos valem.",
+            "task": {
+              "prompt": "Os dois lados têm uma peça atacada por um peão. Clique nas duas.",
+              "success": "Isso! O peão de e5 ataca o **cavalo de f6**, e o peão de d5 ataca o **bispo de c4**. Um peão atacando uma peça é uma ameaça grande.",
+              "hint": "Olhe os peões de e5 e d5."
+            }
+          },
+          {
+            "text": "O cavalo branco acabou de chegar a d5. Você joga de negras.",
+            "task": {
+              "prompt": "Quais das suas peças estão penduradas? São duas.",
+              "success": "Bem visto! O cavalo ataca sua **dama em f6** e o **peão de c7**, e **Nxc7+** ainda daria um garfo no seu rei e na sua torre.",
+              "hint": "O cavalo ataca em forma de L, até oito casas."
+            }
+          }
+        ]
+      },
+      "bv-best-plan": {
+        "title": "Escolha o melhor plano",
+        "summary": "Compare lances candidatos antes de escolher.",
+        "steps": [
+          {
+            "text": "Jogadores fortes comparam alguns **lances candidatos** antes de decidir. Cada opção mostra uma seta no tabuleiro: passe o mouse ou toque numa opção para vê-la e depois escolha a melhor."
+          },
+          {
+            "text": "Lembra desta posição? É a vez das brancas.",
+            "task": {
+              "prompt": "Qual é o melhor lance?",
+              "success": "Xeque-mate! Sempre olhe primeiro os **xeques e as capturas**.",
+              "options": [
+                {
+                  "text": "Qh3: salvar a dama",
+                  "explain": "Seguro, mas você deixou passar um mate em um!"
+                },
+                {
+                  "text": "Qxf7#: capturar em f7",
+                  "explain": "Xeque-mate! Só o rei defendia f7, e o bispo de c4 apoia a dama."
+                },
+                {
+                  "text": "Qxe5+: pegar um peão com xeque",
+                  "explain": "O cavalo de c6 defende e5: depois de **Nxe5**, você perde a dama."
+                }
+              ]
+            }
+          },
+          {
+            "text": "A dama negra está atacando seu peão de b2.",
+            "task": {
+              "prompt": "Qual é o seu plano?",
+              "success": "Bom plano! Primeiro defenda, depois continue desenvolvendo.",
+              "options": [
+                {
+                  "text": "Ne5: ignorar e atacar",
+                  "explain": "As negras simplesmente capturam em b2, ganhando um peão e atacando sua torre."
+                },
+                {
+                  "text": "Bc7: atacar a dama",
+                  "explain": "Nada defende o bispo de c7, então a dama simplesmente o captura."
+                },
+                {
+                  "text": "Qb3: defender b2 e oferecer a troca",
+                  "explain": "Sólido: b2 fica protegido, e uma troca de damas deixaria você com uma posição saudável."
+                }
+              ]
+            }
+          },
+          {
+            "text": "A Armadilha do Elefante de novo. Você joga de negras.",
+            "task": {
+              "prompt": "Seu cavalo de f6 está cravado. Mesmo assim dá para capturar em d5?",
+              "success": "Dá! Uma cravada só é perigosa se a peça de trás puder mesmo ser capturada de graça.",
+              "options": [
+                {
+                  "text": "Nxd5: capturar o cavalo",
+                  "explain": "Se **Bxd8**, então **Bb4+** recupera a dama e você termina com uma peça a mais."
+                },
+                {
+                  "text": "c6: expulsar o cavalo",
+                  "explain": "Jogável, mas você perde a chance de ganhar um cavalo inteiro."
+                },
+                {
+                  "text": "Be7: desfazer a cravada primeiro",
+                  "explain": "Seguro, mas o cavalo de graça escapa."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Revisão final: conte o material.",
+            "task": {
+              "prompt": "Quem está na frente, e por quanto?",
+              "success": "Correto: as negras têm um peão a mais. Agora você tem visão de tabuleiro de verdade!"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "guess-the-move": {
+    "title": "Adivinhe o lance: partidas de mestres",
+    "description": "Sente na cadeira de uma lenda. Adivinhe o próximo lance em partidas famosas: acertos exatos valem 3 pontos, boas alternativas ganham pontos parciais, e cada lance é explicado.",
+    "lessons": {
+      "gtm-legal": {
+        "title": "Mate de Légal (1750)",
+        "summary": "Um sacrifício de dama que engana jogadores há séculos.",
+        "steps": [
+          {
+            "text": "**Légal vs Saint Brie, Paris 1750.** Uma das armadilhas registradas mais antigas. As negras cravaram o cavalo branco na dama com **...Bg4**. O cavalo parece preso... será mesmo?"
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Mate de Légal! Uma cravada só importa se mover a peça cravada realmente fizer você perder algo.",
+              "hint": "O cavalo cravado está mesmo preso?",
+              "game": "Légal vs Saint Brie, Paris 1750",
+              "notes": [
+                "**Nxe5!** ignora a cravada e oferece a dama.",
+                "**Bxf7+**: o bispo dá xeque e puxa o rei para a frente.",
+                "**Nd5#**: três peças menores dão mate. A dama a mais das negras não serve para nada!"
+              ]
+            }
+          },
+          {
+            "text": "As negras foram gananciosas. Capturar a dama levou ao mate; **5...dxe5**, devolvendo um peão, era muito melhor. Sempre veja o que o adversário ameaça antes de pegar material."
+          }
+        ]
+      },
+      "gtm-opera": {
+        "title": "A Partida da Ópera de Morphy (1858)",
+        "summary": "Desenvolvimento rápido e linhas abertas esmagam um rei preso no centro.",
+        "steps": [
+          {
+            "text": "**Paul Morphy vs Duque Karl de Brunswick e Conde Isouard, Paris 1858**, jogada num camarote da ópera! Depois de oito lances, Morphy está muito à frente no desenvolvimento, enquanto o rei negro continua no centro."
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Ótimo jogo de ataque! As negras responderam **12...Rd8**. Agora termine o serviço.",
+              "hint": "Desenvolva uma peça com ameaça.",
+              "game": "Paul Morphy vs Duque Karl e Conde Isouard, Paris 1858",
+              "notes": [
+                "**Bg5** desenvolve cravando o cavalo de f6.",
+                "**Nxb5!** entrega um cavalo para escancarar as linhas até o rei negro.",
+                "**Bxb5+**: xeque, e agora o cavalo de d7 vai ficar cravado.",
+                "**O-O-O** leva a torre direto para a coluna d, mirando o cavalo cravado."
+              ]
+            }
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Brilhante! Um modelo de desenvolvimento rápido e ataque ao rei que não rocou.",
+              "hint": "O cavalo de d7 está cravado. Acumule pressão sobre ele.",
+              "game": "Paul Morphy vs Duque Karl e Conde Isouard, Paris 1858",
+              "notes": [
+                "**Rxd7!** entrega uma torre para manter o ataque andando.",
+                "**Rd1**: a segunda torre reforça a cravada em d7.",
+                "**Bxd7+** elimina mais um defensor.",
+                "**Qb8+!!** Um sacrifício de dama que tira o cavalo de d7.",
+                "**Rd8#**: xeque-mate com as duas últimas peças, bispo e torre."
+              ]
+            }
+          },
+          {
+            "text": "Morphy usou todas as peças, e entregou a maioria delas, para dar mate só com um bispo e uma torre. **Desenvolva rápido, abra linhas e ataque o rei que não rocou.**"
+          }
+        ]
+      },
+      "gtm-reti": {
+        "title": "Réti vs Tartakower (1910)",
+        "summary": "Um sacrifício de dama e um xeque duplo terminam a partida em 11 lances.",
+        "steps": [
+          {
+            "text": "**Richard Réti vs Savielly Tartakower, Viena 1910.** A dama negra capturou um peão em e5, mas o rei negro continua no meio e as peças brancas estão prontas para o bote."
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Excelente! O xeque duplo é o lance mais forçante do xadrez.",
+              "hint": "Ponha seu rei em segurança e sua torre na coluna aberta.",
+              "game": "Richard Réti vs Savielly Tartakower, Viena 1910",
+              "notes": [
+                "**O-O-O!** roca e coloca a torre na coluna d aberta. As brancas não se importam em perder o cavalo de e4.",
+                "**Qd8+!!** Um sacrifício de dama! O rei é obrigado a capturar.",
+                "**Bg5+** é um **xeque duplo**: bispo e torre dão xeque ao mesmo tempo, então o rei precisa se mover.",
+                "**Bd8#**: o bispo chega a d8 e dá mate."
+              ]
+            }
+          },
+          {
+            "text": "Só 11 lances! Tartakower capturou um peão e deixou o rei no centro. **Quando o rei do adversário está preso no meio, abra as linhas, nem que custe a sua dama.**"
+          }
+        ]
+      },
+      "gtm-immortal": {
+        "title": "A Partida Imortal (1851)",
+        "summary": "Anderssen entrega as duas torres e a dama, e dá mate.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen vs Lionel Kieseritzky, Londres 1851.** A dama negra acabou de capturar em b2 e agora ataca a torre de a1. As brancas já entregaram um bispo. Você consegue achar os sacrifícios famosos de Anderssen?"
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Jogo ousado! Agora vem o final.",
+              "hint": "Para qual casa o rei negro gostaria de fugir? Tire essa casa dele.",
+              "game": "Adolf Anderssen vs Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Bd6!** ignora as duas torres atacadas e tira a casa f8 do rei negro.",
+                "**e5!** bloqueia a diagonal longa, e a dama negra não consegue mais defender g7.",
+                "**Ke2** sai do xeque. As brancas estão com duas torres a menos, mas as peças negras estão longe de casa."
+              ]
+            }
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Imortal mesmo! As brancas entregaram um bispo, duas torres e a dama.",
+              "hint": "Comece com um xeque.",
+              "game": "Adolf Anderssen vs Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Nxg7+**: xeque, empurrando o rei para d8.",
+                "**Qf6+!!** entrega a dama também, desviando o cavalo da defesa de e7.",
+                "**Be7#**: as peças menores dão mate num rei cercado pelo material a mais das negras."
+              ]
+            }
+          },
+          {
+            "text": "**O que conta são as peças que participam do ataque, não as que estão no placar.** As negras tinham uma enorme vantagem material, mas nada daquilo conseguia defender o rei."
+          }
+        ]
+      },
+      "gtm-evergreen": {
+        "title": "A Partida Sempre-Viva (1852)",
+        "summary": "Um lance tranquilo de torre, um sacrifício de dama e um xeque duplo.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen vs Jean Dufresne, Berlim 1852.** As peças brancas cercam o rei negro no centro, mas as negras ameaçam **...Qxf3** e **...Rxg2+**. É a vez das brancas."
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Sem medo! Agora a coluna d está aberta para os negócios.",
+              "hint": "Traga sua última peça para o jogo.",
+              "game": "Adolf Anderssen vs Jean Dufresne, Berlim 1852",
+              "notes": [
+                "**Rad1!!** Um lance tranquilo que ignora as ameaças das negras e traz a última peça para o ataque.",
+                "**Rxe7+!** elimina um defensor com xeque."
+              ]
+            }
+          },
+          {
+            "text": "Você joga de brancas. Procure primeiro os lances forçantes: xeques, capturas e ameaças.",
+            "task": {
+              "prompt": "Adivinhe o próximo lance das brancas. Um acerto exato vale 3 pontos; uma boa alternativa ganha pontos parciais.",
+              "success": "Sempre-Viva! Um final que ainda é admirado mais de 170 anos depois.",
+              "hint": "Todo lance é xeque. Comece pelo maior sacrifício.",
+              "game": "Adolf Anderssen vs Jean Dufresne, Berlim 1852",
+              "notes": [
+                "**Qxd7+!!** O sacrifício de dama abre a coluna d.",
+                "**Bf5+**: um xeque duplo do bispo e da torre de d1.",
+                "**Bd7+** continua dando xeque e não deixa nenhuma fuga para o rei.",
+                "**Bxe7#**: mate! Um dos finais mais bonitos já jogados."
+              ]
+            }
+          },
+          {
+            "text": "**Traga todas as peças para o ataque antes de partir para o golpe final.** O tranquilo **Rad1** tornou possíveis todos os fogos de artifício."
+          }
+        ]
+      }
+    }
+  }
+}
