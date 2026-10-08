@@ -1,0 +1,125 @@
+# GrandMentor quality gate. The same checks run locally; see tools/qa/README.md.
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  rust:
+    name: Rust (build, test, clippy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+      # `cargo fmt --check` is not enforced yet: the codebase is not rustfmt-clean.
+      # Add a `cargo fmt --all --check` step here after a one-off formatting PR.
+      - name: Build
+        run: cargo build --workspace --release --locked
+      - name: Test
+        run: cargo test --workspace --release --locked
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --release --locked -- -D warnings
+
+  js:
+    name: JS (syntax, i18n)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Module syntax check
+        run: |
+          fail=0
+          for f in $(find web/js web/locales -name '*.js') $(find tools -name '*.mjs'); do
+            node --input-type=module --check < "$f" || { echo "FAIL $f"; fail=1; }
+          done
+          exit $fail
+      - name: i18n check
+        run: node tools/qa/check-i18n.mjs --verbose
+
+  bench:
+    name: Engine benchmark gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+          save-if: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build bench
+        run: cargo build --release --locked -p gm-engine --bin gm-bench-gate
+      - name: Bench gate
+        run: node tools/qa/bench-gate.mjs
+        env:
+          BENCH_RUNS: 5
+
+  e2e:
+    name: UI sweep (headless Chrome)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+          save-if: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+        with:
+          chrome-version: stable
+      - name: Build server
+        run: cargo build --release --locked -p gm-server
+      - name: Sweep every route × language × viewport
+        # The sweep starts its own server on a throwaway database.
+        # QA_SAMPLE=N visits every N-th route for non-English languages if this gets too slow.
+        run: node tools/qa/sweep.mjs
+        env:
+          CHROME: ${{ steps.chrome.outputs.chrome-path }}
+          QA_OUT: target/qa-sweep
+          QA_SAMPLE: 1
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f target/qa-sweep/report.md ]; then
+            sed -n '1,/^## Pages/p' target/qa-sweep/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload sweep report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-sweep
+          path: target/qa-sweep
+          if-no-files-found: ignore
+          retention-days: 14

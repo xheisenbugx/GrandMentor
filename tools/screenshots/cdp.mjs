@@ -5,7 +5,9 @@ import path from 'node:path';
 
 export const BASE = process.env.BASE || 'http://localhost:8097';
 const CDP_PORT = Number(process.env.CDP_PORT) || 9333;
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+// Extra Chrome flags, space-separated (e.g. CHROME_ARGS=--no-sandbox on Linux CI runners).
+const CHROME_ARGS = (process.env.CHROME_ARGS || '').split(/\s+/).filter(Boolean);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export { sleep };
 
@@ -13,7 +15,7 @@ export async function launch(scratch, width = 1440, height = 900) {
   const profile = path.join(scratch, 'chrome-profile');
   rmSync(profile, { recursive: true, force: true });
   const proc = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${profile}`,
-    '--no-first-run', '--hide-scrollbars', '--force-device-scale-factor=1', `--window-size=${width},${height}`, 'about:blank'], { stdio: 'ignore' });
+    ...CHROME_ARGS, '--no-first-run', '--hide-scrollbars', '--force-device-scale-factor=1', `--window-size=${width},${height}`, 'about:blank'], { stdio: 'ignore' });
   let targets;
   for (let i = 0; i < 50; i++) {
     try { targets = await (await fetch(`http://127.0.0.1:${CDP_PORT}/json`)).json(); if (targets.find((t) => t.type === 'page')) break; } catch {}
@@ -22,15 +24,18 @@ export async function launch(scratch, width = 1440, height = 900) {
   const page = targets.find((t) => t.type === 'page');
   const ws = new WebSocket(page.webSocketDebuggerUrl);
   await new Promise((r) => ws.addEventListener('open', r, { once: true }));
-  let id = 0; const pending = new Map();
+  let id = 0; const pending = new Map(); const listeners = new Set();
   ws.addEventListener('message', (ev) => {
     const m = JSON.parse(ev.data);
     if (m.id && pending.has(m.id)) { const { res, rej } = pending.get(m.id); pending.delete(m.id); m.error ? rej(new Error(JSON.stringify(m.error))) : res(m.result); }
+    else if (m.method) for (const fn of listeners) fn(m.method, m.params);
   });
   const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); });
   await send('Page.enable'); await send('Runtime.enable');
   const b = {
     send,
+    /** Subscribe to CDP events: fn(method, params). Returns an unsubscribe function. */
+    on(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     async size(w, h, mobile = false) { await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile }); },
     async eval(expr) { const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || 'eval error'); return r.result.value; },
     async go(hash, wait = 1500) { await b.eval(`location.hash = ${JSON.stringify(hash)}`); await sleep(wait); },
