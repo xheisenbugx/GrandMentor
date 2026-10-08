@@ -6,6 +6,7 @@ import { h, icon, brandMark, toast, closeAllModals, escapeHtml } from './ui.js';
 import { api } from './api.js';
 import { getSettings, setSetting, onSettingsChange } from './settings.js';
 import { initI18n, onLanguageChange, t } from './i18n.js';
+import { initPwa } from './pwa.js';
 
 // ---------------------------------------------------------------------------
 // Navigation model (labels are i18n keys nav.<key>, resolved at render time)
@@ -378,6 +379,7 @@ window.addEventListener('error', (e) => {
 async function boot() {
   try { await initI18n(); } catch (e) { console.error('[i18n] init failed', e); }
   renderShell();
+  initPwa();
   setTitle(null);
   // A language switch re-renders the shell and remounts the current page in the new language.
   onLanguageChange(() => {

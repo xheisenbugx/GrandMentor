@@ -1,0 +1,81 @@
+/* GrandMentor — installable app (PWA): offline banner, install entry, update toast, iOS help.
+   Tokens only (docs/STYLEGUIDE.md). Owned by web/js/pwa.js. */
+
+/* ---------- Offline banner ---------------------------------------------- */
+.offline-banner {
+  position: fixed;
+  left: calc(var(--sidebar-w) + var(--sp-5));
+  bottom: var(--sp-5);
+  z-index: var(--z-toast);
+  display: flex; align-items: center; gap: var(--sp-2);
+  max-width: min(460px, calc(100vw - var(--sidebar-w) - 2 * var(--sp-5)));
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  animation: offline-in var(--dur-slow) var(--ease-out) both;
+}
+.offline-banner[hidden] { display: none; }
+.app.sidebar-collapsed ~ .offline-banner { left: calc(var(--sidebar-w-collapsed) + var(--sp-5)); }
+.offline-banner-icon { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--warning-soft); color: var(--warning); }
+.offline-banner-icon svg { width: 16px; height: 16px; }
+.offline-banner.online .offline-banner-icon { background: var(--success-soft); color: var(--success); }
+.offline-banner.online { padding-right: var(--sp-4); }
+.offline-banner-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.offline-banner-short { display: none; }
+.offline-banner-retry {
+  flex: 0 0 auto;
+  border: 0; border-radius: var(--r-full);
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--surface-3); color: var(--text);
+  font: inherit; font-size: var(--fs-xs); font-weight: 700;
+  cursor: pointer;
+}
+.offline-banner-retry:hover { background: var(--border-strong); }
+.offline-banner-retry:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@keyframes offline-in { from { opacity: 0; transform: translateY(8px); } }
+
+@media (max-width: 860px) {
+  /* Sits just above the bottom bar; toasts move up while the banner is shown. */
+  .offline-banner,
+  .app.sidebar-collapsed ~ .offline-banner {
+    left: var(--sp-3); right: var(--sp-3);
+    bottom: calc(var(--bottombar-h) + env(safe-area-inset-bottom, 0px) + var(--sp-2));
+    max-width: none;
+    border-radius: var(--r-lg);
+  }
+  .offline-banner-text { white-space: normal; line-height: 1.3; flex: 1; }
+  .offline-banner.online .offline-banner-text { flex: 0 1 auto; }
+  .offline-banner.online { right: auto; }
+  .is-offline .main { padding-bottom: calc(var(--bottombar-h) + env(safe-area-inset-bottom, 0px) + 64px); }
+  .is-offline .toasts { bottom: calc(var(--bottombar-h) + env(safe-area-inset-bottom, 0px) + 64px); }
+}
+@media (max-width: 300px) {
+  .offline-banner-long { display: none; }
+  .offline-banner-short { display: inline; }
+}
+
+/* ---------- Install entry ------------------------------------------------ */
+.sidebar-footer .pwa-install-item { border: 0; background: none; width: 100%; text-align: left; color: var(--primary); font-weight: 700; }
+.sidebar-footer .pwa-install-item:hover { color: var(--primary); }
+.more-sheet .pwa-install-item { border: 0; color: var(--primary); font-weight: 700; }
+
+/* ---------- Update toast ------------------------------------------------- */
+.pwa-update .toast-msg { display: flex; flex-direction: column; gap: 2px; }
+.pwa-update-title { font-weight: 700; }
+.pwa-update-text { color: var(--text-muted); font-size: var(--fs-sm); }
+.pwa-update-actions { margin-top: var(--sp-2); }
+.pwa-update > svg { color: var(--primary); }
+.pwa-update { border-left-color: var(--primary); }
+
+/* ---------- iOS "Add to Home Screen" help -------------------------------- */
+.pwa-ios-steps { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.pwa-ios-steps li { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); }
+.pwa-ios-num { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--primary); color: var(--text-inverse); font-weight: 800; font-size: var(--fs-sm); }
+.pwa-ios-icon { display: grid; place-items: center; flex: 0 0 auto; color: var(--info); }
+.pwa-ios-icon svg { width: 20px; height: 20px; }
+.pwa-ios-text { min-width: 0; }
