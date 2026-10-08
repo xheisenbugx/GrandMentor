@@ -330,7 +330,7 @@ export class Board {
     }
     this._render({ animate });
     if (sound && changed && prevMap && this._lastMove && this.opts.sounds) {
-      playSound(this._soundForTransition(prevMap, this._lastMove));
+      this._landSound(this._soundForTransition(prevMap, this._lastMove), animate);
     }
     return true;
   }
@@ -384,7 +384,7 @@ export class Board {
     if (!mv) return null;
     this._lastMove = [mv.from, mv.to];
     this._render({ animate });
-    if (sound && this.opts.sounds) playSound(this._soundForMove(mv));
+    if (sound && this.opts.sounds) this._landSound(this._soundForMove(mv), animate);
     return this._moveObject(mv);
   }
 
@@ -405,6 +405,13 @@ export class Board {
     el.dataset.piece = code;
     this._placeEl(el, sq);
     return el;
+  }
+
+  /** Play a move sound at the moment the piece touches the board (like a real piece). */
+  _landSound(name, animated) {
+    const ms = animated ? this._animMs() : 0;
+    if (ms > 40) this._later(() => { if (!this._destroyed) playSound(name); }, Math.round(ms * 0.85));
+    else playSound(name);
   }
 
   _later(fn, ms) {
@@ -476,12 +483,18 @@ export class Board {
 
     for (const v of vanished) {
       if (!v) continue;
-      if (ms) {
+      const captured = target.has(v.sq); // something lands on this square
+      if (!ms || instantSet.has(v.sq)) {
+        v.el.remove();
+      } else if (captured) {
+        // Stay put under the attacker, then vanish the moment it lands.
+        const el = v.el;
+        el.style.zIndex = '1';
+        this._later(() => el.remove(), Math.round(ms * 0.85));
+      } else {
         v.el.classList.add('gm-fading');
         const el = v.el;
         this._later(() => el.remove(), ms + 30);
-      } else {
-        v.el.remove();
       }
     }
 
@@ -618,10 +631,15 @@ export class Board {
         moved: false,
         wasSelected,
         threshold: e.pointerType === 'mouse' ? 3 : 6,
-        ghost: null,
+        touch: e.pointerType !== 'mouse',
+        lifted: false,
         lastEvent: null,
       };
       try { this.root.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+      // Lift the piece under the pointer right away, like chess.com.
+      this._startDragVisual();
+      this._drag.lastEvent = { clientX: e.clientX, clientY: e.clientY };
+      this._positionDrag(this._drag.lastEvent);
       return;
     }
 
@@ -641,13 +659,12 @@ export class Board {
     }
     const d = this._drag;
     if (d && e.pointerId === d.pointerId) {
+      d.lastEvent = { clientX: e.clientX, clientY: e.clientY };
+      this._positionDrag(d.lastEvent);
       if (!d.moved) {
         if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < d.threshold) return;
         d.moved = true;
-        this._startDragVisual();
       }
-      d.lastEvent = { clientX: e.clientX, clientY: e.clientY };
-      this._positionDrag(d.lastEvent);
       const sq = this._squareAt(e);
       const hover = sq && sq !== d.from && this._dests.has(sq) ? sq : (sq && sq !== d.from ? sq : null);
       if (hover !== this._hoverSq) {
@@ -670,23 +687,32 @@ export class Board {
 
   _startDragVisual() {
     const d = this._drag;
-    if (!d) return;
-    const ghost = this._newPieceEl(this._pieces.get(d.from)?.code || d.el.dataset.piece, d.from);
-    ghost.classList.add('gm-ghost');
-    this._piecesEl.appendChild(ghost);
-    d.ghost = ghost;
+    if (!d || d.lifted) return;
+    d.lifted = true;
+    // No ghost: like chess.com the origin square just stays highlighted.
+    d.el.classList.remove('gm-moving', 'gm-fade-in');
     d.el.classList.add('gm-dragging');
+    if (d.touch) d.el.classList.add('gm-touch');
     this.root.classList.add('dragging');
   }
 
   _positionDrag(pt) {
     const d = this._drag;
-    if (!d || !d.moved) return;
+    if (!d || !d.lifted) return;
     const rect = this._getRect();
     const size = rect.width / 8;
     const x = pt.clientX - rect.left - size / 2;
-    const y = pt.clientY - rect.top - size / 2;
-    d.el.style.transform = `translate(${x}px, ${y}px)`;
+    // On touch, float the piece above the finger so it stays visible.
+    const y = pt.clientY - rect.top - size / 2 - (d.touch ? size * 0.45 : 0);
+    d.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }
+
+  /** Put a piece element on its square without any slide. */
+  _placeInstant(el, sq) {
+    el.style.transition = 'none';
+    this._placeEl(el, sq);
+    void el.offsetWidth;
+    el.style.transition = '';
   }
 
   _onPointerUp(e) {
@@ -705,7 +731,9 @@ export class Board {
     const sq = this._squareAt(e);
     const from = d.from;
     if (!d.moved) {
-      this._endDrag(false);
+      this._endDrag(false, true);
+      const p = this._pieces.get(from);
+      if (p) this._placeInstant(p.el, from);
       if (d.wasSelected && sq === from) this._deselect(); // second click on a selected piece
       return;
     }
@@ -713,13 +741,14 @@ export class Board {
     if (sq && sq !== from && this._dests.has(sq)) {
       this._tryMove(from, sq, { dragged: true });
     } else {
-      // Snap back (animated) and keep selection only if dropped on its own square.
+      // Dropped on its own square: settle instantly and stay selected.
+      // Dropped elsewhere: glide back (no error sound, just like chess.com).
       const p = this._pieces.get(from);
-      if (p) this._placeEl(p.el, from);
-      if (sq !== from) {
-        if (sq && this.opts.sounds && !this._pieces.has(sq)) playSound('illegal');
-        this._deselect();
+      if (p) {
+        if (sq === from) this._placeInstant(p.el, from);
+        else this._placeEl(p.el, from);
       }
+      if (sq !== from) this._deselect();
     }
   }
 
@@ -742,17 +771,19 @@ export class Board {
     const d = this._drag;
     if (!d) return;
     this._drag = null;
-    if (d.ghost) d.ghost.remove();
-    d.el.classList.remove('gm-dragging');
+    d.el.classList.remove('gm-dragging', 'gm-touch');
     this.root.classList.remove('dragging');
     if (this._hoverSq) {
       this._sqEl(this._hoverSq).classList.remove('hover');
       this._hoverSq = null;
     }
     try { if (this.root.hasPointerCapture?.(d.pointerId)) this.root.releasePointerCapture(d.pointerId); } catch { /* ignore */ }
-    if (revert && d.moved && !keepPosition) {
+    if (revert && d.lifted && !keepPosition) {
       const p = this._pieces.get(d.from);
-      if (p) this._placeEl(p.el, d.from);
+      if (p) {
+        if (d.moved) this._placeEl(p.el, d.from);
+        else this._placeInstant(p.el, d.from);
+      }
     }
   }
 
@@ -814,7 +845,8 @@ export class Board {
       revert();
       return;
     }
-    if (this.opts.sounds) playSound(this._soundForMove(mv));
+    // A dropped piece lands instantly; a clicked move lands when its slide ends.
+    if (this.opts.sounds) this._landSound(this._soundForMove(mv), !dragged);
     if (res && typeof res.then === 'function') {
       res.then((ok) => { if (ok === false) revert(); }, () => {});
     }
