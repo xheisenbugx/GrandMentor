@@ -13,6 +13,45 @@
    "Push the king to the edge",
    "Bring your king close — the queen can't mate alone",
    "Always leave the king a legal move until the mate (no stalemate!)"
+  ],
+  "variants": [
+   "3k4/8/8/8/8/8/8/3KQ3 w - - 0 1",
+   "8/8/8/8/3k4/8/8/K6Q w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 30
+  },
+  "pitfall": "Watch out for stalemate: until the final check, always leave the black king a square to move to.",
+  "lesson": [
+   {
+    "text": "The queen can't mate on her own. First use her to **shrink the box** the black king lives in.",
+    "arrows": [
+     {
+      "from": "d1",
+      "to": "d6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "e8"
+    ]
+   },
+   {
+    "text": "Then bring your king up. The mate comes on the edge, with the queen **protected by your king**.",
+    "fen": "4k3/4Q3/4K3/8/8/8/8/8 b - - 0 1",
+    "highlights": [
+     "e7",
+     "e8"
+    ]
+   },
+   {
+    "text": "The big trap is **stalemate**: here Black has no legal move and is not in check — it's a draw!",
+    "fen": "7k/8/6Q1/8/5K2/8/8/8 b - - 0 1",
+    "highlights": [
+     "h8"
+    ]
+   }
   ]
  },
  {
@@ -28,6 +67,40 @@
    "Restrict the king with the queen first",
    "Walk the king towards the edge",
    "Mate with the queen protected by the king"
+  ],
+  "variants": [
+   "8/8/8/4k3/8/8/8/3K3Q w - - 0 1",
+   "8/8/8/4k3/8/8/8/K6Q w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 35
+  },
+  "pitfall": "Too slow or stalemate. Keep the queen a knight's jump from the king and bring your own king to help.",
+  "lesson": [
+   {
+    "text": "**Qf6!** takes the 6th rank and the f-file at once. The black king is locked in a smaller box.",
+    "arrows": [
+     {
+      "from": "a1",
+      "to": "f6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "d5"
+    ]
+   },
+   {
+    "text": "Keep shrinking the box with quiet queen moves, then walk your king over to deliver mate on the edge.",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "d2",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -44,6 +117,44 @@
    "Bring your king to face the enemy king (opposition)",
    "Check along the edge when the kings face each other",
    "Use a waiting rook move to gain the opposition"
+  ],
+  "variants": [
+   "3k4/8/8/8/8/8/8/3K3R w - - 0 1",
+   "3k4/8/8/8/8/8/8/K6R w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 30
+  },
+  "pitfall": "The rook alone can't mate. Cut the king off, bring your king to face it, and check only when the kings stand face to face.",
+  "lesson": [
+   {
+    "text": "**Ra7!** cuts the black king off on the back rank. It can never come back.",
+    "arrows": [
+     {
+      "from": "a1",
+      "to": "a7",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "e8"
+    ]
+   },
+   {
+    "text": "Now walk your king up until it faces the black king. With the kings face to face, a rook check on the edge is **mate**.",
+    "fen": "4k3/R7/4K3/8/8/8/8/8 w - - 0 1",
+    "arrows": [
+     {
+      "from": "a7",
+      "to": "a8",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "e8"
+    ]
+   }
   ]
  },
  {
@@ -59,6 +170,40 @@
    "Make the box smaller with every rook move",
    "Protect the rook with your king when it is attacked",
    "Opposition + check on the edge = mate"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/8/8/R2K4 w - - 0 1",
+   "8/8/3k4/8/8/8/8/R5K1 w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 40
+  },
+  "pitfall": "The box didn't get smaller. Each rook move should take away a rank or file, and keep the rook away from the black king.",
+  "lesson": [
+   {
+    "text": "Start by cutting the king off: **Rh4** keeps it above the 4th rank.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "h4",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "e5"
+    ]
+   },
+   {
+    "text": "Bring your king up. When the kings face each other, check; otherwise make the box one row smaller.",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "e2",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -75,6 +220,39 @@
    "Rook 2 gives check on the next rank",
    "Leapfrog until the king reaches the edge",
    "If the king attacks a rook, move it to the far side of the board"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/8/8/R2K3R w - - 0 1",
+   "8/8/8/8/3k4/8/8/1R4RK w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 20
+  },
+  "pitfall": "A rook got too close to the king. If the king attacks a rook, swing it to the far side of the board.",
+  "lesson": [
+   {
+    "text": "One rook guards a rank, the other checks on the next one: **Rh4**, then **Ra5+**.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "h4",
+      "color": "green"
+     },
+     {
+      "from": "a1",
+      "to": "a5",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Keep climbing the ladder until the king reaches the edge — then it's mate.",
+    "fen": "R3k3/7R/8/8/8/8/8/4K3 b - - 0 1",
+    "highlights": [
+     "e8"
+    ]
+   }
   ]
  },
  {
@@ -91,12 +269,45 @@
    "The king helps to take away squares",
    "Drive the king to a corner",
    "Watch out for stalemate in the corner"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/8/8/2BK1B2 w - - 0 1",
+   "8/8/3k4/8/8/8/8/2BK1B2 w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 50
+  },
+  "pitfall": "The king escaped from the corner area or it was stalemate. Keep the bishops side by side and use your king to push.",
+  "lesson": [
+   {
+    "text": "Bishops side by side form a **diagonal wall** the king cannot cross.",
+    "arrows": [
+     {
+      "from": "c1",
+      "to": "e3",
+      "color": "green"
+     },
+     {
+      "from": "f1",
+      "to": "d3",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Use your king to drive the enemy king into a corner. The final picture looks like this.",
+    "fen": "k7/2K5/1B6/3B4/8/8/8/8 b - - 0 1",
+    "highlights": [
+     "a8"
+    ]
+   }
   ]
  },
  {
   "id": "bishop-knight-mate",
   "title": "Bishop and Knight Checkmate",
-  "category": "minor",
+  "category": "basic",
   "level": "advanced",
   "fen": "8/8/8/4k3/8/8/8/1N2KB2 w - - 0 1",
   "goal": "win",
@@ -107,6 +318,46 @@
    "Drive the king to the edge",
    "If it runs to the wrong (dark) corner, use the knight's W manoeuvre",
    "Mate in the corner of the bishop's colour (a8 or h1)"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/8/8/2BK2N1 w - - 0 1",
+   "8/8/3k4/8/8/8/8/2B1KN2 w - - 0 1"
+  ],
+  "success": {
+   "kind": "mate",
+   "moves": 50
+  },
+  "pitfall": "You can only force mate in a corner of the bishop's colour. Drive the king there with the knight's W manoeuvre — and be quick, the 50-move rule is watching.",
+  "lesson": [
+   {
+    "text": "First centralise all three pieces and push the black king towards the edge.",
+    "arrows": [
+     {
+      "from": "b1",
+      "to": "c3",
+      "color": "green"
+     },
+     {
+      "from": "e1",
+      "to": "d2",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Mate is only possible in a corner of the **bishop's colour** — here a8 or h1 (light squares).",
+    "highlights": [
+     "a8",
+     "h1"
+    ]
+   },
+   {
+    "text": "If the king runs to a wrong (dark) corner, the knight's **W manoeuvre** chases it along the edge to the right one.",
+    "highlights": [
+     "a1",
+     "h8"
+    ]
+   }
   ]
  },
  {
@@ -122,6 +373,29 @@
    "Keep your king close to the enemy king",
    "Use zugzwang: make a waiting queen move",
    "Once the rook leaves the king, look for a queen fork (check + rook)"
+  ],
+  "variants": [
+   "4k3/4r3/4K3/8/8/8/8/Q7 w - - 0 1"
+  ],
+  "success": {
+   "kind": "bare_king",
+   "moves": 40
+  },
+  "pitfall": "The rook kept checking or set up a stalemate trick. Keep your king close and wait for the rook to leave its king.",
+  "lesson": [
+   {
+    "text": "The rook is glued to its king. Use checks and **waiting queen moves** until Black has to move and the rook must step away.",
+    "highlights": [
+     "d7",
+     "d8"
+    ]
+   },
+   {
+    "text": "Once the rook separates from its king, look for a **check that forks** king and rook.",
+    "highlights": [
+     "d7"
+    ]
+   }
   ]
  },
  {
@@ -137,6 +411,48 @@
    "King in front of the pawn, not behind it",
    "Reach a key square (d6, e6 or f6)",
    "Use the opposition when the kings meet"
+  ],
+  "variants": [
+   "3k4/8/8/3K4/3P4/8/8/8 w - - 0 1",
+   "4k3/8/8/3K4/3P4/8/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 20
+  },
+  "pitfall": "The black king got in front of your pawn with the opposition — that's a draw. Keep your king ahead of the pawn and reach a key square first.",
+  "lesson": [
+   {
+    "text": "**Key squares**: if your king reaches d6, e6 or f6, the pawn promotes no matter what Black does.",
+    "arrows": [
+     {
+      "from": "e5",
+      "to": "d6",
+      "color": "green"
+     },
+     {
+      "from": "e5",
+      "to": "f6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "d6",
+     "e6",
+     "f6"
+    ]
+   },
+   {
+    "text": "King first, pawn second: push the pawn only when your king has cleared the way.",
+    "fen": "4k3/8/3K4/8/4P3/8/8/8 b - - 0 1",
+    "arrows": [
+     {
+      "from": "e4",
+      "to": "e5",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -152,6 +468,37 @@
    "Kings on the same file with one square between = opposition",
    "The side that does NOT have to move has the opposition",
    "Outflank: when the enemy king steps aside, move forward on the other side"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/4K3/3P4/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 25
+  },
+  "pitfall": "You lost the opposition: the black king stood in front of yours with you to move, and it blocked the pawn.",
+  "lesson": [
+   {
+    "text": "**Opposition**: kings facing each other with one square between them. The side that does *not* have to move wins the standoff.",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "e3",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "e4"
+    ]
+   },
+   {
+    "text": "After **Ke3** Black must give way, and your king walks to a key square: d4, e4 or f4.",
+    "highlights": [
+     "d4",
+     "e4",
+     "f4"
+    ]
+   }
   ]
  },
  {
@@ -166,6 +513,37 @@
   "technique": [
    "King on the 6th rank in front of the pawn wins regardless of the opposition",
    "Then push the pawn with the king's support"
+  ],
+  "variants": [
+   "6k1/8/7K/6P1/8/8/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 20
+  },
+  "pitfall": "Pushing the pawn too early lets the black king block it. King first, pawn second.",
+  "lesson": [
+   {
+    "text": "With your king on the 6th rank **in front of** the pawn, it always wins — whoever is to move.",
+    "arrows": [
+     {
+      "from": "a6",
+      "to": "b6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "b6"
+    ]
+   },
+   {
+    "text": "From b6 your king controls the squares in front of the pawn, so it can walk all the way to b8.",
+    "highlights": [
+     "a7",
+     "b7",
+     "c7"
+    ]
+   }
   ]
  },
  {
@@ -182,6 +560,30 @@
    "Retreat straight back (to e8), not to the side",
    "When the white king reaches the 6th rank, take the opposition",
    "If the pawn reaches the 7th with check, go to the corner square in front"
+  ],
+  "variants": [
+   "8/3k4/8/3P4/3K4/8/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 25
+  },
+  "pitfall": "The white king got in front of the pawn onto a key square. Keep your king facing it, and when it comes forward, take the opposition.",
+  "lesson": [
+   {
+    "text": "Your king belongs **right in front of the pawn**. Stay on the e-file and face the white king.",
+    "highlights": [
+     "e7",
+     "e8"
+    ]
+   },
+   {
+    "text": "If the pawn reaches e7 with your king on e8, White can only stalemate you — this is the drawn picture.",
+    "fen": "4k3/4P3/4K3/8/8/8/8/8 b - - 0 1",
+    "highlights": [
+     "e8"
+    ]
+   }
   ]
  },
  {
@@ -197,6 +599,33 @@
    "Get the king into the corner in front of the pawn",
    "Shuffle between a8 and b8/b7",
    "White's only try ends in stalemate"
+  ],
+  "variants": [
+   "6k1/8/6K1/7P/8/8/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "Your king left the corner area. Against a rook pawn, stay on a8/b8 and never step away.",
+  "lesson": [
+   {
+    "text": "A rook pawn is the weakest pawn: once your king reaches the **corner**, it can never be driven out.",
+    "highlights": [
+     "a8",
+     "b8"
+    ]
+   },
+   {
+    "text": "Just shuttle between a8 and b8. White's best try ends in stalemate.",
+    "arrows": [
+     {
+      "from": "b8",
+      "to": "a8",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -212,6 +641,35 @@
    "Draw the square from the pawn to its promotion square",
    "If your king can step into the square, it catches the pawn",
    "Diagonal moves are as fast as straight ones"
+  ],
+  "variants": [
+   "k7/8/8/8/8/1K4P1/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "Your king stayed outside the square of the pawn and couldn't catch it.",
+  "lesson": [
+   {
+    "text": "Draw a **square** from the pawn to its promotion square. If your king can step inside, it catches the pawn.",
+    "highlights": [
+     "b3",
+     "b8",
+     "g8",
+     "g3"
+    ]
+   },
+   {
+    "text": "**Kg7!** steps into the square. From there, head straight for the pawn.",
+    "arrows": [
+     {
+      "from": "h8",
+      "to": "g7",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -227,6 +685,43 @@
    "A king moving diagonally can pursue two goals at once",
    "Threaten to support your own pawn",
    "Force Black to spend time, then step into the square of the h-pawn"
+  ],
+  "variants": [
+   "K7/8/5P1k/p7/8/8/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "Your king chased only one goal. Walk along the diagonal so it chases the h-pawn and supports your c-pawn at the same time.",
+  "lesson": [
+   {
+    "text": "**Kg7!** — the king walks down the diagonal, chasing the h-pawn **and** heading towards your c-pawn.",
+    "arrows": [
+     {
+      "from": "h8",
+      "to": "g7",
+      "color": "green"
+     },
+     {
+      "from": "g7",
+      "to": "f6",
+      "color": "green"
+     },
+     {
+      "from": "f6",
+      "to": "e5",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "A diagonal king walk is as fast as a straight one, so one route does two jobs. Black must choose — and either way it's a draw.",
+    "highlights": [
+     "c6",
+     "h5"
+    ]
+   }
   ]
  },
  {
@@ -242,6 +737,44 @@
    "The outside passer drags the enemy king away",
    "Your king attacks the pawns left behind",
    "Don't rush to promote if the king is already in the square — use it as a decoy"
+  ],
+  "variants": [
+   "8/1kp5/1p6/p6P/P7/1P6/1KP5/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 40
+  },
+  "pitfall": "Your king didn't reach the kingside pawns in time. Use the a-pawn as bait, then march your king straight to the other wing.",
+  "lesson": [
+   {
+    "text": "Your a-pawn is far from the other pawns. Push it: the black king must run over to stop it.",
+    "arrows": [
+     {
+      "from": "a5",
+      "to": "a6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "g7"
+    ]
+   },
+   {
+    "text": "While Black's king is busy on the a-file, **your king feasts** on the kingside pawns.",
+    "arrows": [
+     {
+      "from": "g2",
+      "to": "f3",
+      "color": "green"
+     },
+     {
+      "from": "f3",
+      "to": "g5",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -257,6 +790,37 @@
    "Sacrifice the middle pawn first",
    "Then sacrifice the second pawn to clear the way",
    "The last pawn runs through"
+  ],
+  "variants": [
+   "k7/5ppp/8/5PPP/8/8/8/K7 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 15
+  },
+  "pitfall": "The breakthrough only works with your pawns on the 5th rank and the enemy king far away. Start with b6!",
+  "lesson": [
+   {
+    "text": "**b6!!** — if ...axb6 then c6!, and if ...cxb6 then a6!",
+    "arrows": [
+     {
+      "from": "b5",
+      "to": "b6",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "a7",
+     "b7",
+     "c7"
+    ]
+   },
+   {
+    "text": "One of your pawns breaks through, and the black king on h8 is too far away to stop it.",
+    "highlights": [
+     "h8"
+    ]
+   }
   ]
  },
  {
@@ -272,6 +836,32 @@
    "Rook pawn + bishop of the wrong colour = draw if the defending king reaches the corner",
    "Keep your king on h8/g8/g7",
    "Don't leave the corner"
+  ],
+  "variants": [
+   "k7/8/8/PK6/8/8/3B4/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "Your king left the corner. Against the wrong bishop, the h8 corner is a fortress — stay there.",
+  "lesson": [
+   {
+    "text": "White's bishop is light-squared, but h8 is a **dark** square. The bishop can never chase your king out of the corner.",
+    "highlights": [
+     "h8"
+    ]
+   },
+   {
+    "text": "Shuttle between h8 and g8 (or g7). White can only stalemate you.",
+    "arrows": [
+     {
+      "from": "h8",
+      "to": "g8",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -288,6 +878,42 @@
    "Bring your king out from in front of the pawn",
    "When the checks come, interpose the rook on the b-file (Rb4)",
    "Promote the pawn"
+  ],
+  "variants": [
+   "6K1/3k2P1/8/8/8/8/5r2/4R3 w - - 0 1",
+   "6K1/6P1/3k4/8/8/8/5r2/4R3 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 25
+  },
+  "pitfall": "The checks never stopped or the black king came back. Keep the black king cut off and build the bridge with your rook on the 4th rank.",
+  "lesson": [
+   {
+    "text": "Your rook cuts the black king off from the pawn. Now **build a bridge**: Rd4!",
+    "arrows": [
+     {
+      "from": "d1",
+      "to": "d4",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "b8",
+     "b7"
+    ]
+   },
+   {
+    "text": "Step out with your king. When the black rook checks, walk towards your rook and **block the check on the 4th rank**.",
+    "fen": "8/1P2k3/8/1K6/3R4/8/8/1r6 w - - 0 1",
+    "arrows": [
+     {
+      "from": "d4",
+      "to": "b4",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -304,6 +930,35 @@
    "Keep your king in front of the pawn",
    "When the pawn reaches e6, give checks from behind from the far end",
    "The white king has no shelter"
+  ],
+  "variants": [
+   "3k4/7R/6r1/2KP4/8/8/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 25
+  },
+  "pitfall": "Your rook left the 6th rank too early (or too late), letting the white king step in front of the pawn.",
+  "lesson": [
+   {
+    "text": "**Philidor's defence**: keep your rook on the **6th rank**. The white king can't step forward without walking into checks.",
+    "highlights": [
+     "b6",
+     "e6",
+     "f6"
+    ]
+   },
+   {
+    "text": "As soon as the pawn moves to e6, it no longer shelters its king: drop your rook to the 1st rank and **check from behind**.",
+    "fen": "4k3/R7/1r2P3/5K2/8/8/8/8 b - - 0 1",
+    "arrows": [
+     {
+      "from": "b6",
+      "to": "b1",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -319,6 +974,33 @@
    "Rook attacks the pawn from the side (from f6)",
    "Your king stays on g7/h7, out of rook checks along the 7th",
    "If the white king comes close, give checks from the side and return to the 6th rank"
+  ],
+  "variants": [
+   "7R/1k6/2r4P/8/8/8/8/1K6 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 25
+  },
+  "pitfall": "Your rook stopped attacking the pawn from the side. In the Vancura, it stays on the 6th rank until it can check from behind.",
+  "lesson": [
+   {
+    "text": "White's rook is stuck in front of its pawn. Attack the a6-pawn **from the side** with your rook on the 6th rank.",
+    "arrows": [
+     {
+      "from": "f6",
+      "to": "a6",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "text": "Keep your king on g7/h7. If the white king comes to protect the pawn, check it from behind.",
+    "highlights": [
+     "g7",
+     "h7"
+    ]
+   }
   ]
  },
  {
@@ -334,6 +1016,44 @@
    "Rook behind your passed pawn",
    "Advance the pawn to tie Black's rook down",
    "Activate your king"
+  ],
+  "variants": [
+   "8/1kp4r/1p5P/p7/P7/1P6/1KP5/7R w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 50
+  },
+  "pitfall": "Your rook or king lost the grip. Keep the rook behind the pawn and use your king to break in while Black is tied up.",
+  "lesson": [
+   {
+    "text": "**Tarrasch's rule**: rooks belong behind passed pawns. Your rook pushes the a-pawn while Black's rook is stuck in front of it.",
+    "arrows": [
+     {
+      "from": "a1",
+      "to": "a5",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "a7"
+    ]
+   },
+   {
+    "text": "Black's rook can't move, so your king walks forward. Soon Black runs out of good moves.",
+    "arrows": [
+     {
+      "from": "g2",
+      "to": "f3",
+      "color": "green"
+     },
+     {
+      "from": "f3",
+      "to": "e4",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -349,6 +1069,39 @@
    "Rook behind or in front of the pawn's path",
    "Bring your king towards the pawn",
    "Watch out: if the pawn promotes with the enemy king's support, it may be a draw"
+  ],
+  "variants": [
+   "8/8/8/8/5kp1/8/8/R2K4 w - - 0 1"
+  ],
+  "success": {
+   "kind": "bare_king",
+   "moves": 30
+  },
+  "pitfall": "The pawn got too far or your rook was attacked. King first: bring it towards the pawn immediately.",
+  "lesson": [
+   {
+    "text": "Your king must come back at once: **Kd2!** The rook alone can't stop a pawn supported by its king.",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "d2",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "b4"
+    ]
+   },
+   {
+    "text": "Then use the rook on the b-file to stop the pawn, and win it with your king.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "b1",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -364,6 +1117,33 @@
    "The cut-off king can't help its rook",
    "King and pawn advance together",
    "Aim for the Lucena position"
+  ],
+  "variants": [
+   "7r/8/3k4/5P2/5K2/8/8/4R3 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 40
+  },
+  "pitfall": "The black king crossed the d-file. Keep the cut-off at all costs.",
+  "lesson": [
+   {
+    "text": "Your rook on the d-file keeps the black king out of the game. **Never let it cross.**",
+    "highlights": [
+     "d1",
+     "e6"
+    ]
+   },
+   {
+    "text": "Walk the pawn up with your king beside it. If Black checks from the side, head towards your rook.",
+    "arrows": [
+     {
+      "from": "c5",
+      "to": "c6",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -379,6 +1159,39 @@
    "Force the enemy king in front of its pawn with checks",
    "That gives you a free tempo to bring your king closer",
    "Repeat until your king helps capture the pawn or mate"
+  ],
+  "variants": [
+   "1Q6/8/8/8/8/8/5kp1/K7 w - - 0 1"
+  ],
+  "success": {
+   "kind": "bare_king",
+   "moves": 30
+  },
+  "pitfall": "The pawn promoted or slipped away. Check until the king stands in front of its pawn, then step closer with your king.",
+  "lesson": [
+   {
+    "text": "Check and attack the pawn until the black king has to stand **in front of it** on b1.",
+    "arrows": [
+     {
+      "from": "g8",
+      "to": "c4",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "b1"
+    ]
+   },
+   {
+    "text": "Each time the king blocks its own pawn, you get a free move: bring your king one step closer. Repeat.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "g2",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -394,6 +1207,43 @@
    "Find the zugzwang position (Black king on e4, White to move)",
    "Lose a tempo with a king triangle f5–e5–e4",
    "Then invade via f4 and g3 to win the h3 pawn"
+  ],
+  "variants": [
+   "8/8/8/8/p2k4/P1p5/8/2K5 b - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 30
+  },
+  "pitfall": "You didn't lose the tempo. Reach this same position with White to move — then White is in zugzwang.",
+  "lesson": [
+   {
+    "text": "This is **mutual zugzwang**: whoever has to move loses ground. Lose a tempo with a triangle: ...Kf5, ...Ke5, ...Ke4.",
+    "arrows": [
+     {
+      "from": "e4",
+      "to": "f5",
+      "color": "green"
+     },
+     {
+      "from": "f5",
+      "to": "e5",
+      "color": "green"
+     },
+     {
+      "from": "e5",
+      "to": "e4",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "White's king can only shuttle, so it can't copy you. Once White must give way, your king walks in and the f-pawn promotes.",
+    "highlights": [
+     "f2",
+     "f1"
+    ]
+   }
   ]
  },
  {
@@ -409,6 +1259,38 @@
    "Give two checks that return the rook to h6",
    "Black's king must step away from the pawn",
    "Then free your king with Ka7 and promote"
+  ],
+  "variants": [
+   "6K1/4k1P1/R7/8/p6r/8/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 25
+  },
+  "pitfall": "Your king stayed stuck in front of the pawn. Lose a tempo with rook checks so Black has to move in this position.",
+  "lesson": [
+   {
+    "text": "With Black to move here, Black would lose. Use checks to come back with Black to move: **Rh7+ Kd8 Rh8+ Kd7 Rh6**.",
+    "arrows": [
+     {
+      "from": "h6",
+      "to": "h7",
+      "color": "green"
+     },
+     {
+      "from": "h7",
+      "to": "h8",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "In zugzwang, Black's rook or king must give way, and your pawn promotes.",
+    "highlights": [
+     "b8",
+     "a8"
+    ]
+   }
   ]
  },
  {
@@ -425,6 +1307,43 @@
    "Walk your king around a triangle of three squares",
    "Return to the same position with the opponent to move",
    "Then invade with Ke6–d6–e7–d7"
+  ],
+  "variants": [
+   "8/4k1p1/6P1/4KP2/8/8/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 25
+  },
+  "pitfall": "You handed Black the move in the critical position. Triangulate: Ke5, Kd4, Kd5.",
+  "lesson": [
+   {
+    "text": "With Black to move this would be lost for Black. Walk your king around a **triangle** — e5, d4, d5 — and come back with Black to move.",
+    "arrows": [
+     {
+      "from": "d5",
+      "to": "e5",
+      "color": "green"
+     },
+     {
+      "from": "e5",
+      "to": "d4",
+      "color": "green"
+     },
+     {
+      "from": "d4",
+      "to": "d5",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Black's king can only shuttle between two squares, so it can't copy your triangle. Then your king breaks in.",
+    "highlights": [
+     "c7",
+     "d7"
+    ]
+   }
   ]
  },
  {
@@ -440,6 +1359,39 @@
    "King first, pawn later",
    "Aim for the key squares d4, e4 and f4",
    "Use the pawn's one-or-two step choice to win the opposition"
+  ],
+  "variants": [
+   "3k4/8/8/8/8/8/3P4/3K4 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 30
+  },
+  "pitfall": "You pushed the pawn too early and the black king took the opposition in front of it.",
+  "lesson": [
+   {
+    "text": "**King first!** Your king must lead the way: Kd2 or Kf2, then up the board in front of the pawn.",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "d2",
+      "color": "green"
+     },
+     {
+      "from": "d2",
+      "to": "e3",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Reach a key square (d4, e4 or f4) before you push the pawn.",
+    "highlights": [
+     "d4",
+     "e4",
+     "f4"
+    ]
+   }
   ]
  },
  {
@@ -455,6 +1407,41 @@
    "Pawns side by side control the squares in front of them",
    "If the king attacks one pawn, push the other",
    "Use your king to escort them"
+  ],
+  "variants": [
+   "8/8/3k4/8/8/2P1P3/8/3K4 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 30
+  },
+  "pitfall": "A pawn was lost. Keep the pawns together so they protect each other, and bring your king to help.",
+  "lesson": [
+   {
+    "text": "Bring your king up first — pawns go faster with an escort.",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "f2",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Advance the pawns together. If the black king attacks one, push the other so they defend each other.",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "d4",
+      "color": "green"
+     },
+     {
+      "from": "f3",
+      "to": "f4",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -470,6 +1457,36 @@
    "The bishop must control the queening square",
    "Don't stalemate the king in the corner",
    "Push h7 with check at the right moment"
+  ],
+  "variants": [
+   "k7/8/1K6/P7/8/3B4/8/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 15
+  },
+  "pitfall": "Stalemate or a lost pawn. Cover g8/g7 with the bishop first, and always leave the black king a move.",
+  "lesson": [
+   {
+    "text": "Your bishop controls the **dark** h8 square, so this rook pawn wins.",
+    "arrows": [
+     {
+      "from": "e3",
+      "to": "d4",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "h8"
+    ]
+   },
+   {
+    "text": "Beware of stalemate: never leave the black king without a move while it's not in check.",
+    "highlights": [
+     "g8",
+     "g7"
+    ]
+   }
   ]
  },
  {
@@ -485,6 +1502,39 @@
    "Protect the pawn with the king or knight",
    "King in front of the pawn",
    "Knight checks gain tempi"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/5N2/4P3/4K3 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 30
+  },
+  "pitfall": "The pawn was lost or the black king blocked it. Keep the pawn protected and lead with your king.",
+  "lesson": [
+   {
+    "text": "Keep the pawn protected: the knight and pawn guard each other so the black king can't grab anything.",
+    "arrows": [
+     {
+      "from": "d2",
+      "to": "d3",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "c3"
+    ]
+   },
+   {
+    "text": "Bring your king in front of the pawn, then push it, using the knight to take squares away.",
+    "arrows": [
+     {
+      "from": "d1",
+      "to": "d2",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -500,6 +1550,29 @@
    "The safe corner is the one of the opposite colour to your bishop",
    "Block rook checks with the bishop",
    "Avoid the corner of your bishop's colour — mating nets appear there"
+  ],
+  "variants": [
+   "k7/7R/2K5/8/3b4/8/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 25
+  },
+  "pitfall": "Your king went to the wrong corner or the bishop got trapped. Stay in the corner the bishop does NOT control.",
+  "lesson": [
+   {
+    "text": "Your bishop is light-squared, so the **safe corner is the dark one**: h8.",
+    "highlights": [
+     "h8"
+    ]
+   },
+   {
+    "text": "Block checks with the bishop on g8 or h7 — in the right corner, that never loses the bishop.",
+    "highlights": [
+     "g8",
+     "h7"
+    ]
+   }
   ]
  },
  {
@@ -515,6 +1588,32 @@
    "Keep the knight next to the king",
    "Stay away from the corners",
    "Don't let the knight get cut off"
+  ],
+  "variants": [
+   "8/8/8/3k4/8/8/2n5/3K3R b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 25
+  },
+  "pitfall": "The knight got separated from its king and was trapped. Keep it close.",
+  "lesson": [
+   {
+    "text": "Your knight is far from its king and the white king is close to it. Bring it home: **...Nd3+**.",
+    "arrows": [
+     {
+      "from": "f2",
+      "to": "d3",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "Knight next to king = draw. A lone knight far from its king can be trapped.",
+    "highlights": [
+     "e5"
+    ]
+   }
   ]
  },
  {
@@ -530,6 +1629,32 @@
    "Approach with checks and queen moves that attack the pawn",
    "Each time the king blocks the pawn, use the tempo to bring your king",
    "Finish by winning the pawn or with mate"
+  ],
+  "variants": [
+   "8/8/8/8/8/8/3kp3/K6Q w - - 0 1"
+  ],
+  "success": {
+   "kind": "bare_king",
+   "moves": 30
+  },
+  "pitfall": "The pawn promoted. Check until the king stands in front of its pawn, then bring your king closer.",
+  "lesson": [
+   {
+    "text": "Use checks and pins to force the black king in front of its pawn on **d1**.",
+    "highlights": [
+     "d1"
+    ]
+   },
+   {
+    "text": "Every time the king blocks the pawn, use the free move to bring your king one step closer.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "g2",
+      "color": "green"
+     }
+    ]
+   }
   ]
  },
  {
@@ -545,6 +1670,277 @@
    "Control the queening square",
    "Bring your king to help",
    "Don't allow a stalemate in the corner"
+  ],
+  "variants": [
+   "8/8/8/8/5k2/8/6p1/QK6 w - - 0 1"
+  ],
+  "success": {
+   "kind": "bare_king",
+   "moves": 30
+  },
+  "pitfall": "The pawn promoted. Blockade the promotion square with your queen, then bring your king.",
+  "lesson": [
+   {
+    "text": "**Qb1!** blockades the pawn for good.",
+    "arrows": [
+     {
+      "from": "h1",
+      "to": "b1",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "text": "With the pawn stopped, march your king over and pick it up.",
+    "arrows": [
+     {
+      "from": "g1",
+      "to": "f2",
+      "color": "green"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "opposition-distant",
+  "category": "pawn",
+  "level": "intermediate",
+  "fen": "8/4k3/8/8/8/3KP3/8/8 b - - 0 1",
+  "goal": "draw",
+  "title": "Distant Opposition",
+  "description": "The white king wants to get ahead of its pawn. Only one move stops it: take the opposition from far away.",
+  "hint": "Kd7! — same file as the white king, with three squares between you.",
+  "technique": [
+   "Kings on the same file with an odd number of squares between them",
+   "Mirror the white king as it approaches",
+   "Distant opposition turns into direct opposition"
+  ],
+  "variants": [
+   "8/2k5/8/8/8/3KP3/8/8 b - - 0 1",
+   "8/4k3/8/8/8/4PK2/8/8 b - - 0 1",
+   "8/6k1/8/8/8/4PK2/8/8 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "The white king got past you. Mirror its moves: same file, odd number of squares between the kings.",
+  "lesson": [
+   {
+    "text": "Opposition also works **from far away**: kings on the same file with an odd number of squares between them (3 or 5).",
+    "arrows": [
+     {
+      "from": "e7",
+      "to": "d7",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "d4",
+     "d5",
+     "d6"
+    ]
+   },
+   {
+    "text": "Keep mirroring the white king. As it comes closer, the distant opposition becomes the normal opposition — and White can't get through.",
+    "fen": "8/8/3k4/8/3K4/4P3/8/8 w - - 0 1",
+    "highlights": [
+     "d5"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "opposition-diagonal",
+  "category": "pawn",
+  "level": "intermediate",
+  "fen": "8/6k1/8/8/8/4P3/1K6/8 w - - 0 1",
+  "goal": "win",
+  "title": "Diagonal Opposition",
+  "description": "The kings are far apart. Only one move wins: take the opposition along the diagonal.",
+  "hint": "Kc3! — on the same diagonal as the black king with an odd number of squares between.",
+  "technique": [
+   "Opposition also works on diagonals",
+   "Keep the opposition as the kings come closer",
+   "Reach a key square in front of your pawn (d5, e5, f5)"
+  ],
+  "variants": [
+   "8/1k6/8/8/8/3P4/6K1/8 w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 30
+  },
+  "pitfall": "You lost the opposition and the black king blocked your pawn.",
+  "lesson": [
+   {
+    "text": "**Diagonal opposition**: kings on the same diagonal with an odd number of squares between them. **Kc3!** faces the g7 king.",
+    "arrows": [
+     {
+      "from": "b2",
+      "to": "c3",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "d4",
+     "e5",
+     "f6"
+    ]
+   },
+   {
+    "text": "Keep the opposition as the kings approach, and reach a key square: d5, e5 or f5.",
+    "highlights": [
+     "d5",
+     "e5",
+     "f5"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "square-race",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "8/8/8/6k1/1P6/8/8/7K w - - 0 1",
+  "goal": "win",
+  "title": "The Rule of the Square",
+  "description": "Your king is far away, but so is Black's. Can your pawn run home on its own?",
+  "hint": "b5! — push at once, before the black king steps into the square.",
+  "technique": [
+   "Draw the square from the pawn to its promotion rank",
+   "If the enemy king can't step inside, the pawn promotes alone",
+   "Every pawn push makes the square smaller"
+  ],
+  "variants": [
+   "8/8/8/1k6/6P1/8/8/K7 w - - 0 1",
+   "8/8/8/7k/2P5/8/8/7K w - - 0 1"
+  ],
+  "success": {
+   "kind": "promote",
+   "moves": 10
+  },
+  "pitfall": "You gave the black king time to step into the square of the pawn.",
+  "lesson": [
+   {
+    "text": "**The rule of the square**: draw a square from your pawn to the 8th rank. Black's king on g5 is just outside it.",
+    "highlights": [
+     "b4",
+     "b8",
+     "f8",
+     "f4"
+    ]
+   },
+   {
+    "text": "**b5!** makes the square smaller at once, and the black king can never catch up.",
+    "arrows": [
+     {
+      "from": "b4",
+      "to": "b5",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "b5",
+     "b8",
+     "e8",
+     "e5"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "queen-vs-bishop-pawn",
+  "category": "queen",
+  "level": "advanced",
+  "fen": "8/6K1/8/8/8/1Q6/2pk4/8 b - - 0 1",
+  "goal": "draw",
+  "title": "Queen vs Bishop Pawn: Stalemate Trick",
+  "description": "You are defending with a c-pawn on the 7th. With the white king far away, a stalemate trick saves you.",
+  "hint": "Stay near the pawn: Kc1 or Kd1. When the queen blocks c1, run to a1 — taking the pawn is stalemate.",
+  "technique": [
+   "Keep your king next to the pawn",
+   "When the queen blockades, go to the corner a1",
+   "Qxc2 would then be stalemate"
+  ],
+  "variants": [
+   "8/1K6/8/8/8/6Q1/4kp2/8 b - - 0 1",
+   "8/6K1/8/8/8/8/2p5/1k2Q3 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "Your king walked away from the pawn. With a bishop pawn, stay near c1/b1/a1 so the stalemate trick works.",
+  "lesson": [
+   {
+    "text": "Here Black's king sits in the corner. If the queen takes the pawn on c2, it's **stalemate**!",
+    "fen": "8/6K1/8/8/8/1Q6/2p5/k7 w - - 0 1",
+    "arrows": [
+     {
+      "from": "b3",
+      "to": "c2",
+      "color": "red"
+     }
+    ],
+    "highlights": [
+     "a1"
+    ]
+   },
+   {
+    "text": "So stay next to the pawn and keep threatening to promote. The white king is too far away to help.",
+    "highlights": [
+     "c1",
+     "g7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "queen-vs-rook-pawn",
+  "category": "queen",
+  "level": "advanced",
+  "fen": "8/6K1/8/8/8/8/p1k5/4Q3 b - - 0 1",
+  "goal": "draw",
+  "title": "Queen vs Rook Pawn: The Corner Fortress",
+  "description": "You have an a-pawn on the 7th. With the white king far away, hide in the corner and it's a draw.",
+  "hint": "Kb2! — stay next to the pawn. If you are driven to a1, White must free you or it's stalemate.",
+  "technique": [
+   "Stay next to the pawn (b1, b2)",
+   "Your king in front of the pawn on a1 is stalemate-proof",
+   "The white king is too far to help"
+  ],
+  "variants": [
+   "8/1K6/8/8/8/8/5k1p/3Q4 b - - 0 1",
+   "8/6K1/8/8/8/8/p7/1k2Q3 b - - 0 1"
+  ],
+  "success": {
+   "kind": "hold",
+   "moves": 20
+  },
+  "pitfall": "You left the corner area. With a rook pawn on the 7th, keep your king on b1, b2 or a1.",
+  "lesson": [
+   {
+    "text": "Against a rook pawn the corner is your friend: with your king on a1 in front of the pawn, Black has no moves — **stalemate**.",
+    "fen": "8/6K1/8/8/8/1Q6/p7/k7 b - - 0 1",
+    "highlights": [
+     "a1"
+    ]
+   },
+   {
+    "text": "**Kb2!** keeps your king next to the pawn. The white king is too far away to help its queen.",
+    "arrows": [
+     {
+      "from": "c2",
+      "to": "b2",
+      "color": "green"
+     }
+    ],
+    "highlights": [
+     "a2"
+    ]
+   }
   ]
  }
 ]

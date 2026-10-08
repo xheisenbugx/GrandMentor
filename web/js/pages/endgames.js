@@ -1,7 +1,12 @@
-// Endgame drills: list (#/endgames) and drill vs the engine (#/endgames/:id).
-// The opponent is the engine at full strength (POST /api/engine/analyze, movetime 500ms; falls back
-// to POST /api/bot/move with the strongest bot). Success = goal reached (mate for "win"; draw by rule
-// or surviving long enough for "draw"). Local progress is stored per drill in localStorage.
+// Endgame theory: drills grouped by theme (#/endgames) and a drill page (#/endgames/:id) with a short
+// "key idea" lesson followed by practice against the engine at full strength.
+//
+// Practice: the opponent is the engine (POST /api/engine/analyze, 500 ms; falls back to the
+// strongest bot). Each attempt starts from the drill's main position or one of its variants. The
+// drill's `success` decides when an attempt is solved (mate / safe promotion / bare king / holding
+// the draw for N moves); failures (lost or drawn evaluation, draw rule, move limit) explain what
+// went wrong. Attempts are recorded with POST /api/training/:id/attempt; 3 successes in a row
+// master a drill. Attempts that used help (best-move hint or takeback) are not recorded.
 
 import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, formatSan, loadingBlock } from '../ui.js';
 import { api, isAbort } from '../api.js';
@@ -9,42 +14,36 @@ import { getSetting } from '../settings.js';
 import { Board } from '../components/board.js';
 import {
   ensureLearnCss, chessAt, applyUci, moveUci, sideToMove, fenKey, miniBoardSvg, levelPill, timerSet,
-  confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock, readStore, writeStore,
+  confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
 } from './learn.js';
 import { t } from '../i18n.js';
 
 export const title = (params) => (params && params.id ? t('endgames.drillTitle') : t('endgames.title'));
 
-const PROGRESS_KEY = 'gm.endgames.v1';
 const ENGINE_MOVETIME_MS = 500;
+const BASELINE_MOVETIME_MS = 400;
 const HINT_MOVETIME_MS = 700;
 const MIN_THINK_MS = 350;
-const DRAW_SURVIVE_MOVES = 30;     // "draw" goal: hold this many of your own moves
-const LOST_CP = -800;              // user-POV eval below which a drill counts as lost
+const LOST_CP = -500;          // user-POV eval at or below which a drill counts as lost…
+const LOST_MARGIN_CP = 600;    // …or this much worse than the start position (draw drills start "worse")
+const DRAWN_CP = 25;           // |eval| at or below this (no mate) for…
+const DRAWN_STREAK = 2;        // …this many engine replies in a row = the win slipped into a draw
+const DEFAULT_MASTERY = 3;
+const ARROW_COLORS = new Set(['green', 'red', 'blue', 'yellow']);
 
-// `label` / `blurb` are getters so they are translated at render time (never at import time).
-const categoryMeta = (key, emoji) => ({
-  emoji,
-  get label() { return t(`endgames.categories.${key}.label`); },
-  get blurb() { return t(`endgames.categories.${key}.blurb`); },
-});
-const CATEGORY_META = {
-  basic: categoryMeta('basic', '👑'),
-  pawn: categoryMeta('pawn', '♟️'),
-  rook: categoryMeta('rook', '🏰'),
-  minor: categoryMeta('minor', '🐴'),
-  queen: categoryMeta('queen', '👸'),
-};
-const CATEGORY_ORDER = ['basic', 'pawn', 'rook', 'minor', 'queen'];
+const CATEGORY_ORDER = ['basic', 'pawn', 'rook', 'queen', 'minor'];
+const CATEGORY_EMOJI = { basic: '👑', pawn: '♟️', rook: '🏰', queen: '👸', minor: '🐴' };
+const catLabel = (c) => (CATEGORY_ORDER.includes(c) ? t(`endgames.categories.${c}.label`) : c);
+const catBlurb = (c) => (CATEGORY_ORDER.includes(c) ? t(`endgames.categories.${c}.blurb`) : '');
+const catRank = (c) => { const i = CATEGORY_ORDER.indexOf(c); return i < 0 ? 99 : i; };
 
-function progressDb() { return readStore(PROGRESS_KEY, {}); }
-function markDone(id, moves, validIds) {
-  const db = progressDb();
-  if (validIds) for (const k of Object.keys(db)) if (!validIds.has(k)) delete db[k];
-  const prev = db[id] || {};
-  db[id] = { done: true, best: prev.best ? Math.min(prev.best, moves) : moves, at: Date.now() };
-  writeStore(PROGRESS_KEY, db);
-  return db[id];
+function ensureEndgamesCss() {
+  if (document.querySelector('link[data-gm-css="endgames"]')) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = '/css/endgames.css';
+  link.dataset.gmCss = 'endgames';
+  document.head.appendChild(link);
 }
 
 function goalOf(d) { return d && d.goal === 'draw' ? 'draw' : 'win'; }
@@ -53,14 +52,56 @@ function goalBadge(goal) {
 }
 function sortDrills(list) {
   const lv = { beginner: 0, intermediate: 1, advanced: 2, master: 3 };
-  return [...list].sort((a, b) => {
-    const ca = CATEGORY_ORDER.indexOf(a.category); const cb = CATEGORY_ORDER.indexOf(b.category);
-    return (ca < 0 ? 99 : ca) - (cb < 0 ? 99 : cb) || (lv[a.level] ?? 9) - (lv[b.level] ?? 9) || String(a.title).localeCompare(String(b.title));
-  });
+  return [...list].sort((a, b) => catRank(a.category) - catRank(b.category)
+    || (lv[a.level] ?? 9) - (lv[b.level] ?? 9) || String(a.title).localeCompare(String(b.title)));
+}
+function validDrills(raw) {
+  return sortDrills((Array.isArray(raw) ? raw : []).filter((d) => d && d.id && chessAt(d.fen)));
+}
+function drillFens(d) {
+  const vs = (Array.isArray(d.variants) ? d.variants : []).filter((f) => typeof f === 'string' && chessAt(f));
+  return [d.fen, ...vs];
+}
+function successOf(d) {
+  const s = d && d.success && typeof d.success === 'object' ? d.success : {};
+  const kinds = ['mate', 'promote', 'bare_king', 'hold'];
+  const kind = kinds.includes(s.kind) ? s.kind : (goalOf(d) === 'draw' ? 'hold' : 'mate');
+  const moves = Number.isFinite(s.moves) && s.moves > 0 ? Math.min(100, s.moves) : (kind === 'hold' ? 30 : 50);
+  return { kind, moves };
+}
+/** replaceChildren that skips null/false (native replaceChildren would print "null"). */
+function put(el, ...kids) { el.replaceChildren(...kids.filter((k) => k != null && k !== false && k !== '')); }
+function stripP(html) { return html.replace(/^<p>|<\/p>$/g, ''); }
+
+/** Progress dots ●●○ towards mastery (+ medal when mastered). */
+function masteryDots(p, need) {
+  const streak = p ? Math.min(need, p.streak || 0) : 0;
+  const mastered = !!(p && p.mastered);
+  const filled = mastered ? need : streak;
+  const dots = h('span', { class: ['eg-dots', mastered && 'mastered'], role: 'img', 'aria-label': mastered ? t('endgames.masteredAria') : t('endgames.dotsAria', { count: streak, need }) },
+    Array.from({ length: need }, (_, i) => h('i', { class: i < filled ? 'on' : null })));
+  return dots;
+}
+function masteryBadge() {
+  return h('span', { class: 'eg-mastered', html: icon('medal', { size: 14 }) + `<span>${escapeHtml(t('endgames.mastered'))}</span>` });
+}
+
+async function loadProgress(signal) {
+  try {
+    const res = await api.get('/api/training', { signal });
+    const map = new Map();
+    for (const p of (res && Array.isArray(res.drills) ? res.drills : [])) if (p && p.drill_id) map.set(p.drill_id, p);
+    const need = Number(res && res.mastery_streak) || DEFAULT_MASTERY;
+    return { map, need, ok: true };
+  } catch (e) {
+    if (isAbort(e)) throw e;
+    return { map: new Map(), need: DEFAULT_MASTERY, ok: false };
+  }
 }
 
 export async function mount(root, { params = {} } = {}) {
   ensureLearnCss();
+  ensureEndgamesCss();
   const bag = disposables();
   const ctrl = new AbortController();
   bag.add(() => ctrl.abort());
@@ -79,108 +120,127 @@ export async function mount(root, { params = {} } = {}) {
 async function mountList(root, bag, signal) {
   const page = h('div', { class: 'page' });
   root.appendChild(page);
-  const header = pageHeader({
-    title: t('endgames.listTitle'), icon: 'endgames',
-    subtitle: t('endgames.subtitle'),
-  });
+  const header = pageHeader({ title: t('endgames.listTitle'), icon: 'endgames', subtitle: t('endgames.subtitle') });
   page.replaceChildren(header, h('div', { class: 'eg-grid mt-6' }, skeleton('card', 6)));
 
-  const raw = await api.get('/api/endgames', { signal });
+  const [raw, prog] = await Promise.all([api.get('/api/endgames', { signal }), loadProgress(signal)]);
   if (bag.disposed) return;
-  const drills = sortDrills((Array.isArray(raw) ? raw : []).filter((d) => d && d.id && chessAt(d.fen)));
+  const drills = validDrills(raw);
   if (!drills.length) {
     page.replaceChildren(header, emptyState({ emoji: '🏁', title: t('endgames.noDrills.title'), text: t('endgames.noDrills.text') }));
     return;
   }
-  const db = progressDb();
-  const doneCount = drills.filter((d) => db[d.id] && db[d.id].done).length;
+  const { map, need } = prog;
+  const isMastered = (d) => !!(map.get(d.id) && map.get(d.id).mastered);
+  const doneCount = drills.filter(isMastered).length;
   const pct = Math.round((doneCount / drills.length) * 100);
 
-  const firstOpen = drills.find((d) => !(db[d.id] && db[d.id].done));
+  // Next: a drill in progress (attempted, not mastered) first, then the first untried one.
+  const next = drills.find((d) => !isMastered(d) && map.get(d.id) && map.get(d.id).attempts > 0)
+    || drills.find((d) => !isMastered(d));
   const hero = h('section', { class: 'lrn-hero mt-4' },
-    h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, doneCount === drills.length ? '🏆' : '🏁'),
+    h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, next ? '🏁' : '🏆'),
     h('div', { style: 'min-width:0' },
-      h('div', { class: 'lrn-hero-kicker' }, firstOpen ? t('endgames.nextDrill') : t('endgames.allComplete')),
-      h('div', { class: 'lrn-hero-title' }, firstOpen ? firstOpen.title : t('endgames.masteredAll')),
-      h('p', { class: 'lrn-hero-sub' }, t('endgames.drillsCompleted', { done: doneCount, total: drills.length })),
+      h('div', { class: 'lrn-hero-kicker' }, next ? (map.get(next.id) && map.get(next.id).attempts ? t('endgames.keepPractising') : t('endgames.nextDrill')) : t('endgames.allMastered')),
+      h('div', { class: 'lrn-hero-title' }, next ? next.title : t('endgames.masteredAll')),
+      h('p', { class: 'lrn-hero-sub' }, t('endgames.masteredCount', { done: doneCount, total: drills.length })),
       h('div', { class: 'progress progress-sm' }, h('div', { class: 'progress-bar', style: `width:${pct}%` }))),
-    firstOpen ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(firstOpen.id)}`, html: icon('play') + `<span>${escapeHtml(t('endgames.startDrill'))}</span>` }) : null);
+    next ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(next.id)}`, html: icon('play') + `<span>${escapeHtml(t('endgames.startDrill'))}</span>` }) : null);
 
-  const cats = [...new Set(drills.map((d) => d.category))].sort((a, b) => {
-    const ia = CATEGORY_ORDER.indexOf(a); const ib = CATEGORY_ORDER.indexOf(b);
-    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-  });
+  const cats = [...new Set(drills.map((d) => d.category))].sort((a, b) => catRank(a) - catRank(b));
   let active = 'all';
   const chips = h('div', { class: 'chip-row mt-6' });
   const sections = h('div');
   const renderChips = () => chips.replaceChildren(
-    ...[['all', t('endgames.all')], ...cats.map((c) => [c, `${(CATEGORY_META[c] || {}).emoji || '♟️'} ${(CATEGORY_META[c] || {}).label || c}`])].map(([k, label]) =>
+    ...[['all', t('endgames.all')], ...cats.map((c) => [c, `${CATEGORY_EMOJI[c] || '♟️'} ${catLabel(c)}`])].map(([k, label]) =>
       h('button', { type: 'button', class: ['chip', active === k && 'active'], 'aria-pressed': active === k ? 'true' : 'false', onClick: () => { active = k; renderChips(); renderSections(); } }, label)));
   const renderSections = () => sections.replaceChildren(...cats.filter((c) => active === 'all' || c === active).map((c) => {
-    const meta = CATEGORY_META[c] || { label: c, emoji: '♟️', blurb: '' };
     const list = drills.filter((d) => d.category === c);
-    const done = list.filter((d) => db[d.id] && db[d.id].done).length;
+    const done = list.filter(isMastered).length;
+    const gpct = Math.round((done / list.length) * 100);
     return h('section', { class: 'lrn-section' },
-      h('div', { class: 'lrn-section-head' },
-        h('span', { class: 'lrn-section-emoji', 'aria-hidden': 'true' }, meta.emoji),
-        h('div', null,
-          h('h2', null, meta.label, ' ', h('span', { class: 'lrn-count' }, t('endgames.doneCount', { done, total: list.length }))),
-          meta.blurb ? h('div', { class: 'muted text-sm' }, meta.blurb) : null)),
-      h('div', { class: 'eg-grid' }, list.map((d) => drillCard(d, db[d.id]))));
+      h('div', { class: 'lrn-section-head eg-group-head' },
+        h('span', { class: 'lrn-section-emoji', 'aria-hidden': 'true' }, CATEGORY_EMOJI[c] || '♟️'),
+        h('div', { class: 'eg-group-text' },
+          h('h2', null, catLabel(c)),
+          catBlurb(c) ? h('div', { class: 'muted text-sm' }, catBlurb(c)) : null),
+        h('div', { class: 'eg-group-progress' },
+          h('span', { class: 'text-sm' }, t('endgames.groupMastered', { done, total: list.length })),
+          h('div', { class: 'progress progress-sm' }, h('div', { class: 'progress-bar', style: `width:${gpct}%` })))),
+      h('div', { class: 'eg-grid' }, list.map((d) => drillCard(d, map.get(d.id), need))));
   }));
   renderChips();
   renderSections();
-  page.replaceChildren(header, hero, chips, sections);
+  const offline = prog.ok ? null : h('div', { class: 'eg-note mt-4', role: 'status' }, t('endgames.progressOffline'));
+  put(page, header, offline, hero, chips, sections);
 }
 
-function drillCard(d, rec) {
-  const done = rec && rec.done;
-  return h('a', { class: 'card card-link eg-card', href: `#/endgames/${encodeURIComponent(d.id)}`, title: d.title },
-    done ? h('span', { class: 'lrn-check', html: icon('check'), 'aria-label': t('endgames.completed') }) : null,
+function drillCard(d, p, need) {
+  const mastered = !!(p && p.mastered);
+  const attempts = p ? p.attempts || 0 : 0;
+  return h('a', { class: ['card card-link eg-card', mastered && 'is-mastered'], href: `#/endgames/${encodeURIComponent(d.id)}`, title: d.title },
+    mastered ? h('span', { class: 'lrn-check eg-card-medal', html: icon('medal'), 'aria-label': t('endgames.masteredAria') }) : null,
     h('div', { html: miniBoardSvg(d.fen, sideToMove(d.fen)) }),
     h('h3', { class: 'eg-card-title' }, d.title),
     d.description ? h('p', { class: 'eg-card-desc' }, d.description) : null,
-    h('div', { class: 'eg-card-meta' }, goalBadge(goalOf(d)), levelPill(d.level),
-      done && rec.best ? h('span', { class: 'text-xs subtle' }, t('endgames.bestMoves', { count: rec.best })) : null));
+    h('div', { class: 'eg-card-meta' }, goalBadge(goalOf(d)), levelPill(d.level)),
+    h('div', { class: 'eg-card-progress' },
+      masteryDots(p, need),
+      h('span', { class: 'text-xs subtle' }, attempts ? t('endgames.attempts', { count: attempts }) : t('endgames.notTried'))));
 }
 
 // ===========================================================================
-// Drill
+// Drill: lesson + practice
 // ===========================================================================
 async function mountDrill(root, id, bag, signal) {
   root.appendChild(loadingBlock(t('endgames.loading')));
-  const raw = await api.get('/api/endgames', { signal });
+  const [raw, prog] = await Promise.all([api.get('/api/endgames', { signal }), loadProgress(signal)]);
   if (bag.disposed) return;
-  const drills = sortDrills((Array.isArray(raw) ? raw : []).filter((d) => d && d.id && chessAt(d.fen)));
+  const drills = validDrills(raw);
   const drill = drills.find((d) => d.id === id);
   if (!drill) {
     root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: t('endgames.notFound.title'), text: t('endgames.notFound.text'), action: { label: t('endgames.allDrills'), href: '#/endgames' } })));
     return;
   }
-  const validIds = new Set(drills.map((d) => d.id));
-  const idx = drills.indexOf(drill);
-  const nextDrill = drills[idx + 1] || null;
+  const need = prog.need;
+  let progress = prog.map.get(drill.id) || null;
+  const nextDrill = drills[drills.indexOf(drill) + 1] || null;
   const goal = goalOf(drill);
-  const startFen = chessAt(drill.fen).fen();
-  const userColor = sideToMove(startFen);
+  const success = successOf(drill);
+  const fens = drillFens(drill).map((f) => chessAt(f).fen());
+  const userColor = sideToMove(fens[0]);
   const engineColor = userColor === 'white' ? 'black' : 'white';
   const userChar = userColor === 'white' ? 'w' : 'b';
+  const oppChar = userChar === 'w' ? 'b' : 'w';
+  const lessonSteps = (Array.isArray(drill.lesson) ? drill.lesson : []).filter((s) => s && typeof s.text === 'string');
+  const technique = Array.isArray(drill.technique) ? drill.technique.filter(Boolean) : [];
 
   const timers = timerSet();
   bag.add(() => timers.clear());
   let engineCtrl = null;
   let hintCtrl = null;
-  bag.add(() => { if (engineCtrl) engineCtrl.abort(); if (hintCtrl) hintCtrl.abort(); });
+  let baseCtrl = null;
+  let saveCtrl = null;
+  bag.add(() => { for (const c of [engineCtrl, hintCtrl, baseCtrl, saveCtrl]) if (c) c.abort(); });
 
   // ------------------------------------------------------------------ state
+  let phase = 'lesson';      // lesson | practice
+  let lessonIdx = 0;
+  let variantIdx = 0;
+  let startFen = fens[0];
   let game = chessAt(startFen);
   let sans = [];
-  let status = 'play';     // play | won | lost
+  let status = 'play';       // play | won | lost
   let busy = false;
   let gen = 0;
   let hintStage = 0;
-  let hintsUsed = 0;
-  const hintCache = new Map(); // fenKey -> {uci, san} (bounded below)
+  let assisted = false;      // best-move hint or takeback used in this attempt
+  let recorded = false;      // this attempt was already sent to the server
+  let drawnStreak = 0;
+  let baseline = null;       // user-POV cp of the start position (null until known)
+  let attemptNo = 0;
+  let oppHadMaterial = false; // the engine's side had more than a king at the start
+  const hintCache = new Map();
 
   // ------------------------------------------------------------------ layout
   const boardSlot = h('div', { class: 'board-slot' });
@@ -199,57 +259,161 @@ async function mountDrill(root, id, bag, signal) {
       h('div', { class: 'player-captures' }, userColor === 'white' ? t('endgames.white') : t('endgames.black'))));
 
   const goalText = t(`endgames.banner.${userColor}${goal === 'win' ? 'Win' : 'Draw'}`);
-  const goalSub = goal === 'win' ? t('endgames.banner.winSub') : t('endgames.banner.drawSub', { count: DRAW_SURVIVE_MOVES });
   const banner = h('div', { class: `eg-banner ${goal}` },
     goalBadge(goal),
-    h('div', null, h('div', { class: 'eg-banner-title' }, goalText), h('div', { class: 'eg-banner-sub' }, goalSub)));
+    h('div', null, h('div', { class: 'eg-banner-title' }, goalText), h('div', { class: 'eg-banner-sub' }, t(`endgames.successKind.${success.kind}`, { count: success.moves }))));
 
-  const feedback = h('div', { class: 'lrn-feedback', role: 'status', 'aria-live': 'polite' });
-  const resultBox = h('div');
-  const movesEl = h('div', { class: 'eg-movelist', 'aria-label': t('endgames.movesAria') });
-  const technique = Array.isArray(drill.technique) ? drill.technique.filter(Boolean) : [];
+  const masteryBox = h('div', { class: 'eg-mastery' });
+  const renderMastery = () => masteryBox.replaceChildren(masteryDots(progress, need),
+    progress && progress.mastered ? masteryBadge() : h('span', { class: 'text-xs subtle' }, progress && progress.attempts ? t('endgames.attempts', { count: progress.attempts }) : t('endgames.notTried')));
+  renderMastery();
 
-  const body = h('div', { class: 'panel-body' },
-    banner,
-    drill.description ? h('div', { class: 'lrn-coach mt-4' }, h('div', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, '🎓'), h('div', { class: 'lrn-text md', html: mdLite(drill.description) })) : null,
-    feedback,
-    resultBox,
-    technique.length ? h('div', null,
-      h('div', { class: 'op-block-title', html: icon('hint') + `<span>${escapeHtml(t('endgames.technique'))}</span>` }),
-      h('ol', { class: 'eg-technique' }, technique.map((step) => h('li', { html: `<span>${mdLite(step).replace(/^<p>|<\/p>$/g, '')}</span>` })))) : null,
-    h('div', { class: 'op-block-title', html: icon('list') + `<span>${escapeHtml(t('endgames.moves'))}</span>` }),
-    movesEl);
-
-  const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + `<span>${escapeHtml(t('endgames.hint'))}</span>`, onClick: () => showHint() });
-  const undoBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('undo') + `<span>${escapeHtml(t('endgames.undo'))}</span>`, onClick: () => undo() });
-  const resetBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.reset'))}</span>`, onClick: () => reset() });
-  const flipBtn = h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': t('endgames.flip'), 'data-tooltip': t('endgames.flip'), html: icon('flip'), onClick: () => board.flip() });
-  const footer = h('div', { class: 'panel-footer' }, hintBtn, undoBtn, resetBtn, flipBtn);
-
-  const panelHeader = h('div', { class: 'panel-header' }, h('span', { 'aria-hidden': 'true' }, (CATEGORY_META[drill.category] || {}).emoji || '🏁'), h('span', { class: 'truncate' }, drill.title), h('span', { class: 'spacer' }), levelPill(drill.level));
+  const panelHeader = h('div', { class: 'panel-header' },
+    h('span', { 'aria-hidden': 'true' }, CATEGORY_EMOJI[drill.category] || '🏁'),
+    h('span', { class: 'truncate' }, drill.title), h('span', { class: 'spacer' }), levelPill(drill.level));
+  const body = h('div', { class: 'panel-body' });
+  const footer = h('div', { class: 'panel-footer' });
   const panel = h('div', { class: 'panel grow' }, panelHeader, body, footer);
-
-  const head = breadcrumbs([{ label: t('endgames.title'), href: '#/endgames' }, { label: (CATEGORY_META[drill.category] || {}).label || drill.category }, { label: drill.title }]);
-
+  const head = breadcrumbs([{ label: t('endgames.title'), href: '#/endgames' }, { label: catLabel(drill.category) }, { label: drill.title }]);
   const layout = h('div', { class: 'game-layout no-eval eg-drill' },
     h('div', { class: 'game-main' }, topBar, boardWrap, bottomBar),
     h('aside', { class: 'game-panel' }, head, panel));
   root.replaceChildren(layout);
 
   const board = new Board(boardSlot, {
-    fen: startFen,
-    orientation: userColor,
-    interactive: true,
-    movableColor: userColor,
+    fen: startFen, orientation: userColor, interactive: false, movableColor: null,
     onMove: (mv) => onUserMove(mv),
   });
   bag.add(() => board.destroy());
 
-  // ------------------------------------------------------------------ helpers
   const sleep = (ms) => new Promise((resolve) => timers.later(resolve, ms));
   const sanOf = (s) => formatSan(s, getSetting('moveNotation'));
-  // The user is always to move in the drill's start position, so user moves = ceil(plies / 2).
-  const userMoveCount = () => Math.ceil(sans.length / 2);
+  const userMoveCount = () => Math.ceil(sans.length / 2); // the user always moves first
+  const btn = (cls, iconName, label, onClick, extra = {}) => h('button', { class: `btn ${cls}`, type: 'button', html: (iconName ? icon(iconName) : '') + `<span>${escapeHtml(label)}</span>`, onClick, ...extra });
+  const playLink = (fen) => h('a', { class: 'btn btn-ghost', href: `#/play?fen=${encodeURIComponent(fen)}&color=${userChar}`, html: icon('robot') + `<span>${escapeHtml(t('endgames.playBot'))}</span>` });
+
+  // ================================================================== lesson
+  function showLesson(i = 0) {
+    phase = 'lesson';
+    cancelEngine();
+    lessonIdx = Math.max(0, Math.min(lessonSteps.length - 1, i));
+    const step = lessonSteps[lessonIdx];
+    if (!step) { startPractice(true); return; }
+    const fen = step.fen && chessAt(step.fen) ? step.fen : fens[0];
+    board.setInteractive(false, null);
+    board.setPosition(fen, { animate: true, sound: false });
+    board.setArrows((Array.isArray(step.arrows) ? step.arrows : [])
+      .filter((a) => a && /^[a-h][1-8]$/.test(a.from) && /^[a-h][1-8]$/.test(a.to))
+      .map((a) => ({ from: a.from, to: a.to, color: ARROW_COLORS.has(a.color) ? a.color : 'green' })));
+    board.setHighlights((Array.isArray(step.highlights) ? step.highlights : [])
+      .filter((s) => typeof s === 'string' && /^[a-h][1-8]$/.test(s)).map((square) => ({ square, kind: 'hint' })));
+    thinking.hidden = true;
+
+    const last = lessonIdx === lessonSteps.length - 1;
+    put(body,
+      banner,
+      h('div', { class: 'eg-phase' },
+        h('span', { class: 'eg-phase-kicker' }, t('endgames.lesson.kicker')),
+        h('span', { class: 'text-xs subtle' }, t('endgames.lesson.step', { n: lessonIdx + 1, total: lessonSteps.length }))),
+      h('div', { class: 'eg-steps', 'aria-hidden': 'true' }, lessonSteps.map((_, k) => h('i', { class: k <= lessonIdx ? 'on' : null }))),
+      h('div', { class: 'lrn-coach' },
+        h('div', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, '🎓'),
+        h('div', { class: 'lrn-text md', html: mdLite(step.text) })),
+      lessonIdx === 0 && drill.description ? h('p', { class: 'muted text-sm eg-desc', html: stripP(mdLite(drill.description)) }) : null,
+      masteryBox);
+    put(footer,
+      btn('btn-ghost', 'chevron-left', t('endgames.lesson.back'), () => showLesson(lessonIdx - 1), { disabled: lessonIdx === 0 }),
+      h('span', { class: 'spacer' }),
+      last ? null : btn('btn-ghost', null, t('endgames.lesson.skip'), () => startPractice(true)),
+      last
+        ? btn('btn-primary', 'play', t('endgames.lesson.start'), () => startPractice(true))
+        : btn('btn-primary', 'chevron-right', t('endgames.lesson.next'), () => showLesson(lessonIdx + 1)));
+  }
+
+  // ================================================================== practice
+  const feedback = h('div', { class: 'lrn-feedback', role: 'status', 'aria-live': 'polite' });
+  const resultBox = h('div');
+  const movesEl = h('div', { class: 'eg-movelist', 'aria-label': t('endgames.movesAria') });
+  const counterEl = h('span', { class: 'text-xs subtle' });
+  const positionEl = h('span', { class: 'text-xs subtle' });
+  const hintBtn = btn('btn-ghost', 'hint', t('endgames.hint'), () => showHint());
+  const iconBtn = (iconName, label, onClick) => h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': label, 'data-tooltip': label, html: icon(iconName), onClick });
+  const undoBtn = iconBtn('undo', t('endgames.undo'), () => undo());
+  const resetBtn = iconBtn('refresh', t('endgames.reset'), () => newAttempt(false));
+  const lessonBtn = lessonSteps.length ? iconBtn('book', t('endgames.lesson.review'), () => showLesson(0)) : null;
+  const flipBtn = iconBtn('flip', t('endgames.flip'), () => board.flip());
+  const botLinkSlot = h('div', { class: 'eg-links' });
+
+  function renderPracticePanel() {
+    put(body,
+      banner,
+      h('div', { class: 'eg-phase' },
+        h('span', { class: 'eg-phase-kicker' }, t('endgames.practice.kicker')),
+        positionEl, h('span', { class: 'spacer' }), counterEl),
+      masteryBox,
+      feedback,
+      resultBox,
+      technique.length ? h('div', null,
+        h('div', { class: 'op-block-title', html: icon('hint') + `<span>${escapeHtml(t('endgames.technique'))}</span>` }),
+        h('ol', { class: 'eg-technique' }, technique.map((s) => h('li', { html: `<span>${stripP(mdLite(s))}</span>` })))) : null,
+      h('div', { class: 'op-block-title', html: icon('list') + `<span>${escapeHtml(t('endgames.moves'))}</span>` }),
+      movesEl,
+      botLinkSlot);
+    (lessonBtn || flipBtn).classList.add('eg-push');
+    put(footer, hintBtn, undoBtn, resetBtn, lessonBtn, flipBtn);
+  }
+
+  function pickVariant(fresh) {
+    if (!fresh || fens.length === 1) return variantIdx;
+    // First attempt ever: the main (lesson) position. Afterwards: a random different one.
+    if (!progress || !progress.attempts) return 0;
+    let k = Math.floor(Math.random() * (fens.length - 1));
+    if (k >= variantIdx) k++;
+    return k;
+  }
+
+  function startPractice(fresh) {
+    phase = 'practice';
+    renderPracticePanel();
+    newAttempt(fresh);
+  }
+
+  function newAttempt(fresh) {
+    cancelEngine();
+    attemptNo++;
+    variantIdx = pickVariant(fresh);
+    startFen = fens[variantIdx];
+    game = chessAt(startFen);
+    oppHadMaterial = piecesOf(oppChar).some((p) => p.type !== 'k');
+    sans = [];
+    status = 'play';
+    hintStage = 0;
+    assisted = false;
+    recorded = false;
+    drawnStreak = 0;
+    hintCache.clear();
+    board.setPosition(startFen, { animate: true, sound: false });
+    board.clearArrows(); board.setHighlights([]);
+    resultBox.replaceChildren();
+    setFeedback(feedback, null);
+    botLinkSlot.replaceChildren(playLink(startFen));
+    positionEl.textContent = fens.length > 1 ? t('endgames.practice.position', { n: variantIdx + 1, total: fens.length }) : '';
+    renderMoves();
+    syncControls();
+    fetchBaseline(startFen);
+  }
+
+  async function fetchBaseline(fen) {
+    baseline = null;
+    if (baseCtrl) baseCtrl.abort();
+    baseCtrl = new AbortController();
+    const myAttempt = attemptNo;
+    try {
+      const info = await api.post('/api/engine/analyze', { fen, movetime_ms: BASELINE_MOVETIME_MS, multipv: 1 }, { signal: baseCtrl.signal, timeout: 15000 });
+      const line = info && Array.isArray(info.lines) ? info.lines[0] : null;
+      if (myAttempt === attemptNo && !bag.disposed && line && line.score) baseline = userPov(line.score);
+    } catch (e) { /* best effort: fall back to the fixed threshold */ }
+  }
 
   function renderMoves() {
     const startNo = Number(startFen.split(' ')[5]) || 1;
@@ -265,11 +429,15 @@ async function mountDrill(root, id, bag, signal) {
     });
     if (!nodes.length) nodes.push(h('span', { class: 'subtle' }, t('endgames.goodLuck')));
     movesEl.replaceChildren(...nodes);
+    const n = Math.min(userMoveCount(), success.moves);
+    counterEl.textContent = success.kind === 'hold'
+      ? t('endgames.practice.movesHeld', { count: n, total: success.moves })
+      : t('endgames.practice.movesUsed', { count: n, total: success.moves });
   }
 
   function syncControls() {
-    const canUndo = sans.length > 0;
-    undoBtn.disabled = !canUndo;
+    if (phase !== 'practice') return;
+    undoBtn.disabled = sans.length === 0;
     resetBtn.disabled = sans.length === 0 && status === 'play';
     hintBtn.disabled = status !== 'play' || busy;
     thinking.hidden = !busy;
@@ -278,10 +446,19 @@ async function mountDrill(root, id, bag, signal) {
   }
 
   // ------------------------------------------------------------------ outcome
-  function outcome() {
+  const piecesOf = (color) => game.board().flat().filter((p) => p && p.color === color);
+  function userPov(score) {
+    if (!score || typeof score !== 'object') return null;
+    const sign = userColor === 'white' ? 1 : -1;
+    if (typeof score.mate === 'number') return { mate: score.mate * sign };
+    if (typeof score.cp === 'number') return { cp: score.cp * sign };
+    return null;
+  }
+
+  /** Result decided by the position itself (after any move). */
+  function outcome(lastMove) {
     if (game.isCheckmate()) {
-      const loser = game.turn(); // side to move is mated
-      return loser === userChar
+      return game.turn() === userChar
         ? { result: 'lost', reason: t('endgames.reason.mated') }
         : { result: 'won', reason: goal === 'win' ? t('endgames.reason.mateWin') : t('endgames.reason.mateDraw') };
     }
@@ -297,57 +474,121 @@ async function mountDrill(root, id, bag, signal) {
         : { result: 'lost', reason: `${drawReason} ${t('endgames.reason.neededWin')}` };
     }
     if (goal === 'win') {
-      // The user's side has only a king left → no way to win.
-      const onlyKing = game.board().flat().filter((p) => p && p.color === userChar).every((p) => p.type === 'k');
-      if (onlyKing) return { result: 'lost', reason: t('endgames.reason.noPieces') };
-    }
-    if (goal === 'draw' && game.turn() === userChar && userMoveCount() >= DRAW_SURVIVE_MOVES) {
-      return { result: 'won', reason: t('endgames.reason.survived', { count: DRAW_SURVIVE_MOVES }) };
+      const mine = piecesOf(userChar);
+      if (mine.every((p) => p.type === 'k')) return { result: 'lost', reason: t('endgames.reason.noPieces') };
+      const theirs = piecesOf(oppChar);
+      if ((success.kind === 'bare_king' || success.kind === 'promote') && oppHadMaterial && theirs.every((p) => p.type === 'k')) {
+        return { result: 'won', reason: t('endgames.reason.bareKing') };
+      }
+      if (success.kind === 'promote' && lastMove && lastMove.color === userChar && lastMove.promotion) {
+        const safe = !game.moves({ verbose: true }).some((m) => m.to === lastMove.to);
+        if (safe) return { result: 'won', reason: t('endgames.reason.promoted') };
+      }
+    } else {
+      // The engine can't win with a bare king or a lone minor piece (and no pawns).
+      const theirs = piecesOf(oppChar).filter((p) => p.type !== 'k');
+      if (theirs.length <= 1 && theirs.every((p) => p.type === 'b' || p.type === 'n')) {
+        return { result: 'won', reason: t('endgames.reason.cantWin') };
+      }
     }
     return null;
   }
 
-  function finish({ result, reason }) {
+  /** Result decided after the engine's reply (move limits and the engine's evaluation). */
+  function afterEngine(score) {
+    const s = userPov(score);
+    if (s && typeof s.mate === 'number' && s.mate < 0) {
+      return { result: 'lost', reason: goal === 'win' ? t('endgames.reason.slipped') : t('endgames.reason.engineMate') };
+    }
+    if (s && typeof s.cp === 'number') {
+      // Draw drills often start "worse" for the defender (a pawn or a piece down): until the start
+      // position's evaluation is known, only a forced mate counts as lost.
+      const base = baseline && typeof baseline.cp === 'number' ? baseline.cp : null;
+      const limit = base !== null ? Math.min(LOST_CP, base - LOST_MARGIN_CP) : (goal === 'win' ? LOST_CP : -Infinity);
+      if (s.cp <= limit) return { result: 'lost', reason: goal === 'win' ? t('endgames.reason.slipped') : t('endgames.reason.engineWinning') };
+      if (goal === 'win') {
+        drawnStreak = Math.abs(s.cp) <= DRAWN_CP ? drawnStreak + 1 : 0;
+        if (drawnStreak >= DRAWN_STREAK) return { result: 'lost', reason: t('endgames.reason.drawnNow') };
+      }
+    }
+    if (userMoveCount() >= success.moves) {
+      return success.kind === 'hold'
+        ? { result: 'won', reason: t('endgames.reason.survived', { count: success.moves }) }
+        : { result: 'lost', reason: t('endgames.reason.tooSlow', { count: success.moves }) };
+    }
+    return null;
+  }
+
+  async function record(won) {
+    if (recorded || assisted) return null;
+    recorded = true;
+    if (saveCtrl) saveCtrl.abort();
+    saveCtrl = new AbortController();
+    try {
+      const res = await api.post(`/api/training/${encodeURIComponent(drill.id)}/attempt`, { success: won, moves: Math.min(500, userMoveCount()) }, { signal: saveCtrl.signal, timeout: 10000 });
+      if (bag.disposed) return null;
+      if (res && res.drill_id) { progress = res; renderMastery(); }
+      return res;
+    } catch (e) {
+      if (!isAbort(e) && !bag.disposed) setFeedback(feedback, 'bad', escapeHtml(t('endgames.saveFailed')));
+      return null;
+    }
+  }
+
+  async function finish({ result, reason }) {
     status = result;
     busy = false;
     syncControls();
-    // Feeds the daily plan / streak (any finished attempt is practice). Best effort.
-    api.post('/api/activity', { kind: 'endgame' }).catch(() => {});
-    if (result === 'won') {
-      const moves = userMoveCount();
-      const rec = markDone(drill.id, moves, validIds);
+    setFeedback(feedback, null);
+    const won = result === 'won';
+    const moves = userMoveCount();
+    const fenNow = startFen;
+    const actions = h('div', { class: 'lrn-nav' });
+    const box = h('div', { class: 'lrn-complete' },
+      h('div', { class: ['lrn-complete-badge', !won && 'fail'], html: icon(won ? 'trophy' : 'x') }),
+      h('h2', null, won ? t('endgames.complete') : t('endgames.notQuite')),
+      h('p', null, won ? `${reason} ${t('endgames.summary', { count: moves })}` : reason),
+      won ? null : (drill.pitfall ? h('div', { class: 'eg-pitfall' },
+        h('div', { class: 'eg-pitfall-title', html: icon('alert', { size: 16 }) + `<span>${escapeHtml(t('endgames.whatWentWrong'))}</span>` }),
+        h('p', { html: stripP(mdLite(drill.pitfall)) })) : null),
+      assisted ? h('p', { class: 'text-sm subtle' }, t('endgames.practice.assisted')) : null,
+      actions);
+    resultBox.replaceChildren(box);
+    botLinkSlot.replaceChildren(); // the result box has its own link
+    if (won) {
       sfx('gameEnd');
       confetti(boardSlot, timers, { count: 48 });
       flashClass(boardWrap, 'flash-good', timers, 1000);
-      setFeedback(feedback, null);
-      resultBox.replaceChildren(h('div', { class: 'lrn-complete' },
-        h('div', { class: 'lrn-complete-badge', html: icon('trophy') }),
-        h('h2', null, t('endgames.complete')),
-        h('p', null, `${reason} ${hintsUsed
-          ? t('endgames.summaryHints', { moves: t('endgames.movesCount', { count: moves }), count: hintsUsed, best: rec.best })
-          : t('endgames.summary', { count: moves, best: rec.best })}`),
-        h('div', { class: 'lrn-nav' },
-          nextDrill ? h('a', { class: 'btn btn-primary btn-lg', href: `#/endgames/${encodeURIComponent(nextDrill.id)}`, html: `<span>${escapeHtml(t('endgames.nextDrill'))}</span>` + icon('chevron-right') }) : h('a', { class: 'btn btn-primary btn-lg', href: '#/endgames', html: icon('grid') + `<span>${escapeHtml(t('endgames.allDrills'))}</span>` }),
-          h('button', { class: 'btn btn-secondary', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.playAgain'))}</span>`, onClick: () => reset() }))));
     } else {
       sfx('wrong');
       flashClass(boardSlot, 'shake', timers, 420);
-      setFeedback(feedback, null);
-      resultBox.replaceChildren(h('div', { class: 'lrn-complete' },
-        h('div', { class: 'lrn-complete-badge fail', html: icon('x') }),
-        h('h2', null, t('endgames.notQuite')),
-        h('p', null, reason),
-        h('div', { class: 'lrn-nav' },
-          h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('endgames.tryAgain'))}</span>`, onClick: () => reset() }),
-          sans.length ? h('button', { class: 'btn btn-secondary', type: 'button', html: icon('undo') + `<span>${escapeHtml(t('endgames.undoLast'))}</span>`, onClick: () => undo() }) : null,
-          h('a', { class: 'btn btn-ghost', href: `#/analysis?fen=${encodeURIComponent(startFen)}`, html: icon('analysis') + `<span>${escapeHtml(t('endgames.study'))}</span>` }))));
     }
+    const tryBtn = btn('btn-primary btn-lg', 'refresh', fens.length > 1 ? t('endgames.newPosition') : t('endgames.tryAgain'), () => newAttempt(true));
+    const sameBtn = fens.length > 1 ? btn('btn-secondary', 'undo', t('endgames.samePosition'), () => newAttempt(false)) : null;
+    put(actions, tryBtn, sameBtn,
+      !won && sans.length ? btn('btn-ghost', 'undo', t('endgames.undoLast'), () => undo()) : null,
+      playLink(fenNow),
+      h('a', { class: 'btn btn-ghost', href: `#/analysis?fen=${encodeURIComponent(fenNow)}`, html: icon('analysis') + `<span>${escapeHtml(t('endgames.study'))}</span>` }));
     resultBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+    const res = await record(won);
+    if (!res || bag.disposed || resultBox.firstChild !== box) return;
+    if (won && res.just_mastered) {
+      box.querySelector('h2').textContent = t('endgames.justMastered');
+      box.insertBefore(h('p', { class: 'eg-streak-note' }, masteryBadge(), ' ', t('endgames.masteredText')), actions);
+      confetti(boardSlot, timers, { count: 72 });
+    } else if (won && !res.mastered) {
+      const streak = Math.min(need, res.streak || 0);
+      box.insertBefore(h('p', { class: 'eg-streak-note' }, masteryDots(res, need), ' ', t('endgames.streakText', { count: streak, left: Math.max(0, need - streak) })), actions);
+    }
+    if (won && nextDrill && res.mastered) {
+      actions.insertBefore(h('a', { class: 'btn btn-secondary', href: `#/endgames/${encodeURIComponent(nextDrill.id)}`, html: `<span>${escapeHtml(t('endgames.nextDrill'))}</span>` + icon('chevron-right') }), actions.children[1] || null);
+    }
   }
 
   // ------------------------------------------------------------------ moves
   function onUserMove(mv) {
-    if (status !== 'play' || busy || game.turn() !== userChar) return false;
+    if (phase !== 'practice' || status !== 'play' || busy || game.turn() !== userChar) return false;
     const m = applyUci(game, mv.uci || (mv.from + mv.to + (mv.promotion || '')));
     if (!m) return false;
     sans.push(m.san);
@@ -356,7 +597,7 @@ async function mountDrill(root, id, bag, signal) {
     board.setHighlights([]);
     setFeedback(feedback, null);
     renderMoves();
-    const out = outcome();
+    const out = outcome(m);
     if (out) { finish(out); return true; }
     engineTurn();
     return true;
@@ -383,20 +624,11 @@ async function mountDrill(root, id, bag, signal) {
     } catch (e) {
       if (isAbort(e)) throw e;
     }
-    // Fallback: strongest bot
     const botId = await strongestBotId(sig);
     const historyUcis = game.history({ verbose: true }).map(moveUci);
     const bm = await api.post('/api/bot/move', { bot_id: botId, start_fen: startFen, moves: historyUcis }, { signal: sig, timeout: 15000 });
     if (!bm || !bm.uci) throw new Error(t('endgames.errors.noMove'));
     return { uci: bm.uci, score: null };
-  }
-
-  function userPovLost(score) {
-    if (!score || typeof score !== 'object') return false;
-    const sign = userColor === 'white' ? 1 : -1;
-    if (typeof score.mate === 'number') return score.mate * sign < 0;
-    if (typeof score.cp === 'number') return score.cp * sign <= LOST_CP;
-    return false;
   }
 
   async function engineTurn() {
@@ -433,23 +665,20 @@ async function mountDrill(root, id, bag, signal) {
     renderMoves();
     busy = false;
 
-    const out = outcome();
+    const out = outcome(m) || afterEngine(res.score);
     if (out) { finish(out); return; }
-    if (userPovLost(res.score)) {
-      finish({ result: 'lost', reason: goal === 'win' ? t('endgames.reason.slipped') : t('endgames.reason.engineWinning') });
-      return;
-    }
     if (game.inCheck()) setFeedback(feedback, 'warn', escapeHtml(t('endgames.check')));
     syncControls();
   }
 
   // ------------------------------------------------------------------ controls
   async function showHint() {
-    if (status !== 'play' || busy || game.turn() !== userChar) return;
+    if (phase !== 'practice' || status !== 'play' || busy || game.turn() !== userChar) return;
     if (hintStage === 0) {
       hintStage = 1;
-      hintsUsed++;
-      setFeedback(feedback, 'warn', mdLite(drill.hint || t('endgames.defaultHint')).replace(/^<p>|<\/p>$/g, '') + ` <span class="subtle">${escapeHtml(t('endgames.hintAgain'))}</span>`);
+      // The written hint names moves from the main position; on variants show the first technique.
+      const text = variantIdx === 0 ? drill.hint : (technique[0] || drill.hint);
+      setFeedback(feedback, 'warn', stripP(mdLite(text || t('endgames.defaultHint'))) + ` <span class="subtle">${escapeHtml(t('endgames.hintAgain'))}</span>`);
       return;
     }
     const fen = game.fen();
@@ -465,7 +694,7 @@ async function mountDrill(root, id, bag, signal) {
         const line = info && info.lines && info.lines[0];
         const uci = line && line.moves && line.moves[0];
         if (!uci) throw new Error(t('endgames.hintFailed'));
-        const c = chessAt(fen); const mv = applyUci(c, uci);
+        const mv = applyUci(chessAt(fen), uci);
         best = { uci, san: mv ? mv.san : uci };
         if (hintCache.size > 64) hintCache.clear();
         hintCache.set(key, best);
@@ -479,14 +708,16 @@ async function mountDrill(root, id, bag, signal) {
       if (myGen !== gen || fenKey(game.fen()) !== key) return;
     }
     hintStage = 2;
+    assisted = true;
     board.setArrows([{ from: best.uci.slice(0, 2), to: best.uci.slice(2, 4), color: 'green' }]);
     board.setHighlights([{ square: best.uci.slice(0, 2), kind: 'hint' }]);
-    setFeedback(feedback, 'warn', t('endgames.engineSuggests', { san: escapeHtml(sanOf(best.san)) }));
+    setFeedback(feedback, 'warn', `${t('endgames.engineSuggests', { san: escapeHtml(sanOf(best.san)) })} <span class="subtle">${escapeHtml(t('endgames.practice.assisted'))}</span>`);
   }
 
   function cancelEngine() {
     gen++;
     if (engineCtrl) { engineCtrl.abort(); engineCtrl = null; }
+    if (hintCtrl) { hintCtrl.abort(); hintCtrl = null; }
     timers.clear();
     busy = false;
   }
@@ -494,36 +725,24 @@ async function mountDrill(root, id, bag, signal) {
   function undo() {
     if (!sans.length) return;
     cancelEngine();
-    // Remove moves until it's the user's turn again and at least one user move was taken back.
     while (sans.length) {
       const m = game.undo();
       if (!m) break;
       sans.pop();
       if (m.color === userChar) break;
     }
+    // A takeback during an attempt is help; after a recorded result it is just exploring.
+    if (!recorded) assisted = true;
     status = 'play';
     hintStage = 0;
+    drawnStreak = 0;
     const hist = game.history({ verbose: true });
     const last = hist.length ? hist[hist.length - 1] : null;
     board.setPosition(game.fen(), { animate: true, lastMove: last ? [last.from, last.to] : null, sound: false });
     board.clearArrows(); board.setHighlights([]);
     resultBox.replaceChildren();
-    setFeedback(feedback, 'info', escapeHtml(t('endgames.takenBack')));
-    renderMoves();
-    syncControls();
-  }
-
-  function reset() {
-    cancelEngine();
-    game = chessAt(startFen);
-    sans = [];
-    status = 'play';
-    hintStage = 0;
-    hintsUsed = 0;
-    board.setPosition(startFen, { animate: true, sound: false });
-    board.clearArrows(); board.setHighlights([]);
-    resultBox.replaceChildren();
-    setFeedback(feedback, null);
+    botLinkSlot.replaceChildren(playLink(startFen));
+    setFeedback(feedback, 'info', `${escapeHtml(t('endgames.takenBack'))}${recorded ? '' : ` <span class="subtle">${escapeHtml(t('endgames.practice.assisted'))}</span>`}`);
     renderMoves();
     syncControls();
   }
@@ -534,10 +753,14 @@ async function mountDrill(root, id, bag, signal) {
     if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
     if (document.querySelector('.modal-backdrop')) return;
     if (e.key === 'f' || e.key === 'F') board.flip();
-    else if (e.key === 'h' || e.key === 'H') showHint();
+    else if (phase === 'lesson') {
+      if (e.key === 'ArrowRight') { e.preventDefault(); if (lessonIdx < lessonSteps.length - 1) showLesson(lessonIdx + 1); else startPractice(true); }
+      else if (e.key === 'ArrowLeft' && lessonIdx > 0) { e.preventDefault(); showLesson(lessonIdx - 1); }
+    } else if (e.key === 'h' || e.key === 'H') showHint();
     else if (e.key === 'ArrowLeft' || ((e.key === 'z' || e.key === 'Z') && !e.shiftKey)) { if (sans.length) { e.preventDefault(); undo(); } }
   });
 
-  renderMoves();
-  syncControls();
+  // First visit: the lesson. Once the drill has been practised: straight to practice.
+  if (lessonSteps.length && !(progress && progress.attempts)) showLesson(0);
+  else startPractice(true);
 }

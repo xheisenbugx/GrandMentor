@@ -98,6 +98,28 @@ fn missing_language_folder_is_english() {
     assert_eq!(en.course("basics").expect("c").title, "Chess Basics");
 }
 
+/// The shipped Spanish endgame overlay translates every drill: text, pitfall and each lesson step.
+#[test]
+fn spanish_endgames_are_complete() {
+    let data = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data");
+    let base = Content::load_with_i18n(&data, &data.join("i18n")).expect("load");
+    let es = base.localized(Lang::Es);
+    assert_eq!(es.endgames.len(), base.endgames.len());
+    for (en, es) in base.endgames.iter().zip(&es.endgames) {
+        assert_eq!(en.id, es.id);
+        assert_ne!(en.title, es.title, "{}: title", en.id);
+        assert_ne!(en.pitfall, es.pitfall, "{}: pitfall", en.id);
+        assert_eq!(en.lesson.len(), es.lesson.len());
+        for (i, (a, b)) in en.lesson.iter().zip(&es.lesson).enumerate() {
+            assert_ne!(a.text, b.text, "{}: lesson step {} untranslated", en.id, i + 1);
+            assert_eq!(a.fen, b.fen);
+            assert_eq!(a.arrows, b.arrows);
+        }
+        assert_eq!(en.variants, es.variants);
+        assert_eq!(en.success, es.success);
+    }
+}
+
 #[test]
 fn hand_built_content_localizes_without_overlays() {
     let c = Content::default();

@@ -82,6 +82,9 @@ pub struct EndgameOverlay {
     pub description: Option<String>,
     pub hint: Option<String>,
     pub technique: Option<Vec<String>>,
+    pub pitfall: Option<String>,
+    /// Lesson step texts, by index (FENs, arrows and highlights always come from English).
+    pub lesson: Option<Vec<String>>,
 }
 
 /// All overlays for one language.
@@ -364,6 +367,12 @@ pub fn apply_overlay(content: &mut Content, ov: &Overlay) -> OverlayStats {
         any |= set_text(&mut d.description, &eo.description);
         any |= set_text(&mut d.hint, &eo.hint);
         any |= set_list(&mut d.technique, &eo.technique);
+        any |= set_text(&mut d.pitfall, &eo.pitfall);
+        if let Some(texts) = &eo.lesson {
+            for (step, text) in d.lesson.iter_mut().zip(texts) {
+                any |= set_text(&mut step.text, &Some(text.clone()));
+            }
+        }
         if any {
             st.applied += 1;
         }
