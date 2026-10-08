@@ -5,6 +5,7 @@ pub mod cache;
 pub mod error;
 pub mod lang;
 pub mod puzzles;
+pub mod routes;
 pub mod state;
 pub mod web;
 pub mod ws;

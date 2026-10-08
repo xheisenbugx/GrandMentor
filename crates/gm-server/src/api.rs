@@ -74,6 +74,7 @@ pub fn router() -> Router<AppState> {
         .route("/endgames/:id", get(endgame))
         .route("/profile", get(get_profile).put(update_profile))
         .route("/stats", get(stats))
+        .merge(crate::routes::router())
         .fallback(api_not_found)
 }
 
@@ -708,7 +709,14 @@ async fn create_game(
         let moves = g.moves.clone();
         g.opening_name = blocking(move || detect_opening(&content, &start, &moves)).await?;
     }
-    let rec = store_op(&st.store, move |s| s.create_game(&g)).await?;
+    let rec = store_op(&st.store, move |s| {
+        let rec = s.create_game(&g)?;
+        // Activity feeds the daily plan / streaks; never fail the request because of it.
+        let kind = if g.bot_id.is_some() { "game" } else { "local_game" };
+        let _ = s.log_activity(kind, 1);
+        Ok(rec)
+    })
+    .await?;
     Ok((StatusCode::CREATED, Json(rec)))
 }
 
@@ -939,7 +947,9 @@ async fn puzzle_attempt(
     st.recent_puzzles.insert(id.clone());
     let time_ms = req.time_ms.min(24 * 3600 * 1000);
     let res = store_op(&st.store, move |s| {
-        s.record_puzzle_attempt(&id, rating, req.solved, time_ms)
+        let res = s.record_puzzle_attempt(&id, rating, req.solved, time_ms)?;
+        let _ = s.log_activity("puzzle", 1);
+        Ok(res)
     })
     .await?;
     Ok(Json(res))
@@ -1058,6 +1068,9 @@ async fn set_progress(
     let completed = req.completed;
     let list = store_op(&st.store, move |s| {
         s.set_lesson_progress(&c, &l, completed)?;
+        if completed {
+            let _ = s.log_activity("lesson", 1);
+        }
         s.get_progress()
     })
     .await?;

@@ -1,0 +1,9 @@
+//! Daily plan, streaks and goals (`/api/daily*`, `/api/activity*`).
+
+use axum::Router;
+
+use crate::state::AppState;
+
+pub fn router() -> Router<AppState> {
+    Router::new()
+}

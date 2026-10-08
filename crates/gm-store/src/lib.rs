@@ -13,8 +13,16 @@ use parking_lot::Mutex;
 use rusqlite::{params, Connection, OptionalExtension, Row, ToSql};
 use serde::{Deserialize, Serialize};
 
+pub mod activity;
+pub mod adaptive;
+pub mod backup;
+pub mod classics;
+pub mod drills;
 pub mod pgn;
 pub mod rating;
+pub mod repertoire;
+pub mod srs;
+pub mod training;
 
 pub use pgn::ParsedGame;
 
@@ -255,7 +263,7 @@ const NOW: &str = "strftime('%Y-%m-%dT%H:%M:%SZ','now')";
 type Migration = fn(&rusqlite::Transaction<'_>) -> rusqlite::Result<()>;
 
 /// Index i migrates user_version i -> i+1. Append only; never edit a shipped migration.
-const MIGRATIONS: &[Migration] = &[migrate_v1];
+const MIGRATIONS: &[Migration] = &[migrate_v1, migrate_v2];
 
 fn has_column(tx: &rusqlite::Transaction<'_>, table: &str, col: &str) -> rusqlite::Result<bool> {
     let mut stmt = tx.prepare("SELECT 1 FROM pragma_table_info(?1) WHERE name = ?2")?;
@@ -342,6 +350,19 @@ CREATE INDEX IF NOT EXISTS idx_games_bot ON games(bot_id);
 CREATE INDEX IF NOT EXISTS idx_games_favorite ON games(favorite);
 "#,
     )?;
+    Ok(())
+}
+
+/// v2: learning-platform features. Each feature module owns its own tables.
+fn migrate_v2(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
+    activity::schema(tx)?;
+    adaptive::schema(tx)?;
+    backup::schema(tx)?;
+    classics::schema(tx)?;
+    drills::schema(tx)?;
+    repertoire::schema(tx)?;
+    srs::schema(tx)?;
+    training::schema(tx)?;
     Ok(())
 }
 
