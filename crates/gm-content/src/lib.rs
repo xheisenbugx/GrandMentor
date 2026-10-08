@@ -5,6 +5,7 @@
 //! vocabulary helpers in [`words`], and the translation overlays in `data/i18n/<lang>/`
 //! (see [`Content::localized`] and `docs/I18N.md`).
 
+pub mod classics;
 mod lang;
 mod openings;
 pub mod overlay;
@@ -21,6 +22,7 @@ use shakmaty::{Chess, Position};
 
 use gm_engine::{move_to_uci, parse_fen, san_to_move, to_fen, uci_to_move};
 
+pub use classics::{Classic, ClassicNote, ClassicQuestion, ClassicSummary};
 pub use lang::Lang;
 pub use openings::{start_name, OpeningBook, OpeningIndex, START_ID, START_NAME};
 pub use overlay::{Overlay, OverlayStats};
@@ -174,6 +176,8 @@ pub struct Content {
     pub puzzles: Vec<Puzzle>,
     pub courses: Vec<Course>,
     pub endgames: Vec<EndgameDrill>,
+    /// Annotated classic games (`classics.json`).
+    pub classics: Vec<Classic>,
     /// Opening book index over `openings` (not serialized; see `rebuild_opening_index`).
     #[serde(skip)]
     pub opening_index: OpeningIndex,
@@ -403,12 +407,19 @@ impl Content {
             |d| &d.id,
             validate_endgame,
         );
+        let classics = retain_valid(
+            "classic",
+            read_list::<Classic>(&dir.join("classics.json"))?,
+            |g| &g.id,
+            classics::validate_classic,
+        );
         tracing::info!(
-            "content loaded: {} openings, {} puzzles, {} courses, {} endgames",
+            "content loaded: {} openings, {} puzzles, {} courses, {} endgames, {} classics",
             openings.len(),
             puzzles.len(),
             courses.len(),
-            endgames.len()
+            endgames.len(),
+            classics.len()
         );
         let opening_index = OpeningIndex::build(&openings);
         let i18n_dir = dir.join("i18n");
@@ -427,6 +438,7 @@ impl Content {
             puzzles,
             courses,
             endgames,
+            classics,
             opening_index,
             lang: Lang::En,
             views: LocalizedViews::with_overlays(overlays),
@@ -480,6 +492,7 @@ impl Content {
                     puzzles: self.puzzles.clone(),
                     courses: self.courses.clone(),
                     endgames: self.endgames.clone(),
+                    classics: self.classics.clone(),
                     opening_index: OpeningIndex::default(),
                     lang,
                     views: LocalizedViews { own: None, parent: Arc::downgrade(slots) },
@@ -545,6 +558,9 @@ impl Content {
     }
     pub fn endgame(&self, id: &str) -> Option<&EndgameDrill> {
         self.endgames.iter().find(|d| d.id == id)
+    }
+    pub fn classic(&self, id: &str) -> Option<&Classic> {
+        self.classics.iter().find(|g| g.id == id)
     }
 }
 

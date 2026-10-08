@@ -802,3 +802,42 @@ is drawn with `.gm-sq.premove` (tokens `--board-premove`, `--board-premove-light
 fallbacks); right-click, clicking an empty/non-target square, or `clearPremove()` cancels it. With `premoveColor` set,
 a premove selection or drag in progress survives `setPosition` / `setInteractive` (the opponent's move landing) and
 turns into a normal move if it's now legal. Pages that don't pass the new options behave exactly as before.
+
+## Classic games
+
+Annotated library of famous public-domain games, narrated by the mentor (`#/classics`, `#/classics/:classicId`).
+
+**Content** — `data/classics.json` (array), validated by `gm-content` (`classics.rs`; every move replayed at load,
+`cargo test -p gm-content` fails if any game is dropped or the Spanish overlay is incomplete). Source fields:
+`id, title, white, black, event, year, result ("1-0"|"0-1"|"1/2-1/2"), opening, level (beginner|intermediate|advanced),
+themes [slug], orientation ("white"|"black"), summary, moves (SAN, space separated), key_ply,
+annotations [{ply, text, label?, arrows?, highlights?}], questions [{ply, prompt, hint?, explanation, also?: [SAN]}]`.
+- Annotation `ply` N is shown right after the N-th half-move (0 = intro). A `label` makes it a "key moment".
+- Question `ply` N: the board stops after N−1 plies and the side to move must find the game's N-th move (or one of `also`).
+- Theme slugs: development, attack, sacrifice, king-hunt, checkmate, tactics, positional, endgame, defence, opening-trap,
+  back-rank, zugzwang, initiative, pawn-power, human-vs-machine, calculation (translated in `web/locales/*/classics.js`).
+- Loader-filled: `uci [UCI]`, `san [SAN]`, `plies`, `key_fen` (FEN after `key_ply`), `era` (romantic ≤1885 | classical
+  1886–1945 | modern 1946–1990 | computer 1991+), and per question `answer_uci`, `answer_san`, `accept [UCI]`.
+- Spanish overlay `data/i18n/es/classics*.json`: `{ "<id>": { title, event, opening, summary, annotations: [{text, label}|null],
+  questions: [{prompt, hint, explanation}|null] } }` (same order/length as English; text only).
+
+**HTTP** (localized by `?lang=` / `Accept-Language`):
+- `GET /api/classics` → `[ClassicSummary & {progress: ClassicProgress|null}]` where `ClassicSummary =
+  {id, title, white, black, event, year, result, opening, level, themes, era, orientation, summary, key_fen, plies,
+  annotation_count, question_count}`.
+- `GET /api/classics/:id` → full `Classic` (all fields above) `& {progress: ClassicProgress|null}`; 404 if unknown.
+- `POST /api/classics/:id/progress` body `{ply?: n, completed?: bool, answer?: {ply, correct}}` (at least one field;
+  `ply` ≤ plies, `answer.ply` must be a question ply) → `ClassicProgress = {classic_id, last_ply, max_ply, completed,
+  completed_at|null, answers: [{ply, correct}], updated_at}`. Only the first answer per question is kept; `completed`
+  is never cleared. The first completion logs activity `classic`.
+
+**Store** (`gm_store::classics`): `classic_progress_all()`, `classic_progress(id)`,
+`update_classic_progress(id, &ClassicProgressUpdate) -> (ClassicProgress, newly_completed)`; tables `classic_progress`,
+`classic_answers` (migration v2).
+
+**Frontend** — `web/js/pages/classics.js` (+ `web/css/classics.css`, injected on mount; strings in `classics.*`).
+Library: stats, level/era/theme/search filters, cards with a mini board of `key_fen`. Player: board + optional eval bar
+(engine websocket, off by default), mentor bubble per annotation (arrows/highlights drawn), auto-play (slow/normal/fast,
+longer pauses on comments) or step-by-step (←/→, Space, F), "pause and think" questions (move on the board; hint /
+show me), key-moment chips, move list, "Play this position vs a bot" (`#/play?fen=…&color=w|b`) and "Open in Analysis"
+(`#/analysis?pgn=…`). Speed and eval preference persist in localStorage `grandmentor.classics.v1`.

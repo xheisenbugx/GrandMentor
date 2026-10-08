@@ -1,0 +1,2008 @@
+{
+ "opera-game": {
+  "title": "La partida de la Ópera",
+  "event": "Ópera de París",
+  "opening": "Defensa Philidor",
+  "summary": "Jugada en un palco de la Ópera de París en plena función, es la lección más famosa sobre el desarrollo rápido. Morphy pone en juego todas sus piezas, abre líneas hacia el rey sin enrocar y remata con un sacrificio de dama. La idea: desarrolla rápido, enroca y castiga al rival que se queda atrás.",
+  "annotations": [
+   {
+    "text": "París, 1858. Paul Morphy, la joven estrella estadounidense, juega contra dos nobles que se ponen de acuerdo, en su propio palco de la ópera. Fíjate en lo rápido que mete **todas** sus piezas en la pelea."
+   },
+   {
+    "text": "2...d6 es la Defensa Philidor. Protege e5 con solidez, pero también encierra al alfil de f8. Sólida, aunque un poco pasiva."
+   },
+   {
+    "text": "3...Bg4 clava el caballo de f3 contra la dama. Parece activo, pero las negras cambiarán pronto este alfil, y cada cambio así ayuda a las blancas a desarrollarse."
+   },
+   {
+    "text": "4...Bxf3 entrega el alfil por el caballo. La dama blanca recaptura y entra en juego gratis, mientras que las negras tienen una pieza menos en acción."
+   },
+   {
+    "text": "6.Bc4 suma un segundo atacante sobre f7. Las blancas amenazan Qxf7 jaque mate, así que las negras tienen que reaccionar."
+   },
+   {
+    "text": "7.Qb3 es un **ataque doble**: la dama se coloca detrás del alfil contra f7 y además ataca el peón de b7."
+   },
+   {
+    "text": "7...Qe7 defiende f7, pero ahora la dama tapa al alfil de f8. Las piezas del flanco de rey negro están atascadas y el enroque queda lejos."
+   },
+   {
+    "text": "9.Bg5 clava el caballo de f6 contra la dama. Morphy no se lanza a comer peones: sigue sacando piezas. Las negras solo tienen la dama y un caballo desarrollados."
+   },
+   {
+    "text": "10.Nxb5! Morphy entrega un caballo entero para abrir las líneas alrededor del rey negro. Con tantas piezas más en juego, se lo puede permitir.",
+    "label": "Sacrificio de caballo"
+   },
+   {
+    "text": "11.Bxb5+ da jaque y deja clavado el caballo de d7. Ese caballo no puede moverse sin dejar expuesto a su rey."
+   },
+   {
+    "text": "12.O-O-O! El enroque pone al rey a salvo y coloca una torre directamente en la columna abierta d, apuntando al caballo clavado.",
+    "label": "La torre se suma"
+   },
+   {
+    "text": "13.Rxd7! Morphy da una torre por el caballo para mantener la presión. Cada captura abre todavía más la columna d.",
+    "label": "Torre por caballo"
+   },
+   {
+    "text": "14.Rd1 trae la última torre a la columna d. La torre de d7 está clavada y atacada dos veces, y las piezas del flanco de rey negro siguen sin moverse."
+   },
+   {
+    "text": "14...Qe6 añade un defensor a d7 y ofrece cambiar damas. Las negras quieren calmar la partida, pero Morphy tiene una idea más afilada."
+   },
+   {
+    "text": "15.Bxd7+ elimina la torre con jaque. Las negras tienen que recapturar con el caballo."
+   },
+   {
+    "text": "15...Nxd7. Ahora este caballo es la única pieza que bloquea la columna d. Si se le pudiera desviar, la torre llegaría a d8. ¿Podrán hacerlo las blancas?"
+   },
+   {
+    "text": "16...Nxb8 era obligado. El caballo tuvo que abandonar d7 y la columna d queda totalmente abierta."
+   },
+   {
+    "text": "17.Rd8# ¡Jaque mate! La torre está protegida por el alfil de g5. Morphy ganó con solo dos piezas, porque todas las que tenía estaban trabajando. **¡Desarrolla rápido y abre líneas!**",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El caballo negro de d7 es el último guardián de la columna d. ¿Encuentras una forma espectacular de sacarlo de ahí?",
+    "hint": "Ofrece tu dama con jaque en una casilla a la que solo llegue el caballo.",
+    "explanation": "16.Qb8+! es un sacrificio de dama. La única respuesta es 16...Nxb8, y sin el caballo en d7, la torre da mate en d8."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. ¿Lo ves?",
+    "hint": "La columna d está abierta hasta la última fila.",
+    "explanation": "17.Rd8# La torre da jaque en la última fila y el alfil de g5 la protege. El rey negro no tiene adónde ir."
+   }
+  ]
+ },
+ "immortal-game": {
+  "title": "La partida inmortal",
+  "event": "Londres (partida amistosa)",
+  "opening": "Gambito de rey aceptado, gambito del alfil",
+  "summary": "Anderssen entrega un alfil, las dos torres y al final la dama, y luego da mate con tres piezas menores. Es el símbolo de la época romántica del ajedrez. La lección: piezas activas y bien colocadas pueden valer más que el material.",
+  "annotations": [
+   {
+    "text": "Londres, 1851. En una pausa del primer torneo internacional, Adolf Anderssen y Lionel Kieseritzky jugaron esta partida amistosa. Se hizo tan famosa que la llamaron **la Inmortal**."
+   },
+   {
+    "text": "2.f4 es el Gambito de rey. Las blancas ofrecen un peón para abrir la columna f y lograr un centro fuerte y rápido. Una apertura típica del siglo XIX."
+   },
+   {
+    "text": "3...Qh4+ da jaque al rey, que ya no podrá enrocar. Las blancas deben ir a f1, pero la dama negra ha salido muy pronto y puede convertirse en un blanco."
+   },
+   {
+    "text": "4...b5 devuelve un peón para desviar al alfil blanco de su buena diagonal. ¡Las negras también juegan a lo loco!"
+   },
+   {
+    "text": "7.d3 es una jugada tranquila: sostiene e4 y abre paso al alfil de c1. Las blancas siguen desarrollándose mientras la dama negra pasea."
+   },
+   {
+    "text": "9.Nf5 coloca el caballo en una gran casilla, atacando g7 y cerca del rey negro."
+   },
+   {
+    "text": "11.Rg1 protege el peón de g y deja que capturen el alfil de b5. A Anderssen le importan más el tiempo y el ataque que un alfil."
+   },
+   {
+    "text": "12.h4 empieza a perseguir a la dama negra con peones. Cada jugada de dama le cuesta a las negras un tiempo que debería ir al desarrollo."
+   },
+   {
+    "text": "14...Ng8 devuelve el caballo a casa. Mira la posición negra: casi nada desarrollado, mientras las piezas blancas siguen llegando."
+   },
+   {
+    "text": "15.Bxf4 recupera el peón y saca el último alfil, ganando tiempo contra la dama."
+   },
+   {
+    "text": "16...Bc5 por fin desarrolla, y el alfil ataca la torre de g1. Las negras esperan ganar material mientras las blancas están ocupadas atacando."
+   },
+   {
+    "text": "17.Nd5! Anderssen ignora la torre de g1. El caballo ataca a la dama negra y amenaza Nxc7+, un ataque doble a rey y torre.",
+    "label": "Ignorando las amenazas"
+   },
+   {
+    "text": "18.Bd6!! Las blancas ofrecen **las dos torres**. El alfil controla f8 y e7, así que el rey negro se queda encerrado.",
+    "label": "Regala las dos torres"
+   },
+   {
+    "text": "19.e5 cierra la gran diagonal, así que la dama negra no puede volver a defender g7. Tranquila, pero letal."
+   },
+   {
+    "text": "19...Qxa1+ Las negras se han comido las dos torres y tienen muchísimo material de más. Pero todas esas piezas negras están lejos de su rey."
+   },
+   {
+    "text": "20...Na6 cubre la casilla c7 contra un jaque de caballo. Ahora las blancas necesitan algo contundente."
+   },
+   {
+    "text": "21.Nxg7+ El caballo se come un peón con jaque y además controla e8. El rey tiene que ir a d8."
+   },
+   {
+    "text": "22...Nxf6 era obligado. Las blancas han entregado un alfil, dos torres y la dama.",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "23.Be7# ¡Jaque mate con solo un alfil y dos caballos contra todo un ejército! **Las piezas activas ganan al material de más.**",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Ya has entregado mucho. ¿Encuentras la jugada más espectacular del tablero?",
+    "hint": "Tu dama puede dar jaque en una casilla donde solo un caballo puede capturarla.",
+    "explanation": "22.Qf6+!! El caballo tiene que capturar, 22...Nxf6, y eso abre el camino para que el alfil dé mate en e7."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. ¿Qué pieza lo da?",
+    "hint": "Mira la casilla oscura justo al lado del rey negro.",
+    "explanation": "23.Be7# El alfil da jaque, el caballo de d5 lo protege y los caballos cubren todas las casillas de escape."
+   }
+  ]
+ },
+ "evergreen-game": {
+  "title": "La siempreviva",
+  "event": "Berlín (partida amistosa)",
+  "opening": "Gambito Evans",
+  "summary": "Anderssen entrega peones para lograr una gran ventaja en desarrollo y luego encuentra una combinación famosa con sacrificio de torre, sacrificio de dama y jaque doble. Muestra cómo las líneas abiertas y las piezas activas pueden convertirse en un mate forzado.",
+  "annotations": [
+   {
+    "text": "Berlín, 1852. Adolf Anderssen juega contra su amigo Jean Dufresne una partida amistosa. Terminó con una combinación tan bonita que la apodaron **la Siempreviva**: siempre fresca."
+   },
+   {
+    "text": "4.b4 es el Gambito Evans. Las blancas ofrecen un peón para seguir con c3 y d4 ganando tiempos y construir un gran centro."
+   },
+   {
+    "text": "6.d4 golpea en el centro. A las blancas no les importa dar peones si a cambio consiguen líneas abiertas y un desarrollo rápido."
+   },
+   {
+    "text": "7...d3 mete el peón muy dentro del campo blanco. Es molesto, porque estorba a las piezas blancas del flanco de dama."
+   },
+   {
+    "text": "8.Qb3 coloca la dama detrás del alfil contra f7, el punto más débil junto al rey negro."
+   },
+   {
+    "text": "9.e5 gana espacio y echa a la dama negra. Las blancas siguen jugando con amenazas."
+   },
+   {
+    "text": "11.Ba3 pone el alfil en una gran diagonal que apunta a e7 y a la casilla f8, lo que le complica el enroque a las negras."
+   },
+   {
+    "text": "11...b5 devuelve un peón para alejar un momento a la dama blanca del flanco de rey."
+   },
+   {
+    "text": "15.Ne4 lleva el caballo hacia el flanco de rey, mirando a f6. Las piezas blancas se van juntando cerca del rey negro."
+   },
+   {
+    "text": "16.Bxd3 por fin elimina el peón molesto y apunta el alfil al flanco de rey."
+   },
+   {
+    "text": "17.Nf6+! Un sacrificio de caballo. Tras 17...gxf6 18.exf6 se abre la columna e y el caballo de e7 queda atacado.",
+    "label": "Sacrificio de caballo"
+   },
+   {
+    "text": "18...Rg8 Las negras preparan un contraataque por la columna g. Si consiguen ...Qxf3, entonces ...Qxg2 es mate."
+   },
+   {
+    "text": "19.Rad1!! Una jugada tranquila en plena batalla. Anderssen ignora la amenaza y trae su última pieza a la columna d. Más tarde se encontraron defensas para las negras, pero en el tablero fue deslumbrante.",
+    "label": "La jugada siempreviva"
+   },
+   {
+    "text": "19...Qxf3 Las negras se comen el caballo y amenazan ...Qxg2 mate. Las blancas tienen que seguir dando jaques."
+   },
+   {
+    "text": "20.Rxe7+ elimina al defensor con jaque, así que las negras no tienen tiempo para ...Qxg2."
+   },
+   {
+    "text": "21...Kxd7 era obligado. El alfil de d3 está delante de la torre de d1. Cuando el alfil se mueva, la torre dará jaque.",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "22.Bf5+ es un **jaque doble**: del alfil y de la torre que estaba detrás. Ante un jaque doble, la única defensa es mover el rey.",
+    "label": "¡Jaque doble!"
+   },
+   {
+    "text": "23.Bd7+ empuja al rey a f8, justo en el camino del alfil de a3."
+   },
+   {
+    "text": "24.Bxe7# ¡Jaque mate! El alfil está protegido por el peón de f6. Un ejemplo perfecto de cómo las líneas abiertas y las piezas activas crean un ataque de mate.",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Las negras amenazan mate en g2. ¿Encuentras un jaque que lo cambia todo?",
+    "hint": "Tu torre de d1 está en la columna d. ¿Y si el peón de d7 desapareciera con jaque?",
+    "explanation": "21.Qxd7+!! El rey tiene que capturar, y luego alfil y torre dan jaque doble con 22.Bf5+, que lleva al mate."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. El rey negro está en f8. ¿Puedes rematar?",
+    "hint": "Tu alfil de casillas oscuras lleva toda la partida esperando en a3.",
+    "explanation": "24.Bxe7# El alfil captura el caballo con jaque, el peón de f6 lo protege y el rey ya no tiene casillas."
+   }
+  ]
+ },
+ "game-of-the-century": {
+  "title": "La partida del siglo",
+  "event": "Memorial Rosenwald, Nueva York",
+  "opening": "Defensa Grünfeld",
+  "summary": "Un Bobby Fischer de 13 años entrega su dama ante uno de los mejores jugadores de Estados Unidos y gana con un equipo de piezas menores impresionante. La lección: un rey atrapado en el centro es un blanco, y una dama solo vale lo que puede hacer en el tablero.",
+  "annotations": [
+   {
+    "text": "Nueva York, 1956. Bobby Fischer tiene solo **13 años** y se enfrenta a Donald Byrne, uno de los mejores jugadores de Estados Unidos. Lo que viene pronto se llamó la partida del siglo."
+   },
+   {
+    "text": "Fischer coloca su alfil en g7, desde donde domina la gran diagonal. Deja que las blancas formen un centro, con la idea de atacarlo después."
+   },
+   {
+    "text": "5...d5 golpea el centro de inmediato. Este esquema, con ...g6 y ...d5, es la **Defensa Grünfeld**."
+   },
+   {
+    "text": "Las blancas tienen ahora un gran centro de peones. Pero mira su rey: sigue en el medio, con las piezas del flanco de rey dormidas. Fischer se lo hará pagar."
+   },
+   {
+    "text": "10.Qc5 ya es la tercera jugada de la dama. Cada jugada de dama es una jugada que las blancas no dedican a desarrollar ni a enrocar."
+   },
+   {
+    "text": "11...Na4!! Una oferta increíble. Si 12.Nxa4, entonces 12...Nxe4 ataca a la vez la dama en c5 y el alfil en g5, y la posición blanca se desmorona.",
+    "label": "Caballo ofrecido en a4"
+   },
+   {
+    "text": "13...Nxe4! Fischer gana el peón central y además ataca el peón de c3. Mientras tanto, el rey blanco sigue atrapado en el centro."
+   },
+   {
+    "text": "16...Rfe8+ abre la columna e con jaque. El rey blanco tiene que ir a f1 y ya nunca podrá enrocar."
+   },
+   {
+    "text": "Las blancas tomaron la dama, y ahora empieza la factura. El alfil da jaque, y el caballo y el alfil negros van a bailar alrededor del rey blanco.",
+    "label": "Llega la factura"
+   },
+   {
+    "text": "20...Nxd4+ es un **jaque a la descubierta**: el caballo se aparta y el alfil de c4 da jaque. Jaque, captura, otro jaque: este patrón se llama molino.",
+    "label": "El molino"
+   },
+   {
+    "text": "El molino ha terminado. Por su dama, Fischer ya ganó dos alfiles y un peón; su torre de a8 ataca la dama blanca y el caballo de c3 ataca la torre de d1."
+   },
+   {
+    "text": "25...Nxd1 se lleva también la torre. Las blancas aún tienen dama, pero las piezas negras trabajan en equipo, mientras la torre blanca de h1 nunca se ha movido."
+   },
+   {
+    "text": "La dama blanca da unos cuantos jaques, pero no hay peligro real. Las negras cubren su rey con calma y conservan sus piezas de ventaja."
+   },
+   {
+    "text": "Con una gran ventaja de material, Fischer avanza sus peones del flanco de dama y prepara todas sus piezas para cazar al rey blanco."
+   },
+   {
+    "text": "Hora de rematar. 36...Ng3+ inicia la cacería final: caballo, alfiles y torre se turnan para dar jaque y empujan al rey hacia el flanco de dama.",
+    "label": "La cacería final"
+   },
+   {
+    "text": "41...Rc2# La torre da mate, protegida por el alfil de b3, mientras el caballo de c3 controla b1 y d1. Un chico de 13 años acababa de jugar una de las partidas más famosas de la historia.",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. Tu dama en b6 está atacada por el alfil de c5. ¿Encuentras la legendaria respuesta de Fischer?",
+    "hint": "No salves la dama. Piensa en el rey blanco en f1.",
+    "explanation": "17...Be6!! entrega la dama. El alfil ataca al alfil de c4 y prepara una tormenta de jaques. Si 18.Bxe6, entonces 18...Qb5+ lleva a un precioso mate de la coz; si las blancas toman la dama, como en la partida, las negras recuperan una montaña de material."
+   },
+   {
+    "prompt": "Juegan las negras. Ya entregaste la dama y ahora toca cobrar. ¿Qué jaque pone todo en marcha?",
+    "hint": "Tu caballo de c3 puede llegar junto al rey blanco, y tu alfil de c4 apunta a f1.",
+    "explanation": "19...Ne2+ obliga a 20.Kf1. Ahora el caballo puede saltar con jaque a la descubierta del alfil de c4, capturando material cada vez, mientras el rey blanco solo puede ir y venir."
+   },
+   {
+    "prompt": "Juegan las negras. El rey blanco ha sido perseguido hasta c1. ¿Encuentras el jaque mate?",
+    "hint": "Tu torre de a2 quiere unirse a la fiesta.",
+    "explanation": "41...Rc2# La torre da jaque en c2 protegida por el alfil de b3. El rey no puede ir a b1 ni a d1 por el caballo de c3, y la torre controla b2 y d2."
+   }
+  ]
+ },
+ "kasparov-topalov-1999": {
+  "title": "La Inmortal de Kasparov",
+  "event": "Torneo Hoogovens, Wijk aan Zee",
+  "opening": "Defensa Pirc",
+  "summary": "Kasparov entrega una torre y luego persigue al rey de Topalov de un lado del tablero hasta el otro. Considerada por muchos la mejor partida de ataque de la historia, muestra cómo se puede cazar a un rey expuesto aunque el atacante tenga menos material.",
+  "annotations": [
+   {
+    "text": "Wijk aan Zee, 1999. El campeón del mundo Garry Kasparov, en plena forma, juega contra la joven estrella búlgara Veselin Topalov. Lo que sigue se conoce como **la Inmortal de Kasparov**."
+   },
+   {
+    "text": "La **Defensa Pirc**: las negras dejan que las blancas construyan un gran centro de peones y planean atacarlo después con piezas y peones."
+   },
+   {
+    "text": "Kasparov enroca largo, en el flanco de dama. Su rey estará seguro allí mientras las piezas a su alrededor se mantengan firmes."
+   },
+   {
+    "text": "Topalov también enroca largo, pero sus peones de a6, b5 y c6 ya han avanzado. Eso deja huecos alrededor de su rey, y será importante más adelante."
+   },
+   {
+    "text": "**18.Na5** planta un caballo justo al lado del rey negro. Es molesto y difícil de expulsar para las negras."
+   },
+   {
+    "text": "**21...d4** ataca al caballo de c3 y parece fuerte para las negras. Kasparov responde saltando a d5."
+   },
+   {
+    "text": "La posición parece tranquila. El peón negro de d4 parece bien protegido y la dama negra apunta a las piezas blancas. Pero Kasparov ha visto algo increíble."
+   },
+   {
+    "text": "Topalov se come la torre. Ahora empieza la gran persecución: la torre blanca llega a e7 con jaque y el rey negro es expulsado de su refugio.",
+    "label": "¡Sacrificio de torre!"
+   },
+   {
+    "text": "El rey negro avanza a b6. Ya está a la intemperie, con la dama y la torre blancas cerca."
+   },
+   {
+    "text": "El rey se come el caballo de a5 y sigue subiendo por el tablero. Cada paso lo aleja más de su propio ejército.",
+    "label": "Empieza la caza del rey"
+   },
+   {
+    "text": "El rey está ahora en a4, en plena mitad del tablero de las blancas. Kasparov sigue acercando piezas para rodearlo."
+   },
+   {
+    "text": "El rey negro sigue comiendo peones, pero cada captura lo arrastra más hacia el peligro."
+   },
+   {
+    "text": "¡El rey negro está en c3! Las blancas siguen dando jaques para empujarlo aún más abajo."
+   },
+   {
+    "text": "El rey ha caminado desde c8 hasta d1, cruzando todo el tablero. Ahora Kasparov necesita el golpe final.",
+    "label": "Cruzando todo el tablero"
+   },
+   {
+    "text": "**36.Bf1!** es una jugada tranquila con un gran golpe. El alfil ataca a la dama negra en c4 y estrecha la red alrededor del rey.",
+    "label": "Tranquila pero letal"
+   },
+   {
+    "text": "Otra torre ofrecida. **37.Rd7** desafía a la torre negra de la columna d y la aparta de su tarea defensiva."
+   },
+   {
+    "text": "Las blancas han recuperado el material y ahora tienen dama contra torre. Lo demás es técnica."
+   },
+   {
+    "text": "Tras **44.Qa7** Topalov abandonó: la dama blanca y el material de más deciden. La lección: cuando el rey rival sale de su refugio, mantenlo corriendo con jaques y lleva todas tus piezas a la caza.",
+    "label": "Las negras abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El peón negro de d4 parece seguro. Kasparov encontró una de las jugadas más famosas de la historia. ¿Y tú?",
+    "hint": "Entrega una torre para abrir la columna e.",
+    "explanation": "**24.Rxd4!!** entrega una torre por un peón. Tras **24...cxd4 25.Re7+** el rey negro es arrastrado a campo abierto, y la dama blanca se suma a la persecución."
+   },
+   {
+    "prompt": "Juegan las blancas. El alfil negro ha llegado a b7 para proteger al rey. ¿Qué haces con él?",
+    "hint": "Elimina al defensor.",
+    "explanation": "**30.Rxb7!** captura al alfil defensor. La torre controla ahora la columna b, y el rey negro tiene aún menos sitios donde esconderse."
+   },
+   {
+    "prompt": "Juegan las blancas. Topalov acaba de comerse la torre en d7. ¿Cómo recuperan las blancas el material?",
+    "hint": "Mira qué está atacando el alfil de f1.",
+    "explanation": "**38.Bxc4** se come la dama negra. Esa era la idea de **36.Bf1**: el alfil apuntaba a c4 desde el principio."
+   }
+  ]
+ },
+ "reti-tartakower-1910": {
+  "title": "La miniatura brillante de Réti",
+  "event": "Viena (partida amistosa)",
+  "opening": "Defensa Caro-Kann",
+  "summary": "En solo once jugadas, Réti sacrifica la dama y da mate con alfil y torre. Un ejemplo perfecto de jaque doble a la descubierta. La lección: al enrocar largo, la torre llega a la columna d, y eso puede ser letal contra un rey en el centro.",
+  "annotations": [
+   {
+    "text": "Viena, 1910. Dos futuras leyendas del ajedrez, Richard Réti y Savielly Tartakower, se enfrentan en una partida amistosa. Dura solo once jugadas."
+   },
+   {
+    "text": "1...c6 es la Defensa Caro-Kann. Las negras preparan ...d5 para disputar el centro de forma sólida."
+   },
+   {
+    "text": "3...dxe4 Las negras cambian en el centro. Las blancas recapturan con el caballo, que consigue una buena casilla central."
+   },
+   {
+    "text": "5.Qd3 es poco habitual. La dama protege al caballo y prepara el enroque largo, que pondrá una torre en la columna d."
+   },
+   {
+    "text": "5...e5 Las negras ofrecen un peón para abrir líneas mientras el rey blanco sigue en el centro."
+   },
+   {
+    "text": "6...Qa5+ da jaque al rey y ataca a la vez el peón de e5, así que las negras recuperan el peón."
+   },
+   {
+    "text": "7...Qxe5 clava el caballo de e4 contra el rey blanco. Parece que las negras van a ganar una pieza."
+   },
+   {
+    "text": "8.O-O-O! Las blancas enrocan, así que el caballo ya no está clavado, pero lo dejan colgando. La torre llega a d1, detrás del alfil de d2.",
+    "label": "Enroque al ataque"
+   },
+   {
+    "text": "8...Nxe4? Las negras se comen el caballo, pero olvidan que su rey sigue en e8 y que la columna d está abierta.",
+    "label": "La captura fatal"
+   },
+   {
+    "text": "9...Kxd8 era obligado. Ahora solo el alfil de d2 se interpone entre la torre de d1 y el rey negro."
+   },
+   {
+    "text": "10.Bg5+ es un **jaque doble**: el alfil da jaque por la diagonal y la torre por la columna d. Solo sirve mover el rey.",
+    "label": "¡Jaque doble!"
+   },
+   {
+    "text": "10...Kc7 Tras 10...Ke8 las blancas dan mate con 11.Rd8#. Kc7 también pierde, pero de una forma más bonita."
+   },
+   {
+    "text": "11.Bd8# ¡Jaque mate! El alfil está protegido por la torre, y las propias piezas negras le cierran la salida al rey. **No dejes tu rey en el centro cuando se abre la columna d.**",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Has perdido un caballo, pero el rey negro sigue en el centro. ¿Encuentras una jugada sorprendente?",
+    "hint": "La columna d está abierta. ¿Y si obligaras al rey negro a ir a d8?",
+    "explanation": "9.Qd8+!! El rey tiene que capturar, y luego 10.Bg5+ da jaque doble con alfil y torre, que lleva al mate."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. ¿Lo ves?",
+    "hint": "La torre de d1 controla toda la columna d.",
+    "explanation": "11.Bd8# El alfil da jaque al rey en c7, la torre lo protege y los propios peones y piezas negras no dejan escapatoria."
+   }
+  ]
+ },
+ "lasker-thomas-1912": {
+  "title": "La cacería de Lasker",
+  "event": "Londres (partida amistosa)",
+  "opening": "Defensa Holandesa",
+  "summary": "Tras un sacrificio de dama en h7, el rey negro es perseguido a base de jaques desde g8 hasta g1 y recibe mate en la primera fila de las blancas. Es la cacería de rey más famosa del ajedrez. La lección: un rey sacado de su refugio puede ser cazado por unas pocas piezas activas.",
+  "annotations": [
+   {
+    "text": "Londres, 1912. Edward Lasker (no confundir con el campeón del mundo Emanuel Lasker) juega contra Sir George Thomas. Prepárate para el paseo de rey más famoso del ajedrez."
+   },
+   {
+    "text": "2...f5 da una estructura de Defensa Holandesa. Lucha por e4, pero debilita las casillas alrededor del rey negro."
+   },
+   {
+    "text": "5.Bxf6 elimina el caballo que vigilaba e4, así que las blancas pueden abrir el centro con e4."
+   },
+   {
+    "text": "7.Nxe4 Con los peones de e cambiados, el caballo se instala en el centro, apuntando al flanco de rey negro."
+   },
+   {
+    "text": "8.Ne5 Los dos caballos están ya en fuertes casillas centrales, listos para saltar hacia el rey."
+   },
+   {
+    "text": "9.Bd3 apunta el alfil a h7. El caballo de e4 está delante, y eso va a importar muy pronto."
+   },
+   {
+    "text": "10.Qh5 La dama se suma al ataque y también apunta a h7. Las piezas blancas se han reunido cerca del rey enrocado."
+   },
+   {
+    "text": "10...Qe7? parece natural, pero no ayuda al rey. Las negras tenían que ocuparse primero de los caballos."
+   },
+   {
+    "text": "11...Kxh7 era obligado. Las blancas han dado la dama, pero ahora el rey está fuera de su refugio.",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "12.Nxf6+ es un **jaque doble**: da jaque el caballo y, al moverse, destapa al alfil de d3 que apunta a h7. El rey tiene que moverse.",
+    "label": "¡Jaque doble!"
+   },
+   {
+    "text": "13.Neg4+ El otro caballo entra en acción y el rey es empujado más arriba en el tablero.",
+    "label": "Empieza la cacería"
+   },
+   {
+    "text": "14.h4+ Un peón da jaque. Las blancas mantienen al rey huyendo en cada jugada."
+   },
+   {
+    "text": "15.g3+ Otro jaque de peón, que empuja al rey todavía más dentro del campo blanco."
+   },
+   {
+    "text": "16.Be2+ Se suma el alfil. El rey ha caminado de g8 a f3, rodeado por el ejército blanco."
+   },
+   {
+    "text": "17.Rh2+ La torre da jaque y el rey se ve obligado a ir a g1, la primera fila de las blancas."
+   },
+   {
+    "text": "18.Kd2# ¡Jaque mate! Al moverse el rey, destapa la torre de a1. El enroque largo también habría dado mate. **Un rey sacado al descubierto puede ser cazado.**",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Todas tus piezas apuntan al rey negro. ¿Encuentras el primer golpe sorprendente?",
+    "hint": "Acuérdate del alfil escondido detrás del caballo de e4.",
+    "explanation": "11.Qxh7+!! El rey tiene que capturar, y luego 12.Nxf6+ es un jaque doble que empieza la cacería."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. El rey negro está en g1. ¿Lo encuentras?",
+    "hint": "Tu torre de a1 está lista, si tu propio rey se quitara de en medio.",
+    "explanation": "18.Kd2# El rey se aparta y destapa la torre de a1, que da jaque por la primera fila. El enroque largo (18.O-O-O#) también da mate."
+   }
+  ]
+ },
+ "steinitz-bardeleben-1895": {
+  "title": "La torre intocable",
+  "event": "Torneo de Hastings",
+  "opening": "Giuoco Piano",
+  "summary": "El primer campeón del mundo, con 59 años, acumula presión en la columna e y luego desata una torre que nadie puede capturar. Una lección brillante sobre mantener la iniciativa: si cada jugada es jaque, tu rival nunca tiene tiempo de ejecutar sus amenazas.",
+  "annotations": [
+   {
+    "text": "Hastings, 1895. Wilhelm Steinitz, el primer campeón mundial oficial, tiene 59 años y juega con blancas contra el fuerte maestro alemán Curt von Bardeleben. Esta partida ganó el premio a la más brillante del torneo."
+   },
+   {
+    "text": "3.Bc4. La apertura italiana: el alfil blanco apunta directo a f7, el punto más débil junto al rey negro."
+   },
+   {
+    "text": "6...Bb4+. Las blancas han levantado un gran centro de peones, así que las negras dan jaque para frenar su desarrollo."
+   },
+   {
+    "text": "7...d5. ¡Buena respuesta! Las negras golpean el centro antes de que los peones blancos avancen."
+   },
+   {
+    "text": "13...Nxe7. Tras varios cambios, fíjate en algo: el rey negro sigue en el centro, en e8."
+   },
+   {
+    "text": "14.Re1. La torre ocupa la columna e abierta. El caballo de e7 queda **clavado**: no puede moverse sin dejar al rey expuesto.",
+    "label": "Clavada en la columna e"
+   },
+   {
+    "text": "14...f6. Las negras planean ...Kf7 para salir de la clavada, pero el avance de peón debilita las casillas alrededor de su rey."
+   },
+   {
+    "text": "17.d5! Las blancas entregan un peón para liberar la casilla d4 para su caballo. Desde allí podrá saltar hacia el rey negro.",
+    "label": "Sacrificio de peón"
+   },
+   {
+    "text": "18...Kf7. Por fin el rey sale de la clavada y espera conectar sus torres."
+   },
+   {
+    "text": "19.Ne6! El caballo se planta en el campo negro. Ningún peón negro puede echarlo, y vigila c7, d8, f8 y g7.",
+    "label": "Caballo en avanzada"
+   },
+   {
+    "text": "19...Rhc8. Las negras contraatacan por la columna c y se preparan para cambiar o ganar la torre blanca de c1."
+   },
+   {
+    "text": "20...g6. La dama blanca amenazaba Qxg7+, así que las negras tienen que tapar la columna g."
+   },
+   {
+    "text": "21...Ke8. Mira con atención: el caballo dejó e6, así que ahora la dama negra ataca a la dama blanca en g4. La torre de c1 también está atacada. ¡Dos piezas colgando!"
+   },
+   {
+    "text": "22...Kf8. Las negras siguen amenazando ...Qxg4 y ...Rxc1+. Por eso las blancas deben seguir dando jaque, jugada tras jugada."
+   },
+   {
+    "text": "23.Rf7+! La torre sigue dando jaque. No se puede capturar porque el caballo de g5 protege f7.",
+    "label": "El baile de la torre"
+   },
+   {
+    "text": "24.Rg7+. ¡Otra vez! Si 24...Kxg7, entonces 25.Qxd7+ gana la dama negra, porque la dama de g4 ahora ve d7 por la diagonal."
+   },
+   {
+    "text": "25.Rxh7+. Aquí von Bardeleben salió en silencio de la sala y no volvió, perdiendo por tiempo. Después Steinitz mostró al público un mate forzado que empieza con 25...Kg8 26.Rg7+ Kh8 27.Qh4+. Lección: si cada jugada es jaque, las amenazas de tu rival nunca tienen su turno.",
+    "label": "Bardeleben se marcha"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El caballo de e6 es un monstruo y las negras acaban de tapar la columna g. ¿Encuentras una jugada forzante que acerque aún más el caballo al rey?",
+    "hint": "Busca un salto de caballo que dé jaque.",
+    "explanation": "21.Ng5+! El jaque gana tiempo y el caballo sigue vigilando f7 y h7. Es cierto que abre la línea entre las dos damas, pero Steinitz había visto algo mucho más profundo."
+   },
+   {
+    "prompt": "Juegan las blancas. Tu dama y tu torre de c1 están atacadas. En lugar de defenderte, ¿encuentras una jugada que siga dando jaque?",
+    "hint": "El caballo clavado en e7 solo lo defienden el rey y la dama.",
+    "explanation": "22.Rxe7+!! La torre captura el caballo con jaque y no se puede tomar: 22...Qxe7 23.Rxc8+ Rxc8 24.Qxc8+ gana, y 22...Kxe7 23.Re1+ lleva al rey a un ataque mortal."
+   },
+   {
+    "prompt": "Juegan las blancas. La torre ha dado tres jaques seguidos. ¿Cómo mantienes vivo el ataque?",
+    "hint": "El caballo de g5 protege otra casilla más junto al rey.",
+    "explanation": "25.Rxh7+! Otro jaque, y el caballo de g5 defiende la torre. Tras 25...Kg8 26.Rg7+ Kh8 27.Qh4+ la dama se suma al ataque y el mate es imparable."
+   }
+  ]
+ },
+ "botvinnik-capablanca-1938": {
+  "title": "La obra maestra de Botvinnik en AVRO",
+  "event": "Torneo AVRO, Países Bajos",
+  "opening": "Defensa Nimzoindia",
+  "summary": "Un joven Botvinnik vence al legendario Capablanca empujando sus peones centrales y luego sacrificando un alfil y un caballo para que un solo peón llegue a la octava fila. Una lección perfecta de cómo un peón pasado puede valer más que una pieza entera.",
+  "annotations": [
+   {
+    "text": "El torneo AVRO de 1938 reunió a los mejores jugadores del mundo. Aquí la joven estrella soviética Mikhail Botvinnik se enfrenta al excampeón mundial José Raúl Capablanca, famoso por casi nunca perder."
+   },
+   {
+    "text": "Con **5...Bxc3+** las negras entregan su alfil para doblar los peones c de las blancas. Las blancas obtienen la pareja de alfiles y un centro fuerte; las negras esperan que los peones doblados sean blancos de ataque. Un intercambio clásico."
+   },
+   {
+    "text": "**14...c4** cierra el flanco de dama y le da a las negras un peón de más allí. Pero también quita presión al centro, así que las blancas quedan libres para preparar **e3-e4** con sus peones centrales."
+   },
+   {
+    "text": "El caballo de Capablanca hace un largo viaje hasta b3, en pleno campo blanco, y su dama se comerá enseguida el peón de a4. Pero fíjate qué lejos de su propio rey quedan esas piezas."
+   },
+   {
+    "text": "Botvinnik no defiende el peón de a. **19.e4** pone en marcha el verdadero plan: sus peones avanzan por el centro y el flanco de rey, donde las negras tienen menos defensores.",
+    "label": "La ruptura central"
+   },
+   {
+    "text": "Las negras tienen un peón de más, pero su dama y su caballo están en el otro extremo del tablero. En ajedrez, dónde están tus piezas a menudo importa más que contar peones."
+   },
+   {
+    "text": "**22.f4** suma otro peón al ataque. La amenaza es **f4-f5**, abriendo líneas hacia el rey negro."
+   },
+   {
+    "text": "**24.f5** sigue empujando. Los peones blancos funcionan como un ariete contra el flanco de rey de las negras."
+   },
+   {
+    "text": "Tras los cambios de torres, las blancas tienen un **peón pasado** en e6: ningún peón negro podrá frenarlo. Está a solo dos pasos de coronar.",
+    "label": "Un peón pasado en e6"
+   },
+   {
+    "text": "Capablanca coloca su dama en e7, justo delante del peón, para bloquearlo. La dama cumple una función vital. ¿Pueden las blancas echarla de esa casilla?"
+   },
+   {
+    "text": "Las negras tienen que capturar: si la dama abandona la columna e, el peón avanza a e7. Pero ahora la dama está en a3, lejos de la acción, y la dama y el caballo blancos van a por el rey.",
+    "label": "¡Sacrificio de alfil!"
+   },
+   {
+    "text": "Capablanca también toma la segunda pieza. Su rey ha perdido su escudo de peones, y la dama blanca puede dar jaques y capturar el caballo de f6."
+   },
+   {
+    "text": "**33.Qxf6+** gana el caballo con jaque. Las blancas han entregado dos piezas, pero el peón de e está a punto de llegar a la meta."
+   },
+   {
+    "text": "La única esperanza de las negras es un **jaque perpetuo**: dar jaque al rey blanco una y otra vez para forzar las tablas. Botvinnik debe encontrar un escondite seguro.",
+    "label": "A la caza de las tablas"
+   },
+   {
+    "text": "El rey blanco sube con valentía por el tablero, e incluso se come el peón de h5. Parece peligroso, pero Botvinnik ha calculado que los jaques se acabarán."
+   },
+   {
+    "text": "**40.g4** tapa el jaque con un peón. Ahora el rey tiene un refugio en h5."
+   },
+   {
+    "text": "Tras **41.Kh5** las negras no tienen más jaques útiles y nada puede frenar **e8=Q**. Capablanca abandonó. La lección: un peón pasado muy avanzado puede valer más que un alfil y un caballo.",
+    "label": "Las negras abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. La dama negra bloquea el peón de e. ¿Cómo pueden las blancas sacarla de e7?",
+    "hint": "Busca una pieza que puedas ofrecerle a la dama.",
+    "explanation": "**30.Ba3!** ataca a la dama. Si abandona la columna e, el peón corre a e7; si se come el alfil, queda lejos de su rey. De cualquier forma, ganan las blancas."
+   },
+   {
+    "prompt": "Juegan las blancas. La dama negra se fue a a3. Es hora de golpear al rey. ¿Qué jugarías?",
+    "hint": "Un jaque de caballo destapa algo.",
+    "explanation": "**31.Nh5+!** entrega el caballo. Tras **31...gxh5** el rey negro queda al descubierto, y la dama blanca puede dar jaque en g5 y luego capturar el caballo de f6."
+   },
+   {
+    "prompt": "Juegan las blancas. El caballo de f6 ya no está. ¿Cuál es la forma más rápida de ganar?",
+    "hint": "Tu mejor jugador es un peón.",
+    "explanation": "**34.e7!** amenaza **e8=Q**. Las negras solo pueden dar jaques, y Botvinnik ya ha calculado que su rey escapará de ellos."
+   }
+  ]
+ },
+ "fischer-spassky-1972-g6": {
+  "title": "Fischer–Spassky, 6.ª partida",
+  "event": "Campeonato del Mundo, Reikiavik",
+  "opening": "Gambito de Dama Rehusado (Tartakower)",
+  "summary": "Fischer sorprende a todos con 1.c4, presiona los peones centrales negros y convierte una posición tranquila en un ataque demoledor en el flanco de rey. Tan bonita que el propio Spassky aplaudió. Un modelo de cómo acumular presión poco a poco antes de golpear.",
+  "annotations": [
+   {
+    "text": "Reikiavik, 1972, Campeonato del Mundo. El match va empatado 2½–2½. Todos esperan que Fischer abra con 1.e4, como casi siempre."
+   },
+   {
+    "text": "1.c4! Fischer casi nunca había abierto así. Una sorpresa desde la primera jugada.",
+    "label": "¡1.c4, sorpresa!"
+   },
+   {
+    "text": "Los jugadores llegan a un Gambito de Dama Rehusado clásico. Con 7...b6, Spassky elige un esquema sólido que llevaba años jugando."
+   },
+   {
+    "text": "Muchos cambios. Las negras tienen un peón en d5 y pronto tendrán otro en c5. Dos peones lado a lado son fuertes si avanzan, pero también pueden convertirse en blancos."
+   },
+   {
+    "text": "Ahora las negras tienen su pareja de peones centrales en c5 y d5. El plan blanco es presionarlos e impedir que avancen."
+   },
+   {
+    "text": "16...Ra7 es una forma poco común de llevar la torre hacia el centro. Fischer mejora sus piezas con calma."
+   },
+   {
+    "text": "Las blancas cambian su caballo por el alfil. El nuevo peón negro de e6 protege d5, pero es otro objetivo para las piezas blancas."
+   },
+   {
+    "text": "Spassky avanza. Su peón d es ahora pasado y protegido, pero está bloqueado, y las casillas e5 y c4 pasan a ser de las blancas."
+   },
+   {
+    "text": "22.e5 gana espacio y le quita la casilla f6 al caballo negro. Las piezas blancas se van a acumular contra e6."
+   },
+   {
+    "text": "El alfil llega a su diagonal soñada, apuntando a e6 y más allá, hacia g8.",
+    "label": "Diagonal soñada"
+   },
+   {
+    "text": "24.Qh3 se une al alfil contra e6. Las piezas negras están atadas a defenderlo."
+   },
+   {
+    "text": "La columna f está abierta y las torres de Fischer se van a alinear en ella. El rey negro tiene muy pocos defensores."
+   },
+   {
+    "text": "31.e6! El peón se convierte en un monstruo: pasado, protegido por el alfil y partiendo en dos las piezas negras.",
+    "label": "Monstruo en e6"
+   },
+   {
+    "text": "Fischer mejora sus piezas con calma con a4, R1f2, R2f3 y Bd3, mientras Spassky solo puede mover su dama de un lado a otro. No hay prisa cuando el rival no tiene jugadas útiles."
+   },
+   {
+    "text": "Tras 38...gxf6 39.Rxf6, el rey negro queda totalmente expuesto. La dama, la torre y el alfil blancos están listos para atacar."
+   },
+   {
+    "text": "41.Qf4 amenaza Qxh6+ y más, y Spassky abandonó. Después se unió al público para aplaudir a Fischer. Fischer se puso por delante por primera vez y acabó siendo campeón del mundo.",
+    "label": "Spassky aplaude"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Los peones negros de c5 y d5 dominan el centro. ¿Cómo puedes desafiarlos ya mismo?",
+    "hint": "Golpea el peón de d5 con uno de tus peones.",
+    "explanation": "20.e4! ataca d5. Si las negras capturan, su centro se deshace; si avanzan 20...d4, como en la partida, sus peones se quedan atascados y las piezas blancas se adueñan de las casillas que tienen delante."
+   },
+   {
+    "prompt": "Juegan las blancas. Tus piezas apuntan al flanco de rey negro. ¿Qué avance de peón abre líneas para tus torres?",
+    "hint": "Tu peón f quiere avanzar.",
+    "explanation": "26.f5! abre la columna f. Tras 26...exf5 27.Rxf5, la torre blanca se une al ataque y el peón de e5 se convierte en un peón pasado."
+   },
+   {
+    "prompt": "Juegan las blancas. El caballo de f6 es el último defensor del rey negro. ¿Cuál es la forma más contundente de eliminarlo?",
+    "hint": "A veces una torre vale menos que un rey al descubierto.",
+    "explanation": "38.Rxf6! entrega una torre por el caballo. Tras 38...gxf6 39.Rxf6 el rey queda desnudo, y la dama, la torre, el alfil y el peón e blancos son demasiado."
+   }
+  ]
+ },
+ "deep-blue-kasparov-1996": {
+  "title": "La primera victoria de Deep Blue",
+  "event": "Match Deep Blue vs. Kasparov, Filadelfia",
+  "opening": "Defensa Siciliana, variante Alapin",
+  "summary": "La primera vez que una computadora venció al campeón del mundo en una partida con tiempo normal. Deep Blue se come peones con calma mientras Kasparov ataca su rey, porque ha calculado que su propio ataque llegará antes. Aun así, Kasparov ganó el match 4-2.",
+  "annotations": [
+   {
+    "text": "Filadelfia, febrero de 1996. Deep Blue de IBM, una máquina que analiza millones de posiciones por segundo, se enfrenta al campeón del mundo Garry Kasparov en la primera de seis partidas."
+   },
+   {
+    "text": "Contra la Siciliana, Deep Blue elige **2.c3**, una jugada tranquila que prepara **d2-d4** para formar un centro de peones completo."
+   },
+   {
+    "text": "La dama de Kasparov sale pronto a d5. Aquí no pasa nada, porque las blancas aún no tienen un caballo en c3 para perseguirla."
+   },
+   {
+    "text": "Ahora las blancas tienen un **peón aislado** en d4: no hay peones propios en las columnas c ni e que lo protejan. Da actividad a las piezas blancas, pero también puede convertirse en una debilidad."
+   },
+   {
+    "text": "**13.Nb5** persigue a la dama negra y apunta a la casilla d6. Deep Blue mantiene sus piezas activas."
+   },
+   {
+    "text": "Tras **18.Bxf6 gxf6** los peones del flanco de rey negro quedan rotos. A cambio, Kasparov obtiene la columna g abierta para usarla contra el rey blanco."
+   },
+   {
+    "text": "**23.d5!** se deshace del peón aislado y abre líneas para las piezas blancas. Una forma limpia de convertir una debilidad en actividad.",
+    "label": "Liberándose"
+   },
+   {
+    "text": "Kasparov esconde su rey en h8 para que su torre pueda usar la columna g. Está dispuesto a entregar peones para atacar al rey blanco."
+   },
+   {
+    "text": "La torre negra llega a g8 y apunta directamente al rey blanco. Empieza la carrera: las negras atacan al rey y las blancas cuentan peones."
+   },
+   {
+    "text": "Deep Blue se come otro peón mientras las piezas negras se acercan a su rey. Muchos humanos entrarían en pánico. La máquina había calculado que no había peligro.",
+    "label": "¿Valiente o glotón?"
+   },
+   {
+    "text": "**30...f3** amenaza al rey blanco con romper en g2. La posición se pone muy afilada."
+   },
+   {
+    "text": "**31.g3** mantiene cerrado el flanco de rey. Deep Blue solo defiende lo justo y necesario."
+   },
+   {
+    "text": "Kasparov lo arriesga todo con **33...Re1+**. Su torre, caballo, dama y el peón de f3 están todos cerca del rey blanco."
+   },
+   {
+    "text": "Las piezas negras rodean al rey blanco y, si las blancas dudan, el ataque negro entrará. Pero es turno de las blancas, y Deep Blue tiene jaques."
+   },
+   {
+    "text": "Tras **37.Rxh7+** el rey negro está atrapado y el mate está cerca, así que Kasparov abandonó. Por primera vez una máquina vencía al campeón del mundo. Kasparov se recuperó y ganó el match 4-2.",
+    "label": "Momento histórico"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El peón negro de b6 no tiene defensores. ¿Es seguro comérselo?",
+    "hint": "Cuenta quién protege b6.",
+    "explanation": "**26.Qxb6** gana un peón sin más. Deep Blue había calculado que el contraataque negro no llegaría a tiempo."
+   },
+   {
+    "prompt": "Juegan las blancas. Las negras amenazan con romper contra tu rey. ¿Puedes atacar tú primero?",
+    "hint": "Primero los jaques. Mira el peón de f7.",
+    "explanation": "**35.Nxf7+!** inicia una cadena de jaques. El rey negro es arrastrado fuera, y el caballo, la torre y la dama blancos lo rodean antes de que las negras puedan golpear."
+   },
+   {
+    "prompt": "Juegan las blancas. El rey negro está en h6. ¿Cómo rematas el ataque?",
+    "hint": "La torre come un peón con jaque.",
+    "explanation": "**37.Rxh7+** arranca el último peón cerca del rey. La dama, la torre y el caballo blancos lo atrapan, así que Kasparov abandonó."
+   }
+  ]
+ },
+ "rotlewi-rubinstein-1907": {
+  "title": "La inmortal de Rubinstein",
+  "event": "Łódź",
+  "opening": "Gambito de dama declinado",
+  "summary": "Rubinstein sacrifica su dama y una torre para que sus dos alfiles barran al rey blanco por las grandes diagonales. Un ejemplo perfecto de cómo unas piezas activas y bien apuntadas pueden vencer a un montón de material extra.",
+  "annotations": [
+   {
+    "text": "Łódź, 1907. Akiba Rubinstein, un genio tranquilo que llegaría a ser uno de los mejores jugadores del mundo, juega con negras contra Georg Rotlewi. El final es tan impresionante que esta partida se llama **la inmortal de Rubinstein**."
+   },
+   {
+    "text": "6.dxc5. Las blancas liberan la tensión en el centro. Las negras recapturan con el alfil y desarrollan una pieza a la vez."
+   },
+   {
+    "text": "7...a6. Ambos bandos se copian: impiden que las piezas rivales salten a b5 y se preparan para avanzar en el flanco de dama."
+   },
+   {
+    "text": "11...dxc4. Las negras capturan para que el alfil blanco tenga que moverse otra vez, y pronto volverá a ser perseguido con ...b5."
+   },
+   {
+    "text": "12...b5. Las negras ganan espacio con tiempo y hacen sitio para el alfil en b7."
+   },
+   {
+    "text": "14...Bb7. ¡Recuerda este alfil! En cuanto el caballo de c6 se aparte, mirará por la gran diagonal hacia el rey blanco."
+   },
+   {
+    "text": "16...Bxe5. Tras el cambio, la gran diagonal queda totalmente abierta desde b7 hasta g2."
+   },
+   {
+    "text": "17.f4. Las blancas echan al alfil y planean e4 y e5. Pero mover el peón f también abre una diagonal hacia su propio rey en g1."
+   },
+   {
+    "text": "17...Bc7. El alfil se retira con calma. Pronto reaparecerá en b6, apuntando directamente al rey blanco."
+   },
+   {
+    "text": "19.e5. Las blancas echan al caballo de f6 y parecen muy activas. Rubinstein tiene preparada una respuesta asombrosa."
+   },
+   {
+    "text": "19...Bb6+. ¡Jaque! Sin el peón en f2, el alfil atraviesa la diagonal hasta g1."
+   },
+   {
+    "text": "20...Ng4. El caballo salta hacia el rey blanco. Lo siguiente es ...Qh4, apuntando a h2."
+   },
+   {
+    "text": "21...Qh4. Las negras amenazan 22...Qxh2 mate. Las blancas tienen que reaccionar."
+   },
+   {
+    "text": "23.gxh4. Las blancas capturan la dama. Las negras tienen una dama menos, ¡pero mira esos dos alfiles apuntando al rey blanco!",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "24.Qxd2. Las blancas también se llevan la torre. Pero ahora la dama ha dejado e2 y ya no protege al alfil de e4.",
+    "label": "¡Sacrificio de torre!"
+   },
+   {
+    "text": "24...Bxe4+. ¡Jaque por la gran diagonal! El alfil que esperó en b7 toda la partida por fin golpea."
+   },
+   {
+    "text": "25...Rh3! La dama blanca está clavada a su rey por el alfil de e4, así que no puede capturar la torre. No hay buena manera de evitar ...Rxh2 mate, y las blancas abandonaron. ¡Dos alfiles apuntando al rey pueden valer más que una dama!",
+    "label": "Mate imparable"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. Las blancas acaban de atacar tu dama con 22.g3. En lugar de moverla, ¿encuentras una jugada audaz que haga trabajar la gran diagonal a tu favor?",
+    "hint": "El caballo de c3 es la pieza que defiende e4.",
+    "explanation": "22...Rxc3!! Las negras ignoran la dama y eliminan al defensor de e4. Si 23.gxh4, el siguiente golpe, 23...Rd2!!, destroza la posición blanca."
+   },
+   {
+    "prompt": "Juegan las negras. Ya entregaste tu dama. Ahora encuentra la jugada que aleja a la dama blanca de la defensa del alfil de e4.",
+    "hint": "Una torre puede llegar a la segunda fila con un ataque.",
+    "explanation": "23...Rd2!! La torre ataca a la dama blanca. Tras 24.Qxd2, la respuesta 24...Bxe4+ abre la gran diagonal con jaque."
+   },
+   {
+    "prompt": "Juegan las negras. Las blancas taparon el jaque con la dama en g2. Encuentra la jugada tranquila que termina la partida.",
+    "hint": "La dama de g2 no puede moverse libremente. ¿Qué jugada de torre apunta a h2?",
+    "explanation": "25...Rh3! La dama no puede capturar porque está clavada a su rey. Las negras amenazan ...Rxh2 mate y las blancas no tienen una buena defensa."
+   }
+  ]
+ },
+ "paulsen-morphy-1857": {
+  "title": "El sacrificio de dama de Morphy",
+  "event": "Primer Congreso Americano de Ajedrez, Nueva York",
+  "opening": "Partida de los cuatro caballos",
+  "summary": "En la final del primer Congreso Americano de Ajedrez, Morphy entrega su dama para romper el enroque blanco. Sus torres y alfiles persiguen después al rey hasta que Paulsen abandona. La lección: cuando tus piezas son mucho más activas, un gran sacrificio puede salir bien.",
+  "annotations": [
+   {
+    "text": "Nueva York, 1857. En la final del primer Congreso Americano de Ajedrez, Paul Morphy, con 20 años, se enfrenta a Louis Paulsen, un fuerte maestro alemán. Seguimos la partida desde el lado de Morphy, con negras."
+   },
+   {
+    "text": "6...Re8 Paulsen se comió el peón de e5, pero Morphy no tiene prisa por recuperarlo. Desarrolla y pone su torre en la columna e abierta."
+   },
+   {
+    "text": "7...dxc6 Recapturar hacia el centro abre la columna d y libera al alfil de c8. Las piezas negras tienen mucho espacio."
+   },
+   {
+    "text": "9...Nxe4 Morphy recupera el peón con una pequeña táctica. Su torre de e8 respalda al caballo, así que tras los cambios las negras recuperan el peón."
+   },
+   {
+    "text": "10...Rxe4 La torre negra está ahora muy activa en el centro del tablero."
+   },
+   {
+    "text": "12...Qd3! La dama salta muy dentro del campo blanco. Bloquea el peón de d, así que el alfil de c1 y la torre de a1 blancos tienen problemas para desarrollarse."
+   },
+   {
+    "text": "15...Bd7 Morphy saca con calma su última pieza menor. Ahora todas sus piezas apuntan al rey blanco."
+   },
+   {
+    "text": "16...Rae8 Las dos torres están en la columna e. La dama blanca se ha ido a cazar peones al flanco de dama, lejos de casa."
+   },
+   {
+    "text": "18.gxf3 Las blancas tuvieron que comerse la dama, pero el escudo de peones delante del rey queda roto.",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "19...Bh3 El alfil amenaza ...Bg2+ e ideas de mate por la columna g. El rey blanco está en verdadero peligro."
+   },
+   {
+    "text": "21...Bxf3+ Morphy se come un peón con jaque. Cada jugada suya llega con una amenaza."
+   },
+   {
+    "text": "24...Bxf2 El otro alfil entra en juego y ahora cubre g1. Las negras amenazan ...Bg2 jaque mate, y las blancas solo pueden evitarlo entregando la dama."
+   },
+   {
+    "text": "25...Bxf1 Las blancas devolvieron la dama para frenar el mate, así que ahora las negras tienen ventaja de material y el ataque sigue.",
+    "label": "Recupera la dama"
+   },
+   {
+    "text": "26...Re2 La torre invade la segunda fila, cerca del rey blanco."
+   },
+   {
+    "text": "27...Rh6 La otra torre se pasa a la columna h, apuntando a h2."
+   },
+   {
+    "text": "28...Be3 El alfil cubre g1, así que ...Rxh2 será jaque mate y las blancas no pueden evitarlo por mucho tiempo. Paulsen abandonó. **Piezas activas cerca del rey rival pueden valer más que una dama.**",
+    "label": "Las blancas abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. La dama blanca está lejos, en a6. ¿Encuentras una forma valiente de abrir el rey blanco?",
+    "hint": "¿Qué pieza blanca protege al rey, y qué puede capturarla?",
+    "explanation": "17...Qxf3!! Tras 18.gxf3 el rey pierde su escudo de peones, y la torre y los alfiles negros entran con jaques."
+   },
+   {
+    "prompt": "Juegan las negras. Has entregado la dama y el flanco de rey blanco está abierto. ¿Cómo sigues el ataque?",
+    "hint": "Busca un jaque por la columna g recién abierta.",
+    "explanation": "18...Rg6+ La torre da jaque por la columna g, y el alfil de casillas blancas pronto se unirá con ...Bh3 y ...Bg2+."
+   }
+  ]
+ },
+ "fischer-benko-1963": {
+  "title": "La torre de Fischer en f6",
+  "event": "Campeonato de EE. UU., Nueva York",
+  "opening": "Defensa Pirc (Ataque Austriaco)",
+  "summary": "Camino de un perfecto 11 de 11 en el Campeonato de Estados Unidos, Fischer abre la columna f y planta una torre justo delante del rey negro. Muestra cómo las líneas abiertas y una torre que no se puede capturar sin peligro deciden una partida en pocas jugadas.",
+  "annotations": [
+   {
+    "text": "Nueva York, diciembre de 1963. Fischer va camino de un perfecto **11 de 11** en el Campeonato de Estados Unidos. Su rival, Pal Benko, es un gran maestro fuerte y peligroso."
+   },
+   {
+    "text": "Benko elige un esquema flexible: alfil a g7, luego ...d6 y ...Nf6. Deja que las blancas tomen el centro y espera contraatacar más tarde."
+   },
+   {
+    "text": "4.f4 es el **Ataque Austriaco**. Las blancas ganan aún más espacio y se preparan para lanzar el peón f contra el rey negro."
+   },
+   {
+    "text": "Benko entrega su alfil por el caballo. Las blancas conservan los dos alfiles y su dama llega a f3, ya apuntando al flanco de rey."
+   },
+   {
+    "text": "11.f5! El peón se lanza adelante. Tras 11...gxf5 12.Qxf5, la columna f queda abierta para la torre blanca y el rey negro pierde un peón defensor.",
+    "label": "Abriendo la columna f"
+   },
+   {
+    "text": "12...Nd4 salta a una gran casilla central y echa a la dama blanca. Las negras intentan contraatacar."
+   },
+   {
+    "text": "El otro caballo negro va hacia d6 para ayudar a defender. Pero defender cuesta tiempo, y las blancas lo aprovechan."
+   },
+   {
+    "text": "El enroque pone la torre en f1, justo en la columna abierta. Ahora todas las piezas blancas apuntan al flanco de rey."
+   },
+   {
+    "text": "La dama ha pasado por g3, g4 y ahora h5, siempre cerca del rey negro y mirando a h7."
+   },
+   {
+    "text": "18.Bxd4 exd4 eliminó al fuerte caballo de d4. La torre blanca tiene ahora un camino hacia el campo negro, y se viene algo increíble."
+   },
+   {
+    "text": "Benko aparta su rey. Tomar la torre no era mejor: tras 19...Bxf6 20.e5, el alfil de d3 se une a la dama contra h7 y el ataque entra.",
+    "label": "La torre no se puede tomar"
+   },
+   {
+    "text": "20...h6 corta por ahora el camino de la dama hacia h7. Pero las piezas negras están apretadas y su rey sigue bajo fuego."
+   },
+   {
+    "text": "21.Ne2! trae la última pieza al ataque: el caballo va hacia f4 para unirse a la dama y la torre. Benko vio que no podía defenderlo todo y abandonó.",
+    "label": "Benko abandona"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Todas las piezas blancas apuntan al rey negro. ¿Encuentras la asombrosa jugada de torre de Fischer?",
+    "hint": "Pon tu torre donde parece que te la pueden comer sin más.",
+    "explanation": "19.Rf6!! aterriza delante del rey, ataca al caballo de d6 y tapa al alfil de g7. Si 19...Bxf6, entonces 20.e5 abre la diagonal del alfil hacia h7 y el ataque no se puede parar."
+   },
+   {
+    "prompt": "Juegan las blancas. El rey negro acaba de huir a g8. Una jugada de peón abre una línea mortal. ¿Cuál?",
+    "hint": "A tu alfil de d3 le encantaría ver h7.",
+    "explanation": "20.e5! despeja el camino del alfil de d3, así que las blancas amenazan Qxh7 jaque mate. El peón además ataca al caballo de d6."
+   }
+  ]
+ },
+ "levitsky-marshall-1912": {
+  "title": "La partida de las monedas de oro",
+  "event": "Breslavia",
+  "opening": "Defensa francesa",
+  "summary": "Frank Marshall gana con una de las jugadas más espectaculares de la historia: una jugada de dama a una casilla donde puede ser capturada de tres maneras, y todas pierden. Aprende cómo caballos y torres colaboran contra el rey y por qué importan las líneas abiertas.",
+  "annotations": [
+   {
+    "text": "Breslavia, 1912. Frank Marshall, campeón de Estados Unidos y atacante sin miedo, juega con negras contra Stepan Levitsky. Cuenta la leyenda que el público quedó tan emocionado con la última jugada que llovieron monedas de oro sobre el tablero."
+   },
+   {
+    "text": "3...c5. Las negras atacan el centro blanco de inmediato: una versión agresiva de la defensa francesa."
+   },
+   {
+    "text": "5...exd5. El centro se abre. Las líneas abiertas suelen favorecer al bando cuyas piezas están listas para usarlas."
+   },
+   {
+    "text": "9.dxc5. Las blancas ganan un peón, pero las piezas negras están muy activas y pronto lo recuperarán."
+   },
+   {
+    "text": "11...fxe6. Las negras recapturan hacia el centro y obtienen la columna f semiabierta para su torre. Esa columna será importante más adelante.",
+    "label": "Se abre la columna f"
+   },
+   {
+    "text": "15...Rxf6. La torre recaptura y ahora está en f6, lista para desplazarse por la sexta fila."
+   },
+   {
+    "text": "17...Bxc3. Las negras dan el alfil por el caballo para romper los peones blancos del flanco de dama."
+   },
+   {
+    "text": "18...Qxc3. Las negras ganan un peón y su dama queda muy activa."
+   },
+   {
+    "text": "19.Rxd5. Las blancas recuperan el peón de d5, pero su dama en e2 está a punto de ser acosada."
+   },
+   {
+    "text": "19...Nd4! El caballo salta al centro, ataca a la dama blanca y vigila las casillas e2 y f3, junto al rey blanco.",
+    "label": "¡Caballo a d4!"
+   },
+   {
+    "text": "20.Qh5. La dama escapa hacia el rey negro, buscando contrajuego."
+   },
+   {
+    "text": "21...Rh6. La torre se desplaza por la sexta fila y persigue a la dama blanca. Detrás de la dama está el alfil de h3."
+   },
+   {
+    "text": "22.Qg5. La dama se aparta, pero ahora el alfil de h3 está en el punto de mira de la torre."
+   },
+   {
+    "text": "23.Rc5. Las blancas atacan la dama negra. Casi cualquiera la pondría a salvo, pero Marshall tenía algo mucho mejor."
+   },
+   {
+    "text": "23...Qg3!! La dama salta a una casilla donde tres piezas blancas pueden capturarla, y todas las capturas pierden: 24.hxg3 Ne2 mate, 24.fxg3 Ne2+ 25.Kh1 Rxf1 mate, y 24.Qxg3 Ne2+ 25.Kh1 Nxg3+ deja a las negras con una pieza de más. Mientras tanto, amenaza ...Qxh2 mate. Las blancas abandonaron.",
+    "label": "La jugada de oro"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. La dama blanca acaba de ir a g5. ¿Ves una forma de ganar material?",
+    "hint": "Si el peón de g2 recaptura, ¿qué salto de caballo ataca al rey y a la dama a la vez?",
+    "explanation": "22...Rxh3! Cae el alfil. Si 23.gxh3, entonces 23...Nf3+ es un ataque doble al rey blanco y a la dama de g5."
+   },
+   {
+    "prompt": "Juegan las negras. Las blancas atacan tu dama en c3. No te limites a retirarla: ¡encuentra la jugada que, según la leyenda, provocó una lluvia de monedas de oro!",
+    "hint": "Pon tu dama donde pueda ser capturada de tres maneras distintas.",
+    "explanation": "23...Qg3!! Todas las capturas pierden: hxg3 permite ...Ne2 mate, fxg3 permite ...Ne2+ y ...Rxf1 mate, y Qxg3 permite ...Ne2+ y ...Nxg3+. Si las blancas la ignoran, ...Qxh2 es mate."
+   }
+  ]
+ },
+ "short-timman-1991": {
+  "title": "El paseo del rey de Short",
+  "event": "Tilburg",
+  "opening": "Defensa Alekhine",
+  "summary": "Short ata las piezas negras y luego lleva su propio rey de g1 a g5 para ayudar a dar mate. Es uno de los paseos del rey más famosos de la historia y enseña una lección sorprendente: cuando el rival no puede atacar, hasta el rey puede convertirse en atacante.",
+  "annotations": [
+   {
+    "text": "Tilburg, 1991. El inglés Nigel Short juega contra la estrella neerlandesa Jan Timman. Esta partida se recuerda por uno de los planes más sorprendentes de la historia del ajedrez."
+   },
+   {
+    "text": "**Defensa Alekhine**: las negras invitan a los peones blancos a avanzar, esperando que luego se conviertan en objetivos."
+   },
+   {
+    "text": "Las blancas mantienen un peón en e5. Le quita las casillas f6 y d6 a las piezas negras y encorseta la posición negra."
+   },
+   {
+    "text": "La dama negra está centralizada en d4, pero las blancas pronto la perseguirán ganando tiempos."
+   },
+   {
+    "text": "**21.Qh4** lleva la dama blanca al flanco de rey, junto al rey negro."
+   },
+   {
+    "text": "**23.Bh6** ofrece cambiar al mejor defensor negro, el alfil de g7, que protege las casillas oscuras alrededor del rey."
+   },
+   {
+    "text": "Timman evita el cambio con **23...Bh8**, pero en h8 el alfil queda muy pasivo."
+   },
+   {
+    "text": "**24.Rd8** invade con la torre y ata a las piezas negras a la última fila."
+   },
+   {
+    "text": "La torre se instala en d7, la séptima fila, atacando c7 y f7. Las negras están cada vez más apretadas."
+   },
+   {
+    "text": "La dama blanca está en f6, junto al rey negro. Un atacante más en g7 o h8 sería jaque mate. Pero ¿qué pieza puede llegar allí?"
+   },
+   {
+    "text": "Por ahora las negras aguantan: ninguna pieza blanca puede llegar a g7 ni a h8. Pero las piezas negras están congeladas, y Timman solo puede esperar."
+   },
+   {
+    "text": "**31.Kh2!** ¡La respuesta es el rey! Las negras no tienen forma de atacarlo, así que el rey blanco puede subir por el tablero y ayudar con el mate.",
+    "label": "Empieza el paseo del rey"
+   },
+   {
+    "text": "Segundo paso: **32.Kg3**. Las piezas de Timman solo pueden ir y venir."
+   },
+   {
+    "text": "**33.Kf4** sigue subiendo por las casillas oscuras que las negras ya no pueden defender."
+   },
+   {
+    "text": "Timman abandonó. El plan es **Kh6** y luego **Qg7** es jaque mate. Lección: si el rival no tiene forma de atacarlo, tu rey puede ser una pieza de ataque muy fuerte.",
+    "label": "Las negras abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El alfil negro de g7 protege las casillas oscuras alrededor del rey. ¿Qué harías?",
+    "hint": "Elimina al defensor.",
+    "explanation": "**27.Bxg7** cambia al mejor defensor negro. Ahora las casillas oscuras alrededor del rey negro están débiles, y la dama blanca puede entrar."
+   },
+   {
+    "prompt": "Juegan las blancas. Sin su alfil, el rey negro tiene huecos por todas partes. ¿Dónde debe ir la dama?",
+    "hint": "Busca un jaque en una casilla oscura.",
+    "explanation": "**29.Qf6+** coloca la dama junto al rey. Desde f6 apunta a g7 y h8, y las negras tendrán que defenderlas para siempre."
+   },
+   {
+    "prompt": "Juegan las blancas. Tu rey ya ha llegado a f4. ¿Cuál es el siguiente paso del paseo?",
+    "hint": "Sigue avanzando hacia h6.",
+    "explanation": "**34.Kg5!** El rey se dirige a h6, desde donde protegerá a la dama en g7 para dar mate. Las negras no pueden impedirlo."
+   }
+  ]
+ },
+ "saemisch-nimzowitsch-1923": {
+  "title": "La inmortal del zugzwang",
+  "event": "Copenhague",
+  "opening": "Defensa india de dama",
+  "summary": "Nimzowitsch estrangula poco a poco a las blancas hasta que todas sus piezas quedan atadas. Al final las blancas tienen muchas jugadas legales pero ninguna buena: un raro zugzwang en pleno medio juego, con casi todas las piezas todavía en el tablero.",
+  "annotations": [
+   {
+    "text": "Copenhague, 1923. Aron Nimzowitsch, uno de los pensadores más profundos de la historia del ajedrez, juega con negras contra Friedrich Sämisch. El final es tan insólito que se la conoce como **la inmortal del zugzwang**: las blancas se quedan sin jugadas buenas con el tablero aún lleno de piezas."
+   },
+   {
+    "text": "1...Nf6. A Nimzowitsch le gustaba controlar el centro con piezas desde lejos, en lugar de lanzar sus peones hacia adelante."
+   },
+   {
+    "text": "4...Bb7. La defensa india de dama: el alfil negro vigila la gran diagonal y la casilla clave e4."
+   },
+   {
+    "text": "8.Ne5. El caballo blanco salta adelante y abre al alfil de g2 hacia el flanco de dama negro."
+   },
+   {
+    "text": "11...b5. Las negras ganan espacio en el flanco de dama y le quitan la casilla c4 a las piezas blancas."
+   },
+   {
+    "text": "15...Nh5. El caballo va al borde con un propósito: ataca al alfil de f4 y prepara ...f5."
+   },
+   {
+    "text": "16...f5. Las negras toman el control firme de e4. A las piezas blancas empiezan a faltarles buenas casillas."
+   },
+   {
+    "text": "18.Nb1. El caballo tiene que volver hasta su casilla inicial. Las blancas están cada vez más apretadas.",
+    "label": "Hacia atrás"
+   },
+   {
+    "text": "18...Bb5. El alfil encuentra una gran diagonal y vigila e2 y las casillas blancas del campo rival."
+   },
+   {
+    "text": "20.e4. Las blancas por fin intentan liberarse. Sin el peón en e2, su dama de d1 ahora ataca al caballo de h5."
+   },
+   {
+    "text": "21.Qxh5. Las blancas ganan el caballo, pero a cambio las negras obtienen peones, la columna f abierta y un ataque duradero.",
+    "label": "Sacrificio de caballo"
+   },
+   {
+    "text": "22.Qg5. La dama vuelve corriendo a defender, pero las piezas blancas de b1, c1 y d2 siguen dormidas."
+   },
+   {
+    "text": "22...Raf8. Las negras doblan torres en la columna f. Ambas apuntan ahora al rey blanco."
+   },
+   {
+    "text": "23...R8f5. La torre echa a la dama blanca de g5."
+   },
+   {
+    "text": "24...Bd3. El alfil llega a d3 y parte en dos la posición blanca. Las piezas negras dominan todo el tablero.",
+    "label": "Bloqueo total"
+   },
+   {
+    "text": "25...h6!! Una jugada de peón tranquila que además le da una casilla de escape al rey negro. Ahora las blancas están en **zugzwang**: tienen muchas jugadas legales, pero todas pierden material o dejan pasar el ataque negro. Sämisch abandonó.",
+    "label": "¡Zugzwang!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. Las blancas han atacado tu peón de f5, y su dama de d1 ahora ataca a tu caballo de h5. ¿Cuál es la respuesta valiente?",
+    "hint": "Abre líneas para tus torres, aunque cueste una pieza.",
+    "explanation": "20...fxe4! Las negras dejan ir el caballo. A cambio obtienen peones, la columna f abierta y un ataque duradero contra el rey blanco."
+   },
+   {
+    "prompt": "Juegan las negras. Las blancas acaban de capturar tu caballo. ¡Ahora contraataca por la columna f abierta!",
+    "hint": "¿Qué peón junto al rey blanco está desprotegido?",
+    "explanation": "21...Rxf2! La torre irrumpe en la segunda fila blanca, clava al alfil de g2 contra el rey, y la dama blanca está lejos, en h5."
+   }
+  ]
+ },
+ "adams-torre-1920": {
+  "title": "Adams contra Torre: el baile de la última fila",
+  "event": "Nueva Orleans",
+  "opening": "Defensa Philidor",
+  "summary": "Las blancas ofrecen su dama una y otra vez, y las negras nunca pueden tomarla porque su última fila es demasiado débil. La lección más famosa sobre la debilidad de la última fila y la desviación: una pieza que tiene que vigilar algo puede ser perseguida hasta que ceda.",
+  "annotations": [
+   {
+    "text": "Nueva Orleans, 1920. Edwin Adams se enfrenta a Carlos Torre, un joven talento mexicano. Es la combinación de **última fila** más famosa de la historia (algunos historiadores sospechan que fue compuesta, pero las ideas son oro puro)."
+   },
+   {
+    "text": "2...d6 es la Defensa Philidor: sólida, pero algo pasiva. Las piezas negras tendrán menos espacio."
+   },
+   {
+    "text": "El caballo negro atacó a la dama blanca en d4, así que 5.Bb5 lo clava contra el rey negro."
+   },
+   {
+    "text": "Ambos bandos se desarrollan y enrocan. La verdadera historia ocurrirá en la columna e, que está a punto de abrirse."
+   },
+   {
+    "text": "Se cambian los peones. Ahora las columnas e y c están abiertas, y la partida se convierte en una batalla de torres y damas."
+   },
+   {
+    "text": "16.Rae1: las torres blancas están dobladas en la columna e abierta, mirando fijamente a la torre de e8.",
+    "label": "Torres dobladas"
+   },
+   {
+    "text": "17.Bxf6 elimina al caballo. Ahora la última fila negra tiene un problema: el rey no tiene casilla de escape y solo la dama protege e8."
+   },
+   {
+    "text": "La dama pasa a b5, vigilando aún e8 por la diagonal. ¡Empieza el baile!",
+    "label": "Empieza el baile"
+   },
+   {
+    "text": "19.Qc4! Otra vez se ofrece la dama. Tomarla permite Rxe8+ y mate, así que la dama negra tiene que moverse de nuevo."
+   },
+   {
+    "text": "De vuelta a d7, aún vigilando e8. A la dama negra se le acaban las buenas casillas."
+   },
+   {
+    "text": "Las negras no pueden tomar en c7: tanto 20...Qxc7 como 20...Rxc7 permiten a las blancas capturar en e8 con mate en camino. Así que la dama vuelve a b5."
+   },
+   {
+    "text": "21.a4! Hasta un peón se une. La única casilla que aún vigila e8 es a4, así que las negras tienen que tomarlo.",
+    "label": "Hasta un peón se une"
+   },
+   {
+    "text": "22.Re4! atacó a la dama, que otra vez tuvo que buscar una casilla que vigile e8: b5. Ahora llega el golpe final."
+   },
+   {
+    "text": "23.Qxb7! La dama negra no puede salir de la diagonal a4–e8 ni quedarse atacada. Las negras abandonaron. Lección: una última fila débil puede convertir a tu pieza más fuerte en una prisionera.",
+    "label": "Las negras abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. La dama negra en d7 es la única que protege la torre de e8. ¿Cómo puedes desviarla?",
+    "hint": "Pon tu dama donde la dama negra pueda comérsela.",
+    "explanation": "18.Qg4! Si 18...Qxg4, entonces 19.Rxe8+ Rxe8 20.Rxe8 es jaque mate. Así que la dama negra tiene que seguir vigilando e8 y no puede aceptar el regalo."
+   },
+   {
+    "prompt": "Juegan las blancas. La dama negra volvió a d7. ¿Encuentras la jugada de dama más atrevida de todas?",
+    "hint": "Ofrece tu dama donde dos piezas negras puedan tomarla.",
+    "explanation": "20.Qc7!! Ni la dama ni la torre de c8 pueden tomarla: cualquiera de las dos capturas permite a las blancas tomar en e8 con mate. Mientras tanto, las blancas amenazan Qxb7 y seguir persiguiendo a la dama."
+   },
+   {
+    "prompt": "Juegan las blancas. La dama negra tomó en a4 y sigue vigilando e8. ¿Cómo la vuelves a perseguir?",
+    "hint": "Una torre puede atacar por la cuarta fila.",
+    "explanation": "22.Re4! ataca a la dama. Tomar la torre solo perdería la dama tras 23.Rxe4, así que la dama tiene que buscar otra casilla que aún vigile e8, y solo queda b5."
+   }
+  ]
+ },
+ "alekhine-nimzowitsch-1930": {
+  "title": "El cañón de Alekhine",
+  "event": "San Remo",
+  "opening": "Defensa francesa, variante Winawer",
+  "summary": "El campeón del mundo Alekhine gana espacio, clava un peón en a6 y acumula sus piezas pesadas en la columna c hasta que las negras quedan totalmente paralizadas. La formación de dos torres con la dama detrás se sigue llamando el cañón de Alekhine.",
+  "annotations": [
+   {
+    "text": "San Remo, 1930. El campeón del mundo Alexander Alekhine juega con blancas contra Aron Nimzowitsch, un maestro en restringir las piezas del rival. Aquí Alekhine lo vence en su propio terreno y gana el torneo con estilo."
+   },
+   {
+    "text": "3...Bb4. La variante Winawer de la francesa: las negras clavan al caballo de c3 y presionan e4."
+   },
+   {
+    "text": "4.e5. Las blancas ganan espacio en el centro. La cadena de peones encierra a las piezas negras del flanco de rey."
+   },
+   {
+    "text": "6.Nb5. El caballo se dirige a d6, una casilla que a las negras les costará defender."
+   },
+   {
+    "text": "6...Bxd2+. Las negras entregan su alfil de casillas negras. Sin él, d6 se convierte en un agujero, un hogar perfecto para el caballo blanco.",
+    "label": "Un agujero en d6"
+   },
+   {
+    "text": "9.f4. Las blancas sostienen el peón de e5. El centro está bloqueado y las blancas tienen más espacio."
+   },
+   {
+    "text": "11.a4. Alekhine empieza a expandirse en el flanco de dama, donde quiere abrir líneas."
+   },
+   {
+    "text": "13.cxb4. La columna c ya está abierta. Quien la controle tendrá ventaja."
+   },
+   {
+    "text": "14...f5. Las negras cierran la puerta del flanco de rey. Ahora la batalla se decidirá en el flanco de dama, donde las blancas son mucho más fuertes."
+   },
+   {
+    "text": "16.Nxb7. Alekhine cambia su orgulloso caballo por el alfil negro, porque ahora su propio alfil podrá dominar las casillas blancas."
+   },
+   {
+    "text": "17.a6! El peón se planta en a6 y congela el flanco de dama negro. Las piezas negras lucharán por espacio el resto de la partida.",
+    "label": "Una espina en a6"
+   },
+   {
+    "text": "18.Bb5. El alfil ocupa un puesto precioso, presionando al caballo de c6."
+   },
+   {
+    "text": "20.Rfc1. Ambos bandos se alinean en la columna c, pero las blancas tienen mucho más espacio para traer refuerzos."
+   },
+   {
+    "text": "22...Rab8. Las negras se están quedando sin jugadas útiles y solo pueden mover sus piezas de un lado a otro y esperar."
+   },
+   {
+    "text": "26.Qc1. Dos torres con la dama detrás, todas en la columna c. Esta batería se sigue llamando **el cañón de Alekhine**.",
+    "label": "El cañón de Alekhine"
+   },
+   {
+    "text": "27.Ba4. El alfil retrocede, pero mantiene al caballo de c6 clavado contra la dama negra de d7."
+   },
+   {
+    "text": "28...Ke8. El rey negro camina hacia el flanco de dama para ayudar a defender, la única parte del tablero que importa ahora."
+   },
+   {
+    "text": "30.h4. Alekhine hace una jugada de peón tranquila y espera. Las negras están completamente atadas: el caballo de c6 está clavado, apenas tienen jugadas útiles y b5 llegará para ganar el caballo. Nimzowitsch abandonó.",
+    "label": "Parálisis total"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El alfil de casillas negras del rival ya no está. ¿Adónde debería saltar tu caballo de b5?",
+    "hint": "Busca una casilla en el campo negro que ningún peón negro pueda atacar.",
+    "explanation": "14.Nd6! El caballo se instala en el agujero de d6. Ningún peón negro puede echarlo, y desde allí ataca al alfil de b7 y presiona en lo profundo de la posición negra."
+   },
+   {
+    "prompt": "Juegan las blancas. Las negras acaban de jugar 27...b5 para atacar tu alfil. ¿Cuál es la mejor respuesta?",
+    "hint": "¿Está protegido el peón de b5?",
+    "explanation": "28.Bxb5! Las blancas simplemente ganan un peón, y el alfil vuelve enseguida a su puesto ideal, presionando todavía sobre c6."
+   }
+  ]
+ },
+ "fischer-fine-1963": {
+  "title": "Fischer contra Fine: Gambito Evans",
+  "event": "Partida amistosa, Nueva York",
+  "opening": "Gambito Evans",
+  "summary": "En una partida amistosa, Fischer regala peones para sacar sus piezas rápido, y un ex gran maestro de primer nivel cae en 17 jugadas. Una lección perfecta de por qué el desarrollo y la seguridad del rey importan más que comer peones.",
+  "annotations": [
+   {
+    "text": "Nueva York, 1963. En una partida amistosa, Fischer se enfrenta a Reuben Fine, que fue un gran maestro de primer nivel. Fischer elige una apertura antigua y aventurera para demostrar que el **desarrollo rápido** puede vencer a los peones de más."
+   },
+   {
+    "text": "Los dos alfiles apuntan a las casillas más débiles de cada bando: f7 y f2. Esta es la Apertura Italiana."
+   },
+   {
+    "text": "4.b4!? es el **Gambito Evans**. Las blancas dan un peón para ganar tiempo: cuando las negras lo toman, las blancas forman un gran centro con c3 y d4, atacando a la vez.",
+    "label": "El Gambito Evans"
+   },
+   {
+    "text": "6.d4 abre líneas. A Fischer no le preocupan los peones; quiere sacar sus piezas cuanto antes."
+   },
+   {
+    "text": "Fine se come un tercer peón. ¡Qué glotón! Las negras van ganando material, pero casi todas sus piezas siguen en casa y su rey está en el centro."
+   },
+   {
+    "text": "8.Qb3 alinea la dama y el alfil contra f7, el punto más débil junto al rey negro."
+   },
+   {
+    "text": "Las blancas recuperan un peón y sacan otra pieza. Mira la diferencia: casi todas las piezas blancas están en juego, mientras las negras solo tienen tres fuera y su rey sigue en el centro."
+   },
+   {
+    "text": "10.Nd5 salta adelante y ataca a la dama en e7. Casi cada jugada blanca trae una amenaza."
+   },
+   {
+    "text": "Las negras intentan cambiar piezas. Cambiar es una buena forma de defenderse, pero el rey negro sigue atascado en el medio."
+   },
+   {
+    "text": "13.Bb2 lleva el último alfil a la gran diagonal, atacando a la dama en e5 y apuntando a g7."
+   },
+   {
+    "text": "14.h4! ofrece otro peón más para alejar a la dama negra. Fischer la quiere lo más lejos posible de la acción.",
+    "label": "Otro peón de regalo"
+   },
+   {
+    "text": "Fine lo toma, pero ahora su dama está en el borde del tablero, lejos de su rey."
+   },
+   {
+    "text": "15.Bxg7 gana un peón y ataca a la torre de h8. En cuanto la torre se mueva, las negras ya no podrán enrocar corto."
+   },
+   {
+    "text": "El rey se escapa a d8, pero está rodeado de sus propias piezas y no tiene un refugio seguro."
+   },
+   {
+    "text": "Fine abandonó. Si 17...Qxg3, entonces 18.Bf6 es jaque mate, y si no, 18.Bf6+ gana la dama negra. Solo 17 jugadas: el desarrollo venció al material.",
+    "label": "Las negras abandonan"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El rey negro sigue en el centro y la columna e está totalmente abierta. ¿Cómo vas a por él?",
+    "hint": "Mete una torre en el juego con jaque.",
+    "explanation": "16.Rfe1+ aprovecha la columna e abierta. El rey no tiene una buena casilla: 16...Kd8 lo deja encerrado, justo donde el alfil y la dama blancos pueden alcanzarlo."
+   },
+   {
+    "prompt": "Juegan las blancas. ¿Encuentras la tranquila jugada de dama que deja a las negras sin defensa?",
+    "hint": "Ofrece un cambio de damas que las negras no pueden aceptar.",
+    "explanation": "17.Qg3! prepara 18.Bf6+, que da jaque al rey y ataca a la dama de h4 a la vez. Si las negras toman la dama, 18.Bf6 es jaque mate porque la torre de e1 controla e8 y e7."
+   }
+  ]
+ },
+ "deep-blue-kasparov-1997": {
+  "title": "Deep Blue gana el match",
+  "event": "Revancha Deep Blue vs. Kasparov, Nueva York",
+  "opening": "Defensa Caro-Kann",
+  "summary": "La partida decisiva de la revancha de 1997. Kasparov falla en la apertura, Deep Blue sacrifica un caballo para dejar su rey atrapado en el centro y el campeón del mundo abandona tras solo 19 jugadas. Fue la primera vez que una computadora ganó un match al campeón del mundo.",
+  "annotations": [
+   {
+    "text": "Nueva York, mayo de 1997. La revancha entre Kasparov y un Deep Blue mejorado llega empatada 2,5-2,5 a la sexta y última partida. Todo está en juego."
+   },
+   {
+    "text": "Kasparov elige la **Caro-Kann**, una defensa muy sólida que casi nunca jugaba. Esperaba evitar luchas afiladas contra la máquina."
+   },
+   {
+    "text": "**4...Nd7** prepara **...Ngf6**, para que si las blancas cambian caballos las negras puedan recapturar con el otro caballo y mantener una buena estructura de peones."
+   },
+   {
+    "text": "**5.Ng5** es una idea afilada: el caballo apunta a f7 y e6, dos casillas delicadas cerca del rey negro."
+   },
+   {
+    "text": "**7...h6?** expulsa al caballo, pero en esta posición exacta es un error conocido: permite un sacrificio de caballo en e6. Kasparov confundió el orden de jugadas.",
+    "label": "Un fallo fatal"
+   },
+   {
+    "text": "Kasparov no captura enseguida. Su dama en e7 ataca al caballo y, de momento, tapa la columna e."
+   },
+   {
+    "text": "Deep Blue no tiene prisa. Primero enroca, acercando la torre a la columna e, donde el rey negro quedará atrapado."
+   },
+   {
+    "text": "Las negras tienen un caballo de más, pero su rey sigue en el centro y el peón f se ha movido, abriendo la diagonal hacia e8."
+   },
+   {
+    "text": "**10.Bg6+** obliga al rey a moverse. Las negras ya nunca podrán enrocar, y sus piezas se estorban entre sí.",
+    "label": "Adiós al enroque"
+   },
+   {
+    "text": "Kasparov intenta hacer sitio para su rey en el flanco de dama con **11...b5**. La respuesta blanca, **12.a4**, ataca ese peón de inmediato."
+   },
+   {
+    "text": "El rey corre a c8, pero el alfil de f8 y la torre de h8 siguen dormidos. El caballo de más de las negras no hace gran cosa."
+   },
+   {
+    "text": "**16.Qd3** suma la dama al ataque. Todas las piezas blancas están activas; la mitad de las negras no."
+   },
+   {
+    "text": "El material vuelve a estar más o menos igualado, pero el rey negro está desnudo y sus piezas, enredadas. El ataque blanco continúa."
+   },
+   {
+    "text": "**19.c4** abre todavía más líneas hacia el rey negro, y Kasparov abandonó. Fue la primera vez que una computadora ganaba un match al campeón del mundo. Lección: conoce bien el orden de jugadas de tu apertura, y un rey atrapado en el centro es un gran blanco.",
+    "label": "Kasparov abandona"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Las negras acaban de jugar 7...h6, atacando al caballo de g5. ¿Adónde puede ir el caballo con fuerza?",
+    "hint": "El peón de e6 protege al rey negro.",
+    "explanation": "**8.Nxe6!** entrega el caballo por un peón. Si las negras lo capturan, el rey queda atrapado en el centro con líneas abiertas por todas partes."
+   },
+   {
+    "prompt": "Juegan las blancas. La dama negra de e7 está en la misma columna que tu torre, con solo el peón de e6 en medio. ¿Cómo puedes quitar ese peón?",
+    "hint": "Ofrece un alfil que el peón no pueda rechazar.",
+    "explanation": "**17.Bf5!** Si **17...exf5**, se abre la columna e y la torre blanca ataca a la dama negra."
+   },
+   {
+    "prompt": "Juegan las blancas. La columna e está abierta. ¿Qué capturas?",
+    "hint": "Hay algo grande en e7.",
+    "explanation": "**18.Rxe7** gana la dama a cambio de una torre, y el rey negro sigue expuesto."
+   }
+  ]
+ },
+ "spassky-bronstein-1960": {
+  "title": "La partida de «Desde Rusia con amor»",
+  "event": "Campeonato de la URSS, Leningrado",
+  "opening": "Gambito de Rey Aceptado",
+  "summary": "El joven Spassky juega el atrevido Gambito de Rey, deja que las negras hagan una nueva dama y sigue atacando de todos modos. Una versión de la posición final apareció en la película de James Bond Desde Rusia con amor. La lección: un ataque al rey puede valer mucho más que una torre.",
+  "annotations": [
+   {
+    "text": "Leningrado, 1960, Campeonato de la URSS. El joven Boris Spassky juega el atrevido Gambito de Rey contra David Bronstein, uno de los jugadores más creativos de la historia. Una versión de esta partida apareció después en una película de James Bond."
+   },
+   {
+    "text": "2.f4 ofrece un peón para desviar el peón e negro del centro y abrir la columna f para la torre blanca. Una elección romántica y de ataque.",
+    "label": "El Gambito de Rey"
+   },
+   {
+    "text": "Bronstein contraataca en el centro de inmediato. Devolver un peón para liberar tus piezas es una respuesta clásica al gambito."
+   },
+   {
+    "text": "Los dos bandos se desarrollan rápido. El plan blanco: enrocar, recuperar el peón de f4 y usar la columna f abierta."
+   },
+   {
+    "text": "9.Ne4 deja que las negras tomen en d5. Spassky prefiere piezas activas a un peón: el caballo va hacia d6 y f6."
+   },
+   {
+    "text": "10...Ne3 es un ataque doble a la dama de d1 y la torre de f1. Spassky simplemente captura el caballo."
+   },
+   {
+    "text": "Las negras tienen ahora un peón en e3, metido en la posición blanca. ¡Vigílalo!"
+   },
+   {
+    "text": "12.c5 echa al alfil de d6, la casilla que quiere el caballo blanco."
+   },
+   {
+    "text": "14...e2! El peón ataca a la torre de f1 y quiere coronar. La mayoría salvaría la torre. Spassky tiene otros planes.",
+    "label": "El peón ataca"
+   },
+   {
+    "text": "Bronstein lleva el caballo a f8 para cubrir h7. Pero ahora el peón de f7 está débil."
+   },
+   {
+    "text": "¡Las negras coronan con jaque! Pero las blancas simplemente recapturan, y sus piezas rodean al rey negro."
+   },
+   {
+    "text": "Las negras intentan tapar a la dama blanca, pero el alfil de f5 simplemente se pierde."
+   },
+   {
+    "text": "El material vuelve a estar más o menos igualado, y el caballo de f7 es una espina clavada junto al rey negro."
+   },
+   {
+    "text": "El segundo caballo salta a e5. Los dos caballos blancos están justo delante del rey negro."
+   },
+   {
+    "text": "21.Bb3 coloca el alfil detrás del caballo de f7, apuntando al rey en g8. Cuando el caballo se mueva, será un **jaque a la descubierta**."
+   },
+   {
+    "text": "22.Nxe5+ es ese jaque a la descubierta. El rey tiene que huir a h7.",
+    "label": "Jaque a la descubierta"
+   },
+   {
+    "text": "23.Qe4+ y Bronstein abandonó. El rey no puede volver a g8 por el alfil de b3, y la dama, la torre y el caballo blancos están a punto de entrar.",
+    "label": "Bronstein abandona"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El peón negro de e2 ataca tu torre y quiere coronar. ¿Qué harías?",
+    "hint": "Olvídate de la torre. ¿Qué punto cerca del rey negro es más débil?",
+    "explanation": "15.Nd6!! ignora la amenaza. El caballo ataca a la torre de e8 y apunta a f7. Si 15...Bxd6, entonces 16.Qh7+ inicia un ataque feroz. Spassky decidió que su ataque valía más que una torre."
+   },
+   {
+    "prompt": "Juegan las blancas. El caballo negro fue a f8 para defender. ¿Dónde golpea ahora tu caballo?",
+    "hint": "Mira el peón que está junto al rey negro.",
+    "explanation": "16.Nxf7! se come el peón, ataca a la dama de d8 y abre la columna f hacia el rey negro. Las negras pueden coronar en f1, pero esa dama se recaptura enseguida."
+   }
+  ]
+ },
+ "bernstein-capablanca-1914": {
+  "title": "El rayo de Capablanca en la última fila",
+  "event": "Moscú (partida de exhibición)",
+  "opening": "Gambito de dama declinado",
+  "summary": "Capablanca empuja con paciencia un peón pasado, deja que las blancas lo ganen y luego golpea con una jugada de dama asombrosa que aprovecha la débil última fila blanca. Un recordatorio clásico: nunca olvides la casilla de escape de tu rey.",
+  "annotations": [
+   {
+    "text": "Moscú, 1914. José Raúl Capablanca, la estrella cubana que sería campeón del mundo en 1921, juega con negras una partida de exhibición contra el fuerte maestro Ossip Bernstein. Vigila la última fila de las blancas."
+   },
+   {
+    "text": "5...O-O. Un gambito de dama declinado clásico: las negras mantienen un centro sólido y enrocan rápido."
+   },
+   {
+    "text": "8...exd5. Tras el cambio en el centro, las negras tienen un peón firme en d5 y una línea abierta para su alfil de casillas blancas."
+   },
+   {
+    "text": "10.Ba6. Las blancas ofrecen cambiar los alfiles de casillas blancas, eliminando a un buen defensor del flanco de dama negro."
+   },
+   {
+    "text": "11...c5. Las negras desafían el centro y dan más espacio a sus piezas."
+   },
+   {
+    "text": "13...bxc5. Ahora las negras tienen dos peones uno al lado del otro en c5 y d5, los llamados **peones colgantes**: fuertes juntos, pero necesitan cuidado."
+   },
+   {
+    "text": "15...c4. Las negras avanzan y ganan espacio en el flanco de dama."
+   },
+   {
+    "text": "16...Rfd8. La torre negra ocupa la columna d. Recuérdala: esta torre será protagonista al final."
+   },
+   {
+    "text": "17...Bb4. El alfil clava al caballo de c3 y aumenta la presión sobre el flanco de dama blanco."
+   },
+   {
+    "text": "19...dxc4. Las blancas ya no tienen peones en las columnas b, c ni d, así que el peón c negro es ahora un **peón pasado**, libre para avanzar.",
+    "label": "Un peón pasado"
+   },
+   {
+    "text": "21...Nd5. El caballo llega a una gran casilla: ataca la torre de c3 y apoya al peón c."
+   },
+   {
+    "text": "23...Rc5. La torre protege desde atrás al peón de c3 y lo mantiene con vida."
+   },
+   {
+    "text": "26.Nb5. El caballo blanco apunta al peón de c3. Bernstein se esfuerza mucho por ganarlo."
+   },
+   {
+    "text": "27.Nxc3. Por fin las blancas ganan el peón, y llega una serie de cambios en c3.",
+    "label": "Las blancas ganan el peón"
+   },
+   {
+    "text": "29.Rxc3. Las blancas tienen un peón de más y se sienten seguras. Pero mira su rey: no tiene casilla de escape, y la torre negra sigue dominando la columna d."
+   },
+   {
+    "text": "29...Qb2!! Un rayo caído del cielo. La dama blanca no puede capturar por ...Rd1 mate, y no puede proteger a la vez la última fila y la torre de c3. Bernstein abandonó. ¡Dale siempre aire a tu rey!",
+    "label": "Un rayo caído del cielo"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las negras. Tu peón pasado de c4 está bien apoyado por el caballo de d5. ¿Cómo puedes hacerlo aún más peligroso?",
+    "hint": "¡Los peones pasados hay que empujarlos!",
+    "explanation": "22...c3! El peón da un paso más hacia la coronación, protegido por el caballo. Ahora las piezas blancas tienen que gastar su tiempo en frenarlo."
+   },
+   {
+    "prompt": "Juegan las negras. Las blancas acaban de ganar un peón y parecen contentas. Mira su última fila: ¿encuentras la jugada que termina la partida en el acto?",
+    "hint": "Ataca a la vez la dama y la torre blancas.",
+    "explanation": "29...Qb2!! La dama ataca a la dama blanca y a la torre de c3. 30.Qxb2 se encuentra con 30...Rd1 mate, porque el rey blanco no tiene casilla de escape. Si no, las blancas pierden material."
+   }
+  ]
+ },
+ "lasker-bauer-1889": {
+  "title": "El doble sacrificio de alfiles de Lasker",
+  "event": "Torneo de Ámsterdam",
+  "opening": "Apertura Bird",
+  "summary": "Un joven Emanuel Lasker sacrifica sus dos alfiles para abrir el enroque negro y luego recupera el material con una maniobra de torre y un ataque doble. El doble sacrificio en h7 y g7 se convirtió en un patrón de ataque clásico que todo jugador debería conocer.",
+  "annotations": [
+   {
+    "text": "Ámsterdam, 1889. Emanuel Lasker, con 20 años, que después sería campeón del mundo durante 27 años, juega con blancas contra Johann Bauer. Fíjate hacia dónde apuntan los dos alfiles blancos."
+   },
+   {
+    "text": "1.f4. La apertura Bird: las blancas controlan la casilla e5 con un peón en vez de jugar el habitual 1.e4 o 1.d4."
+   },
+   {
+    "text": "5.Bd3. Los dos alfiles ya apuntan al flanco de rey negro: uno hacia h7 y el otro por la gran diagonal."
+   },
+   {
+    "text": "8...O-O. Las negras enrocan justo en la línea de fuego de esos dos alfiles."
+   },
+   {
+    "text": "10.Ng3. El caballo se dirige a h5, listo para sumarse al ataque contra el rey negro."
+   },
+   {
+    "text": "12.Bxe5. Tras el cambio, el alfil se instala en e5 y mira hacia g7. Solo el caballo de f6 sostiene la posición negra."
+   },
+   {
+    "text": "13...a6? Las negras planean avanzar en el flanco de dama y se olvidan de su rey. Esta jugada lenta le da a Lasker el tiempo que necesita.",
+    "label": "Una jugada lenta"
+   },
+   {
+    "text": "14.Nh5! Las blancas ofrecen el caballo para desviar al caballo de f6, el defensor clave de h7."
+   },
+   {
+    "text": "15...Kxh7. El primer alfil se ha ido, pero ahora 16.Qxh5+ recupera el caballo con jaque y la dama se une al ataque.",
+    "label": "Primer sacrificio de alfil"
+   },
+   {
+    "text": "17...Kxg7. Las blancas han entregado los dos alfiles, pero el rey negro se ha quedado sin peones que lo protejan.",
+    "label": "¡El segundo alfil!"
+   },
+   {
+    "text": "19...e5. La única defensa. Esta jugada abre la sexta fila para que la dama negra pueda tapar un jaque en h6."
+   },
+   {
+    "text": "21.Rxh6+. Las blancas ganan la dama negra. Haz la cuenta: Lasker dio dos alfiles y una torre, y recuperó un caballo, la dama y dos peones.",
+    "label": "Dama ganada"
+   },
+   {
+    "text": "23.Qxb7. Cae el alfil. El material está más o menos igualado, pero el rey negro está desnudo y la dama y la torre blancas siguen presionando."
+   },
+   {
+    "text": "27.fxe5. Las blancas abren la columna f para su torre, que apunta directo al rey negro en f8."
+   },
+   {
+    "text": "28.e6. El peón de más avanza, encierra a las negras y debilita todavía más la defensa de su rey."
+   },
+   {
+    "text": "30.Rxf6+! La torre rompe la defensa. Tras 30...Bxf6 31.Qxf6+ la dama persigue al rey y apunta a la torre suelta de b7."
+   },
+   {
+    "text": "34.Qxb7. Gracias a los jaques de la dama, cae la torre de b7. Las blancas tienen dama contra torre: un final ganado."
+   },
+   {
+    "text": "38.Qxd3. Desaparece la última esperanza negra, el peón pasado de d, y Bauer abandonó. El sacrificio en h7 y g7 se conoce hoy como la **combinación de Lasker**. ¡Cuidado cuando los dos alfiles rivales apuntan a tu rey!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Las negras acaban de capturar tu caballo en h5. Tus dos alfiles apuntan al rey negro. ¿Cuál es la continuación más audaz?",
+    "hint": "Empieza con un jaque en h7.",
+    "explanation": "15.Bxh7+! El alfil arranca el peón de h7 con jaque. Tras 15...Kxh7 16.Qxh5+ las blancas recuperan el caballo con jaque y el rey negro queda expuesto."
+   },
+   {
+    "prompt": "Juegan las blancas. Ya entregaste un alfil. ¿Encuentras el siguiente golpe?",
+    "hint": "Tu otro alfil, en e5, también tiene un objetivo.",
+    "explanation": "17.Bxg7! El segundo alfil elimina el último escudo de peones. Además amenaza 18.Qh8 mate; y si las negras lo capturan, la dama y la torre entran en tropel."
+   },
+   {
+    "prompt": "Juegan las blancas. El rey negro está a la intemperie en h7. ¿Cómo sumas una pieza más al ataque?",
+    "hint": "Una torre puede viajar por la tercera fila.",
+    "explanation": "19.Rf3! La torre se desplaza a h3 para dar un jaque mortal. La única defensa negra es 19...e5 20.Rh3+ Qh6, y entonces las blancas ganan la dama."
+   },
+   {
+    "prompt": "Juegan las blancas. Tu ataque ya recuperó el material. ¡Ahora encuentra una jugada que ataque dos piezas negras a la vez!",
+    "hint": "Mira los alfiles de e7 y b7.",
+    "explanation": "22.Qd7! Un ataque doble: la dama golpea al alfil de e7 y al alfil de b7. Las negras solo pueden salvar uno."
+   }
+  ]
+ },
+ "tal-smyslov-1959": {
+  "title": "Tal contra Smyslov: el Mago",
+  "event": "Torneo de Candidatos, Yugoslavia",
+  "opening": "Defensa Caro-Kann",
+  "summary": "Mikhail Tal, el Mago de Riga, deja caer un alfil, lanza sus piezas contra el rey de un ex campeón del mundo y remata con un sacrificio de dama. Muestra cómo la actividad y las amenazas pueden valer más que el material.",
+  "annotations": [
+   {
+    "text": "Yugoslavia, 1959: el Torneo de Candidatos, que decidía quién desafiaría al campeón del mundo. Mikhail Tal, **el Mago de Riga**, se enfrenta al ex campeón del mundo Vasily Smyslov."
+   },
+   {
+    "text": "2.d3 es una respuesta tranquila y poco común a la Caro-Kann. Tal se aleja de los caminos conocidos y busca la lucha."
+   },
+   {
+    "text": "El centro se abre rápido. Sin peones en medio, las piezas activas lo decidirán todo."
+   },
+   {
+    "text": "9.O-O-O: Tal enroca largo y las negras enrocarán corto. Con los reyes en lados opuestos, empieza una carrera por atacar primero."
+   },
+   {
+    "text": "10.Nd6! El caballo salta al corazón del campo negro, apuntando a f7 y b7 y estorbando a las piezas negras.",
+    "label": "Caballo en d6"
+   },
+   {
+    "text": "12.Bd2!? ataca a la dama de a5 y simplemente deja caer el alfil de c4. Tal confía más en su ataque que en el material.",
+    "label": "Alfil abandonado"
+   },
+   {
+    "text": "El caballo va a f5, apuntando al alfil de e7 y a las casillas cercanas al rey negro. Las piezas de Tal se reúnen en el flanco de rey."
+   },
+   {
+    "text": "Por fin las negras toman el alfil. Tienen una pieza de más, pero la dama y el caballo blancos están cerca de su rey."
+   },
+   {
+    "text": "17...Qxa2 contraataca: la dama negra se mete junto al rey blanco y amenaza ...Qa1+."
+   },
+   {
+    "text": "18...Nf6 ataca a la dama blanca. Ahora los dos reyes están en peligro. ¿Quién golpea primero?"
+   },
+   {
+    "text": "19.Qxf7!! La dama se mete en la boca del lobo. Tal ha visto que su caballo de h6 y su torre de d1 recuperarán el material.",
+    "label": "¡Sacrificio de dama!"
+   },
+   {
+    "text": "Smyslov da jaque primero. El rey blanco pasa a d2 y, fíjate: la dama negra en a1 queda ahora delante de la torre blanca de d1."
+   },
+   {
+    "text": "Se disipa el humo. Las blancas tienen dos torres contra una, y el rey negro está al descubierto."
+   },
+   {
+    "text": "24.Nxc6 gana un peón y ataca al alfil de d8 y al peón de a7."
+   },
+   {
+    "text": "26.Bd4 tapa el jaque. Las blancas tienen calidad de más y las piezas negras están dispersas, así que Smyslov abandonó. Tal ganó el torneo y fue campeón del mundo en 1960.",
+    "label": "Smyslov abandona"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El alfil de d8 ataca a tu dama en g5. ¿Puedes salvar la dama y ganar algo a la vez?",
+    "hint": "Primero, un jaque de caballo.",
+    "explanation": "16.Nh6+! manda al rey a la esquina (si 16...gxh6, la dama igualmente toma en h5 y el rey negro queda muy expuesto). Luego 17.Qxh5 recupera el caballo con el ataque todavía en marcha."
+   },
+   {
+    "prompt": "Juegan las blancas. La torre negra acaba de comerse tu dama. ¿Puedes recuperarlo todo?",
+    "hint": "Recaptura con jaque y luego mira a1.",
+    "explanation": "21.Nxf7+ toma la torre con jaque. Cuando el rey se mueva, 22.Rxa1 se come la dama negra y las blancas salen ganando."
+   }
+  ]
+ },
+ "legal-mate-1750": {
+  "title": "El mate de Légal",
+  "event": "Café de la Régence, París",
+  "opening": "Defensa Philidor",
+  "summary": "Una miniatura de siete jugadas que dio nombre a una trampa clásica. Las blancas entregan la dama y tres piezas menores dan mate. La lección: una clavada solo es clavada si romperla cuesta algo de verdad, y comerse la dama sin mirar puede ser fatal.",
+  "annotations": [
+   {
+    "text": "París, hacia 1750, en el famoso Café de la Régence. Légal, uno de los mejores jugadores de su época, prepara una trampa que todavía hoy hace caer a muchos."
+   },
+   {
+    "text": "1.e4 toma el centro y abre líneas para la dama y el alfil."
+   },
+   {
+    "text": "1...e5 Las negras responden igual y reclaman su parte del centro."
+   },
+   {
+    "text": "2.Bc4 apunta el alfil a f7, el punto más débil del campo negro, defendido solo por el rey."
+   },
+   {
+    "text": "2...d6 protege e5 y abre camino al alfil de c8."
+   },
+   {
+    "text": "3.Nf3 desarrolla un caballo y ataca el peón de e5."
+   },
+   {
+    "text": "3...Bg4 clava el caballo contra la dama blanca: si el caballo se mueve, la dama de d1 queda expuesta.",
+    "label": "La clavada"
+   },
+   {
+    "text": "4.Nc3 desarrolla otra pieza y, sin hacer ruido, suma un atacante sobre la casilla d5."
+   },
+   {
+    "text": "4...g6? Una jugada lenta. Las negras deberían desarrollar piezas, y no hace nada contra el truco escondido de las blancas en e5."
+   },
+   {
+    "text": "5...Bxd1? Las negras se comen la dama sin mirar qué amenazan las blancas. Es la jugada que pierde.",
+    "label": "Muerde el anzuelo"
+   },
+   {
+    "text": "6.Bxf7+ El alfil golpea en f7 con jaque, protegido por el caballo de e5. El rey solo tiene una casilla: e7."
+   },
+   {
+    "text": "6...Ke7 era la única jugada. Ahora mira qué casillas alrededor del rey siguen libres."
+   },
+   {
+    "text": "7.Nd5# ¡Jaque mate con tres piezas menores! Las negras tienen una dama de más pero perdieron la partida. **Antes de comer material, pregúntate siempre qué amenaza tu rival.**",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. Tu caballo de f3 está clavado contra la dama. ¿Te atreves a romper la clavada?",
+    "hint": "¿Es un problema perder la dama si tienes preparado algo todavía más fuerte?",
+    "explanation": "5.Nxe5! Si las negras se comen la dama con 5...Bxd1, las blancas dan mate con 6.Bxf7+ y 7.Nd5#. Si en cambio 5...dxe5, entonces 6.Qxg4 y las blancas tienen un peón de más."
+   },
+   {
+    "prompt": "Juegan las blancas y dan jaque mate en una. Las negras acaban de comerse tu dama. ¿Puedes castigarlas?",
+    "hint": "Tu caballo de c3 tiene un salto que da jaque.",
+    "explanation": "7.Nd5# El caballo da jaque desde d5, y el alfil y el otro caballo cubren todas las casillas de escape."
+   }
+  ]
+ },
+ "carlsen-ernst-2004": {
+  "title": "Carlsen con 13 años",
+  "event": "Corus, Grupo C, Wijk aan Zee",
+  "opening": "Defensa Caro-Kann",
+  "summary": "Un Magnus Carlsen de 13 años sacrifica un caballo, un alfil y una torre para abrir el rey negro y termina con un precioso jaque mate. La partida hizo que el mundo del ajedrez se fijara en el futuro campeón del mundo y muestra cómo un peón en h5 puede ser la punta de lanza de un ataque.",
+  "annotations": [
+   {
+    "text": "Wijk aan Zee, enero de 2004. Magnus Carlsen, con trece años, juega contra el gran maestro neerlandés Sipke Ernst. Este ataque hizo que el mundo del ajedrez se fijara en él. Carlsen fue campeón del mundo en 2013."
+   },
+   {
+    "text": "La **Caro-Kann**: las negras apoyan **...d5** con el peón c, una forma sólida de luchar por el centro."
+   },
+   {
+    "text": "**4...Bf5** saca el alfil de casillas claras antes de jugar **...e6**, para que no quede encerrado."
+   },
+   {
+    "text": "**6.h4** empuja el peón h para perseguir al alfil y ganar espacio en el flanco de rey."
+   },
+   {
+    "text": "El peón llega a h5. Recuérdalo: más adelante tendrá un papel protagonista."
+   },
+   {
+    "text": "Carlsen enroca largo. Con los reyes en lados opuestos, ambos jugadores pueden lanzar peones y piezas contra el rey rival."
+   },
+   {
+    "text": "Ernst enroca corto, justo delante del peón blanco de h5. Ese peón ya controla g6."
+   },
+   {
+    "text": "**16.Ne5** coloca el caballo en una casilla central fuerte, apuntando a f7 y g6."
+   },
+   {
+    "text": "Ernst contraataca en el centro con **17...c5**. Pero las piezas blancas apuntan al rey negro. ¿Hay forma de entrar?"
+   },
+   {
+    "text": "Ernst se come el caballo. Ahora el peón de e6 ha perdido a su compañero de f7, y el peón blanco de h5 puede recapturar en g6.",
+    "label": "¡Sacrificio de caballo!"
+   },
+   {
+    "text": "**19.Qxe6+** entra con jaque y ataca al alfil de e7."
+   },
+   {
+    "text": "El peón h está ahora en g6, una espina junto al rey negro. Lo siguiente que quieren las blancas es abrir la columna h."
+   },
+   {
+    "text": "La columna h está abierta, y las blancas entregan una torre para mantenerla así. Al rey negro se le acaban los defensores.",
+    "label": "¡También sacrificio de torre!"
+   },
+   {
+    "text": "**23.Qxe7** se come el alfil y amenaza **Qh7#**, con el peón de g6 protegiendo a la dama."
+   },
+   {
+    "text": "Las negras taparon con **23...Nf7**, así que el peón simplemente lo captura. Ahora el peón está en f7, metido en el campo negro."
+   },
+   {
+    "text": "**25.Rd3!** La última torre se desplaza hacia la columna g para sumarse al ataque.",
+    "label": "Elevación de torre"
+   },
+   {
+    "text": "**29.Qd7#** ¡Jaque mate! La dama da jaque por la séptima fila y la torre de g3 cubre la columna g. Un final brillante de un chico de 13 años.",
+    "label": "¡Jaque mate!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Juegan las blancas. El peón negro de f7 protege e6 y g6. ¿Puedes desviarlo?",
+    "hint": "Un caballo ofrecido junto al rey.",
+    "explanation": "**18.Ng6!** Si **18...fxg6**, el peón de e6 cae con jaque y el peón de h5 recaptura en g6, justo al lado del rey negro."
+   },
+   {
+    "prompt": "Juegan las blancas. El rey negro se esconde detrás del peón de h6. ¿Cómo abres la columna h?",
+    "hint": "Un alfil puede comerse un peón.",
+    "explanation": "**21.Bxh6!** Si **21...gxh6**, sigue **22.Rxh6+** y la columna h queda completamente abierta."
+   },
+   {
+    "prompt": "¡Juegan las blancas y dan mate en una!",
+    "hint": "Tu torre de g3 ya cubre la columna g.",
+    "explanation": "**29.Qd7#** da jaque por la séptima fila. El rey no puede ir a la columna g por la torre, y e6, e7 y e8 están cubiertas por la dama."
+   }
+  ]
+ }
+}

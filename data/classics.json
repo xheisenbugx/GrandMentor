@@ -1,0 +1,3245 @@
+[
+ {
+  "id": "opera-game",
+  "title": "The Opera Game",
+  "white": "Paul Morphy",
+  "black": "Duke Karl of Brunswick & Count Isouard",
+  "event": "Paris Opera House",
+  "year": 1858,
+  "result": "1-0",
+  "opening": "Philidor Defence",
+  "level": "beginner",
+  "themes": [
+   "development",
+   "sacrifice",
+   "checkmate"
+  ],
+  "orientation": "white",
+  "key_ply": 30,
+  "summary": "Played in a box at the Paris Opera during a performance, this is the most famous lesson in fast development. Morphy brings every piece into play, opens lines toward the uncastled king and finishes with a queen sacrifice. The takeaway: develop quickly, castle, and punish an opponent who lags behind.",
+  "moves": "e4 e5 Nf3 d6 d4 Bg4 dxe5 Bxf3 Qxf3 dxe5 Bc4 Nf6 Qb3 Qe7 Nc3 c6 Bg5 b5 Nxb5 cxb5 Bxb5+ Nbd7 O-O-O Rd8 Rxd7 Rxd7 Rd1 Qe6 Bxd7+ Nxd7 Qb8+ Nxb8 Rd8#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Paris, 1858. Paul Morphy, the young American star, plays two noblemen working as a team, right in their box at the opera. Watch how quickly he gets **all** his pieces into the fight."
+   },
+   {
+    "ply": 4,
+    "text": "2...d6 is the Philidor Defence. It protects e5 solidly, but it also shuts in Black's own bishop on f8. Solid, yet a little passive."
+   },
+   {
+    "ply": 6,
+    "text": "3...Bg4 pins the knight on f3 to the queen. It looks active, but Black will soon trade this bishop away, and every trade like that helps White develop."
+   },
+   {
+    "ply": 8,
+    "text": "4...Bxf3 gives up the bishop for the knight. White's queen recaptures and jumps into the game for free, while Black has one less piece out."
+   },
+   {
+    "ply": 11,
+    "text": "6.Bc4 adds a second attacker to f7. White now threatens Qxf7 checkmate, so Black must react.",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f7",
+      "color": "red"
+     },
+     {
+      "from": "f3",
+      "to": "f7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 13,
+    "text": "7.Qb3 is a **double attack**: the queen lines up behind the bishop against f7 and also hits the pawn on b7.",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f7",
+      "color": "red"
+     },
+     {
+      "from": "b3",
+      "to": "b7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 14,
+    "text": "7...Qe7 defends f7, but now the queen blocks the f8 bishop. Black's kingside pieces are stuck and castling is far away."
+   },
+   {
+    "ply": 17,
+    "text": "9.Bg5 pins the f6 knight to the queen. Morphy doesn't grab pawns; he keeps bringing pieces out. Black has only a queen and a knight developed."
+   },
+   {
+    "ply": 19,
+    "text": "10.Nxb5! Morphy gives a whole knight to rip open the lines around the black king. With so many more pieces in play, he can afford it.",
+    "label": "Knight sacrifice"
+   },
+   {
+    "ply": 21,
+    "text": "11.Bxb5+ checks and pins the d7 knight in place. That knight can't move without exposing its own king."
+   },
+   {
+    "ply": 23,
+    "text": "12.O-O-O! Castling tucks the king away and puts a rook straight onto the open d-file, aiming at the pinned knight.",
+    "label": "Rook joins the attack",
+    "arrows": [
+     {
+      "from": "d1",
+      "to": "d7",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "ply": 25,
+    "text": "13.Rxd7! Morphy gives a rook for the knight to keep the pressure going. Every capture opens the d-file even more.",
+    "label": "Rook for knight"
+   },
+   {
+    "ply": 27,
+    "text": "14.Rd1 brings the last rook to the d-file. The rook on d7 is pinned and attacked twice, and Black's kingside pieces still haven't moved."
+   },
+   {
+    "ply": 28,
+    "text": "14...Qe6 adds a defender to d7 and offers to trade queens. Black hopes to calm things down, but Morphy has a sharper idea."
+   },
+   {
+    "ply": 29,
+    "text": "15.Bxd7+ removes the rook with check. Black must recapture with the knight."
+   },
+   {
+    "ply": 30,
+    "text": "15...Nxd7. Now this knight is the only piece blocking the d-file. If it could be pulled away, the rook could reach d8. Can White do it?"
+   },
+   {
+    "ply": 32,
+    "text": "16...Nxb8 was forced. The knight had to leave d7, and the d-file is wide open."
+   },
+   {
+    "ply": 33,
+    "text": "17.Rd8# Checkmate! The rook is protected by the bishop on g5. Morphy won with only two pieces left, because every piece he had was working. **Develop fast and open lines!**",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 31,
+    "prompt": "White to play. Black's knight on d7 is the last guard on the d-file. Can you find a stunning way to drag it away?",
+    "hint": "Offer your queen with check on a square only the knight can reach.",
+    "explanation": "16.Qb8+! is a queen sacrifice. The only answer is 16...Nxb8, and with the knight gone from d7, the rook mates on d8.",
+    "also": []
+   },
+   {
+    "ply": 33,
+    "prompt": "White to play and checkmate in one move. Can you see it?",
+    "hint": "The d-file is open all the way to the back rank.",
+    "explanation": "17.Rd8# The rook gives check on the back rank and the bishop on g5 protects it. The black king has nowhere to go.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "immortal-game",
+  "title": "The Immortal Game",
+  "white": "Adolf Anderssen",
+  "black": "Lionel Kieseritzky",
+  "event": "London (casual game)",
+  "year": 1851,
+  "result": "1-0",
+  "opening": "King's Gambit Accepted, Bishop's Gambit",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "checkmate",
+   "development"
+  ],
+  "orientation": "white",
+  "key_ply": 42,
+  "summary": "Anderssen gives away a bishop, both rooks and finally his queen, then checkmates with three minor pieces. It is the symbol of the romantic era of chess. The lesson: active, well-placed pieces can matter more than the material count.",
+  "moves": "e4 e5 f4 exf4 Bc4 Qh4+ Kf1 b5 Bxb5 Nf6 Nf3 Qh6 d3 Nh5 Nh4 Qg5 Nf5 c6 g4 Nf6 Rg1 cxb5 h4 Qg6 h5 Qg5 Qf3 Ng8 Bxf4 Qf6 Nc3 Bc5 Nd5 Qxb2 Bd6 Bxg1 e5 Qxa1+ Ke2 Na6 Nxg7+ Kd8 Qf6+ Nxf6 Be7#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "London, 1851. During a break in the first international tournament, Adolf Anderssen and Lionel Kieseritzky played this friendly game. It became so famous that it was named **the Immortal Game**."
+   },
+   {
+    "ply": 3,
+    "text": "2.f4 is the King's Gambit. White offers a pawn to open the f-file and get a quick, strong centre. A typical opening of the 1800s."
+   },
+   {
+    "ply": 6,
+    "text": "3...Qh4+ checks the king, which can no longer castle. White has to walk to f1, but the black queen is out early and may become a target."
+   },
+   {
+    "ply": 8,
+    "text": "4...b5 gives back a pawn to pull White's bishop off its nice diagonal. Black is playing fast and loose too!"
+   },
+   {
+    "ply": 13,
+    "text": "7.d3 is a calm move: it supports e4 and opens the way for the c1 bishop. White keeps developing while Black's queen wanders."
+   },
+   {
+    "ply": 17,
+    "text": "9.Nf5 puts the knight on a great square, hitting g7 and staying close to the black king."
+   },
+   {
+    "ply": 21,
+    "text": "11.Rg1 protects the g-pawn and leaves the b5 bishop to be taken. Anderssen cares more about time and attack than about a bishop."
+   },
+   {
+    "ply": 23,
+    "text": "12.h4 starts chasing the black queen with pawns. Each queen move costs Black a tempo that should go into development."
+   },
+   {
+    "ply": 28,
+    "text": "14...Ng8 sends the knight back home. Look at Black's position: almost nothing developed, while White's pieces keep arriving."
+   },
+   {
+    "ply": 29,
+    "text": "15.Bxf4 wins back the pawn and brings the last bishop into play, with gain of time against the queen."
+   },
+   {
+    "ply": 32,
+    "text": "16...Bc5 finally develops, and the bishop attacks the rook on g1. Black hopes to win material while White is busy attacking."
+   },
+   {
+    "ply": 33,
+    "text": "17.Nd5! Anderssen ignores the rook on g1. The knight attacks the black queen and threatens Nxc7+, forking king and rook.",
+    "label": "Ignoring the threats"
+   },
+   {
+    "ply": 35,
+    "text": "18.Bd6!! White offers **both rooks**. The bishop controls f8 and e7, so the black king is being boxed in.",
+    "label": "Giving away both rooks",
+    "highlights": [
+     "e7",
+     "f8"
+    ]
+   },
+   {
+    "ply": 37,
+    "text": "19.e5 shuts the long diagonal, so the black queen can't come back to defend g7. Quiet, but deadly."
+   },
+   {
+    "ply": 38,
+    "text": "19...Qxa1+ Black has captured both rooks and is up a huge amount of material. But all those black pieces are far from their king."
+   },
+   {
+    "ply": 40,
+    "text": "20...Na6 covers the c7 square against a knight check. Now White needs something forceful."
+   },
+   {
+    "ply": 41,
+    "text": "21.Nxg7+ The knight grabs a pawn with check and now also controls e8. The king is pushed to d8."
+   },
+   {
+    "ply": 44,
+    "text": "22...Nxf6 was forced. White has given away a bishop, two rooks and the queen.",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 45,
+    "text": "23.Be7# Checkmate with just a bishop and two knights against a whole army! **Active pieces beat extra material.**",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 43,
+    "prompt": "White to play. You've given up a lot already. Can you find the most spectacular move on the board?",
+    "hint": "Your queen can give check on a square where only a knight can take it.",
+    "explanation": "22.Qf6+!! The knight must capture, 22...Nxf6, and that opens the way for the bishop to mate on e7.",
+    "also": []
+   },
+   {
+    "ply": 45,
+    "prompt": "White to play and checkmate in one. Which piece delivers it?",
+    "hint": "Look at the dark square right next to the black king.",
+    "explanation": "23.Be7# The bishop checks, the d5 knight protects it, and every escape square is covered by the knights.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "evergreen-game",
+  "title": "The Evergreen Game",
+  "white": "Adolf Anderssen",
+  "black": "Jean Dufresne",
+  "event": "Berlin (casual game)",
+  "year": 1852,
+  "result": "1-0",
+  "opening": "Evans Gambit",
+  "level": "intermediate",
+  "themes": [
+   "attack",
+   "sacrifice",
+   "checkmate",
+   "initiative"
+  ],
+  "orientation": "white",
+  "key_ply": 40,
+  "summary": "Anderssen gambits pawns for a fast lead in development and then finds a famous combination with a rook sacrifice, a queen sacrifice and a double check. It shows how open lines and active pieces can turn into a forced mate.",
+  "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O d3 Qb3 Qf6 e5 Qg6 Re1 Nge7 Ba3 b5 Qxb5 Rb8 Qa4 Bb6 Nbd2 Bb7 Ne4 Qf5 Bxd3 Qh5 Nf6+ gxf6 exf6 Rg8 Rad1 Qxf3 Rxe7+ Nxe7 Qxd7+ Kxd7 Bf5+ Ke8 Bd7+ Kf8 Bxe7#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Berlin, 1852. Adolf Anderssen plays his friend Jean Dufresne in a casual game. It ended with such a beautiful combination that it was nicknamed **the Evergreen**: always fresh."
+   },
+   {
+    "ply": 7,
+    "text": "4.b4 is the Evans Gambit. White offers a pawn so that c3 and d4 can follow with tempo, building a big centre."
+   },
+   {
+    "ply": 11,
+    "text": "6.d4 strikes the centre. White is happy to give pawns if it means open lines and fast development."
+   },
+   {
+    "ply": 14,
+    "text": "7...d3 pushes the pawn deep into White's camp. It is annoying, because it gets in the way of White's queenside pieces."
+   },
+   {
+    "ply": 15,
+    "text": "8.Qb3 lines up the queen behind the bishop against f7, the weakest spot near the black king.",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 17,
+    "text": "9.e5 gains space and kicks the black queen away. White keeps making moves with threats."
+   },
+   {
+    "ply": 21,
+    "text": "11.Ba3 puts the bishop on a long diagonal aimed at e7 and the f8 square, making it hard for Black to castle."
+   },
+   {
+    "ply": 22,
+    "text": "11...b5 gives back a pawn to pull White's queen away from the kingside for a moment."
+   },
+   {
+    "ply": 29,
+    "text": "15.Ne4 brings the knight toward the kingside, eyeing f6. White's pieces are gathering near the black king."
+   },
+   {
+    "ply": 31,
+    "text": "16.Bxd3 finally removes the annoying pawn and points the bishop at the kingside."
+   },
+   {
+    "ply": 33,
+    "text": "17.Nf6+! A knight sacrifice. After 17...gxf6 18.exf6 the e-file opens and the knight on e7 comes under attack.",
+    "label": "Knight sacrifice"
+   },
+   {
+    "ply": 36,
+    "text": "18...Rg8 Black prepares a counterattack on the g-file. If Black ever gets ...Qxf3, then ...Qxg2 is mate."
+   },
+   {
+    "ply": 37,
+    "text": "19.Rad1!! A quiet move in the middle of a fight. Anderssen ignores the threat and brings his last piece to the d-file. Analysts later found defences for Black, but over the board it was stunning.",
+    "label": "The evergreen move"
+   },
+   {
+    "ply": 38,
+    "text": "19...Qxf3 Black takes the knight and threatens ...Qxg2 mate. White must keep giving checks."
+   },
+   {
+    "ply": 39,
+    "text": "20.Rxe7+ removes the defender with check, so Black has no time for ...Qxg2."
+   },
+   {
+    "ply": 42,
+    "text": "21...Kxd7 was forced. The bishop on d3 stands in front of the rook on d1. When the bishop moves, the rook will give check.",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 43,
+    "text": "22.Bf5+ is a **double check**: from the bishop and from the rook behind it. A double check can only be answered by moving the king.",
+    "label": "Double check!",
+    "arrows": [
+     {
+      "from": "f5",
+      "to": "d7",
+      "color": "red"
+     },
+     {
+      "from": "d1",
+      "to": "d7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 45,
+    "text": "23.Bd7+ chases the king to f8, right into the path of the bishop on a3."
+   },
+   {
+    "ply": 47,
+    "text": "24.Bxe7# Checkmate! The bishop is protected by the f6 pawn. A perfect example of how open lines and active pieces create a mating attack.",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 41,
+    "prompt": "White to play. Black threatens mate on g2. Can you find a check that changes everything?",
+    "hint": "Your rook on d1 is lined up on the d-file. What if the d7 pawn disappeared with check?",
+    "explanation": "21.Qxd7+!! The king must take, and then the bishop and rook give a double check with 22.Bf5+, leading to mate.",
+    "also": []
+   },
+   {
+    "ply": 47,
+    "prompt": "White to play and checkmate in one. The black king is on f8. Can you finish?",
+    "hint": "Your dark-squared bishop has been waiting on a3 all game.",
+    "explanation": "24.Bxe7# The bishop takes the knight with check, the f6 pawn protects it, and the king has no squares left.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "game-of-the-century",
+  "title": "The Game of the Century",
+  "white": "Donald Byrne",
+  "black": "Robert James Fischer",
+  "event": "Rosenwald Memorial, New York",
+  "year": 1956,
+  "result": "0-1",
+  "opening": "Grünfeld Defence",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "tactics",
+   "checkmate"
+  ],
+  "orientation": "black",
+  "key_ply": 33,
+  "summary": "A 13-year-old Bobby Fischer gives up his queen against a top American master and wins with a breathtaking team of minor pieces. The lesson: a king stuck in the centre is a target, and a queen is only worth what it can do on the board.",
+  "moves": "Nf3 Nf6 c4 g6 Nc3 Bg7 d4 O-O Bf4 d5 Qb3 dxc4 Qxc4 c6 e4 Nbd7 Rd1 Nb6 Qc5 Bg4 Bg5 Na4 Qa3 Nxc3 bxc3 Nxe4 Bxe7 Qb6 Bc4 Nxc3 Bc5 Rfe8+ Kf1 Be6 Bxb6 Bxc4+ Kg1 Ne2+ Kf1 Nxd4+ Kg1 Ne2+ Kf1 Nc3+ Kg1 axb6 Qb4 Ra4 Qxb6 Nxd1 h3 Rxa2 Kh2 Nxf2 Re1 Rxe1 Qd8+ Bf8 Nxe1 Bd5 Nf3 Ne4 Qb8 b5 h4 h5 Ne5 Kg7 Kg1 Bc5+ Kf1 Ng3+ Ke1 Bb4+ Kd1 Bb3+ Kc1 Ne2+ Kb1 Nc3+ Kc1 Rc2#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New York, 1956. Bobby Fischer is just **13 years old**, facing Donald Byrne, one of America's best players. What follows was soon called the Game of the Century."
+   },
+   {
+    "ply": 6,
+    "text": "Fischer puts his bishop on g7, where it sweeps the long diagonal. He lets White build a centre, planning to attack it later."
+   },
+   {
+    "ply": 10,
+    "text": "5...d5 strikes at the centre straight away. This setup, with ...g6 and ...d5, is the **Grünfeld Defence**."
+   },
+   {
+    "ply": 15,
+    "text": "White now owns a big pawn centre. But look at his king: still in the middle, with the kingside pieces asleep. Fischer will make him pay."
+   },
+   {
+    "ply": 19,
+    "text": "10.Qc5 is already the queen's third move. Every queen move is a move White isn't spending on development or castling."
+   },
+   {
+    "ply": 22,
+    "text": "11...Na4!! A stunning offer. If 12.Nxa4, then 12...Nxe4 hits both the queen on c5 and the bishop on g5, and White's position falls apart.",
+    "label": "Knight offered on a4",
+    "arrows": [
+     {
+      "from": "a4",
+      "to": "c3",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 26,
+    "text": "13...Nxe4! Fischer wins the centre pawn and attacks the pawn on c3 too. Meanwhile White's king is still stuck in the centre."
+   },
+   {
+    "ply": 32,
+    "text": "16...Rfe8+ opens the e-file with check. White's king must walk to f1, and it can never castle now."
+   },
+   {
+    "ply": 36,
+    "text": "White took the queen, and now the payback begins. The bishop checks, and Black's knight and bishop are about to dance around White's king.",
+    "label": "The payback begins"
+   },
+   {
+    "ply": 40,
+    "text": "20...Nxd4+ is a **discovered check**: the knight steps away and the bishop on c4 gives check. Check, grab, check again: this pattern is called a windmill.",
+    "label": "The windmill",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "f1",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 46,
+    "text": "The windmill is done. For his queen Fischer has already won two bishops and a pawn, his rook on a8 now hits White's queen, and the knight on c3 attacks the rook on d1."
+   },
+   {
+    "ply": 50,
+    "text": "25...Nxd1 collects the rook too. White still has a queen, but Black's pieces work as a team, while White's rook on h1 has never moved."
+   },
+   {
+    "ply": 58,
+    "text": "White's queen gives a few checks, but there's no real danger. Black calmly covers his king and keeps his extra pieces."
+   },
+   {
+    "ply": 64,
+    "text": "With a big material lead, Fischer pushes his queenside pawns and gets every piece ready to hunt White's king."
+   },
+   {
+    "ply": 72,
+    "text": "Time to finish. 36...Ng3+ starts the final hunt: knight, bishops and rook take turns checking and drive the king to the queenside.",
+    "label": "The final hunt"
+   },
+   {
+    "ply": 82,
+    "text": "41...Rc2# The rook gives mate, protected by the bishop on b3, while the knight on c3 covers b1 and d1. A 13-year-old had just played one of the most famous games in history.",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 34,
+    "prompt": "Black to play. Your queen on b6 is attacked by the bishop on c5. Can you find Fischer's legendary reply?",
+    "hint": "Don't save the queen. Think about White's king on f1.",
+    "explanation": "17...Be6!! gives up the queen. The bishop attacks the c4 bishop and prepares a storm of checks. If 18.Bxe6, then 18...Qb5+ leads to a beautiful smothered mate; if White takes the queen, as in the game, Black wins back a mountain of material.",
+    "also": []
+   },
+   {
+    "ply": 38,
+    "prompt": "Black to play. You've given up your queen and now it's time to cash in. Which check gets things going?",
+    "hint": "Your knight on c3 can reach a square next to White's king, and your bishop on c4 is aiming at f1.",
+    "explanation": "19...Ne2+ forces 20.Kf1. Now the knight can jump away with a discovered check from the c4 bishop, grabbing material each time, while White's king can only shuffle back and forth.",
+    "also": []
+   },
+   {
+    "ply": 82,
+    "prompt": "Black to play. White's king has been chased to c1. Can you find the checkmate?",
+    "hint": "Your rook on a2 wants to join the party.",
+    "explanation": "41...Rc2# The rook checks on c2 and is protected by the bishop on b3. The king can't go to b1 or d1 because of the knight on c3, and the rook covers b2 and d2.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "kasparov-topalov-1999",
+  "title": "Kasparov's Immortal",
+  "white": "Garry Kasparov",
+  "black": "Veselin Topalov",
+  "event": "Hoogovens tournament, Wijk aan Zee",
+  "year": 1999,
+  "result": "1-0",
+  "opening": "Pirc Defence",
+  "level": "advanced",
+  "themes": [
+   "sacrifice",
+   "king-hunt",
+   "calculation",
+   "attack"
+  ],
+  "orientation": "white",
+  "key_ply": 46,
+  "summary": "Kasparov gives up a rook and then chases Topalov's king from one side of the board all the way to the other. Often called the greatest attacking game ever played, it shows how an exposed king can be hunted down even when the attacker is short of material.",
+  "moves": "e4 d6 d4 Nf6 Nc3 g6 Be3 Bg7 Qd2 c6 f3 b5 Nge2 Nbd7 Bh6 Bxh6 Qxh6 Bb7 a3 e5 O-O-O Qe7 Kb1 a6 Nc1 O-O-O Nb3 exd4 Rxd4 c5 Rd1 Nb6 g3 Kb8 Na5 Ba8 Bh3 d5 Qf4+ Ka7 Rhe1 d4 Nd5 Nbxd5 exd5 Qd6 Rxd4 cxd4 Re7+ Kb6 Qxd4+ Kxa5 b4+ Ka4 Qc3 Qxd5 Ra7 Bb7 Rxb7 Qc4 Qxf6 Kxa3 Qxa6+ Kxb4 c3+ Kxc3 Qa1+ Kd2 Qb2+ Kd1 Bf1 Rd2 Rd7 Rxd7 Bxc4 bxc4 Qxh8 Rd3 Qa8 c3 Qa4+ Ke1 f4 f5 Kc1 Rd2 Qa7",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Wijk aan Zee, 1999. World champion Garry Kasparov, at the height of his powers, plays the young Bulgarian star Veselin Topalov. What follows is often called **Kasparov's Immortal**."
+   },
+   {
+    "ply": 6,
+    "text": "The **Pirc Defence**: Black lets White build a big pawn centre and plans to attack it later with pieces and pawns."
+   },
+   {
+    "ply": 21,
+    "text": "Kasparov castles long, on the queenside. His king will be safe there as long as the pieces around it stay solid."
+   },
+   {
+    "ply": 26,
+    "text": "Topalov also castles queenside, but his pawns on a6, b5 and c6 have already moved forward. That leaves holes around his king, which will matter later."
+   },
+   {
+    "ply": 35,
+    "text": "**18.Na5** plants a knight right next to the black king. It is annoying and hard for Black to chase away."
+   },
+   {
+    "ply": 42,
+    "text": "**21...d4** attacks the knight on c3 and looks strong for Black. Kasparov answers by jumping into d5."
+   },
+   {
+    "ply": 46,
+    "text": "The position looks calm. Black's pawn on d4 seems well protected and Black's queen eyes White's pieces. But Kasparov has seen something incredible."
+   },
+   {
+    "ply": 48,
+    "text": "Topalov takes the rook. Now the long chase begins: White's rook comes to e7 with check, and the black king is pushed out of its shelter.",
+    "label": "Rook sacrifice!"
+   },
+   {
+    "ply": 50,
+    "text": "The black king steps forward to b6. It is already in the open, with White's queen and rook nearby."
+   },
+   {
+    "ply": 52,
+    "text": "The king takes the knight on a5 and keeps walking up the board. Every step takes it further from its own army.",
+    "label": "The king hunt begins",
+    "highlights": [
+     "a5"
+    ]
+   },
+   {
+    "ply": 54,
+    "text": "The king is now on a4, deep inside White's half of the board. Kasparov keeps bringing pieces to surround it."
+   },
+   {
+    "ply": 62,
+    "text": "Black's king keeps grabbing pawns, but each capture pulls it deeper into danger."
+   },
+   {
+    "ply": 66,
+    "text": "The black king is on c3! White keeps giving checks to drive it further down the board."
+   },
+   {
+    "ply": 70,
+    "text": "The king has walked from c8 all the way to d1, across the entire board. Now Kasparov needs a finishing blow.",
+    "label": "Across the whole board"
+   },
+   {
+    "ply": 71,
+    "text": "**36.Bf1!** is a quiet move with a big punch. The bishop attacks Black's queen on c4 and tightens the net around the king.",
+    "label": "Quiet but deadly",
+    "arrows": [
+     {
+      "from": "f1",
+      "to": "c4",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 73,
+    "text": "Another rook offer. **37.Rd7** challenges Black's d-rook, pulling it away from defending."
+   },
+   {
+    "ply": 77,
+    "text": "White has won back material and now has a queen against a rook. The rest is technique."
+   },
+   {
+    "ply": 87,
+    "text": "After **44.Qa7** Topalov resigned: White's queen and extra material decide. The lesson: when the enemy king leaves its shelter, keep it running with checks and bring every piece to the hunt.",
+    "label": "Black resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 47,
+    "prompt": "White to play. Black's pawn on d4 looks safe. Kasparov found one of the most famous moves ever. Can you?",
+    "hint": "Give up a rook to open the e-file.",
+    "explanation": "**24.Rxd4!!** gives a rook for a pawn. After **24...cxd4 25.Re7+** the black king is dragged into the open, and White's queen joins the chase.",
+    "also": []
+   },
+   {
+    "ply": 59,
+    "prompt": "White to play. Black's bishop has come to b7 to protect the king. What do you do with it?",
+    "hint": "Remove the defender.",
+    "explanation": "**30.Rxb7!** takes the defending bishop. The rook now controls the b-file, and the black king has even fewer places to hide.",
+    "also": []
+   },
+   {
+    "ply": 75,
+    "prompt": "White to play. Topalov just took the rook on d7. How does White win the material back?",
+    "hint": "Look at what the bishop on f1 is attacking.",
+    "explanation": "**38.Bxc4** grabs Black's queen. That was the point of **36.Bf1**: the bishop was eyeing c4 all along.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "reti-tartakower-1910",
+  "title": "Réti's Brilliant Miniature",
+  "white": "Richard Réti",
+  "black": "Savielly Tartakower",
+  "event": "Vienna (casual game)",
+  "year": 1910,
+  "result": "1-0",
+  "opening": "Caro-Kann Defence",
+  "level": "beginner",
+  "themes": [
+   "sacrifice",
+   "checkmate",
+   "tactics"
+  ],
+  "orientation": "white",
+  "key_ply": 16,
+  "summary": "In only eleven moves, Réti sacrifices his queen and mates with a bishop and a rook. A perfect example of a discovered double check. The lesson: when you castle queenside, the rook lands on the d-file, and that can be deadly against a king in the centre.",
+  "moves": "e4 c6 d4 d5 Nc3 dxe4 Nxe4 Nf6 Qd3 e5 dxe5 Qa5+ Bd2 Qxe5 O-O-O Nxe4 Qd8+ Kxd8 Bg5+ Kc7 Bd8#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Vienna, 1910. Two future chess legends, Richard Réti and Savielly Tartakower, meet in a casual game. It lasts only eleven moves."
+   },
+   {
+    "ply": 2,
+    "text": "1...c6 is the Caro-Kann Defence. Black prepares ...d5 to challenge the centre in a solid way."
+   },
+   {
+    "ply": 6,
+    "text": "3...dxe4 Black trades in the centre. White recaptures with the knight, which gets a nice central square."
+   },
+   {
+    "ply": 9,
+    "text": "5.Qd3 is unusual. The queen protects the knight and prepares to castle queenside, putting a rook on the d-file."
+   },
+   {
+    "ply": 10,
+    "text": "5...e5 Black offers a pawn to open lines while White's king is still in the middle."
+   },
+   {
+    "ply": 12,
+    "text": "6...Qa5+ checks the king and attacks the e5 pawn at the same time, so Black wins the pawn back."
+   },
+   {
+    "ply": 14,
+    "text": "7...Qxe5 pins the e4 knight to the White king. It looks like Black is winning a piece."
+   },
+   {
+    "ply": 15,
+    "text": "8.O-O-O! White castles, so the knight is no longer pinned, but leaves it hanging. The rook lands on d1, behind the bishop on d2.",
+    "label": "Castling into attack"
+   },
+   {
+    "ply": 16,
+    "text": "8...Nxe4? Black grabs the knight, but forgets that the king is still on e8 and the d-file is open.",
+    "label": "The fatal grab"
+   },
+   {
+    "ply": 18,
+    "text": "9...Kxd8 was forced. Now only the bishop on d2 stands between the rook on d1 and the black king."
+   },
+   {
+    "ply": 19,
+    "text": "10.Bg5+ is a **double check**: the bishop checks along the diagonal and the rook checks along the d-file. Only a king move helps.",
+    "label": "Double check!",
+    "arrows": [
+     {
+      "from": "g5",
+      "to": "d8",
+      "color": "red"
+     },
+     {
+      "from": "d1",
+      "to": "d8",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 20,
+    "text": "10...Kc7 After 10...Ke8 White mates with 11.Rd8#. Kc7 also loses, but in a more beautiful way."
+   },
+   {
+    "ply": 21,
+    "text": "11.Bd8# Checkmate! The bishop is protected by the rook, and Black's own pieces block the king's escape. **Don't leave your king in the centre when the d-file opens.**",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 17,
+    "prompt": "White to play. You've lost a knight, but Black's king is still in the centre. Can you find a shocking move?",
+    "hint": "The d-file is open. What if the black king were forced onto d8?",
+    "explanation": "9.Qd8+!! The king must take, and then 10.Bg5+ gives double check with bishop and rook, leading to mate.",
+    "also": []
+   },
+   {
+    "ply": 21,
+    "prompt": "White to play and checkmate in one. Can you see it?",
+    "hint": "The rook on d1 controls the whole d-file.",
+    "explanation": "11.Bd8# The bishop checks the king on c7, the rook protects it, and Black's own pawns and pieces leave no escape.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "lasker-thomas-1912",
+  "title": "Lasker's King Hunt",
+  "white": "Edward Lasker",
+  "black": "George Alan Thomas",
+  "event": "London (casual game)",
+  "year": 1912,
+  "result": "1-0",
+  "opening": "Dutch Defence",
+  "level": "intermediate",
+  "themes": [
+   "king-hunt",
+   "sacrifice",
+   "checkmate",
+   "attack"
+  ],
+  "orientation": "white",
+  "key_ply": 20,
+  "summary": "After a queen sacrifice on h7, the black king is chased with checks all the way from g8 to g1 and mated in White's own back rank. It is the most famous king hunt in chess. The lesson: a king pulled out of its shelter can be hunted down by a few active pieces.",
+  "moves": "d4 e6 Nf3 f5 Nc3 Nf6 Bg5 Be7 Bxf6 Bxf6 e4 fxe4 Nxe4 b6 Ne5 O-O Bd3 Bb7 Qh5 Qe7 Qxh7+ Kxh7 Nxf6+ Kh6 Neg4+ Kg5 h4+ Kf4 g3+ Kf3 Be2+ Kg2 Rh2+ Kg1 Kd2#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "London, 1912. Edward Lasker (not to be confused with world champion Emanuel Lasker) plays Sir George Thomas. Get ready for the most famous king walk in chess."
+   },
+   {
+    "ply": 4,
+    "text": "2...f5 gives a Dutch Defence setup. It fights for e4 but weakens the squares around the black king."
+   },
+   {
+    "ply": 9,
+    "text": "5.Bxf6 removes the knight that was guarding e4, so White can open the centre with e4."
+   },
+   {
+    "ply": 13,
+    "text": "7.Nxe4 With the e-pawns traded, the knight lands in the centre, pointing at the black kingside."
+   },
+   {
+    "ply": 15,
+    "text": "8.Ne5 Both knights are now on strong central squares, ready to jump toward the king."
+   },
+   {
+    "ply": 17,
+    "text": "9.Bd3 aims the bishop at h7. The knight on e4 stands in front of it, which will matter soon.",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "h7",
+      "color": "blue"
+     }
+    ]
+   },
+   {
+    "ply": 19,
+    "text": "10.Qh5 The queen joins the attack and also hits h7. White's pieces are gathered near the castled king."
+   },
+   {
+    "ply": 20,
+    "text": "10...Qe7? looks natural, but it doesn't help the king. Black needed to deal with the knights first."
+   },
+   {
+    "ply": 22,
+    "text": "11...Kxh7 was forced. White has given the queen, but now the king is out of its shelter.",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 23,
+    "text": "12.Nxf6+ is a **double check**: the knight checks, and moving it uncovers the bishop on d3 aiming at h7. The king must move.",
+    "label": "Double check!",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "h7",
+      "color": "red"
+     },
+     {
+      "from": "f6",
+      "to": "h7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 25,
+    "text": "13.Neg4+ The other knight joins in, and the king is driven further up the board.",
+    "label": "The king hunt begins"
+   },
+   {
+    "ply": 27,
+    "text": "14.h4+ A pawn gives check. White keeps the king on the run with every move."
+   },
+   {
+    "ply": 29,
+    "text": "15.g3+ Another pawn check, pushing the king even deeper into White's camp."
+   },
+   {
+    "ply": 31,
+    "text": "16.Be2+ The bishop joins. The king has walked from g8 to f3, surrounded by White's army."
+   },
+   {
+    "ply": 33,
+    "text": "17.Rh2+ The rook checks and the king is forced to g1, White's own back rank."
+   },
+   {
+    "ply": 35,
+    "text": "18.Kd2# Checkmate! Moving the king uncovers the rook on a1. Castling queenside would have mated too. **A king pulled out in the open can be hunted down.**",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 21,
+    "prompt": "White to play. Your pieces are all aiming at the black king. Can you find the shocking first blow?",
+    "hint": "Remember the bishop hiding behind the e4 knight.",
+    "explanation": "11.Qxh7+!! The king must take, and then 12.Nxf6+ is a double check that starts the hunt.",
+    "also": []
+   },
+   {
+    "ply": 35,
+    "prompt": "White to play and checkmate in one. The black king is on g1. Can you find it?",
+    "hint": "Your rook on a1 is ready, if only your own king got out of the way.",
+    "explanation": "18.Kd2# The king steps aside and uncovers the rook on a1, which checks along the back rank. Castling queenside (18.O-O-O#) also mates.",
+    "also": [
+     "O-O-O#"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "steinitz-bardeleben-1895",
+  "title": "The Untouchable Rook",
+  "white": "Wilhelm Steinitz",
+  "black": "Curt von Bardeleben",
+  "event": "Hastings tournament",
+  "year": 1895,
+  "result": "1-0",
+  "opening": "Giuoco Piano",
+  "level": "intermediate",
+  "themes": [
+   "initiative",
+   "sacrifice",
+   "king-hunt"
+  ],
+  "orientation": "white",
+  "key_ply": 42,
+  "summary": "The first world champion, aged 59, builds pressure on the e-file and then unleashes a rook that cannot be taken. A brilliant lesson in keeping the initiative: when every move is a check, your opponent never gets time to carry out their own threats.",
+  "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d4 exd4 cxd4 Bb4+ Nc3 d5 exd5 Nxd5 O-O Be6 Bg5 Be7 Bxd5 Bxd5 Nxd5 Qxd5 Bxe7 Nxe7 Re1 f6 Qe2 Qd7 Rac1 c6 d5 cxd5 Nd4 Kf7 Ne6 Rhc8 Qg4 g6 Ng5+ Ke8 Rxe7+ Kf8 Rf7+ Kg8 Rg7+ Kh8 Rxh7+",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Hastings, 1895. Wilhelm Steinitz, the first official world champion, is 59 years old and plays White against the strong German master Curt von Bardeleben. This game won the tournament's brilliancy prize."
+   },
+   {
+    "ply": 5,
+    "text": "3.Bc4. The Italian Game: White's bishop aims straight at f7, the weakest point near Black's king."
+   },
+   {
+    "ply": 12,
+    "text": "6...Bb4+. White has built a big pawn centre, so Black gives a check to slow down White's development."
+   },
+   {
+    "ply": 14,
+    "text": "7...d5. A good reply! Black strikes back at the centre before White's pawns can roll forward."
+   },
+   {
+    "ply": 26,
+    "text": "13...Nxe7. After a series of trades, notice one thing: Black's king is still sitting in the middle on e8."
+   },
+   {
+    "ply": 27,
+    "text": "14.Re1. The rook takes the open e-file. Black's knight on e7 is now **pinned**: it can't move without exposing the king.",
+    "label": "Pinned on the e-file",
+    "arrows": [
+     {
+      "from": "e1",
+      "to": "e8",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 28,
+    "text": "14...f6. Black plans ...Kf7 to step out of the pin, but the pawn move loosens the squares around his king."
+   },
+   {
+    "ply": 33,
+    "text": "17.d5! White gives up a pawn to clear the d4 square for his knight. From there it can jump towards Black's king.",
+    "label": "Pawn sacrifice"
+   },
+   {
+    "ply": 36,
+    "text": "18...Kf7. The king finally walks out of the pin and hopes to connect his rooks."
+   },
+   {
+    "ply": 37,
+    "text": "19.Ne6! The knight lands deep in Black's camp. No black pawn can chase it away, and it eyes c7, d8, f8 and g7.",
+    "label": "Knight outpost",
+    "highlights": [
+     "e6"
+    ]
+   },
+   {
+    "ply": 38,
+    "text": "19...Rhc8. Black fights back on the c-file and gets ready to trade or win White's rook on c1."
+   },
+   {
+    "ply": 40,
+    "text": "20...g6. White's queen threatened Qxg7+, so Black has to block the g-file."
+   },
+   {
+    "ply": 42,
+    "text": "21...Ke8. Look carefully: the knight left e6, so Black's queen now attacks White's queen on g4. White's rook on c1 is attacked too. Two pieces are hanging!"
+   },
+   {
+    "ply": 44,
+    "text": "22...Kf8. Black still threatens ...Qxg4 and ...Rxc1+. So White must keep giving check, move after move."
+   },
+   {
+    "ply": 45,
+    "text": "23.Rf7+! The rook keeps checking. It can't be captured because the knight on g5 protects f7.",
+    "label": "The rook dance"
+   },
+   {
+    "ply": 47,
+    "text": "24.Rg7+. Again! If 24...Kxg7, then 25.Qxd7+ wins Black's queen, since the queen on g4 now sees d7 along the diagonal."
+   },
+   {
+    "ply": 49,
+    "text": "25.Rxh7+. Here von Bardeleben quietly left the hall and never came back, losing on time. Steinitz then showed the audience a forced mate starting 25...Kg8 26.Rg7+ Kh8 27.Qh4+. Lesson: when every move is a check, your opponent's threats never get a turn.",
+    "label": "Bardeleben walks out"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 41,
+    "prompt": "White to play. The knight on e6 is a monster, and Black has just blocked the g-file. Can you find a forcing move that brings the knight even closer to the king?",
+    "hint": "Look for a knight jump that gives check.",
+    "explanation": "21.Ng5+! The check gains time and the knight keeps guarding f7 and h7. It does open the line between the two queens, but Steinitz had seen something much deeper.",
+    "also": []
+   },
+   {
+    "ply": 43,
+    "prompt": "White to play. Your queen and your rook on c1 are both attacked. Instead of defending, can you find a move that keeps checking?",
+    "hint": "The pinned knight on e7 is guarded only by the king and queen.",
+    "explanation": "22.Rxe7+!! The rook grabs the knight with check and can't be taken: 22...Qxe7 23.Rxc8+ Rxc8 24.Qxc8+ wins, and 22...Kxe7 23.Re1+ walks the king into a deadly attack.",
+    "also": []
+   },
+   {
+    "ply": 49,
+    "prompt": "White to play. The rook has given three checks in a row. How do you keep the attack going?",
+    "hint": "The knight on g5 protects one more square next to the king.",
+    "explanation": "25.Rxh7+! Another check, and the knight on g5 guards the rook. After 25...Kg8 26.Rg7+ Kh8 27.Qh4+ the queen joins in and mate cannot be stopped.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "botvinnik-capablanca-1938",
+  "title": "Botvinnik's AVRO masterpiece",
+  "white": "Mikhail Botvinnik",
+  "black": "José Raúl Capablanca",
+  "event": "AVRO tournament, Netherlands",
+  "year": 1938,
+  "result": "1-0",
+  "opening": "Nimzo-Indian Defence",
+  "level": "advanced",
+  "themes": [
+   "pawn-power",
+   "sacrifice",
+   "positional",
+   "attack"
+  ],
+  "orientation": "white",
+  "key_ply": 58,
+  "summary": "A young Botvinnik beats the legendary Capablanca by rolling his centre pawns forward and then sacrificing a bishop and a knight so that a single pawn can reach the eighth rank. A perfect lesson in how a passed pawn can be worth more than a whole piece.",
+  "moves": "d4 Nf6 c4 e6 Nc3 Bb4 e3 d5 a3 Bxc3+ bxc3 c5 cxd5 exd5 Bd3 O-O Ne2 b6 O-O Ba6 Bxa6 Nxa6 Bb2 Qd7 a4 Rfe8 Qd3 c4 Qc2 Nb8 Rae1 Nc6 Ng3 Na5 f3 Nb3 e4 Qxa4 e5 Nd7 Qf2 g6 f4 f5 exf6 Nxf6 f5 Rxe1 Rxe1 Re8 Re6 Rxe6 fxe6 Kg7 Qf4 Qe8 Qe5 Qe7 Ba3 Qxa3 Nh5+ gxh5 Qg5+ Kf8 Qxf6+ Kg8 e7 Qc1+ Kf2 Qc2+ Kg3 Qd3+ Kh4 Qe4+ Kxh5 Qe2+ Kh4 Qe4+ g4 Qe1+ Kh5",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "The 1938 AVRO tournament gathered the best players in the world. Here the rising Soviet star Mikhail Botvinnik faces former world champion José Raúl Capablanca, famous for almost never losing."
+   },
+   {
+    "ply": 10,
+    "text": "With **5...Bxc3+** Black gives up his bishop to double White's c-pawns. White gets the bishop pair and a strong centre; Black hopes the doubled pawns become targets. A classic trade-off."
+   },
+   {
+    "ply": 28,
+    "text": "**14...c4** locks the queenside and gives Black an extra pawn there. But it also takes pressure off the centre, so White is free to prepare **e3-e4** with his own central pawns."
+   },
+   {
+    "ply": 36,
+    "text": "Capablanca's knight makes a long trip to b3, deep in White's camp, and his queen will grab the a4-pawn next. But notice how far from his own king these pieces now stand."
+   },
+   {
+    "ply": 37,
+    "text": "Botvinnik doesn't defend the a-pawn. **19.e4** starts the real plan: his pawns roll forward in the centre and on the kingside, where Black has fewer defenders.",
+    "label": "The central break"
+   },
+   {
+    "ply": 38,
+    "text": "Black is a pawn up, but his queen and knight are both on the far side of the board. In chess, where your pieces stand often matters more than counting pawns."
+   },
+   {
+    "ply": 43,
+    "text": "**22.f4** brings another pawn into the attack. The threat is **f4-f5**, prying open lines towards the black king."
+   },
+   {
+    "ply": 47,
+    "text": "**24.f5** keeps pushing. White's pawns act like a battering ram against Black's kingside."
+   },
+   {
+    "ply": 53,
+    "text": "After the rook trades, White has a **passed pawn** on e6: no black pawn can ever stop it. It is only two steps from becoming a queen.",
+    "label": "A passed pawn on e6",
+    "highlights": [
+     "e6"
+    ]
+   },
+   {
+    "ply": 58,
+    "text": "Capablanca parks his queen on e7, right in front of the pawn, to blockade it. The queen is doing a vital job. Can White chase her away from that square?"
+   },
+   {
+    "ply": 60,
+    "text": "Black has to take: if the queen leaves the e-file, the pawn walks to e7. But now the queen sits on a3, far from the action, and White's queen and knight go for the king.",
+    "label": "Bishop sacrifice!"
+   },
+   {
+    "ply": 62,
+    "text": "Capablanca takes the second piece too. His king has lost its pawn shield, and White's queen can now give checks and grab the knight on f6."
+   },
+   {
+    "ply": 65,
+    "text": "**33.Qxf6+** wins the knight with check. White has given up two pieces, but the e-pawn is about to reach the finish line."
+   },
+   {
+    "ply": 68,
+    "text": "Black's only hope is a **perpetual check**: checking the white king forever to force a draw. Botvinnik must find a safe hiding place.",
+    "label": "Hunting for a draw"
+   },
+   {
+    "ply": 75,
+    "text": "The white king boldly walks up the board, even picking up the h5-pawn. It looks scary, but Botvinnik has counted that the checks will run out."
+   },
+   {
+    "ply": 79,
+    "text": "**40.g4** blocks the check with a pawn. The king now has a shelter on h5."
+   },
+   {
+    "ply": 81,
+    "text": "After **41.Kh5** Black has no useful checks left, and nothing can stop **e8=Q**. Capablanca resigned. The lesson: a far-advanced passed pawn can be worth more than a bishop and a knight.",
+    "label": "Black resigns",
+    "arrows": [
+     {
+      "from": "e7",
+      "to": "e8",
+      "color": "green"
+     }
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "ply": 59,
+    "prompt": "White to play. Black's queen is blockading the e-pawn. How can White drag her away from e7?",
+    "hint": "Look for a piece you could offer to the queen.",
+    "explanation": "**30.Ba3!** attacks the queen. If she leaves the e-file, the pawn runs to e7; if she takes the bishop, she is far from her king. Either way, White wins.",
+    "also": []
+   },
+   {
+    "ply": 61,
+    "prompt": "White to play. Black's queen has gone to a3. Time to strike at the king. What would you play?",
+    "hint": "A knight check uncovers something.",
+    "explanation": "**31.Nh5+!** gives up the knight. After **31...gxh5** the black king is exposed, and White's queen can check on g5 and then take the knight on f6.",
+    "also": []
+   },
+   {
+    "ply": 67,
+    "prompt": "White to play. The knight on f6 is gone. What is the fastest way to win?",
+    "hint": "Your best player is a pawn.",
+    "explanation": "**34.e7!** threatens **e8=Q**. Black can only give checks, and Botvinnik has already worked out that his king will escape them.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "fischer-spassky-1972-g6",
+  "title": "Fischer–Spassky, Game 6",
+  "white": "Robert James Fischer",
+  "black": "Boris Spassky",
+  "event": "World Championship, Reykjavik",
+  "year": 1972,
+  "result": "1-0",
+  "opening": "Queen's Gambit Declined (Tartakower)",
+  "level": "advanced",
+  "themes": [
+   "positional",
+   "attack",
+   "sacrifice"
+  ],
+  "orientation": "white",
+  "key_ply": 74,
+  "summary": "Fischer surprises everyone with 1.c4, pressures Black's centre pawns, and turns a calm position into a crushing kingside attack. So beautiful that Spassky himself applauded. A model of slowly building pressure before striking.",
+  "moves": "c4 e6 Nf3 d5 d4 Nf6 Nc3 Be7 Bg5 O-O e3 h6 Bh4 b6 cxd5 Nxd5 Bxe7 Qxe7 Nxd5 exd5 Rc1 Be6 Qa4 c5 Qa3 Rc8 Bb5 a6 dxc5 bxc5 O-O Ra7 Be2 Nd7 Nd4 Qf8 Nxe6 fxe6 e4 d4 f4 Qe7 e5 Rb8 Bc4 Kh8 Qh3 Nf8 b3 a5 f5 exf5 Rxf5 Nh7 Rcf1 Qd8 Qg3 Re7 h4 Rbb7 e6 Rbc7 Qe5 Qe8 a4 Qd8 R1f2 Qe8 R2f3 Qd8 Bd3 Qe8 Qe4 Nf6 Rxf6 gxf6 Rxf6 Kg8 Bc4 Kh8 Qf4",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Reykjavik, 1972, the World Championship. The match is tied 2½–2½. Everyone expects Fischer to open with 1.e4, as he almost always does."
+   },
+   {
+    "ply": 1,
+    "text": "1.c4! Fischer had almost never opened this way. A surprise from the very first move.",
+    "label": "1.c4, a surprise!"
+   },
+   {
+    "ply": 14,
+    "text": "The players reach a classical Queen's Gambit Declined. With 7...b6 Spassky picks a solid setup he had played for years."
+   },
+   {
+    "ply": 20,
+    "text": "Lots of trades. Black has a pawn on d5 and will soon get one on c5. Pawns side by side like that are strong if they advance, but they can also become targets."
+   },
+   {
+    "ply": 30,
+    "text": "Now Black has his pair of centre pawns on c5 and d5. White's plan is to press on them and stop them from moving."
+   },
+   {
+    "ply": 32,
+    "text": "16...Ra7 is an unusual way to bring the rook toward the centre. Fischer quietly improves his pieces."
+   },
+   {
+    "ply": 38,
+    "text": "White swaps his knight for the bishop. Black's new pawn on e6 protects d5, but it's another target for White's pieces."
+   },
+   {
+    "ply": 40,
+    "text": "Spassky pushes past. His d-pawn is now passed and protected, but it's blocked, and the squares e5 and c4 now belong to White."
+   },
+   {
+    "ply": 43,
+    "text": "22.e5 grabs space and takes the f6 square away from Black's knight. White's pieces will pile up against e6."
+   },
+   {
+    "ply": 45,
+    "text": "The bishop lands on its dream diagonal, aiming at e6 and beyond toward g8.",
+    "label": "Dream diagonal",
+    "arrows": [
+     {
+      "from": "c4",
+      "to": "e6",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "ply": 47,
+    "text": "24.Qh3 joins the bishop against e6. Black's pieces are tied down to defending it."
+   },
+   {
+    "ply": 53,
+    "text": "The f-file is open, and Fischer's rooks will line up on it. Black's king has very few defenders."
+   },
+   {
+    "ply": 61,
+    "text": "31.e6! The pawn becomes a monster: passed, protected by the bishop, and splitting Black's pieces in two.",
+    "label": "Monster on e6"
+   },
+   {
+    "ply": 72,
+    "text": "Fischer calmly improves his pieces with a4, R1f2, R2f3 and Bd3, while Spassky can only shuffle his queen. No hurry when your opponent has no useful moves."
+   },
+   {
+    "ply": 77,
+    "text": "After 38...gxf6 39.Rxf6, the black king is wide open. White's queen, rook and bishop are all ready to strike."
+   },
+   {
+    "ply": 81,
+    "text": "41.Qf4 threatens Qxh6+ and more, and Spassky resigned. He then joined the audience in applauding Fischer. Fischer took the lead for the first time and went on to become world champion.",
+    "label": "Spassky applauds"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 39,
+    "prompt": "White to play. Black's pawns on c5 and d5 hold the centre. How can you challenge them right away?",
+    "hint": "Hit the d5 pawn with one of your own pawns.",
+    "explanation": "20.e4! attacks d5. If Black takes, his centre falls apart; if he pushes 20...d4, as in the game, his pawns get stuck and White's pieces take over the squares in front of them.",
+    "also": []
+   },
+   {
+    "ply": 51,
+    "prompt": "White to play. Your pieces are aimed at Black's kingside. Which pawn push opens lines for your rooks?",
+    "hint": "Your f-pawn wants to move forward.",
+    "explanation": "26.f5! breaks open the f-file. After 26...exf5 27.Rxf5, White's rook joins the attack and the e5 pawn becomes a passed pawn.",
+    "also": []
+   },
+   {
+    "ply": 75,
+    "prompt": "White to play. The knight on f6 is the black king's last defender. What's the most forceful way to deal with it?",
+    "hint": "Sometimes a rook is worth less than an open king.",
+    "explanation": "38.Rxf6! gives up a rook for the knight. After 38...gxf6 39.Rxf6 the king is bare, and White's queen, rook, bishop and e-pawn are too much to handle.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "deep-blue-kasparov-1996",
+  "title": "Deep Blue's first win",
+  "white": "Deep Blue",
+  "black": "Garry Kasparov",
+  "event": "Deep Blue vs Kasparov match, Philadelphia",
+  "year": 1996,
+  "result": "1-0",
+  "opening": "Sicilian Defence, Alapin Variation",
+  "level": "intermediate",
+  "themes": [
+   "human-vs-machine",
+   "calculation",
+   "tactics",
+   "attack"
+  ],
+  "orientation": "white",
+  "key_ply": 68,
+  "summary": "The first time a computer beat a reigning world champion in a game with normal time controls. Deep Blue calmly grabs pawns while Kasparov attacks its king, because it has calculated that its own attack will arrive first. Kasparov still won the match 4-2.",
+  "moves": "e4 c5 c3 d5 exd5 Qxd5 d4 Nf6 Nf3 Bg4 Be2 e6 h3 Bh5 O-O Nc6 Be3 cxd4 cxd4 Bb4 a3 Ba5 Nc3 Qd6 Nb5 Qe7 Ne5 Bxe2 Qxe2 O-O Rac1 Rac8 Bg5 Bb6 Bxf6 gxf6 Nc4 Rfd8 Nxb6 axb6 Rfd1 f5 Qe3 Qf6 d5 Rxd5 Rxd5 exd5 b3 Kh8 Qxb6 Rg8 Qc5 d4 Nd6 f4 Nxb7 Ne5 Qd5 f3 g3 Nd3 Rc7 Re8 Nd6 Re1+ Kh2 Nxf2 Nxf7+ Kg7 Ng5+ Kh6 Rxh7+",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Philadelphia, February 1996. IBM's Deep Blue, a machine that looks at millions of positions every second, faces world champion Garry Kasparov in game 1 of a six-game match."
+   },
+   {
+    "ply": 3,
+    "text": "Against the Sicilian, Deep Blue chooses **2.c3**, a quiet move that prepares **d2-d4** to build a full pawn centre."
+   },
+   {
+    "ply": 6,
+    "text": "Kasparov's queen comes out early on d5. That is fine here, because White has no knight on c3 to chase her yet."
+   },
+   {
+    "ply": 20,
+    "text": "White now has an **isolated pawn** on d4: no friendly pawns on the c- or e-files can protect it. It gives White active pieces, but it can also become a weakness.",
+    "highlights": [
+     "d4"
+    ]
+   },
+   {
+    "ply": 25,
+    "text": "**13.Nb5** chases Black's queen and eyes the d6 square. Deep Blue keeps its pieces active."
+   },
+   {
+    "ply": 36,
+    "text": "After **18.Bxf6 gxf6** Black's kingside pawns are broken up. In return, Kasparov gets an open g-file to use against White's king."
+   },
+   {
+    "ply": 45,
+    "text": "**23.d5!** gets rid of the isolated pawn and opens lines for White's pieces. A clean way to turn a weakness into activity.",
+    "label": "Breaking free"
+   },
+   {
+    "ply": 50,
+    "text": "Kasparov tucks his king on h8 so that his rook can use the g-file. He is ready to give up pawns to attack White's king."
+   },
+   {
+    "ply": 52,
+    "text": "Black's rook lands on g8, pointing straight at White's king. The race is on: Black attacks the king, White counts pawns."
+   },
+   {
+    "ply": 57,
+    "text": "Deep Blue grabs another pawn while Black's pieces gather near its king. Many humans would panic. The machine had calculated that it was safe.",
+    "label": "Brave or greedy?"
+   },
+   {
+    "ply": 60,
+    "text": "**30...f3** pokes at White's king and threatens to break through on g2. Things are getting sharp."
+   },
+   {
+    "ply": 61,
+    "text": "**31.g3** keeps the kingside closed. Deep Blue only defends as much as it needs to."
+   },
+   {
+    "ply": 66,
+    "text": "Kasparov throws everything in with **33...Re1+**. His rook, knight, queen and f3-pawn are all near White's king."
+   },
+   {
+    "ply": 68,
+    "text": "Black's pieces swarm around White's king, and if White hesitates, Black's attack will crash through. But it is White's move, and Deep Blue has checks."
+   },
+   {
+    "ply": 73,
+    "text": "After **37.Rxh7+** Black's king is caught and mate is close, so Kasparov resigned. A machine had beaten the world champion for the first time. Kasparov bounced back to win the match 4-2.",
+    "label": "History made"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 51,
+    "prompt": "White to play. Black's b6-pawn has no defenders. Is it safe to take it?",
+    "hint": "Count who protects b6.",
+    "explanation": "**26.Qxb6** simply wins a pawn. Deep Blue had calculated that Black's counterattack would not arrive in time.",
+    "also": []
+   },
+   {
+    "ply": 69,
+    "prompt": "White to play. Black threatens to break through against your king. Can you attack first?",
+    "hint": "Checks first. Look at the f7-pawn.",
+    "explanation": "**35.Nxf7+!** starts a chain of checks. The black king is pulled out, and White's knight, rook and queen close in before Black can ever strike.",
+    "also": []
+   },
+   {
+    "ply": 73,
+    "prompt": "White to play. The black king is on h6. How do you finish the attack?",
+    "hint": "Rook takes a pawn with check.",
+    "explanation": "**37.Rxh7+** rips away the last pawn near the king. White's queen, rook and knight now trap it, so Kasparov resigned.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "rotlewi-rubinstein-1907",
+  "title": "Rubinstein's Immortal",
+  "white": "Georg Rotlewi",
+  "black": "Akiba Rubinstein",
+  "event": "Łódź",
+  "year": 1907,
+  "result": "0-1",
+  "opening": "Queen's Gambit Declined",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "tactics"
+  ],
+  "orientation": "black",
+  "key_ply": 43,
+  "summary": "Rubinstein sacrifices his queen and a rook so that his two bishops can rake White's king along the long diagonals. A perfect example of how active, well-aimed pieces can beat a big pile of extra material.",
+  "moves": "d4 d5 Nf3 e6 e3 c5 c4 Nc6 Nc3 Nf6 dxc5 Bxc5 a3 a6 b4 Bd6 Bb2 O-O Qd2 Qe7 Bd3 dxc4 Bxc4 b5 Bd3 Rd8 Qe2 Bb7 O-O Ne5 Nxe5 Bxe5 f4 Bc7 e4 Rac8 e5 Bb6+ Kh1 Ng4 Be4 Qh4 g3 Rxc3 gxh4 Rd2 Qxd2 Bxe4+ Qg2 Rh3",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Łódź, 1907. Akiba Rubinstein, a quiet genius who would become one of the best players in the world, plays Black against Georg Rotlewi. The finish is so stunning that this game is called **Rubinstein's Immortal**."
+   },
+   {
+    "ply": 11,
+    "text": "6.dxc5. White releases the tension in the centre. Black takes back with the bishop, developing a piece at the same time."
+   },
+   {
+    "ply": 14,
+    "text": "7...a6. Both sides copy each other, keeping enemy pieces off b5 and getting ready to push on the queenside."
+   },
+   {
+    "ply": 22,
+    "text": "11...dxc4. Black captures so that White's bishop has to move again, and it will soon be chased once more by ...b5."
+   },
+   {
+    "ply": 24,
+    "text": "12...b5. Black gains space with tempo and makes room for the bishop on b7."
+   },
+   {
+    "ply": 28,
+    "text": "14...Bb7. Remember this bishop! Once the knight on c6 moves away, it will stare down the long diagonal towards White's king."
+   },
+   {
+    "ply": 32,
+    "text": "16...Bxe5. After the trade, the long diagonal is wide open from b7 all the way to g2.",
+    "arrows": [
+     {
+      "from": "b7",
+      "to": "g2",
+      "color": "yellow"
+     }
+    ]
+   },
+   {
+    "ply": 33,
+    "text": "17.f4. White kicks the bishop and plans e4 and e5. But moving the f-pawn also opens a diagonal towards his own king on g1."
+   },
+   {
+    "ply": 34,
+    "text": "17...Bc7. The bishop steps back calmly. It will soon reappear on b6, aiming right at White's king."
+   },
+   {
+    "ply": 37,
+    "text": "19.e5. White chases away the knight on f6 and looks very active. Rubinstein has prepared a stunning answer."
+   },
+   {
+    "ply": 38,
+    "text": "19...Bb6+. Check! With the f-pawn gone from f2, the bishop slices all the way to g1.",
+    "arrows": [
+     {
+      "from": "b6",
+      "to": "g1",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 40,
+    "text": "20...Ng4. The knight jumps towards White's king. Next comes ...Qh4, aiming at h2."
+   },
+   {
+    "ply": 42,
+    "text": "21...Qh4. Black threatens 22...Qxh2 mate. White has to deal with it."
+   },
+   {
+    "ply": 45,
+    "text": "23.gxh4. White takes the queen. Black is a whole queen down, but look at those two bishops pointing at White's king!",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 47,
+    "text": "24.Qxd2. White grabs the rook too. But now the queen has left e2 and no longer protects the bishop on e4.",
+    "label": "Rook sacrifice!"
+   },
+   {
+    "ply": 48,
+    "text": "24...Bxe4+. Check along the long diagonal! The bishop that waited on b7 all game finally strikes.",
+    "arrows": [
+     {
+      "from": "e4",
+      "to": "h1",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 50,
+    "text": "25...Rh3! White's queen is pinned to its king by the bishop on e4, so it can't take the rook. There is no good way to stop ...Rxh2 mate, and White resigned. Two bishops aimed at a king can be worth more than a queen!",
+    "label": "Unstoppable mate"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 44,
+    "prompt": "Black to play. White just attacked your queen with 22.g3. Instead of moving it, can you find a bold move that makes the long diagonal work for you?",
+    "hint": "The knight on c3 is the piece that guards e4.",
+    "explanation": "22...Rxc3!! Black ignores the queen and removes the defender of e4. If 23.gxh4, the next blow 23...Rd2!! tears White's position apart.",
+    "also": []
+   },
+   {
+    "ply": 46,
+    "prompt": "Black to play. You've given your queen. Now find the move that drags White's queen away from guarding the bishop on e4.",
+    "hint": "A rook can land on the second rank with an attack.",
+    "explanation": "23...Rd2!! The rook attacks White's queen. After 24.Qxd2, the reply 24...Bxe4+ opens the long diagonal with check.",
+    "also": []
+   },
+   {
+    "ply": 50,
+    "prompt": "Black to play. White blocked the check with the queen on g2. Find the quiet move that finishes the game.",
+    "hint": "The queen on g2 can't move freely. Which rook move targets h2?",
+    "explanation": "25...Rh3! The queen can't capture because it is pinned to its king. Black threatens ...Rxh2 mate, and White has no good defence.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "paulsen-morphy-1857",
+  "title": "Morphy's Queen Sacrifice",
+  "white": "Louis Paulsen",
+  "black": "Paul Morphy",
+  "event": "1st American Chess Congress, New York",
+  "year": 1857,
+  "result": "0-1",
+  "opening": "Four Knights Game",
+  "level": "advanced",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "initiative"
+  ],
+  "orientation": "black",
+  "key_ply": 33,
+  "summary": "In the final of the first American Chess Congress, Morphy gives up his queen to smash open White's kingside. His rooks and bishops then hunt the king until Paulsen resigns. The lesson: when your pieces are far more active, a big sacrifice can pay off.",
+  "moves": "e4 e5 Nf3 Nc6 Nc3 Nf6 Bb5 Bc5 O-O O-O Nxe5 Re8 Nxc6 dxc6 Bc4 b5 Be2 Nxe4 Nxe4 Rxe4 Bf3 Re6 c3 Qd3 b4 Bb6 a4 bxa4 Qxa4 Bd7 Ra2 Rae8 Qa6 Qxf3 gxf3 Rg6+ Kh1 Bh3 Rd1 Bg2+ Kg1 Bxf3+ Kf1 Bg2+ Kg1 Bh3+ Kh1 Bxf2 Qf1 Bxf1 Rxf1 Re2 Ra1 Rh6 d4 Be3",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New York, 1857. In the final of the first American Chess Congress, 20-year-old Paul Morphy faces Louis Paulsen, a strong German master. We watch from Morphy's side, with Black."
+   },
+   {
+    "ply": 12,
+    "text": "6...Re8 Paulsen took the e5 pawn, but Morphy doesn't rush to win it back. He develops and puts his rook on the open e-file."
+   },
+   {
+    "ply": 14,
+    "text": "7...dxc6 Recapturing toward the centre opens the d-file and frees the c8 bishop. Black's pieces have lots of room."
+   },
+   {
+    "ply": 18,
+    "text": "9...Nxe4 Morphy wins the pawn back with a small tactic. His rook on e8 backs up the knight, so after the trades Black has regained the pawn."
+   },
+   {
+    "ply": 20,
+    "text": "10...Rxe4 The black rook is now very active in the middle of the board."
+   },
+   {
+    "ply": 24,
+    "text": "12...Qd3! The queen jumps deep into White's camp. It blocks the d-pawn, so White's c1 bishop and a1 rook struggle to develop."
+   },
+   {
+    "ply": 30,
+    "text": "15...Bd7 Morphy calmly brings his last minor piece out. All his pieces are now aiming at the White king."
+   },
+   {
+    "ply": 32,
+    "text": "16...Rae8 Both rooks are on the e-file. White's queen has gone hunting pawns on the queenside, far from home."
+   },
+   {
+    "ply": 35,
+    "text": "18.gxf3 White had to take the queen, but the pawn shield in front of the king is now broken.",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 38,
+    "text": "19...Bh3 The bishop threatens ...Bg2+ and mate ideas on the g-file. White's king is in real danger."
+   },
+   {
+    "ply": 42,
+    "text": "21...Bxf3+ Morphy picks up a pawn with check. Every move he makes comes with a threat."
+   },
+   {
+    "ply": 48,
+    "text": "24...Bxf2 The other bishop joins and now covers g1. Black threatens ...Bg2 checkmate, and White can only stop it by giving up the queen."
+   },
+   {
+    "ply": 50,
+    "text": "25...Bxf1 White gave back the queen to stop the mate, so Black is now ahead in material, with the attack still going.",
+    "label": "Winning back the queen"
+   },
+   {
+    "ply": 52,
+    "text": "26...Re2 The rook invades the second rank, close to the White king."
+   },
+   {
+    "ply": 54,
+    "text": "27...Rh6 The other rook swings to the h-file, aiming at h2."
+   },
+   {
+    "ply": 56,
+    "text": "28...Be3 The bishop covers g1, so ...Rxh2 will be checkmate and White can't stop it for long. Paulsen resigned. **Active pieces near the enemy king can be worth more than a queen.**",
+    "label": "White resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 34,
+    "prompt": "Black to play. White's queen is far away on a6. Can you find a bold way to tear open the White king?",
+    "hint": "Which white piece is guarding the king, and what can capture it?",
+    "explanation": "17...Qxf3!! After 18.gxf3 the king loses its pawn shield, and Black's rook and bishops swarm in with checks.",
+    "also": []
+   },
+   {
+    "ply": 36,
+    "prompt": "Black to play. You've given up your queen and White's kingside is open. How do you keep the attack going?",
+    "hint": "Look for a check along the newly opened g-file.",
+    "explanation": "18...Rg6+ The rook checks on the g-file, and the light-squared bishop will soon join with ...Bh3 and ...Bg2+.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "fischer-benko-1963",
+  "title": "Fischer's Rook on f6",
+  "white": "Robert James Fischer",
+  "black": "Pal Benko",
+  "event": "US Championship, New York",
+  "year": 1963,
+  "result": "1-0",
+  "opening": "Pirc Defence (Austrian Attack)",
+  "level": "intermediate",
+  "themes": [
+   "attack",
+   "sacrifice",
+   "initiative"
+  ],
+  "orientation": "white",
+  "key_ply": 36,
+  "summary": "On his way to a perfect 11 out of 11 in the US Championship, Fischer opens the f-file and lands a rook right in front of Black's king. It shows how open lines and a rook that can't be taken safely can decide a game in a few moves.",
+  "moves": "e4 g6 d4 Bg7 Nc3 d6 f4 Nf6 Nf3 O-O Bd3 Bg4 h3 Bxf3 Qxf3 Nc6 Be3 e5 dxe5 dxe5 f5 gxf5 Qxf5 Nd4 Qf2 Ne8 O-O Nd6 Qg3 Kh8 Qg4 c6 Qh5 Qe8 Bxd4 exd4 Rf6 Kg8 e5 h6 Ne2",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New York, December 1963. Fischer is on his way to a perfect **11 out of 11** in the US Championship. His opponent, Pal Benko, is a strong grandmaster and a dangerous player himself."
+   },
+   {
+    "ply": 2,
+    "text": "Benko chooses a flexible setup: bishop to g7, then ...d6 and ...Nf6. He lets White take the centre and hopes to hit back later."
+   },
+   {
+    "ply": 7,
+    "text": "4.f4 is the **Austrian Attack**. White grabs even more space and gets ready to push the f-pawn toward Black's king."
+   },
+   {
+    "ply": 14,
+    "text": "Benko gives up his bishop for the knight. White keeps both bishops, and his queen comes to f3, already aiming at the kingside."
+   },
+   {
+    "ply": 21,
+    "text": "11.f5! The pawn charges forward. After 11...gxf5 12.Qxf5 the f-file is open for White's rook, and Black's king loses a defending pawn.",
+    "label": "Opening the f-file"
+   },
+   {
+    "ply": 24,
+    "text": "12...Nd4 jumps into a great central square and kicks White's queen. Black is trying to fight back."
+   },
+   {
+    "ply": 26,
+    "text": "Black's other knight heads for d6 to help defend. But defending takes time, and White uses it."
+   },
+   {
+    "ply": 27,
+    "text": "Castling puts the rook on f1, right on the open file. Now every White piece points at the kingside."
+   },
+   {
+    "ply": 33,
+    "text": "The queen has walked g3, g4 and now h5, always staying close to Black's king and eyeing h7."
+   },
+   {
+    "ply": 36,
+    "text": "18.Bxd4 exd4 removed the strong knight from d4. White's rook now has a road into Black's camp, and something amazing is coming.",
+    "arrows": [
+     {
+      "from": "f1",
+      "to": "f6",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "ply": 38,
+    "text": "Benko steps his king away. Taking the rook was no better: after 19...Bxf6 20.e5, the bishop on d3 joins the queen against h7 and the attack crashes through.",
+    "label": "The rook can't be taken"
+   },
+   {
+    "ply": 40,
+    "text": "20...h6 blocks the queen's path to h7 for now. But Black's pieces are cramped and his king is still under fire."
+   },
+   {
+    "ply": 41,
+    "text": "21.Ne2! brings the last piece into the attack: the knight heads for f4 to join the queen and rook. Benko saw he couldn't defend everything and resigned.",
+    "label": "Benko resigns",
+    "arrows": [
+     {
+      "from": "e2",
+      "to": "f4",
+      "color": "green"
+     }
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "ply": 37,
+    "prompt": "White to play. Every white piece is pointing at the black king. Can you find Fischer's stunning rook move?",
+    "hint": "Put your rook where it looks like it can simply be taken.",
+    "explanation": "19.Rf6!! lands in front of the king, attacks the knight on d6 and blocks the g7 bishop. If 19...Bxf6, then 20.e5 opens the bishop's diagonal to h7 and the attack can't be stopped.",
+    "also": []
+   },
+   {
+    "ply": 39,
+    "prompt": "White to play. The black king just ran to g8. One pawn move opens a deadly line. Which one?",
+    "hint": "Your bishop on d3 would love to see h7.",
+    "explanation": "20.e5! clears the way for the d3 bishop, so White threatens Qxh7 checkmate. The pawn also attacks the knight on d6.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "levitsky-marshall-1912",
+  "title": "The Gold Coins Game",
+  "white": "Stepan Levitsky",
+  "black": "Frank Marshall",
+  "event": "Breslau",
+  "year": 1912,
+  "result": "0-1",
+  "opening": "French Defence",
+  "level": "intermediate",
+  "themes": [
+   "tactics",
+   "attack",
+   "sacrifice"
+  ],
+  "orientation": "black",
+  "key_ply": 45,
+  "summary": "Frank Marshall wins with one of the most spectacular moves ever played: a queen move into three different captures, all of which lose. Learn how knights and rooks team up against a king, and why open lines matter.",
+  "moves": "d4 e6 e4 d5 Nc3 c5 Nf3 Nc6 exd5 exd5 Be2 Nf6 O-O Be7 Bg5 O-O dxc5 Be6 Nd4 Bxc5 Nxe6 fxe6 Bg4 Qd6 Bh3 Rae8 Qd2 Bb4 Bxf6 Rxf6 Rad1 Qc5 Qe2 Bxc3 bxc3 Qxc3 Rxd5 Nd4 Qh5 Ref8 Re5 Rh6 Qg5 Rxh3 Rc5 Qg3",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Breslau, 1912. Frank Marshall, America's champion and a fearless attacker, plays Black against Stepan Levitsky. Legend says spectators were so thrilled by the final move that they showered the board with gold coins."
+   },
+   {
+    "ply": 6,
+    "text": "3...c5. Black hits White's centre at once: an aggressive version of the French Defence."
+   },
+   {
+    "ply": 10,
+    "text": "5...exd5. The centre opens up. Open lines usually favour the side whose pieces are ready to use them."
+   },
+   {
+    "ply": 17,
+    "text": "9.dxc5. White grabs a pawn, but Black's pieces are lively and he will soon win it back."
+   },
+   {
+    "ply": 22,
+    "text": "11...fxe6. Black recaptures towards the centre and gets a half-open f-file for his rook. That file will matter later.",
+    "label": "The f-file opens"
+   },
+   {
+    "ply": 30,
+    "text": "15...Rxf6. The rook recaptures and now stands on f6, ready to swing along the sixth rank."
+   },
+   {
+    "ply": 34,
+    "text": "17...Bxc3. Black gives up the bishop for the knight to break up White's queenside pawns."
+   },
+   {
+    "ply": 36,
+    "text": "18...Qxc3. Black wins a pawn and his queen is now very active."
+   },
+   {
+    "ply": 37,
+    "text": "19.Rxd5. White grabs the d5 pawn back, but his queen on e2 is about to be harassed."
+   },
+   {
+    "ply": 38,
+    "text": "19...Nd4! The knight leaps into the centre, hitting White's queen and eyeing the squares e2 and f3 near White's king.",
+    "label": "Knight to d4!"
+   },
+   {
+    "ply": 39,
+    "text": "20.Qh5. The queen escapes towards Black's king, hoping for counterplay."
+   },
+   {
+    "ply": 42,
+    "text": "21...Rh6. The rook swings along the sixth rank and chases White's queen. Behind the queen sits the bishop on h3."
+   },
+   {
+    "ply": 43,
+    "text": "22.Qg5. The queen steps aside, but now the bishop on h3 is in the rook's sights."
+   },
+   {
+    "ply": 45,
+    "text": "23.Rc5. White attacks Black's queen. Most players would simply move it to safety, but Marshall had something far better."
+   },
+   {
+    "ply": 46,
+    "text": "23...Qg3!! The queen jumps where three white units can take it, and every capture loses: 24.hxg3 Ne2 mate, 24.fxg3 Ne2+ 25.Kh1 Rxf1 mate, and 24.Qxg3 Ne2+ 25.Kh1 Nxg3+ leaves Black a piece up. Meanwhile ...Qxh2 mate is threatened. White resigned.",
+    "label": "The golden move"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 44,
+    "prompt": "Black to play. White's queen has just stepped to g5. Can you spot a way to win material?",
+    "hint": "If the g2 pawn takes back, which knight jump hits king and queen together?",
+    "explanation": "22...Rxh3! The bishop falls. If 23.gxh3, then 23...Nf3+ forks White's king and the queen on g5.",
+    "also": []
+   },
+   {
+    "ply": 46,
+    "prompt": "Black to play. White is attacking your queen on c3. Don't just retreat: find the move that, according to legend, earned a shower of gold coins!",
+    "hint": "Put your queen where it can be taken three different ways.",
+    "explanation": "23...Qg3!! Every capture loses: hxg3 runs into ...Ne2 mate, fxg3 into ...Ne2+ and ...Rxf1 mate, and Qxg3 into ...Ne2+ and ...Nxg3+. If White ignores it, ...Qxh2 is mate.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "short-timman-1991",
+  "title": "Short's king walk",
+  "white": "Nigel Short",
+  "black": "Jan Timman",
+  "event": "Tilburg",
+  "year": 1991,
+  "result": "1-0",
+  "opening": "Alekhine's Defence",
+  "level": "advanced",
+  "themes": [
+   "attack",
+   "initiative",
+   "positional"
+  ],
+  "orientation": "white",
+  "key_ply": 60,
+  "summary": "Short ties Black's pieces down, then marches his own king from g1 to g5 to help deliver checkmate. The king walk is one of the most famous ever played and teaches a surprising lesson: when the enemy cannot attack, even the king can become an attacker.",
+  "moves": "e4 Nf6 e5 Nd5 d4 d6 Nf3 g6 Bc4 Nb6 Bb3 Bg7 Qe2 Nc6 O-O O-O h3 a5 a4 dxe5 dxe5 Nd4 Nxd4 Qxd4 Re1 e6 Nd2 Nd5 Nf3 Qc5 Qe4 Qb4 Bc4 Nb6 b3 Nxc4 bxc4 Re8 Rd1 Qc5 Qh4 b6 Be3 Qc6 Bh6 Bh8 Rd8 Bb7 Rad1 Bg7 R8d7 Rf8 Bxg7 Kxg7 R1d4 Rae8 Qf6+ Kg8 h4 h5 Kh2 Rc8 Kg3 Rce8 Kf4 Bc8 Kg5",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Tilburg, 1991. England's Nigel Short plays Dutch star Jan Timman. This game is remembered for one of the most surprising plans in chess history."
+   },
+   {
+    "ply": 2,
+    "text": "**Alekhine's Defence**: Black invites White's pawns forward, hoping they become targets later."
+   },
+   {
+    "ply": 21,
+    "text": "White keeps a pawn on e5. It takes away the f6 and d6 squares from Black's pieces and cramps Black's position."
+   },
+   {
+    "ply": 24,
+    "text": "Black's queen is centralised on d4, but White will soon chase it around with gain of time."
+   },
+   {
+    "ply": 41,
+    "text": "**21.Qh4** swings White's queen to the kingside, next to Black's king."
+   },
+   {
+    "ply": 45,
+    "text": "**23.Bh6** offers to trade Black's best defender, the bishop on g7, which guards the dark squares around the king."
+   },
+   {
+    "ply": 46,
+    "text": "Timman avoids the trade with **23...Bh8**, but on h8 the bishop is very passive."
+   },
+   {
+    "ply": 47,
+    "text": "**24.Rd8** invades with the rook, pinning Black's pieces to the back rank."
+   },
+   {
+    "ply": 51,
+    "text": "The rook settles on d7, the seventh rank, hitting c7 and f7. Black is being squeezed."
+   },
+   {
+    "ply": 58,
+    "text": "White's queen sits on f6, right next to Black's king. One more attacker on g7 or h8 would be checkmate. But which piece can get there?",
+    "highlights": [
+     "g7",
+     "h8"
+    ]
+   },
+   {
+    "ply": 60,
+    "text": "Black is holding for now: no white piece can reach g7 or h8. Black's pieces are frozen, though, and Timman can only shuffle."
+   },
+   {
+    "ply": 61,
+    "text": "**31.Kh2!** The answer is the king! Black has no way to attack it, so White's king can walk up the board and help with the mate.",
+    "label": "The king walk begins"
+   },
+   {
+    "ply": 63,
+    "text": "Step two: **32.Kg3**. Timman's pieces can only shuffle back and forth."
+   },
+   {
+    "ply": 65,
+    "text": "**33.Kf4** climbs on, using the dark squares that Black can no longer defend."
+   },
+   {
+    "ply": 67,
+    "text": "Timman resigned. The plan is **Kh6**, and then **Qg7** is checkmate. Lesson: if the opponent has no way to attack it, your king can be a strong attacking piece.",
+    "label": "Black resigns",
+    "arrows": [
+     {
+      "from": "g5",
+      "to": "h6",
+      "color": "green"
+     },
+     {
+      "from": "f6",
+      "to": "g7",
+      "color": "red"
+     }
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "ply": 53,
+    "prompt": "White to play. Black's bishop on g7 protects the dark squares around the king. What would you do?",
+    "hint": "Remove the defender.",
+    "explanation": "**27.Bxg7** trades off Black's best defender. Now the dark squares around the black king are weak, and White's queen can move in.",
+    "also": []
+   },
+   {
+    "ply": 57,
+    "prompt": "White to play. Without its bishop, the black king has holes all around it. Where does the queen belong?",
+    "hint": "Find a check on a dark square.",
+    "explanation": "**29.Qf6+** puts the queen right next to the king. From f6 it eyes g7 and h8, and Black will have to defend them forever.",
+    "also": []
+   },
+   {
+    "ply": 67,
+    "prompt": "White to play. Your king has already reached f4. What is the next step of the walk?",
+    "hint": "Keep marching towards h6.",
+    "explanation": "**34.Kg5!** The king heads for h6, where it will protect the queen on g7 for checkmate. Black cannot stop it.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "saemisch-nimzowitsch-1923",
+  "title": "The Immortal Zugzwang Game",
+  "white": "Friedrich Sämisch",
+  "black": "Aron Nimzowitsch",
+  "event": "Copenhagen",
+  "year": 1923,
+  "result": "0-1",
+  "opening": "Queen's Indian Defence",
+  "level": "advanced",
+  "themes": [
+   "positional",
+   "zugzwang",
+   "sacrifice"
+  ],
+  "orientation": "black",
+  "key_ply": 49,
+  "summary": "Nimzowitsch slowly squeezes White until every one of his pieces is tied up. At the end White has plenty of legal moves but no good ones: a rare zugzwang in the middle of the game, with almost all the pieces still on the board.",
+  "moves": "d4 Nf6 c4 e6 Nf3 b6 g3 Bb7 Bg2 Be7 Nc3 O-O O-O d5 Ne5 c6 cxd5 cxd5 Bf4 a6 Rc1 b5 Qb3 Nc6 Nxc6 Bxc6 h3 Qd7 Kh2 Nh5 Bd2 f5 Qd1 b4 Nb1 Bb5 Rg1 Bd6 e4 fxe4 Qxh5 Rxf2 Qg5 Raf8 Kh1 R8f5 Qe3 Bd3 Rce1 h6",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Copenhagen, 1923. Aron Nimzowitsch, one of the deepest thinkers in chess history, plays Black against Friedrich Sämisch. The ending is so unusual it is called the **Immortal Zugzwang Game**: White runs out of good moves while the board is still full of pieces."
+   },
+   {
+    "ply": 2,
+    "text": "1...Nf6. Nimzowitsch liked to control the centre with pieces from a distance instead of rushing his pawns forward."
+   },
+   {
+    "ply": 8,
+    "text": "4...Bb7. The Queen's Indian Defence: Black's bishop watches the long diagonal and the key e4 square."
+   },
+   {
+    "ply": 15,
+    "text": "8.Ne5. White's knight jumps forward and opens the bishop on g2 towards Black's queenside."
+   },
+   {
+    "ply": 22,
+    "text": "11...b5. Black grabs space on the queenside and takes the c4 square away from White's pieces."
+   },
+   {
+    "ply": 30,
+    "text": "15...Nh5. The knight goes to the edge with a purpose: it hits the bishop on f4 and prepares ...f5."
+   },
+   {
+    "ply": 32,
+    "text": "16...f5. Black takes firm control of e4. White's pieces are starting to run out of good squares."
+   },
+   {
+    "ply": 35,
+    "text": "18.Nb1. The knight has to go all the way back to its starting square. White is getting cramped.",
+    "label": "Pushed back"
+   },
+   {
+    "ply": 36,
+    "text": "18...Bb5. The bishop finds a great diagonal, eyeing e2 and the light squares in White's camp."
+   },
+   {
+    "ply": 39,
+    "text": "20.e4. White finally tries to break free. With the e-pawn gone from e2, his queen on d1 now attacks the knight on h5."
+   },
+   {
+    "ply": 41,
+    "text": "21.Qxh5. White wins the knight, but Black gets pawns, the open f-file and a lasting attack in return.",
+    "label": "Knight sacrifice"
+   },
+   {
+    "ply": 43,
+    "text": "22.Qg5. The queen rushes back to defend, but White's pieces on b1, c1 and d2 are still asleep."
+   },
+   {
+    "ply": 44,
+    "text": "22...Raf8. Black doubles rooks on the f-file. Both rooks now point at White's king."
+   },
+   {
+    "ply": 46,
+    "text": "23...R8f5. The rook chases White's queen away from g5."
+   },
+   {
+    "ply": 48,
+    "text": "24...Bd3. The bishop lands on d3 and cuts White's position in two. Black's pieces dominate the whole board.",
+    "label": "Total bind"
+   },
+   {
+    "ply": 50,
+    "text": "25...h6!! A quiet pawn move that also gives Black's king an escape square. Now White is in **zugzwang**: he has many legal moves, but every one of them loses material or lets Black's attack crash through. Sämisch resigned.",
+    "label": "Zugzwang!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 40,
+    "prompt": "Black to play. White has hit your f5 pawn, and his queen on d1 is now attacking your knight on h5. What's the brave answer?",
+    "hint": "Open lines for your rooks, even if it costs a piece.",
+    "explanation": "20...fxe4! Black lets the knight go. In return he gets pawns, an open f-file and a lasting attack on White's king.",
+    "also": []
+   },
+   {
+    "ply": 42,
+    "prompt": "Black to play. White has just taken your knight. Now strike back on the open f-file!",
+    "hint": "Which pawn next to White's king is unprotected?",
+    "explanation": "21...Rxf2! The rook crashes into White's second rank, pins the bishop on g2 to the king, and White's queen is far away on h5.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "adams-torre-1920",
+  "title": "Adams vs Torre: The Back-Rank Dance",
+  "white": "Edwin Adams",
+  "black": "Carlos Torre",
+  "event": "New Orleans",
+  "year": 1920,
+  "result": "1-0",
+  "opening": "Philidor Defence",
+  "level": "beginner",
+  "themes": [
+   "back-rank",
+   "tactics",
+   "sacrifice"
+  ],
+  "orientation": "white",
+  "key_ply": 38,
+  "summary": "White offers his queen again and again, and Black can never take it because his own back rank is too weak. The most famous lesson ever on back-rank weakness and deflection: a piece that has to guard something can be chased until it breaks.",
+  "moves": "e4 e5 Nf3 d6 d4 exd4 Qxd4 Nc6 Bb5 Bd7 Bxc6 Bxc6 Nc3 Nf6 O-O Be7 Nd5 Bxd5 exd5 O-O Bg5 c6 c4 cxd5 cxd5 Re8 Rfe1 a5 Re2 Rc8 Rae1 Qd7 Bxf6 Bxf6 Qg4 Qb5 Qc4 Qd7 Qc7 Qb5 a4 Qxa4 Re4 Qb5 Qxb7",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New Orleans, 1920. Edwin Adams faces Carlos Torre, a talented young player from Mexico. This is the most famous **back-rank** combination ever (some historians suspect it was composed, but the ideas are pure gold)."
+   },
+   {
+    "ply": 4,
+    "text": "2...d6 is the Philidor Defence: solid, but a little passive. Black's pieces will have less room."
+   },
+   {
+    "ply": 9,
+    "text": "Black's knight attacked White's queen on d4, so 5.Bb5 pins it to Black's king."
+   },
+   {
+    "ply": 17,
+    "text": "Both sides develop and castle. The real story will happen on the e-file, which is about to open."
+   },
+   {
+    "ply": 25,
+    "text": "The pawns are traded off. Now the e-file and c-file are open, and the game becomes a battle of rooks and queens."
+   },
+   {
+    "ply": 31,
+    "text": "16.Rae1: White's rooks are doubled on the open e-file, staring at the rook on e8.",
+    "label": "Rooks doubled",
+    "arrows": [
+     {
+      "from": "e2",
+      "to": "e8",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 33,
+    "text": "17.Bxf6 removes the knight. Now Black's back rank has a problem: his king has no escape square, and only the queen keeps e8 safe."
+   },
+   {
+    "ply": 36,
+    "text": "The queen steps to b5, still guarding e8 along the diagonal. The dance has begun!",
+    "label": "The dance begins"
+   },
+   {
+    "ply": 37,
+    "text": "19.Qc4! Again the queen is offered. Taking it allows Rxe8+ and mate, so Black's queen must move again."
+   },
+   {
+    "ply": 38,
+    "text": "Back to d7, still watching e8. Black's queen is running out of good squares."
+   },
+   {
+    "ply": 40,
+    "text": "Black can't take on c7: both 20...Qxc7 and 20...Rxc7 let White capture on e8 with mate coming. So the queen returns to b5."
+   },
+   {
+    "ply": 41,
+    "text": "21.a4! Even a pawn joins in. The only square that still guards e8 is a4, so Black has to take it.",
+    "label": "Even a pawn joins in"
+   },
+   {
+    "ply": 44,
+    "text": "22.Re4! attacked the queen, and again it had to find a square that guards e8: b5. Now comes the final blow."
+   },
+   {
+    "ply": 45,
+    "text": "23.Qxb7! The black queen can't leave the a4–e8 diagonal and can't stay attacked. Black resigned. Lesson: a weak back rank can turn your strongest piece into a prisoner.",
+    "label": "Black resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 35,
+    "prompt": "White to play. Black's queen on d7 is the only guard of the rook on e8. How can you lure it away?",
+    "hint": "Put your queen where Black's queen could take it.",
+    "explanation": "18.Qg4! If 18...Qxg4, then 19.Rxe8+ Rxe8 20.Rxe8 is checkmate. So Black's queen has to keep guarding e8 and can't accept the gift.",
+    "also": []
+   },
+   {
+    "ply": 39,
+    "prompt": "White to play. Black's queen is back on d7. Can you find the boldest queen move of all?",
+    "hint": "Offer your queen where two black pieces can take it.",
+    "explanation": "20.Qc7!! Neither the queen nor the rook on c8 can take it: either capture lets White take on e8 with mate. Meanwhile White threatens Qxb7 and to keep chasing the queen.",
+    "also": []
+   },
+   {
+    "ply": 43,
+    "prompt": "White to play. Black's queen took on a4 and still guards e8. How do you chase it again?",
+    "hint": "A rook can attack along the fourth rank.",
+    "explanation": "22.Re4! attacks the queen. Taking the rook would just lose the queen to 23.Rxe4, so the queen must find another square that still guards e8, and only b5 is left.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "alekhine-nimzowitsch-1930",
+  "title": "Alekhine's Gun",
+  "white": "Alexander Alekhine",
+  "black": "Aron Nimzowitsch",
+  "event": "San Remo",
+  "year": 1930,
+  "result": "1-0",
+  "opening": "French Defence, Winawer Variation",
+  "level": "advanced",
+  "themes": [
+   "positional",
+   "pawn-power",
+   "initiative"
+  ],
+  "orientation": "white",
+  "key_ply": 59,
+  "summary": "World champion Alekhine gains space, plants a pawn deep on a6 and stacks his heavy pieces on the c-file until Black is completely paralysed. The setup of two rooks with the queen behind them is still called Alekhine's gun.",
+  "moves": "e4 e6 d4 d5 Nc3 Bb4 e5 c5 Bd2 Ne7 Nb5 Bxd2+ Qxd2 O-O c3 b6 f4 Ba6 Nf3 Qd7 a4 Nbc6 b4 cxb4 cxb4 Bb7 Nd6 f5 a5 Nc8 Nxb7 Qxb7 a6 Qf7 Bb5 N8e7 O-O h6 Rfc1 Rfc8 Rc2 Qe8 Rac1 Rab8 Qe3 Rc7 Rc3 Qd7 R1c2 Kf8 Qc1 Rbc8 Ba4 b5 Bxb5 Ke8 Ba4 Kd8 h4",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "San Remo, 1930. World champion Alexander Alekhine plays White against Aron Nimzowitsch, a master of restricting the opponent's pieces. Here Alekhine beats him at his own game, winning the tournament in style."
+   },
+   {
+    "ply": 6,
+    "text": "3...Bb4. The Winawer Variation of the French: Black pins the knight on c3 and puts pressure on e4."
+   },
+   {
+    "ply": 7,
+    "text": "4.e5. White grabs space in the centre. The pawn chain cramps Black's kingside pieces."
+   },
+   {
+    "ply": 11,
+    "text": "6.Nb5. The knight heads for d6, a square that Black will find hard to guard."
+   },
+   {
+    "ply": 12,
+    "text": "6...Bxd2+. Black gives up his dark-squared bishop. Without it, d6 becomes a hole, a perfect home for White's knight.",
+    "label": "A hole on d6"
+   },
+   {
+    "ply": 17,
+    "text": "9.f4. White supports the e5 pawn. The centre is locked and White has more space."
+   },
+   {
+    "ply": 21,
+    "text": "11.a4. Alekhine starts expanding on the queenside, where he wants to open lines."
+   },
+   {
+    "ply": 25,
+    "text": "13.cxb4. The c-file is now open. Whoever controls it will have the upper hand."
+   },
+   {
+    "ply": 28,
+    "text": "14...f5. Black shuts the kingside door. Now the battle will be decided on the queenside, where White is much stronger."
+   },
+   {
+    "ply": 31,
+    "text": "16.Nxb7. Alekhine trades his proud knight for Black's bishop, because now his own bishop can rule the light squares."
+   },
+   {
+    "ply": 33,
+    "text": "17.a6! The pawn digs in on a6 and freezes Black's queenside. Black's pieces will struggle for room for the rest of the game.",
+    "label": "A thorn on a6",
+    "highlights": [
+     "a6"
+    ]
+   },
+   {
+    "ply": 35,
+    "text": "18.Bb5. The bishop takes a beautiful post, pressing against the knight on c6."
+   },
+   {
+    "ply": 39,
+    "text": "20.Rfc1. Both sides line up on the c-file, but White has far more space to bring in reinforcements."
+   },
+   {
+    "ply": 44,
+    "text": "22...Rab8. Black is running out of useful moves and can only shuffle his pieces and wait."
+   },
+   {
+    "ply": 51,
+    "text": "26.Qc1. Two rooks with the queen behind them, all on the c-file. This battery is still called **Alekhine's gun**.",
+    "label": "Alekhine's gun",
+    "arrows": [
+     {
+      "from": "c1",
+      "to": "c6",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 53,
+    "text": "27.Ba4. The bishop steps back but keeps the knight on c6 pinned against Black's queen on d7."
+   },
+   {
+    "ply": 56,
+    "text": "28...Ke8. Black's king walks towards the queenside to help defend, the only part of the board that matters now."
+   },
+   {
+    "ply": 59,
+    "text": "30.h4. Alekhine makes a calm pawn move and waits. Black is completely tied up: his knight on c6 is pinned, he has hardly a useful move, and b5 is coming to win the knight. Nimzowitsch resigned.",
+    "label": "Total paralysis"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 27,
+    "prompt": "White to play. Black's dark-squared bishop is gone. Where should your knight on b5 land?",
+    "hint": "Look for a square in Black's camp that no black pawn can attack.",
+    "explanation": "14.Nd6! The knight settles in the hole on d6. No black pawn can chase it, and from there it attacks the bishop on b7 and presses deep into Black's position.",
+    "also": []
+   },
+   {
+    "ply": 55,
+    "prompt": "White to play. Black just pushed 27...b5 to hit your bishop. What's the best answer?",
+    "hint": "Is the pawn on b5 protected?",
+    "explanation": "28.Bxb5! White simply wins a pawn, and the bishop goes right back to its ideal post, still pressing on c6.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "fischer-fine-1963",
+  "title": "Fischer vs Fine: Evans Gambit",
+  "white": "Robert James Fischer",
+  "black": "Reuben Fine",
+  "event": "Casual game, New York",
+  "year": 1963,
+  "result": "1-0",
+  "opening": "Evans Gambit",
+  "level": "beginner",
+  "themes": [
+   "development",
+   "sacrifice",
+   "attack",
+   "initiative"
+  ],
+  "orientation": "white",
+  "key_ply": 30,
+  "summary": "In a friendly game, Fischer gives away pawns to get his pieces out fast, and a former world-class grandmaster is lost in 17 moves. A perfect lesson in why development and king safety matter more than grabbing pawns.",
+  "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O dxc3 Qb3 Qe7 Nxc3 Nf6 Nd5 Nxd5 exd5 Ne5 Nxe5 Qxe5 Bb2 Qg5 h4 Qxh4 Bxg7 Rg8 Rfe1+ Kd8 Qg3",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New York, 1963. In a friendly game, Fischer meets Reuben Fine, a former world-class grandmaster. Fischer picks an old, swashbuckling opening to show that **fast development** can beat extra pawns."
+   },
+   {
+    "ply": 6,
+    "text": "Both bishops point at the weakest squares in each camp: f7 and f2. This is the Italian Game."
+   },
+   {
+    "ply": 7,
+    "text": "4.b4!? is the **Evans Gambit**. White gives a pawn to gain time: when Black takes it, White builds a big centre with c3 and d4, attacking as he goes.",
+    "label": "The Evans Gambit"
+   },
+   {
+    "ply": 11,
+    "text": "6.d4 opens lines. Fischer isn't worried about pawns; he wants his pieces out fast."
+   },
+   {
+    "ply": 14,
+    "text": "Fine grabs a third pawn. Greedy! Black is ahead in material, but most of his pieces are still at home and his king is in the centre."
+   },
+   {
+    "ply": 15,
+    "text": "8.Qb3 lines up the queen and bishop against f7, the weakest point next to Black's king.",
+    "arrows": [
+     {
+      "from": "b3",
+      "to": "f7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 17,
+    "text": "White wins one pawn back and brings out another piece. Look at the difference: almost all of White's pieces are in play, while Black has only three out and his king is still in the centre."
+   },
+   {
+    "ply": 19,
+    "text": "10.Nd5 jumps forward and hits the queen on e7. Almost every White move comes with a threat."
+   },
+   {
+    "ply": 22,
+    "text": "Black tries to trade pieces. Trading is a good way to defend, but Black's king is still stuck in the middle."
+   },
+   {
+    "ply": 25,
+    "text": "13.Bb2 brings the last bishop to the long diagonal, hitting the queen on e5 and aiming at g7."
+   },
+   {
+    "ply": 27,
+    "text": "14.h4! offers yet another pawn to drag the black queen away. Fischer wants it as far from the action as possible.",
+    "label": "Another pawn offered"
+   },
+   {
+    "ply": 28,
+    "text": "Fine takes it, but now his queen sits on the edge of the board, far from its king."
+   },
+   {
+    "ply": 29,
+    "text": "15.Bxg7 grabs a pawn and attacks the rook on h8. Once the rook moves, Black can no longer castle short."
+   },
+   {
+    "ply": 32,
+    "text": "The king slips to d8, but it is surrounded by its own pieces and has no safe home."
+   },
+   {
+    "ply": 33,
+    "text": "Fine resigned. If 17...Qxg3, then 18.Bf6 is checkmate, and otherwise 18.Bf6+ wins Black's queen. Just 17 moves: development beat material.",
+    "label": "Black resigns",
+    "arrows": [
+     {
+      "from": "g7",
+      "to": "f6",
+      "color": "green"
+     }
+    ]
+   }
+  ],
+  "questions": [
+   {
+    "ply": 31,
+    "prompt": "White to play. Black's king is still in the centre and the e-file is wide open. How do you go after it?",
+    "hint": "Bring a rook into the game with check.",
+    "explanation": "16.Rfe1+ uses the open e-file. The king has no good square: 16...Kd8 leaves it boxed in, right where White's bishop and queen can reach it.",
+    "also": [
+     "Rae1+"
+    ]
+   },
+   {
+    "ply": 33,
+    "prompt": "White to play. Can you find the quiet queen move that leaves Black without a defence?",
+    "hint": "Offer a queen trade that Black can't accept.",
+    "explanation": "17.Qg3! sets up 18.Bf6+, which checks the king and attacks the queen on h4 at the same time. If Black takes the queen, 18.Bf6 is checkmate because the rook on e1 covers e8 and e7.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "deep-blue-kasparov-1997",
+  "title": "Deep Blue wins the match",
+  "white": "Deep Blue",
+  "black": "Garry Kasparov",
+  "event": "Deep Blue vs Kasparov rematch, New York",
+  "year": 1997,
+  "result": "1-0",
+  "opening": "Caro-Kann Defence",
+  "level": "intermediate",
+  "themes": [
+   "human-vs-machine",
+   "opening-trap",
+   "sacrifice",
+   "development"
+  ],
+  "orientation": "white",
+  "key_ply": 14,
+  "summary": "The deciding game of the 1997 rematch. Kasparov slips in the opening, Deep Blue sacrifices a knight to keep his king stuck in the centre, and the world champion resigns after only 19 moves. It was the first time a computer won a match against a reigning world champion.",
+  "moves": "e4 c6 d4 d5 Nc3 dxe4 Nxe4 Nd7 Ng5 Ngf6 Bd3 e6 N1f3 h6 Nxe6 Qe7 O-O fxe6 Bg6+ Kd8 Bf4 b5 a4 Bb7 Re1 Nd5 Bg3 Kc8 axb5 cxb5 Qd3 Bc6 Bf5 exf5 Rxe7 Bxe7 c4",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "New York, May 1997. The rematch between Kasparov and an improved Deep Blue is tied 2.5-2.5 going into the sixth and final game. Everything is at stake."
+   },
+   {
+    "ply": 2,
+    "text": "Kasparov chooses the **Caro-Kann**, a very solid defence he rarely played. He hoped to avoid sharp fights against the machine."
+   },
+   {
+    "ply": 8,
+    "text": "**4...Nd7** prepares **...Ngf6**, so that if White trades knights Black can take back with the other knight and keep a healthy pawn structure."
+   },
+   {
+    "ply": 9,
+    "text": "**5.Ng5** is a sharp idea: the knight eyes f7 and e6, two sensitive squares near Black's king."
+   },
+   {
+    "ply": 14,
+    "text": "**7...h6?** kicks the knight, but in this exact position it is a known mistake: it allows a knight sacrifice on e6. Kasparov mixed up his move order.",
+    "label": "A fatal slip"
+   },
+   {
+    "ply": 16,
+    "text": "Kasparov doesn't take right away. His queen on e7 attacks the knight and blocks the e-file for now."
+   },
+   {
+    "ply": 17,
+    "text": "Deep Blue doesn't rush. It castles first, bringing the rook closer to the e-file where Black's king will be stuck."
+   },
+   {
+    "ply": 18,
+    "text": "Black is a knight up, but his king is still in the centre and the f-pawn has moved, opening the diagonal towards e8."
+   },
+   {
+    "ply": 19,
+    "text": "**10.Bg6+** forces the king to move. Black can never castle now, and his pieces get in each other's way.",
+    "label": "No more castling",
+    "arrows": [
+     {
+      "from": "g6",
+      "to": "e8",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 22,
+    "text": "Kasparov tries to make room for his king on the queenside with **11...b5**. White's answer, **12.a4**, attacks that pawn at once."
+   },
+   {
+    "ply": 28,
+    "text": "The king runs to c8, but the bishop on f8 and rook on h8 are still asleep. Black's extra knight is not doing much."
+   },
+   {
+    "ply": 31,
+    "text": "**16.Qd3** brings the queen into the attack. All of White's pieces are active; half of Black's are not."
+   },
+   {
+    "ply": 36,
+    "text": "Material is roughly level again, but Black's king is bare and his pieces are tangled. White's attack keeps going."
+   },
+   {
+    "ply": 37,
+    "text": "**19.c4** opens even more lines towards Black's king, and Kasparov resigned. It was the first match win by a computer over a world champion. Lesson: know your opening move orders, and a king stuck in the centre is a big target.",
+    "label": "Kasparov resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 15,
+    "prompt": "White to play. Black just played 7...h6, attacking the knight on g5. Where can the knight go with a bang?",
+    "hint": "The e6-pawn is guarding Black's king.",
+    "explanation": "**8.Nxe6!** gives up the knight for a pawn. If Black takes it, the king gets stuck in the centre with open lines all around it.",
+    "also": []
+   },
+   {
+    "ply": 33,
+    "prompt": "White to play. Black's queen on e7 stands on the same file as your rook, with only the e6-pawn in between. How can you remove that pawn?",
+    "hint": "Offer a bishop the pawn can't refuse.",
+    "explanation": "**17.Bf5!** If **17...exf5**, the e-file opens and White's rook attacks Black's queen.",
+    "also": []
+   },
+   {
+    "ply": 35,
+    "prompt": "White to play. The e-file is open. What do you take?",
+    "hint": "Something big is on e7.",
+    "explanation": "**18.Rxe7** wins the queen for a rook, and Black's king remains exposed.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "spassky-bronstein-1960",
+  "title": "The \"From Russia with Love\" Game",
+  "white": "Boris Spassky",
+  "black": "David Bronstein",
+  "event": "USSR Championship, Leningrad",
+  "year": 1960,
+  "result": "1-0",
+  "opening": "King's Gambit Accepted",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "initiative"
+  ],
+  "orientation": "white",
+  "key_ply": 28,
+  "summary": "Young Spassky plays the bold King's Gambit, lets Black make a new queen, and keeps attacking anyway. A version of the final position appeared in the James Bond film From Russia with Love. The lesson: an attack on the king can be worth far more than a rook.",
+  "moves": "e4 e5 f4 exf4 Nf3 d5 exd5 Bd6 Nc3 Ne7 d4 O-O Bd3 Nd7 O-O h6 Ne4 Nxd5 c4 Ne3 Bxe3 fxe3 c5 Be7 Bc2 Re8 Qd3 e2 Nd6 Nf8 Nxf7 exf1=Q+ Rxf1 Bf5 Qxf5 Qd7 Qf4 Bf6 N3e5 Qe7 Bb3 Bxe5 Nxe5+ Kh7 Qe4+",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Leningrad, 1960, the Soviet Championship. Young Boris Spassky plays the bold King's Gambit against David Bronstein, one of the most creative players ever. A version of this game later appeared in a James Bond film."
+   },
+   {
+    "ply": 3,
+    "text": "2.f4 offers a pawn to pull Black's e-pawn away from the centre and open the f-file for White's rook. A romantic, attacking choice.",
+    "label": "The King's Gambit"
+   },
+   {
+    "ply": 6,
+    "text": "Bronstein hits back in the centre right away. Giving a pawn back to free your pieces is a classic answer to the gambit."
+   },
+   {
+    "ply": 11,
+    "text": "Both sides develop quickly. White's plan: castle, win back the f4 pawn and use the open f-file."
+   },
+   {
+    "ply": 17,
+    "text": "9.Ne4 lets Black take on d5. Spassky prefers active pieces to a pawn: the knight is heading for d6 and f6."
+   },
+   {
+    "ply": 20,
+    "text": "10...Ne3 is a fork, hitting the queen on d1 and the rook on f1. Spassky simply takes the knight."
+   },
+   {
+    "ply": 22,
+    "text": "Black now has a pawn on e3, deep in White's position. Keep an eye on it!"
+   },
+   {
+    "ply": 23,
+    "text": "12.c5 kicks the bishop away from d6, the square White's knight wants."
+   },
+   {
+    "ply": 28,
+    "text": "14...e2! The pawn attacks the rook on f1 and wants to become a queen. Most players would save the rook. Spassky has other plans.",
+    "label": "The pawn strikes",
+    "arrows": [
+     {
+      "from": "e2",
+      "to": "f1",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 30,
+    "text": "Bronstein brings the knight to f8 to guard h7. But now the f7 pawn is weak."
+   },
+   {
+    "ply": 32,
+    "text": "Black makes a new queen with check! But White simply takes it back, and his pieces are swarming around Black's king."
+   },
+   {
+    "ply": 34,
+    "text": "Black tries to block White's queen, but the bishop on f5 is simply lost."
+   },
+   {
+    "ply": 36,
+    "text": "Material is roughly level again, and the knight on f7 sits like a thorn right next to Black's king."
+   },
+   {
+    "ply": 39,
+    "text": "The second knight jumps to e5. Both white knights now sit right in front of Black's king."
+   },
+   {
+    "ply": 41,
+    "text": "21.Bb3 lines the bishop up behind the f7 knight, aiming at the king on g8. When the knight moves, it will be a **discovered check**.",
+    "arrows": [
+     {
+      "from": "b3",
+      "to": "g8",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "ply": 43,
+    "text": "22.Nxe5+ is that discovered check. The king has to run to h7.",
+    "label": "Discovered check"
+   },
+   {
+    "ply": 45,
+    "text": "23.Qe4+ and Bronstein resigned. The king can't go back to g8 because of the bishop on b3, and White's queen, rook and knight are about to break through.",
+    "label": "Bronstein resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 29,
+    "prompt": "White to play. Black's pawn on e2 attacks your rook and wants to become a queen. What would you do?",
+    "hint": "Forget the rook. Which point near Black's king is weakest?",
+    "explanation": "15.Nd6!! ignores the threat. The knight hits the rook on e8 and eyes f7. If 15...Bxd6, then 16.Qh7+ starts a fierce attack. Spassky judged that his attack was worth more than a rook.",
+    "also": []
+   },
+   {
+    "ply": 31,
+    "prompt": "White to play. Black's knight went to f8 to defend. Where does your knight strike next?",
+    "hint": "Look at the pawn next to Black's king.",
+    "explanation": "16.Nxf7! grabs the pawn, attacks the queen on d8 and opens the f-file toward Black's king. Black can make a new queen on f1, but it is just taken back.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "bernstein-capablanca-1914",
+  "title": "Capablanca's Back-Rank Bolt",
+  "white": "Ossip Bernstein",
+  "black": "José Raúl Capablanca",
+  "event": "Moscow (exhibition game)",
+  "year": 1914,
+  "result": "0-1",
+  "opening": "Queen's Gambit Declined",
+  "level": "intermediate",
+  "themes": [
+   "back-rank",
+   "positional",
+   "tactics"
+  ],
+  "orientation": "black",
+  "key_ply": 57,
+  "summary": "Capablanca patiently pushes a passed pawn, lets White win it, and then strikes with a stunning queen move that exploits White's weak back rank. A classic reminder never to forget your king's escape square.",
+  "moves": "d4 d5 c4 e6 Nc3 Nf6 Nf3 Be7 Bg5 O-O e3 Nbd7 Rc1 b6 cxd5 exd5 Qa4 Bb7 Ba6 Bxa6 Qxa6 c5 Bxf6 Nxf6 dxc5 bxc5 O-O Qb6 Qe2 c4 Rfd1 Rfd8 Nd4 Bb4 b3 Rac8 bxc4 dxc4 Rc2 Bxc3 Rxc3 Nd5 Rc2 c3 Rdc1 Rc5 Nb3 Rc6 Nd4 Rc7 Nb5 Rc5 Nxc3 Nxc3 Rxc3 Rxc3 Rxc3 Qb2",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Moscow, 1914. José Raúl Capablanca, the Cuban star who would become world champion in 1921, plays Black in an exhibition game against the strong master Ossip Bernstein. Keep an eye on White's back rank."
+   },
+   {
+    "ply": 10,
+    "text": "5...O-O. A classical Queen's Gambit Declined: Black keeps a solid centre and castles quickly."
+   },
+   {
+    "ply": 16,
+    "text": "8...exd5. After the trade in the centre, Black has a firm pawn on d5 and an open line for his light-squared bishop."
+   },
+   {
+    "ply": 19,
+    "text": "10.Ba6. White offers to trade light-squared bishops, removing a good defender of Black's queenside."
+   },
+   {
+    "ply": 22,
+    "text": "11...c5. Black challenges the centre and gives his pieces more room."
+   },
+   {
+    "ply": 26,
+    "text": "13...bxc5. Black now has two pawns side by side on c5 and d5, called **hanging pawns**: strong together, but they need care."
+   },
+   {
+    "ply": 30,
+    "text": "15...c4. Black pushes forward and gains space on the queenside."
+   },
+   {
+    "ply": 32,
+    "text": "16...Rfd8. Black's rook takes the d-file. Remember it: this rook plays a starring role at the very end."
+   },
+   {
+    "ply": 34,
+    "text": "17...Bb4. The bishop pins the knight on c3 and adds pressure to White's queenside."
+   },
+   {
+    "ply": 38,
+    "text": "19...dxc4. White has no pawns left on the b-, c- or d-files, so Black's c-pawn is now a **passed pawn**, free to march.",
+    "label": "A passed pawn"
+   },
+   {
+    "ply": 42,
+    "text": "21...Nd5. The knight lands on a great square, hitting the rook on c3 and supporting the c-pawn."
+   },
+   {
+    "ply": 46,
+    "text": "23...Rc5. The rook guards the pawn on c3 from behind, keeping it alive."
+   },
+   {
+    "ply": 51,
+    "text": "26.Nb5. White's knight targets the c3 pawn. Bernstein is working hard to win it."
+   },
+   {
+    "ply": 53,
+    "text": "27.Nxc3. White finally wins the pawn, and a series of trades on c3 follows.",
+    "label": "White wins the pawn"
+   },
+   {
+    "ply": 57,
+    "text": "29.Rxc3. White is a pawn up and feels safe. But look at his king: it has no escape square, and Black's rook still rules the d-file."
+   },
+   {
+    "ply": 58,
+    "text": "29...Qb2!! A bolt from the blue. White's queen can't take because of ...Rd1 mate, and it can't guard both the back rank and the rook on c3. Bernstein resigned. Always give your king some breathing room!",
+    "label": "Bolt from the blue"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 44,
+    "prompt": "Black to play. Your passed pawn on c4 is well supported by the knight on d5. How can you make it even more dangerous?",
+    "hint": "Passed pawns must be pushed!",
+    "explanation": "22...c3! The pawn moves one step closer to promotion, protected by the knight. White's pieces now have to spend their time stopping it.",
+    "also": []
+   },
+   {
+    "ply": 58,
+    "prompt": "Black to play. White has just won a pawn and looks happy. Look at White's back rank: can you find the move that ends the game on the spot?",
+    "hint": "Attack White's queen and rook at the same time.",
+    "explanation": "29...Qb2!! The queen hits both White's queen and the rook on c3. 30.Qxb2 runs into 30...Rd1 mate, because White's king has no escape square. Otherwise White loses material.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "lasker-bauer-1889",
+  "title": "Lasker's Double Bishop Sacrifice",
+  "white": "Emanuel Lasker",
+  "black": "Johann Bauer",
+  "event": "Amsterdam tournament",
+  "year": 1889,
+  "result": "1-0",
+  "opening": "Bird's Opening",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "king-hunt",
+   "tactics"
+  ],
+  "orientation": "white",
+  "key_ply": 28,
+  "summary": "A young Emanuel Lasker sacrifices both bishops to rip open Black's castled king, then wins back the material with a rook lift and a double attack. The double bishop sacrifice on h7 and g7 became a classic attacking pattern every player should know.",
+  "moves": "f4 d5 e3 Nf6 b3 e6 Bb2 Be7 Bd3 b6 Nc3 Bb7 Nf3 Nbd7 O-O O-O Ne2 c5 Ng3 Qc7 Ne5 Nxe5 Bxe5 Qc6 Qe2 a6 Nh5 Nxh5 Bxh7+ Kxh7 Qxh5+ Kg8 Bxg7 Kxg7 Qg4+ Kh7 Rf3 e5 Rh3+ Qh6 Rxh6+ Kxh6 Qd7 Bf6 Qxb7 Kg7 Rf1 Rab8 Qd7 Rfd8 Qg4+ Kf8 fxe5 Bg7 e6 Rb7 Qg6 f6 Rxf6+ Bxf6 Qxf6+ Ke8 Qh8+ Ke7 Qg7+ Kxe6 Qxb7 Rd6 Qxa6 d4 exd4 cxd4 h4 d3 Qxd3",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Amsterdam, 1889. A 20-year-old Emanuel Lasker, who would later be world champion for 27 years, plays White against Johann Bauer. Watch where White's two bishops are pointing."
+   },
+   {
+    "ply": 1,
+    "text": "1.f4. Bird's Opening: White grabs control of the e5 square with a pawn instead of the usual 1.e4 or 1.d4."
+   },
+   {
+    "ply": 9,
+    "text": "5.Bd3. Both bishops are now aimed at Black's kingside: one at h7, the other along the long diagonal.",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "h7",
+      "color": "yellow"
+     },
+     {
+      "from": "b2",
+      "to": "f6",
+      "color": "yellow"
+     }
+    ]
+   },
+   {
+    "ply": 16,
+    "text": "8...O-O. Black castles right into the line of fire of those two bishops."
+   },
+   {
+    "ply": 19,
+    "text": "10.Ng3. The knight heads towards h5, ready to join the attack on Black's king."
+   },
+   {
+    "ply": 23,
+    "text": "12.Bxe5. After the trade, the bishop sits on e5 and stares at g7. Only the knight on f6 holds Black's position together."
+   },
+   {
+    "ply": 26,
+    "text": "13...a6? Black plans a queenside push and forgets about his king. This slow move gives Lasker the time he needs.",
+    "label": "A slow move"
+   },
+   {
+    "ply": 27,
+    "text": "14.Nh5! White offers the knight to lure away the knight on f6, the key defender of h7."
+   },
+   {
+    "ply": 30,
+    "text": "15...Kxh7. The first bishop is gone, but now 16.Qxh5+ wins back the knight with check and the queen joins the attack.",
+    "label": "First bishop sacrifice"
+   },
+   {
+    "ply": 34,
+    "text": "17...Kxg7. Both bishops have been given up, but Black's king has lost all of its pawn shelter.",
+    "label": "Second bishop!"
+   },
+   {
+    "ply": 38,
+    "text": "19...e5. The only defence. This move opens the sixth rank so Black's queen can block a check on h6."
+   },
+   {
+    "ply": 41,
+    "text": "21.Rxh6+. White wins Black's queen. Count it up: Lasker gave two bishops and a rook, and got back a knight, the queen and two pawns.",
+    "label": "Queen won"
+   },
+   {
+    "ply": 45,
+    "text": "23.Qxb7. The bishop falls. Material is now roughly level, but Black's king is bare and White's queen and rook keep pressing."
+   },
+   {
+    "ply": 53,
+    "text": "27.fxe5. White opens the f-file for his rook, pointing straight at Black's king on f8."
+   },
+   {
+    "ply": 55,
+    "text": "28.e6. The extra pawn marches forward, cramping Black and loosening the defence around his king even more."
+   },
+   {
+    "ply": 59,
+    "text": "30.Rxf6+! The rook crashes through. After 30...Bxf6 31.Qxf6+ the queen chases the king and aims at the loose rook on b7."
+   },
+   {
+    "ply": 67,
+    "text": "34.Qxb7. The rook on b7 falls with the help of the queen's checks. White now has a queen against a rook: a winning ending."
+   },
+   {
+    "ply": 75,
+    "text": "38.Qxd3. Black's last hope, the passed d-pawn, is gone and Bauer resigned. Sacrificing on h7 and g7 is now known as **Lasker's combination**. Watch out when both enemy bishops point at your king!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 29,
+    "prompt": "White to play. Black just took your knight on h5. Both of your bishops point at Black's king. What's the bold follow-up?",
+    "hint": "Start with a check on h7.",
+    "explanation": "15.Bxh7+! The bishop rips away the h7 pawn with check. After 15...Kxh7 16.Qxh5+ White wins back the knight with check, and Black's king is exposed.",
+    "also": []
+   },
+   {
+    "ply": 33,
+    "prompt": "White to play. You have already given one bishop. Can you find the next blow?",
+    "hint": "Your other bishop on e5 has a target too.",
+    "explanation": "17.Bxg7! The second bishop removes the last pawn shield. It also threatens 18.Qh8 mate; and if Black takes it, the queen and rook swarm in.",
+    "also": []
+   },
+   {
+    "ply": 37,
+    "prompt": "White to play. Black's king is out in the open on h7. How can you bring one more piece into the attack?",
+    "hint": "A rook can travel along the third rank.",
+    "explanation": "19.Rf3! The rook swings over to h3 for a deadly check. Black's only defence is 19...e5 20.Rh3+ Qh6, and then White wins the queen.",
+    "also": []
+   },
+   {
+    "ply": 43,
+    "prompt": "White to play. Your attack has won back the material. Now find a move that attacks two black pieces at once!",
+    "hint": "Look at the bishops on e7 and b7.",
+    "explanation": "22.Qd7! A double attack: the queen hits both the bishop on e7 and the bishop on b7. Black can only save one of them.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "tal-smyslov-1959",
+  "title": "Tal vs Smyslov: The Magician",
+  "white": "Mikhail Tal",
+  "black": "Vasily Smyslov",
+  "event": "Candidates Tournament, Yugoslavia",
+  "year": 1959,
+  "result": "1-0",
+  "opening": "Caro-Kann Defence",
+  "level": "intermediate",
+  "themes": [
+   "attack",
+   "sacrifice",
+   "tactics"
+  ],
+  "orientation": "white",
+  "key_ply": 36,
+  "summary": "Mikhail Tal, the Magician from Riga, lets a bishop go, throws his pieces at a former world champion's king and finishes with a queen sacrifice. It shows how activity and threats can be worth more than material.",
+  "moves": "e4 c6 d3 d5 Nd2 e5 Ngf3 Nd7 d4 dxe4 Nxe4 exd4 Qxd4 Ngf6 Bg5 Be7 O-O-O O-O Nd6 Qa5 Bc4 b5 Bd2 Qa6 Nf5 Bd8 Qh4 bxc4 Qg5 Nh5 Nh6+ Kh8 Qxh5 Qxa2 Bc3 Nf6 Qxf7 Qa1+ Kd2 Rxf7 Nxf7+ Kg8 Rxa1 Kxf7 Ne5+ Ke6 Nxc6 Ne4+ Ke3 Bb6+ Bd4",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Yugoslavia, 1959: the Candidates Tournament, which decided who would challenge the world champion. Mikhail Tal, **the Magician from Riga**, faces former world champion Vasily Smyslov."
+   },
+   {
+    "ply": 3,
+    "text": "2.d3 is a quiet, unusual reply to the Caro-Kann. Tal steers away from well-known paths and into a fight."
+   },
+   {
+    "ply": 12,
+    "text": "The centre opens up quickly. With the pawns gone, active pieces will decide everything."
+   },
+   {
+    "ply": 17,
+    "text": "9.O-O-O: Tal castles queenside while Black will castle kingside. With the kings on opposite sides, it becomes a race to attack."
+   },
+   {
+    "ply": 19,
+    "text": "10.Nd6! The knight jumps deep into Black's camp, eyeing f7 and b7 and getting in the way of Black's pieces.",
+    "label": "Knight dives to d6"
+   },
+   {
+    "ply": 23,
+    "text": "12.Bd2!? hits the queen on a5 and simply lets the c4 bishop go. Tal trusts his attack more than his material.",
+    "label": "Bishop left hanging"
+   },
+   {
+    "ply": 25,
+    "text": "The knight swings to f5, eyeing the bishop on e7 and the squares near Black's king. Tal's pieces gather on the kingside."
+   },
+   {
+    "ply": 28,
+    "text": "Black finally takes the bishop. He is a piece up, but White's queen and knight are close to his king."
+   },
+   {
+    "ply": 34,
+    "text": "17...Qxa2 hits back: Black's queen dives next to White's king and threatens ...Qa1+."
+   },
+   {
+    "ply": 36,
+    "text": "18...Nf6 attacks the white queen. Both kings are in danger now. Who strikes first?"
+   },
+   {
+    "ply": 37,
+    "text": "19.Qxf7!! The queen jumps into the lion's den. Tal has seen that his knight on h6 and his rook on d1 will win the material back.",
+    "label": "Queen sacrifice!"
+   },
+   {
+    "ply": 38,
+    "text": "Smyslov gives check first. White's king steps to d2, and notice: the black queen on a1 now stands in front of White's rook on d1."
+   },
+   {
+    "ply": 44,
+    "text": "The smoke clears. White has two rooks against one, and Black's king is out in the open."
+   },
+   {
+    "ply": 47,
+    "text": "24.Nxc6 wins a pawn and attacks the bishop on d8 and the pawn on a7."
+   },
+   {
+    "ply": 51,
+    "text": "26.Bd4 blocks the check. White is up the exchange and Black's pieces are scattered, so Smyslov resigned. Tal won the tournament and became world champion in 1960.",
+    "label": "Smyslov resigns"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 31,
+    "prompt": "White to play. The bishop on d8 attacks your queen on g5. Can you save the queen and win something at the same time?",
+    "hint": "A knight check comes first.",
+    "explanation": "16.Nh6+! drives the king into the corner (if 16...gxh6, the queen still grabs h5 and Black's king is wide open). Then 17.Qxh5 wins the knight back with the attack still going.",
+    "also": []
+   },
+   {
+    "ply": 41,
+    "prompt": "White to play. Black's rook just took your queen. Can you win it all back?",
+    "hint": "Recapture with check, then look at a1.",
+    "explanation": "21.Nxf7+ takes the rook with check. After the king moves, 22.Rxa1 grabs Black's queen, and White comes out ahead.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "legal-mate-1750",
+  "title": "Légal's Mate",
+  "white": "Sire de Légal",
+  "black": "Saint Brie",
+  "event": "Café de la Régence, Paris",
+  "year": 1750,
+  "result": "1-0",
+  "opening": "Philidor Defence",
+  "level": "beginner",
+  "themes": [
+   "opening-trap",
+   "sacrifice",
+   "checkmate"
+  ],
+  "orientation": "white",
+  "key_ply": 8,
+  "summary": "A seven-move miniature that gave its name to a classic trap. White gives up the queen, and three minor pieces deliver mate. The lesson: a pin is only a pin if breaking it really loses something, and grabbing the queen without looking can be fatal.",
+  "moves": "e4 e5 Bc4 d6 Nf3 Bg4 Nc3 g6 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Paris, around 1750, at the famous Café de la Régence. Légal, one of the best players of his day, sets a trap that still catches players today."
+   },
+   {
+    "ply": 1,
+    "text": "1.e4 grabs the centre and opens lines for the queen and the bishop."
+   },
+   {
+    "ply": 2,
+    "text": "1...e5 Black answers in kind, claiming a share of the centre."
+   },
+   {
+    "ply": 3,
+    "text": "2.Bc4 aims the bishop at f7, the weakest point in Black's camp, guarded only by the king."
+   },
+   {
+    "ply": 4,
+    "text": "2...d6 protects e5 and opens a path for the c8 bishop."
+   },
+   {
+    "ply": 5,
+    "text": "3.Nf3 develops a knight and attacks the e5 pawn."
+   },
+   {
+    "ply": 6,
+    "text": "3...Bg4 pins the knight to the White queen: if the knight moves, the queen on d1 is exposed.",
+    "label": "The pin",
+    "arrows": [
+     {
+      "from": "g4",
+      "to": "d1",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 7,
+    "text": "4.Nc3 develops another piece and quietly adds an attacker to the d5 square."
+   },
+   {
+    "ply": 8,
+    "text": "4...g6? A slow move. Black should be developing pieces, and it does nothing about White's hidden trick on e5."
+   },
+   {
+    "ply": 10,
+    "text": "5...Bxd1? Black takes the queen without looking at what White threatens. It's the losing move.",
+    "label": "Taking the bait"
+   },
+   {
+    "ply": 11,
+    "text": "6.Bxf7+ The bishop strikes f7 with check, protected by the knight on e5. The king has only one square: e7."
+   },
+   {
+    "ply": 12,
+    "text": "6...Ke7 was the only move. Now look at which squares around the king are still free."
+   },
+   {
+    "ply": 13,
+    "text": "7.Nd5# Checkmate with three minor pieces! Black is a queen up but lost the game. **Before grabbing material, always ask what your opponent threatens.**",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 9,
+    "prompt": "White to play. Your knight on f3 is pinned to the queen. Can you break the pin anyway?",
+    "hint": "Is losing the queen really a problem if you have something stronger ready?",
+    "explanation": "5.Nxe5! If Black takes the queen with 5...Bxd1, White mates with 6.Bxf7+ and 7.Nd5#. If instead 5...dxe5, then 6.Qxg4 and White is a pawn up.",
+    "also": []
+   },
+   {
+    "ply": 13,
+    "prompt": "White to play and checkmate in one. Black just took your queen. Can you punish it?",
+    "hint": "Your knight on c3 has a jump that gives check.",
+    "explanation": "7.Nd5# The knight checks from d5, and the bishop and other knight cover every escape square.",
+    "also": []
+   }
+  ]
+ },
+ {
+  "id": "carlsen-ernst-2004",
+  "title": "Carlsen at 13",
+  "white": "Magnus Carlsen",
+  "black": "Sipke Ernst",
+  "event": "Corus Group C, Wijk aan Zee",
+  "year": 2004,
+  "result": "1-0",
+  "opening": "Caro-Kann Defence",
+  "level": "intermediate",
+  "themes": [
+   "sacrifice",
+   "attack",
+   "checkmate"
+  ],
+  "orientation": "white",
+  "key_ply": 34,
+  "summary": "A 13-year-old Magnus Carlsen sacrifices a knight, a bishop and a rook to tear open the black king and finishes with a beautiful checkmate. The game made the chess world notice the future world champion and shows how a pawn on h5 can become the spearhead of an attack.",
+  "moves": "e4 c6 d4 d5 Nc3 dxe4 Nxe4 Bf5 Ng3 Bg6 h4 h6 Nf3 Nd7 h5 Bh7 Bd3 Bxd3 Qxd3 e6 Bf4 Ngf6 O-O-O Be7 Ne4 Qa5 Kb1 O-O Nxf6+ Nxf6 Ne5 Rad8 Qe2 c5 Ng6 fxg6 Qxe6+ Kh8 hxg6 Ng8 Bxh6 gxh6 Rxh6+ Nxh6 Qxe7 Nf7 gxf7 Kg7 Rd3 Rd6 Rg3+ Rg6 Qe5+ Kxf7 Qf5+ Rf6 Qd7#",
+  "annotations": [
+   {
+    "ply": 0,
+    "text": "Wijk aan Zee, January 2004. Thirteen-year-old Magnus Carlsen plays Dutch grandmaster Sipke Ernst. This attack made the chess world take notice. Carlsen became world champion in 2013."
+   },
+   {
+    "ply": 4,
+    "text": "The **Caro-Kann**: Black supports **...d5** with the c-pawn, a solid way to fight for the centre."
+   },
+   {
+    "ply": 8,
+    "text": "**4...Bf5** brings the light-squared bishop out before playing **...e6**, so it won't get locked in."
+   },
+   {
+    "ply": 11,
+    "text": "**6.h4** pushes the h-pawn to chase the bishop and grab space on the kingside."
+   },
+   {
+    "ply": 15,
+    "text": "The pawn reaches h5. Remember it: it will play a starring role later on.",
+    "highlights": [
+     "h5"
+    ]
+   },
+   {
+    "ply": 23,
+    "text": "Carlsen castles long. With the kings on opposite sides, both players can throw pawns and pieces at the other king."
+   },
+   {
+    "ply": 28,
+    "text": "Ernst castles short, right in front of White's h5-pawn. That pawn already controls g6."
+   },
+   {
+    "ply": 31,
+    "text": "**16.Ne5** puts the knight on a strong central square, eyeing f7 and g6."
+   },
+   {
+    "ply": 34,
+    "text": "Ernst hits back in the centre with **17...c5**. But White's pieces are aimed at the black king. Is there a way to break in?"
+   },
+   {
+    "ply": 36,
+    "text": "Ernst takes the knight. Now the e6-pawn has lost its friend on f7, and White's h5-pawn can recapture on g6.",
+    "label": "Knight sacrifice!"
+   },
+   {
+    "ply": 37,
+    "text": "**19.Qxe6+** crashes in with check and hits the bishop on e7."
+   },
+   {
+    "ply": 39,
+    "text": "The h-pawn now stands on g6, a thorn right next to Black's king. White wants to open the h-file next."
+   },
+   {
+    "ply": 43,
+    "text": "The h-file is open, and White gives up a rook to keep it that way. Black's king is running out of defenders.",
+    "label": "Rook sacrifice too!"
+   },
+   {
+    "ply": 45,
+    "text": "**23.Qxe7** takes the bishop and threatens **Qh7#**, with the g6-pawn protecting the queen.",
+    "arrows": [
+     {
+      "from": "e7",
+      "to": "h7",
+      "color": "red"
+     }
+    ]
+   },
+   {
+    "ply": 47,
+    "text": "Black blocked with **23...Nf7**, so the pawn simply takes it. Now the pawn is on f7, deep in Black's camp."
+   },
+   {
+    "ply": 49,
+    "text": "**25.Rd3!** The last rook swings over towards the g-file to join the attack.",
+    "label": "Rook lift",
+    "arrows": [
+     {
+      "from": "d3",
+      "to": "g3",
+      "color": "green"
+     }
+    ]
+   },
+   {
+    "ply": 57,
+    "text": "**29.Qd7#** Checkmate! The queen checks along the seventh rank and the rook on g3 covers the g-file. A brilliant finish from a 13-year-old.",
+    "label": "Checkmate!"
+   }
+  ],
+  "questions": [
+   {
+    "ply": 35,
+    "prompt": "White to play. Black's f7-pawn guards e6 and g6. Can you lure it away?",
+    "hint": "A knight offer next to the king.",
+    "explanation": "**18.Ng6!** If **18...fxg6**, the e6-pawn falls with check and the h5-pawn recaptures on g6, right next to Black's king.",
+    "also": []
+   },
+   {
+    "ply": 41,
+    "prompt": "White to play. Black's king hides behind the h6-pawn. How do you blow the h-file open?",
+    "hint": "A bishop can take a pawn.",
+    "explanation": "**21.Bxh6!** If **21...gxh6**, then **22.Rxh6+** follows and the h-file is wide open.",
+    "also": []
+   },
+   {
+    "ply": 57,
+    "prompt": "White to play and checkmate in one move!",
+    "hint": "Your rook on g3 already covers the g-file.",
+    "explanation": "**29.Qd7#** checks along the seventh rank. The king can't go to the g-file because of the rook, and e6, e7 and e8 are covered by the queen.",
+    "also": []
+   }
+  ]
+ }
+]

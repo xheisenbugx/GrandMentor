@@ -1,4 +1,4 @@
-//! Content translation overlays: `data/i18n/<lang>/{courses,openings,endgames}*.json`.
+//! Content translation overlays: `data/i18n/<lang>/{courses,openings,endgames,classics}*.json`.
 //!
 //! Every file whose name starts with `courses`, `openings` or `endgames` and ends in `.json` is
 //! merged (later files, in name order, win on conflicts). Overlays only ever replace *text*:
@@ -90,6 +90,7 @@ pub struct Overlay {
     pub courses: BTreeMap<String, CourseOverlay>,
     pub openings: BTreeMap<String, OpeningOverlay>,
     pub endgames: BTreeMap<String, EndgameOverlay>,
+    pub classics: BTreeMap<String, crate::classics::ClassicOverlay>,
 }
 
 /// What applying an overlay did (for the load log and tests).
@@ -103,7 +104,7 @@ pub struct OverlayStats {
 
 impl Overlay {
     pub fn is_empty(&self) -> bool {
-        self.courses.is_empty() && self.openings.is_empty() && self.endgames.is_empty()
+        self.courses.is_empty() && self.openings.is_empty() && self.endgames.is_empty() && self.classics.is_empty()
     }
 }
 
@@ -212,6 +213,7 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
         files.truncate(MAX_FILES);
     }
     let (mut courses, mut openings, mut endgames) = (BTreeMap::new(), BTreeMap::new(), BTreeMap::new());
+    let mut classics = BTreeMap::new();
     for path in files {
         let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("").to_ascii_lowercase();
         let target = if name.starts_with("courses") {
@@ -220,6 +222,8 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
             &mut openings
         } else if name.starts_with("endgames") {
             &mut endgames
+        } else if name.starts_with("classics") {
+            &mut classics
         } else {
             tracing::debug!("{}: not an overlay file; ignored", path.display());
             continue;
@@ -233,12 +237,13 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
         courses: typed("course", lang, courses, &mut bad),
         openings: typed("opening", lang, openings, &mut bad),
         endgames: typed("endgame", lang, endgames, &mut bad),
+        classics: typed("classic", lang, classics, &mut bad),
     };
     (ov, bad)
 }
 
 /// Replace `dst` with a usable translation (non-blank, bounded); keep English otherwise.
-fn set_text(dst: &mut String, src: &Option<String>) -> bool {
+pub(crate) fn set_text(dst: &mut String, src: &Option<String>) -> bool {
     match src.as_deref().map(str::trim) {
         Some(s) if !s.is_empty() && s.chars().count() <= MAX_TEXT_CHARS => {
             *dst = s.to_string();
@@ -363,5 +368,9 @@ pub fn apply_overlay(content: &mut Content, ov: &Overlay) -> OverlayStats {
             st.applied += 1;
         }
     }
+
+    let cs = crate::classics::apply_overlay(&mut content.classics, &ov.classics);
+    st.applied += cs.applied;
+    st.ignored += cs.ignored;
     st
 }
