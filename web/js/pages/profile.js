@@ -6,6 +6,7 @@ import { api, isAbort } from '../api.js';
 import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml, displayName } from '../ui.js';
 import { ensureHubCss, gameOutcome, userAccuracy, formatGameDate, formatRelativeIntl } from './library.js';
 import { t, getLocale, formatNumber, formatDateIntl } from '../i18n.js';
+import { topWeaknessesCard } from './insights.js';
 
 export const title = () => t('profile.title');
 const span = (key, params) => `<span>${escapeHtml(t(key, params))}</span>`;
@@ -19,6 +20,9 @@ export async function mount(root) {
   const ctrl = new AbortController();
   bag.add(() => ctrl.abort());
   const signal = ctrl.signal;
+  // Compact "Top weaknesses" card (Insights feature); re-created on every render.
+  let weakCard = null;
+  bag.add(() => weakCard?.destroy());
 
   const content = h('div', { class: 'stack-lg' }, skeleton('card', 4), skeleton('text', 6));
   const page = h('div', { class: 'page hub-page hub-profile' },
@@ -88,6 +92,8 @@ export async function mount(root) {
       coursesDone: courses.filter((c) => Array.isArray(c.lessons) && c.lessons.length && c.lessons.every((l) => progress.some((p) => p.completed && p.course_id === c.id && p.lesson_id === l.id))).length,
     };
 
+    weakCard?.destroy();
+    weakCard = topWeaknessesCard();
     content.replaceChildren(
       renderIdentity(profile, ctx),
       h('div', { class: 'grid-auto grid-auto-sm hub-stat-grid' },
@@ -99,6 +105,7 @@ export async function mount(root) {
         statTile(t('profile.stats.rushBest'), formatNumber(ctx.rush), 'bolt'),
         statTile(t('profile.stats.lessonsDone'), totalLessons ? `${lessonsDone}/${totalLessons}` : lessonsDone, 'learn'),
         statTile(t('profile.stats.streak'), formatNumber(ctx.streak), 'fire')),
+      weakCard.el,
       h('div', { class: 'hub-profile-charts' },
         h('section', { class: 'card' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('chart') + span('profile.results.title') })),

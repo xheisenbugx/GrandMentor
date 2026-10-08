@@ -15,6 +15,7 @@
 //! stored evaluations, without touching the engine.
 
 mod accuracy;
+pub mod insights;
 mod see;
 
 use std::collections::{BTreeMap, HashMap};
