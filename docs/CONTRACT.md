@@ -380,3 +380,67 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Endgame training
+
+Endgame theory drills with a short lesson and a "practise until reliable" mode against the engine.
+
+**Content** (`data/endgames.json`, Spanish text in `data/i18n/es/endgames.json`). `EndgameDrill` gains:
+
+```rust
+pub struct EndgameDrill { /* id, title, category, level, fen, goal, description, hint, technique, plus: */
+  pub variants: Vec<String>,   // extra start FENs (same side to move); practice picks one at random
+  pub lesson: Vec<Step>,       // 2–5 "key idea" steps: text (markdown-lite), optional fen (default: drill fen),
+                               // arrows [{from,to,color}], highlights [square]; no tasks
+  pub success: DrillSuccess,   // when an attempt counts as solved
+  pub pitfall: String }        // what usually goes wrong, shown after a failed attempt
+pub struct DrillSuccess { pub kind: String /* mate|promote|bare_king|hold */, pub moves: u32 }
+```
+
+- `mate`: checkmate within `moves` own moves. `promote`: promote a pawn that the opponent cannot capture at
+  once (or leave the opponent a bare king). `bare_king`: win all enemy material (or mate). These three go
+  with `goal: "win"`; `hold` (only with `goal: "draw"`) succeeds on any draw by rule, when the engine
+  has nothing left to win with (bare king or a lone minor piece), or after surviving `moves` own moves.
+- Missing `success` defaults to `mate`/50 (win) or `hold`/30 (draw). The loader rejects bad goals/kinds,
+  variants with the other side to move, `moves > 100`, more than 8 variants and lesson squares off the board.
+- Categories (UI groups): `basic` Basic mates, `pawn` Pawn endgames, `rook` Rook endgames, `queen` Queen
+  endgames, `minor` Minor pieces.
+
+**Verification.** All 90 positions with ≤ 7 pieces (every main FEN and variant except three 8–10 piece pawn
+structures) were checked against the Lichess Syzygy tablebase (`tablebase.lichess.ovh`): every `win` drill is
+a tablebase win for the side to move and every `draw` drill a tablebase draw. The remaining six positions
+(`outside-passed-pawn`, `pawn-breakthrough`, `rook-behind-passer` and their mirrors) are covered by the engine
+test `crates/gm-server/tests/training.rs::drill_positions_pass_engine_sanity_check`, which also runs on every
+position: wins must score ≥ +150 cp or a mate for the side to move, draws must not be a forced mate against it.
+
+**HTTP**
+
+| Method & path | Body | Response |
+|---|---|---|
+| GET `/api/training` | – | `{ "mastery_streak": 3, "drills": [DrillProgress] }` — one entry per drill in the content (zeros when never tried) |
+| POST `/api/training/:drillId/attempt` | `{ "success": bool, "moves": n /* 0..=500, default 0 */ }` | `DrillProgress` + `"just_mastered": bool, "mastery_streak": 3` |
+
+```json
+DrillProgress = { "drill_id": "lucena", "attempts": 5, "successes": 4, "streak": 3, "best_streak": 3,
+  "best_moves": 9, "mastered": true, "mastered_at": "2026-10-08T21:13:46Z",
+  "last_at": "2026-10-08T21:14:02Z", "last_success": true }
+```
+
+Unknown drill → 404, `moves > 500` or a malformed body → 400 (`{"error": "..."}`). A drill is mastered after
+3 successes in a row; mastery is sticky (a later failure only resets `streak`). Each attempt logs activity
+kind `endgame`. Storage: `gm_store::training` (`Store::training_progress`, `Store::drill_progress`,
+`Store::record_training_attempt`), table `endgame_training`.
+
+**Frontend** (`web/js/pages/endgames.js`, styles in `web/css/endgames.css` + the existing `eg-*` rules in
+`learn.css`, strings in the `endgames` locale namespace).
+
+- `#/endgames`: drills grouped by category with mastered/total per group, progress dots (●●○) per drill and a
+  gold medal on mastered drills.
+- `#/endgames/:id`: the lesson (step through with Back/Next or ←/→) opens first until the drill has been
+  attempted; then practice opens directly (the book button reviews the lesson). Practice plays the engine
+  (`POST /api/engine/analyze`, 500 ms; falls back to the strongest bot) from the main FEN on the first attempt,
+  then from a random variant. An attempt fails on checkmate, a draw by rule in a win drill, the move limit,
+  the engine's evaluation turning lost (≤ −500 cp, or 600 cp worse than the start position for draw drills,
+  or a forced mate) or drawn (|cp| ≤ 25 for two replies in a win drill). Results are posted to
+  `/api/training/:id/attempt`; attempts that used help (the best-move hint or a takeback) are not recorded.
+  Results link to `#/play?fen=<FEN>&color=w|b` ("Play this position vs a bot") and `#/analysis?fen=`.
