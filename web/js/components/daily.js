@@ -12,6 +12,7 @@
 import { api, isAbort } from '../api.js';
 import { h, icon, disposables, modal, toast } from '../ui.js';
 import { t, formatDateIntl, formatNumber } from '../i18n.js';
+import { reducedMotion } from '../settings.js';
 
 const PLAN_KEY = 'grandmentor.daily.plan.v1';
 const CELEBRATED_KEY = 'grandmentor.daily.celebrated.v1';
@@ -145,7 +146,7 @@ export function ensureDailyCss() {
 }
 
 const prefersReducedMotion = () => {
-  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+  try { return reducedMotion(); } catch { return false; }
 };
 
 const utcDate = (day) => new Date(`${day}T12:00:00Z`);

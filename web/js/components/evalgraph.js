@@ -77,6 +77,8 @@ export class EvalGraph {
       let p = null;
       if (e.key === 'ArrowLeft') p = Math.max(0, this.current - 1);
       else if (e.key === 'ArrowRight') p = Math.min(last, this.current + 1);
+      else if (e.key === 'Home') p = 0;
+      else if (e.key === 'End') p = last;
       if (p != null) { e.preventDefault(); e.stopPropagation(); this.onSelect(p); }
     };
     this.root.addEventListener('pointermove', this._onMove);
@@ -105,6 +107,17 @@ export class EvalGraph {
   setCurrent(ply) {
     this.current = Number.isFinite(ply) ? ply : -1;
     this.root.setAttribute('aria-valuenow', String(Math.max(0, this.current)));
+    // Text alternative for screen readers: "12. Nf3, +0.4, Mistake".
+    const p = this.current;
+    if (p >= 0 && p < this.evals.length) {
+      const moveNo = Math.ceil(p / 2);
+      const parts = [p === 0 ? t('ui.evalgraph.start') : `${moveNo}${p % 2 === 1 ? '.' : '…'} ${this.labels[p - 1] || ''}`.trim(), formatScore(this.evals[p])];
+      const c = p > 0 ? this.cls[p - 1] : null;
+      if (c) { const meta = classificationMeta(c); if (meta.label) parts.push(meta.label); }
+      this.root.setAttribute('aria-valuetext', parts.join(', '));
+    } else {
+      this.root.removeAttribute('aria-valuetext');
+    }
     this._renderCurrent();
   }
 

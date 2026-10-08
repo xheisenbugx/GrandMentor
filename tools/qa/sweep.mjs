@@ -21,6 +21,8 @@
 //   QA_SAMPLE      N > 1: non-English languages visit only every N-th route (rotating), to save CI time
 //   QA_SHOTS       failures (default) | all | none
 //   QA_SETTLE_MS   extra wait after the network goes idle (default 500)
+//   QA_SETTINGS    JSON merged into the app settings, e.g. '{"theme":"light"}' or '{"highContrast":true}'
+//   QA_KEYBOARD    0 skips the keyboard smoke test (Tab through QA_KBD_STEPS focus stops, default 20)
 //   QA_INJECT      JS injected into every page before it loads (to test the sweep itself, e.g.
 //                  QA_INJECT="console.error('boom'); fetch('/api/nope')" must make every page fail)
 // Exit code: 0 clean, 1 failures found, 2 the sweep itself could not run.
@@ -41,6 +43,9 @@ const VIEWPORTS = {
   mobile: { width: 390, height: 844, mobile: true },
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+/** QA_SETTINGS: JSON merged into the app settings, e.g. '{"theme":"light"}' or '{"highContrast":true}'. */
+let EXTRA_SETTINGS = {};
+try { EXTRA_SETTINGS = env.QA_SETTINGS ? JSON.parse(env.QA_SETTINGS) : {}; } catch { console.error('sweep: QA_SETTINGS is not valid JSON'); process.exit(2); }
 const log = (...a) => console.log(...a);
 
 // ---------------------------------------------------------------------------
@@ -294,7 +299,63 @@ function issuesFromChecks(r) {
   for (const e of r.english) out.push({ check: 'english', detail: `"${e}"` });
   for (const o of r.layerOverlaps) out.push({ check: 'layer-over-board', detail: `${o.layer} covers ${o.board} (${o.overlap})` });
   for (const o of r.buttonOverlaps) out.push({ check: 'button-overlap', detail: `${o.a} overlaps ${o.b} (${o.overlap})` });
+  const a = r.a11y || {};
+  for (const x of a.names || []) out.push({ check: 'a11y-name', detail: `${x} has no accessible name` });
+  for (const x of a.alt || []) out.push({ check: 'a11y-alt', detail: `${x} has no text alternative` });
+  for (const x of a.hiddenFocus || []) out.push({ check: 'a11y-hidden-focus', detail: `${x} is focusable but hidden from assistive tech` });
+  for (const x of a.dupIds || []) out.push({ check: 'a11y-dup-id', detail: `duplicate id ${x}` });
+  for (const c of a.contrast || []) out.push({ check: 'contrast', detail: `${c.el} ${c.ratio}:1 < ${c.need}:1 (${c.fg} on ${c.bg})` });
+  for (const x of a.touch || []) out.push({ check: 'touch-target', detail: `${x} is smaller than 40×40px` });
   return out;
+}
+
+// Keyboard smoke test: press Tab KBD_STEPS times from the top of the page. Every stop must move
+// focus to a visible element (not inside aria-hidden) that shows a focus indicator.
+const KBD_STEPS = Number(env.QA_KBD_STEPS) || 20;
+const KBD_PROBE = `(() => {
+  const el = document.activeElement;
+  if (!el || el === document.body || el === document.documentElement) return { body: true };
+  let s = el.tagName.toLowerCase(); if (el.id) s += '#' + el.id;
+  const cls = typeof el.className === 'string' ? el.className.trim().split(/\\s+/).filter(Boolean).slice(0, 2) : [];
+  if (cls.length) s += '.' + cls.join('.');
+  const label = (el.getAttribute('aria-label') || el.textContent || '').replace(/\\s+/g, ' ').trim().slice(0, 30);
+  if (label) s += ' "' + label + '"';
+  const r = el.getBoundingClientRect();
+  const hiddenAT = !!el.closest('[aria-hidden="true"], [inert]');
+  const cs = getComputedStyle(el);
+  const ring = (st) => (st.outlineStyle !== 'none' && parseFloat(st.outlineWidth) > 0) || (st.boxShadow && st.boxShadow !== 'none');
+  let indicator = ring(cs);
+  if (!indicator && el.matches('.switch input')) indicator = !!el.nextElementSibling && ring(getComputedStyle(el.nextElementSibling));
+  if (!indicator && el.matches('.gm-sq')) { const c = el.closest('.gm-board')?.querySelector('.gm-kbd-cursor'); indicator = !!c && getComputedStyle(c).display !== 'none'; }
+  if (!indicator && el.matches('input, textarea, select')) indicator = cs.borderColor !== '' && cs.boxShadow !== 'none';
+  const tiny = (r.width < 2 || r.height < 2) && !el.matches('.switch input');
+  // Is anything tabbable after it? (Tab from the last stop leaves the document: not a trap.)
+  const sel = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const after = [...document.querySelectorAll(sel)].some((x) => x !== el && (el.compareDocumentPosition(x) & Node.DOCUMENT_POSITION_FOLLOWING)
+    && !x.closest('[inert], [hidden]') && x.getClientRects().length > 0 && getComputedStyle(x).visibility !== 'hidden');
+  if (!el.dataset.qaKbd) el.dataset.qaKbd = String((window.__qaKbdSeq = (window.__qaKbdSeq || 0) + 1));
+  return { id: el.dataset.qaKbd, desc: s, hiddenAT, tiny, indicator, last: !after };
+})()`;
+async function keyboardSmoke(b) {
+  const issues = [];
+  await b.eval(`(() => { const a = document.activeElement; if (a && a.blur) a.blur(); window.scrollTo(0, 0); })()`);
+  let last = null;
+  let bodyStops = 0;
+  for (let i = 0; i < KBD_STEPS; i++) {
+    await b.send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
+    await b.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
+    await sleep(40);
+    const r = await b.eval(KBD_PROBE);
+    if (r.body) { if (++bodyStops > 1) break; continue; } // wrapped around the page
+    if (r.id === last) { if (!r.last) issues.push({ check: 'keyboard', detail: `focus is stuck on ${r.desc}` }); break; }
+    last = r.id;
+    if (r.hiddenAT) issues.push({ check: 'keyboard', detail: `Tab reached ${r.desc}, which is hidden from assistive tech` });
+    else if (r.tiny) issues.push({ check: 'keyboard', detail: `Tab reached ${r.desc}, which is not visible` });
+    else if (!r.indicator) issues.push({ check: 'keyboard', detail: `${r.desc} shows no focus indicator` });
+    if (issues.length >= 5) break;
+  }
+  await b.eval(`(() => { const a = document.activeElement; if (a && a.blur) a.blur(); window.scrollTo(0, 0); })()`);
+  return issues;
 }
 
 // ---------------------------------------------------------------------------
@@ -335,7 +396,7 @@ async function main() {
       const { identifier } = await b.send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__qaData = ${JSON.stringify(qaData)};${inject}` });
       // Select the language through the app's own settings storage.
       await b.open(`${base}/?qa=lang#/`, 1500);
-      await b.eval(`(() => { const k = 'grandmentor.settings.v1'; let s = {}; try { s = JSON.parse(localStorage.getItem(k)) || {}; } catch {} s.language = ${JSON.stringify(lang)}; localStorage.setItem(k, JSON.stringify(s)); })()`);
+      await b.eval(`(() => { const k = 'grandmentor.settings.v1'; let s = {}; try { s = JSON.parse(localStorage.getItem(k)) || {}; } catch {} s.language = ${JSON.stringify(lang)}; Object.assign(s, ${JSON.stringify(EXTRA_SETTINGS)}); localStorage.setItem(k, JSON.stringify(s)); })()`);
       for (const [vi, vpName] of vps.entries()) {
         const vp = VIEWPORTS[vpName];
         await b.size(vp.width, vp.height, vp.mobile);
@@ -358,6 +419,7 @@ async function main() {
             const viewEmpty = await b.eval(`!document.querySelector('#view')?.children.length`);
             if (viewEmpty) issues.push({ check: 'empty', detail: '#view rendered nothing' });
             issues.push(...issuesFromChecks(await b.eval(pageCheck)));
+            if (env.QA_KEYBOARD !== '0') issues.push(...await keyboardSmoke(b));
           } catch (e) {
             issues.push({ check: 'sweep-error', detail: String(e.message || e).slice(0, 300) });
           }

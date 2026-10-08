@@ -4,7 +4,7 @@
 
 import { h, icon, pageHeader, disposables, emptyState, skeleton, escapeHtml } from '../ui.js';
 import { api, isAbort } from '../api.js';
-import { getSettings, pieceUrl } from '../settings.js';
+import { getSettings, pieceUrl, reducedMotion } from '../settings.js';
 import { Chess } from '/vendor/chess.js';
 import { t } from '../i18n.js';
 
@@ -181,7 +181,7 @@ export function timerSet() {
 /** Confetti-lite burst over `host` (position:relative). Self-removes via `timers` (a timerSet). */
 export function confetti(host, timers, { count = 36 } = {}) {
   if (!host) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (reducedMotion()) return;
   host.querySelectorAll(':scope > .lrn-confetti').forEach((n) => n.remove());
   const colors = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)', 'var(--accent)'];
   const layer = h('div', { class: 'lrn-confetti', 'aria-hidden': 'true' });

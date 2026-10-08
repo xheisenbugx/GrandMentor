@@ -13,16 +13,16 @@
 .pz-mode-icon {
   width: 52px; height: 52px; border-radius: var(--r-lg);
   display: grid; place-items: center;
-  background: var(--primary-soft); color: var(--primary);
+  background: var(--primary-soft); color: var(--primary-text);
 }
 .pz-mode-icon svg { width: 28px; height: 28px; }
-.pz-mode-rush .pz-mode-icon, .pz-rush-mode:nth-child(1) .pz-mode-icon { background: var(--warning-soft); color: var(--warning); }
-.pz-rush-mode:nth-child(2) .pz-mode-icon { background: var(--info-soft); color: var(--info); }
-.pz-rush-mode:nth-child(3) .pz-mode-icon { background: var(--accent-soft); color: var(--accent); }
+.pz-mode-rush .pz-mode-icon, .pz-rush-mode:nth-child(1) .pz-mode-icon { background: var(--warning-soft); color: var(--warning-text); }
+.pz-rush-mode:nth-child(2) .pz-mode-icon { background: var(--info-soft); color: var(--info-text); }
+.pz-rush-mode:nth-child(3) .pz-mode-icon { background: var(--accent-soft); color: var(--accent-text); }
 .pz-mode-title { font-size: var(--fs-xl); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
 .pz-rating-big { display: flex; align-items: baseline; gap: var(--sp-2); margin-top: var(--sp-1); }
 .pz-rating-num { font-size: var(--fs-3xl); font-weight: var(--fw-black); line-height: 1; letter-spacing: -0.02em; }
-.pz-flame { display: inline-flex; color: var(--warning); }
+.pz-flame { display: inline-flex; color: var(--warning-text); }
 .pz-flame svg { width: 18px; height: 18px; }
 
 /* Calendar tile */
@@ -33,7 +33,7 @@
   box-shadow: var(--shadow-sm); text-align: center;
 }
 .pz-cal-month {
-  background: var(--danger); color: var(--text-inverse);
+  background: var(--danger-fill); color: #fff;
   font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.08em;
   padding: 3px 0;
 }
@@ -43,7 +43,7 @@
   position: absolute; right: -2px; bottom: -2px;
   width: 26px; height: 26px; border-radius: var(--r-full);
   display: grid; place-items: center;
-  background: var(--primary); color: var(--primary-contrast);
+  background: var(--primary-fill); color: var(--primary-contrast);
   border: 2px solid var(--surface);
 }
 .pz-cal-check svg { width: 15px; height: 15px; stroke-width: 3; }
@@ -68,7 +68,7 @@
 .pz-howto-num {
   flex: none; width: 32px; height: 32px; border-radius: var(--r-full);
   display: grid; place-items: center;
-  background: var(--primary-soft); color: var(--primary); font-weight: var(--fw-black);
+  background: var(--primary-soft); color: var(--primary-text); font-weight: var(--fw-black);
 }
 
 /* ---------- Solver layout ----------------------------------------------- */
@@ -81,9 +81,9 @@
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .pz-turnbar svg { width: 20px; height: 20px; }
-.pz-turnbar.state-correct, .pz-turnbar.state-solved, .pz-turnbar.state-solvedLate { background: var(--success-soft); border-color: var(--success); color: var(--success); }
-.pz-turnbar.state-wrong, .pz-turnbar.state-error { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
-.pz-turnbar.state-solution { background: var(--info-soft); border-color: var(--info); color: var(--info); }
+.pz-turnbar.state-correct, .pz-turnbar.state-solved, .pz-turnbar.state-solvedLate { background: var(--success-soft); border-color: var(--success); color: var(--success-text); }
+.pz-turnbar.state-wrong, .pz-turnbar.state-error { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-text); }
+.pz-turnbar.state-solution { background: var(--info-soft); border-color: var(--info); color: var(--info-text); }
 .pz-side {
   width: 20px; height: 20px; flex: none; border-radius: var(--r-xs);
   border: 2px solid var(--border-strong); box-shadow: var(--shadow-xs);
@@ -112,8 +112,8 @@
   padding: 1px 8px; border-radius: var(--r-full);
 }
 .pz-delta:empty { display: none; }
-.pz-delta.up { background: var(--success-soft); color: var(--success); }
-.pz-delta.down { background: var(--danger-soft); color: var(--danger); }
+.pz-delta.up { background: var(--success-soft); color: var(--success-text); }
+.pz-delta.down { background: var(--danger-soft); color: var(--danger-text); }
 
 /* Status card */
 .pz-status {
@@ -132,7 +132,7 @@
 .pz-status-good { background: var(--success-soft); border-color: var(--success); }
 .pz-status-good .pz-status-icon { background: var(--success); color: var(--text-inverse); }
 .pz-status-bad { background: var(--danger-soft); border-color: var(--danger); }
-.pz-status-bad .pz-status-icon { background: var(--danger); color: var(--text-inverse); }
+.pz-status-bad .pz-status-icon { background: var(--danger-fill); color: #fff; }
 
 .pz-info { display: flex; flex-direction: column; gap: var(--sp-2); }
 .pz-info:empty { display: none; }
@@ -184,17 +184,17 @@
   border: 1px solid var(--border);
 }
 .pz-strike svg { width: 18px; height: 18px; stroke-width: 3; opacity: 0.35; }
-.pz-strike.on { background: var(--danger); border-color: var(--danger); color: var(--text-inverse); }
+.pz-strike.on { background: var(--danger-fill); border-color: var(--danger); color: #fff; }
 .pz-strike.on svg { opacity: 1; }
-.pz-strikes.lg .pz-strike { width: 44px; height: 44px; background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+.pz-strikes.lg .pz-strike { width: 44px; height: 44px; background: var(--danger-soft); color: var(--danger-text); border-color: transparent; }
 .pz-strikes.lg .pz-strike svg { width: 24px; height: 24px; opacity: 1; }
 
 .pz-rush-top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--sp-3); }
 .pz-rush-clock { font-size: var(--fs-3xl); font-weight: var(--fw-black); line-height: 1; transition: color var(--dur) var(--ease); }
-.pz-rush-clock.low { color: var(--danger); animation: pulse 1s var(--ease) infinite; }
+.pz-rush-clock.low { color: var(--danger-text); animation: pulse 1s var(--ease) infinite; }
 .pz-rush-score {
   min-width: 84px; padding: var(--sp-1) var(--sp-3); border-radius: var(--r-lg);
-  background: var(--primary-soft); color: var(--primary);
+  background: var(--primary-soft); color: var(--primary-text);
   font-size: var(--fs-4xl); font-weight: var(--fw-black); line-height: 1.1; text-align: center;
 }
 .pz-rush-score.bump { animation: pz-bump 360ms var(--ease-spring); }
@@ -222,7 +222,7 @@
 .pz-end-wrap { max-width: 720px; margin: var(--sp-6) auto; padding: 0 var(--page-pad); }
 .pz-end { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: var(--sp-5); }
 .pz-end .result-hero { text-align: center; }
-.pz-end-score { font-size: 88px; font-weight: var(--fw-black); line-height: 1; color: var(--primary); letter-spacing: -0.03em; margin: var(--sp-2) 0; }
+.pz-end-score { font-size: 88px; font-weight: var(--fw-black); line-height: 1; color: var(--primary-text); letter-spacing: -0.03em; margin: var(--sp-2) 0; }
 .pz-end-stats { gap: var(--sp-3); }
 .pz-end-stats .stat { text-align: center; padding: var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); }
 .pz-end-actions { justify-content: center; gap: var(--sp-2); }
@@ -252,7 +252,7 @@
   position: absolute; top: -6px; right: -8px;
   min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--r-full);
   display: grid; place-items: center;
-  background: var(--danger); color: var(--primary-contrast);
+  background: var(--danger-fill); color: var(--primary-contrast);
   font-size: var(--fs-xs); font-weight: var(--fw-black);
   border: 2px solid var(--surface);
 }
@@ -267,7 +267,7 @@
 .pz-mx-stat { text-align: center; }
 .pz-mx-stat-num { font-size: var(--fs-2xl); font-weight: var(--fw-black); line-height: 1.15; }
 .pz-mx-stat.is-due .pz-mx-stat-num { color: var(--cls-miss); }
-.pz-mx-stat.is-mastered .pz-mx-stat-num { color: var(--primary); }
+.pz-mx-stat.is-mastered .pz-mx-stat-num { color: var(--primary-text); }
 
 /* "From your game vs ..." */
 .pz-mx-context { display: flex; flex-direction: column; gap: var(--sp-2); }
@@ -287,7 +287,7 @@
 .pz-mx-san { font-weight: var(--fw-black); font-size: var(--fs-lg); font-variant-numeric: tabular-nums; }
 .pz-mx-cls { color: var(--cls); background: color-mix(in srgb, var(--cls) 16%, transparent); }
 .pz-mx-tags { flex-wrap: wrap; }
-.pz-mx-practice { background: var(--info-soft); color: var(--info); }
+.pz-mx-practice { background: var(--info-soft); color: var(--info-text); }
 .pz-mx-pips { flex: none; display: flex; gap: 4px; }
 .pz-mx-pip {
   width: 10px; height: 10px; border-radius: var(--r-full);
@@ -299,8 +299,8 @@
 /* After solving */
 .pz-mx-after:empty { display: none; }
 .pz-mx-best { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--sp-2); }
-.pz-mx-best .pz-mx-san { color: var(--primary); }
-.pz-mx-best-icon { display: inline-flex; color: var(--primary); align-self: center; }
+.pz-mx-best .pz-mx-san { color: var(--primary-text); }
+.pz-mx-best-icon { display: inline-flex; color: var(--primary-text); align-self: center; }
 .pz-mx-best-icon svg { width: 18px; height: 18px; }
 .pz-mx-coach {
   display: flex; gap: var(--sp-3); align-items: flex-start;
@@ -333,7 +333,7 @@
 .pz-mx-next-due {
   display: inline-flex; align-items: center; gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4); border-radius: var(--r-full);
-  background: var(--primary-soft); color: var(--primary); font-weight: var(--fw-bold);
+  background: var(--primary-soft); color: var(--primary-text); font-weight: var(--fw-bold);
 }
 .pz-mx-next-due svg { width: 18px; height: 18px; }
 .pz-mx-done-actions { justify-content: center; gap: var(--sp-2); }

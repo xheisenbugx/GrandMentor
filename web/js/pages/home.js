@@ -335,7 +335,7 @@ export async function mount(root) {
       if (signal.aborted || bag.disposed) return;
       const holder = h('div', { class: 'hub-daily-board-inner' });
       slot.appendChild(holder);
-      const board = new Board(holder, { fen: pos.fen, orientation: pos.turn, interactive: false, movableColor: null, sounds: false });
+      const board = new Board(holder, { fen: pos.fen, orientation: pos.turn, interactive: false, movableColor: null, sounds: false, keyboard: false, announce: false });
       bag.add(() => board.destroy());
       if (lastMove) board.setPosition(pos.fen, { animate: false, lastMove });
     } catch {

@@ -344,8 +344,12 @@ export class EngineClient {           // one websocket, lazy-connect, auto-recon
 }
 ```
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
-Keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett|merida|alpha), `sounds` (bool),
+Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|alpha), `sounds` (bool),
 `showCoords`, `showLegal`, `animationMs` (number), `showEvalBar`, `autoQueen`, `theme` (dark|light), `moveNotation` (san|figurine).
+Accessibility keys (see "Accessibility" below): `highContrast` (bool), `cbPalette` (bool), `motion` (system|reduce|full),
+`announceMoves` (bool, default true), `squareNames` (bool), `uiScale` (100|115|130).
+Also exported: `reducedMotion()` (true when `motion` is reduce, or system + `prefers-reduced-motion`), `scrollBehavior()`
+(`'auto'|'smooth'` for `scrollIntoView`), `UI_SCALES`.
 **`web/js/ui.js`**: `toast(msg, kind)`, `modal({title, body /*Node|string*/, actions:[{label, kind, onClick}]}) → {close}`,
 `h(tag, attrs, ...children)` tiny DOM helper, `icon(name)` → inline SVG string, `formatScore(score)` → "+1.2"/"M3",
 `classificationMeta(cls)` → `{label, color, symbol /* "!!","!","★","👍","📖","?!","?","✗","??" */}`, `escapeHtml`.
@@ -380,6 +384,65 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Accessibility
+
+### Board keyboard & screen-reader support (`components/board.js`, backwards compatible)
+
+```js
+new Board(el, { …, keyboard /* default true: arrow keys etc. */, announce /* default true: speak moves */,
+  label /* accessible name, default "Chess board" */ });
+board.focus();                 // focus the keyboard cursor square
+board.canUserMove(square?);    // interactive and the side to move (or the piece on `square`) is movable
+board.playUserMove(uci | {from,to,promotion}); // play as if the user moved it (typed input): onMove decides; → move object | null
+```
+- The squares form an ARIA grid (`role="grid"` → 8 `role="row"` wrappers with `display: contents` → 64 `role="gridcell"`,
+  in visual order) with one tab stop (roving `tabindex`). ←↑→↓ move the cursor (always screen directions, both
+  orientations), Home/End jump within the row, PageUp/PageDown within the column, Enter/Space picks up a piece (legal-move
+  dots appear) and drops it on a target (promotion opens the picker; arrows cycle its choices), Esc cancels a selection or
+  a queued premove. Handled keys call `preventDefault()` + `stopPropagation()` so page shortcuts (← → navigation) don't
+  also fire. Enter on a square also calls `onSquareClick(square)`.
+- Cells are labelled `"e4, white knight"` / `"e4, empty"`, plus `selected`, `legal move`, `capture`, `in check`,
+  `last move`, `premove` (blindfold hides piece names). The cursor ring (`.gm-kbd-cursor`) shows only after keyboard use.
+- With `squareNames` on, a name tag shows on the hovered / focused square (`.gm-hover-name`, `.gm-sq-name`).
+- Moves are announced (user moves, `move()`, and `setPosition(fen, {lastMove})` when it is exactly one legal move);
+  after the opponent's move, "Your move" is added when the user can move. Preview boards pass `keyboard:false, announce:false`.
+
+### `components/announcer.js`
+
+```js
+announce(text, { assertive = false, dedupe = true });  // shared polite/assertive live regions, 150 ms debounce,
+                                                       // bursts joined, same text dropped within 1.2 s
+clearAnnouncements();                                  // the router calls it on navigation
+describeMove(move) → "White knight to f3" | "Black captures on d5, check" | "… Checkmate!"   // Board move or chess.js verbose move
+announceMove(move); announceTurn(color, { you });      // respect the announceMoves setting
+squareLabel(square, code?), pieceName(role), coloredPiece('wN')
+```
+`toast()` messages are spoken through `announce()` (errors/warnings assertive); the toast stack itself is not a live region.
+
+### `components/moveinput.js`
+
+```js
+const mi = createMoveInput({ board /* Board or () => Board */, onMove? /* (mv) => false to reject */,
+  blocked? /* () => message|null */, label?, placeholder?, className? });
+panel.append(mi.el); …; mi.destroy();          // also mi.input, mi.focus(), mi.clear(), mi.setDisabled(bool)
+parseMoveText(chessOrFen, text) → {from, to, promotion?, san} | null   // SAN (e4, Nf3, exd5, O-O, 0-0-0, e8=Q, e8Q, nf3) or UCI (e2e4, e7e8q)
+looksLikeMove(text) → bool
+```
+Without `onMove` the move goes through `board.playUserMove()`, i.e. the page's normal `onMove` (puzzle checking, engine
+replies…). Errors show under the field (`aria-invalid`) and are announced. Used on Puzzles (solver, mistakes, rush),
+lessons, Analysis, Play a friend, endgame practice and the repertoire builder/drill; Play keeps its own typed-move box
+(same parser). Quick drills have their own typed answers.
+
+### `ui.js` additions
+`tOr(key, englishFallback, params)` (for code that may run before i18n loads, e.g. the global error toast),
+`focusableIn(container)`; modals trap Tab (also when nothing inside is focusable) and restore focus on close;
+`classificationMeta(cls).color` follows the colour-blind palette when `cbPalette` is on (`cssVar` always follows the
+active palette).
+
+### `<html>` attributes set by `settings.js` (and the pre-paint script in `index.html`)
+`data-contrast="high|normal"`, `data-cls-palette="cb|default"`, `data-motion="reduce|full"` (resolved, follows the OS while
+`motion` is `system`), `data-square-names="on|off"`, `data-ui-scale="100|115|130"` (root `font-size` set inline).
 
 ## Local two-player (Play a friend)
 

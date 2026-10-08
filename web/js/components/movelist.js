@@ -202,10 +202,14 @@ export class MoveList {
       btn.dataset.cls = meta.key;
       const dot = document.createElement('span');
       dot.className = 'gm-ml-dot';
-      dot.textContent = /\p{Extended_Pictographic}/u.test(meta.symbol) ? '' : meta.symbol;
-      if (!dot.textContent) dot.classList.add('small');
+      // Colour is always paired with the symbol (emoji symbols render without the coloured disc).
+      dot.textContent = meta.symbol || '';
+      dot.setAttribute('aria-hidden', 'true');
+      if (/\p{Extended_Pictographic}/u.test(meta.symbol)) dot.classList.add('emoji');
+      else if (!dot.textContent) dot.classList.add('small');
       dot.title = meta.label;
       btn.title = `${m.san} — ${meta.label}`;
+      btn.setAttribute('aria-label', `${m.san}, ${meta.label}`);
       btn.append(dot, san);
     } else {
       btn.appendChild(san);

@@ -75,10 +75,10 @@
   background: color-mix(in srgb, var(--info) 10%, var(--surface-2)); box-shadow: inset 3px 0 0 var(--info); }
 .cl-question.is-done { box-shadow: inset 3px 0 0 var(--primary); }
 .cl-question-head { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
-.cl-question-icon svg { width: 20px; height: 20px; color: var(--info); display: block; }
+.cl-question-icon svg { width: 20px; height: 20px; color: var(--info-text); display: block; }
 .cl-question-prompt { font-size: var(--fs-md); }
 .cl-question-hint { display: flex; gap: 6px; align-items: flex-start; color: var(--text-muted); }
-.cl-question-hint svg { flex: none; color: var(--warning); margin-top: 2px; }
+.cl-question-hint svg { flex: none; color: var(--warning-text); margin-top: 2px; }
 .cl-question-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: flex-end; }
 .cl-turn { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--text-muted); }
 .cl-turn-dot { width: 12px; height: 12px; border-radius: var(--r-full); border: 1px solid var(--border-strong); }
@@ -87,11 +87,11 @@
 .cl-feedback { display: flex; gap: var(--sp-2); align-items: flex-start; font-size: var(--fs-sm); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); animation: cl-in var(--dur) var(--ease-out); }
 .cl-feedback svg { flex: none; width: 18px; height: 18px; margin-top: 1px; }
 .cl-feedback.good { background: var(--success-soft); color: var(--text); }
-.cl-feedback.good svg { color: var(--success); }
+.cl-feedback.good svg { color: var(--success-text); }
 .cl-feedback.bad { background: var(--danger-soft); }
-.cl-feedback.bad svg { color: var(--danger); }
+.cl-feedback.bad svg { color: var(--danger-text); }
 .cl-feedback.info { background: var(--info-soft); }
-.cl-feedback.info svg { color: var(--info); }
+.cl-feedback.info svg { color: var(--info-text); }
 @keyframes cl-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 .cl-done { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border-radius: var(--r-md); background: var(--primary-soft); }
@@ -109,8 +109,8 @@
 .cl-chip { flex: none; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
 .cl-chip-icon svg { display: block; width: 14px; height: 14px; }
 .cl-chip-moment .cl-chip-icon { color: var(--gold); }
-.cl-chip-question .cl-chip-icon { color: var(--info); }
-.cl-chip-question.answered .cl-chip-icon { color: var(--success); }
+.cl-chip-question .cl-chip-icon { color: var(--info-text); }
+.cl-chip-question.answered .cl-chip-icon { color: var(--success-text); }
 .cl-moves-body { padding: var(--sp-2); }
 
 .cl-controls { display: flex; flex-direction: column; gap: var(--sp-2); flex: none; }

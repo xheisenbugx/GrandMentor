@@ -2,7 +2,8 @@
 // Contract: docs/CONTRACT.md §5. Pages live in ./pages/*.js and export
 //   mount(root, { params, query, path }) -> cleanup fn (may be async), and optional `title`.
 
-import { h, icon, brandMark, toast, closeAllModals, escapeHtml } from './ui.js';
+import { h, icon, brandMark, toast, closeAllModals, escapeHtml, tOr } from './ui.js';
+import { announce, clearAnnouncements } from './components/announcer.js';
 import { api } from './api.js';
 import { getSettings, setSetting, onSettingsChange } from './settings.js';
 import { initI18n, onLanguageChange, t } from './i18n.js';
@@ -122,7 +123,7 @@ function navLink(item, cls = 'nav-item') {
 function localizeStatic() {
   els.sidebar.setAttribute('aria-label', t('nav.mainNavigation'));
   els.bottombar.setAttribute('aria-label', t('nav.mainNavigation'));
-  const skip = document.querySelector('a.sr-only[href="#view"]');
+  const skip = document.querySelector('a.skip-link, a.sr-only[href="#view"]');
   if (skip) skip.textContent = t('nav.skipToContent');
   const desc = document.querySelector('meta[name="description"]');
   if (desc) desc.setAttribute('content', t('nav.metaDescription'));
@@ -168,8 +169,10 @@ function renderShell() {
   const sheetItems = NAV.filter((n) => !n.primary).map((n) => navLink(n));
   const sheetTheme = h('button', { class: 'nav-item', type: 'button', style: 'border:0', onClick: () => { toggleTheme(); } });
   els.sheetTheme = sheetTheme;
-  const panel = h('div', { class: 'more-sheet-panel', role: 'menu', 'aria-label': t('nav.more') }, sheetItems, sheetTheme);
+  const panel = h('nav', { class: 'more-sheet-panel', id: 'more-sheet-panel', 'aria-label': t('nav.more') }, sheetItems, sheetTheme);
   els.sheet.replaceChildren(panel);
+  els.moreBtn.setAttribute('aria-controls', 'more-sheet-panel');
+  els.sheet.inert = !els.sheet.classList.contains('open');
   syncShellSettings(getSettings());
 
   // renderShell() runs again on every language switch: install global listeners only once.
@@ -179,8 +182,18 @@ function renderShell() {
     if (e.target === els.sheet || e.target.closest('a')) toggleSheet(false);
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && els.sheet.classList.contains('open')) toggleSheet(false);
+    if (e.key === 'Escape' && els.sheet.classList.contains('open')) { toggleSheet(false); els.moreBtn?.focus(); }
   });
+  // Skip link: the hash router owns location.hash, so move focus instead of navigating to "#view".
+  const skip = document.querySelector('a.skip-link, a.sr-only[href="#view"]');
+  if (skip) {
+    skip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = els.view.querySelector('h1') || els.view;
+      if (target !== els.view && !target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      try { target.focus(); } catch { /* ignore */ }
+    });
+  }
   onSettingsChange((s, key) => {
     if (key === 'theme' || key === 'sidebarCollapsed') syncShellSettings(s);
   });
@@ -211,8 +224,13 @@ function toggleSheet(force) {
   const open = typeof force === 'boolean' ? force : !els.sheet.classList.contains('open');
   els.sheet.classList.toggle('open', open);
   els.sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+  els.sheet.inert = !open; // closed sheet links must not be reachable with Tab
   els.moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   els.moreBtn.classList.toggle('active', open);
+  if (open) {
+    const first = els.sheet.querySelector('a, button');
+    if (first) requestAnimationFrame(() => { try { first.focus({ preventScroll: true }); } catch { /* ignore */ } });
+  }
 }
 
 function setActiveNav(key) {
@@ -252,6 +270,7 @@ async function checkHealth() {
 // Router
 // ---------------------------------------------------------------------------
 let currentCleanup = null;
+let routedOnce = false;
 let navToken = 0;
 let progressTimer = null;
 
@@ -280,6 +299,7 @@ async function handleRoute() {
 
   toggleSheet(false);
   closeAllModals();
+  clearAnnouncements();
   await runCleanup();
   if (token !== navToken) return;
 
@@ -299,6 +319,9 @@ async function handleRoute() {
   const { route, params } = match;
   setActiveNav(route.nav);
   setTitle(t(route.titleKey));
+  // Tell screen-reader users that the page changed (the hash router doesn't reload the document).
+  if (routedOnce) announce(t(route.titleKey));
+  routedOnce = true;
   showProgress(true);
 
   try {
@@ -365,12 +388,13 @@ window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason;
   if (r && r.name === 'AbortError') { e.preventDefault(); return; }
   console.error('[unhandled]', r);
-  reportGlobal(r && r.message ? r.message : t('common.somethingWentWrong'));
+  reportGlobal(r && r.message ? r.message : tOr('common.somethingWentWrong', 'Something went wrong'));
 });
 window.addEventListener('error', (e) => {
   if (!e.error) return; // resource load errors etc.
   console.error('[error]', e.error);
-  reportGlobal(t('nav.globalError'));
+  // i18n may not have loaded yet (an error during boot): fall back to English, never a raw key.
+  reportGlobal(tOr('nav.globalError', 'Something went wrong — try reloading the page'));
 });
 
 // ---------------------------------------------------------------------------

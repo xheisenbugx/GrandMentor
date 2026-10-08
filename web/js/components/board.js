@@ -9,13 +9,23 @@
 //     promotions included), captured pieces fade out and new pieces fade in.
 //   - Arrows / circles live in one SVG overlay (viewBox 0 0 8 8), badges in their own layer.
 //
+// Accessibility (keyboard + screen readers)
+//   - The squares form an ARIA grid (8 rows × 8 gridcells, in visual order) with ONE tab stop and
+//     roving focus: arrow keys move a visible cursor, Home/End jump to the row ends, PageUp/PageDown
+//     to the column ends. Enter/Space picks up a piece (legal-move dots appear) and drops it on the
+//     target; Esc cancels. Works the same in both orientations ("up" is always up on screen).
+//   - Every cell is labelled "e4, white knight" / "e4, empty" (+ selected / legal move / check).
+//   - Moves are announced in natural language through components/announcer.js when the
+//     "Announce moves" setting is on (user moves, programmatic moves and one-move position changes).
+//
 // Memory: every listener, observer, timer and DOM node created here is released by destroy().
 
 import { Chess, DEFAULT_POSITION } from '../../vendor/chess.js';
-import { getSetting, onSettingsChange } from '../settings.js';
+import { getSetting, onSettingsChange, reducedMotion } from '../settings.js';
 import { classificationMeta } from '../ui.js';
 import { t } from '../i18n.js';
 import { playSound } from './sound.js';
+import { announceMove, announce, squareLabel, coloredPiece, describeMove } from './announcer.js';
 
 const FILES = 'abcdefgh';
 const PROMO_PIECES = ['q', 'n', 'r', 'b'];
@@ -44,7 +54,7 @@ const fileOf = (sq) => sq.charCodeAt(0) - 97;
 const rankOf = (sq) => sq.charCodeAt(1) - 49;
 
 function prefersReducedMotion() {
-  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+  try { return reducedMotion(); } catch { return false; }
 }
 
 function normalizeFen(fen) {
@@ -104,6 +114,9 @@ export class Board {
       premoveColor: null, // 'white' | 'black' | null
       onPremove: null,    // ({from,to,promotion}|null) => void, when the user sets or cancels one
       blindfold: false,   // hide the pieces (squares, coordinates and moves still work)
+      keyboard: true,     // arrow keys / Enter / Esc on the focused board
+      announce: true,     // announce moves to screen readers (also needs the announceMoves setting)
+      label: null,        // accessible name of the board (default: "Chess board")
       ...opts,
     };
     this._destroyed = false;
@@ -134,6 +147,9 @@ export class Board {
     this._selPremove = false; // current selection is a premove selection
     this._blindfold = !!this.opts.blindfold;
     this._peek = false;
+    this._focusSq = null;     // keyboard cursor square
+    this._kbd = false;        // keyboard mode (cursor ring visible while focused)
+    this._labelCache = [];    // last aria-label per visual cell (avoid needless DOM writes)
 
     this._build();
     this._bind();
@@ -146,41 +162,67 @@ export class Board {
   _build() {
     const root = document.createElement('div');
     root.className = 'gm-board';
-    root.setAttribute('role', 'application');
+    root.setAttribute('role', 'grid');
     root.setAttribute('aria-roledescription', t('ui.board.roleDescription'));
+    root.setAttribute('aria-label', this.opts.label || t('a11y.board.label'));
     root.tabIndex = -1;
 
     const squares = document.createElement('div');
     squares.className = 'gm-squares';
+    squares.setAttribute('role', 'presentation');
     this._sqEls = [];          // visual index (row*8+col) -> element
     this._coordRank = [];      // visual row -> span in col 0
     this._coordFile = [];      // visual col -> span in row 7
     const frag = document.createDocumentFragment();
     for (let row = 0; row < 8; row++) {
+      // Row wrappers exist only for the accessibility tree (display: contents keeps the CSS grid).
+      const rowEl = document.createElement('div');
+      rowEl.className = 'gm-row';
+      rowEl.setAttribute('role', 'row');
+      frag.appendChild(rowEl);
       for (let col = 0; col < 8; col++) {
         const s = document.createElement('div');
         // Square color parity is invariant under a 180° flip, so it's fixed per visual cell.
         s.className = 'gm-sq ' + ((row + col) % 2 === 0 ? 'light' : 'dark');
+        s.setAttribute('role', 'gridcell');
+        s.tabIndex = -1;
         if (col === 0) {
           const c = document.createElement('span');
           c.className = 'gm-coord gm-coord-rank';
+          c.setAttribute('aria-hidden', 'true');
           s.appendChild(c);
           this._coordRank[row] = c;
         }
         if (row === 7) {
           const c = document.createElement('span');
           c.className = 'gm-coord gm-coord-file';
+          c.setAttribute('aria-hidden', 'true');
           s.appendChild(c);
           this._coordFile[col] = c;
         }
         this._sqEls.push(s);
-        frag.appendChild(s);
+        rowEl.appendChild(s);
       }
     }
     squares.appendChild(frag);
 
     const pieces = document.createElement('div');
     pieces.className = 'gm-pieces';
+    pieces.setAttribute('aria-hidden', 'true');
+
+    // Keyboard cursor ring + square-name tags (hover / focus), above the pieces.
+    const kbd = document.createElement('div');
+    kbd.className = 'gm-kbd-cursor';
+    kbd.setAttribute('aria-hidden', 'true');
+    const kbdName = document.createElement('span');
+    kbdName.className = 'gm-sq-name';
+    kbd.appendChild(kbdName);
+    const hoverTag = document.createElement('div');
+    hoverTag.className = 'gm-hover-name';
+    hoverTag.setAttribute('aria-hidden', 'true');
+    const hoverName = document.createElement('span');
+    hoverName.className = 'gm-sq-name';
+    hoverTag.appendChild(hoverName);
 
     const svgNS = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(svgNS, 'svg');
@@ -193,9 +235,13 @@ export class Board {
     badges.className = 'gm-badges';
     badges.setAttribute('aria-hidden', 'true');
 
-    root.append(squares, pieces, svg, badges);
+    root.append(squares, pieces, svg, badges, kbd, hoverTag);
     this.el.appendChild(root);
     this.root = root;
+    this._kbdEl = kbd;
+    this._kbdName = kbdName;
+    this._hoverTag = hoverTag;
+    this._hoverName = hoverName;
     this._squaresEl = squares;
     this._piecesEl = pieces;
     this._svg = svg;
@@ -209,7 +255,15 @@ export class Board {
     this._onPointerCancel = this._onPointerCancel.bind(this);
     this._onContextMenu = (e) => e.preventDefault();
     this._onKeyDown = this._onKeyDown.bind(this);
+    this._onBoardKey = this._onBoardKey.bind(this);
+    this._onFocusIn = this._onFocusIn.bind(this);
+    this._onFocusOut = this._onFocusOut.bind(this);
+    this._onPointerLeave = () => this._showHoverName(null);
     const r = this.root;
+    r.addEventListener('keydown', this._onBoardKey);
+    r.addEventListener('focusin', this._onFocusIn);
+    r.addEventListener('focusout', this._onFocusOut);
+    r.addEventListener('pointerleave', this._onPointerLeave);
     r.addEventListener('pointerdown', this._onPointerDown);
     r.addEventListener('pointermove', this._onPointerMove);
     r.addEventListener('pointerup', this._onPointerUp);
@@ -222,7 +276,7 @@ export class Board {
       this._ro.observe(r);
     }
     this._offSettings = onSettingsChange((_s, key) => {
-      if (['showCoords', 'showLegal', 'animationMs', 'autoQueen'].includes(key)) this._applyConfig();
+      if (['showCoords', 'showLegal', 'animationMs', 'autoQueen', 'motion'].includes(key)) this._applyConfig();
     });
   }
 
@@ -305,6 +359,7 @@ export class Board {
     for (let col = 0; col < 8; col++) {
       this._coordFile[col].textContent = this._orientation === 'white' ? FILES[col] : FILES[7 - col];
     }
+    this._a11yLabels();
   }
 
   _placeEl(el, sq) {
@@ -330,8 +385,12 @@ export class Board {
     const keep = this._takeInteraction();
     this._cancelInteraction();
     const prevFen = this._chess ? this._chess.fen() : '';
+    const prevChess = this._chess;
     const prevMap = this._pieces.size ? this._currentMap() : null;
     const changed = prevFen.split(' ').slice(0, 4).join(' ') !== next.fen().split(' ').slice(0, 4).join(' ');
+    // A one-move change with a known last move (opponent replies, stepping through a game) is announced.
+    let spoken = null;
+    if (changed && prevMap && Array.isArray(lastMove) && prevChess) spoken = this._findMove(prevChess, lastMove, next.fen());
     this._chess = next;
     this._lastMove = Array.isArray(lastMove) && isSquare(lastMove[0]) && isSquare(lastMove[1])
       ? [lastMove[0], lastMove[1]] : null;
@@ -346,7 +405,21 @@ export class Board {
     if (sound && changed && prevMap && this._lastMove && this.opts.sounds) {
       this._landSound(this._soundForTransition(prevMap, this._lastMove), animate);
     }
+    if (spoken) this._announceMove(spoken);
     return true;
+  }
+
+  /** The legal move from→to in `chess` that leads to `fenAfter` (verbose chess.js move) or null. */
+  _findMove(chess, [from, to], fenAfter) {
+    if (!isSquare(from) || !isSquare(to)) return null;
+    try {
+      const key = (f) => f.split(' ').slice(0, 4).join(' ');
+      const want = key(fenAfter);
+      for (const m of chess.moves({ square: from, verbose: true })) {
+        if (m.to === to && key(m.after) === want) return m;
+      }
+    } catch { /* study positions without kings etc. */ }
+    return null;
   }
 
   /**
@@ -403,6 +476,7 @@ export class Board {
     this._renderMarks();
     this._renderShapes();
     this._renderBadges();
+    if (this._focusSq && this.root.contains(document.activeElement)) this._setFocusSquare(this._focusSq);
   }
 
   flip() { this.setOrientation(this._orientation === 'white' ? 'black' : 'white'); }
@@ -432,7 +506,46 @@ export class Board {
     this._lastMove = [mv.from, mv.to];
     this._render({ animate });
     if (sound && this.opts.sounds) this._landSound(this._soundForMove(mv), animate);
+    this._announceMove(mv);
     return this._moveObject(mv);
+  }
+
+  /**
+   * True when the user may move now: the board is interactive and the side to move is movable
+   * (optionally: the piece on `square` may move).
+   */
+  canUserMove(square) {
+    if (this._destroyed || !this._chess) return false;
+    if (square) return this._canMove(square);
+    return this.legalMoves().some((m) => this._canMove(m.from));
+  }
+
+  /**
+   * Play a move exactly as if the user had made it on the board (typed moves, assistive input):
+   * only when canUserMove(from), then onMove is called and may reject it (false / Promise<false>).
+   * `m` is UCI ("e7e8q") or {from,to,promotion}; a missing promotion piece defaults to a queen.
+   * Returns the move object, or null when it is not allowed, illegal or was rejected right away.
+   */
+  playUserMove(m) {
+    if (this._destroyed || !this._chess || this._promo) return null;
+    let spec = m;
+    if (typeof m === 'string') {
+      if (!/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(m)) return null;
+      spec = { from: m.slice(0, 2), to: m.slice(2, 4), promotion: m[4] };
+    }
+    if (!spec || !isSquare(spec.from) || !isSquare(spec.to) || !this._canMove(spec.from)) return null;
+    let legal = null;
+    try {
+      legal = this._chess.moves({ square: spec.from, verbose: true })
+        .filter((x) => x.to === spec.to)
+        .find((x) => !x.promotion || x.promotion === (spec.promotion || 'q')) || null;
+    } catch { legal = null; }
+    if (!legal) return null;
+    this._cancelInteraction();
+    const before = this._chess.fen();
+    this._commit(legal.from, legal.to, legal.promotion || undefined, false);
+    if (this._destroyed || !this._chess || this._chess.fen() === before) return null;
+    return this._moveObject(legal);
   }
 
   /** Legal moves in the current position (verbose chess.js objects). */
@@ -737,6 +850,214 @@ export class Board {
       }
     }
     if (this._hoverSq) this._sqEl(this._hoverSq).classList.add('hover');
+    this._a11yLabels();
+  }
+
+  // ---------------------------------------------------------- accessibility
+
+  /** Refresh every cell's accessible name and the roving tab stop. Cheap: 64 cached attributes. */
+  _a11yLabels() {
+    if (this._destroyed || !this._sqEls.length) return;
+    const hidePieces = this._blindfold && !this._peek;
+    const check = this._checkedKing();
+    const showLegal = this._cfg('showLegal') !== false;
+    const tabSq = this._focusSq || this._defaultFocusSquare();
+    const keyboard = this.opts.keyboard !== false;
+    for (let i = 0; i < 64; i++) {
+      const el = this._sqEls[i];
+      const sq = el.dataset.square;
+      if (!sq) continue;
+      const code = this._pieces.get(sq)?.code;
+      let label = hidePieces ? sq : squareLabel(sq, code);
+      const extra = [];
+      if (this._selected === sq) extra.push(t('a11y.square.selected'));
+      else if (this._selected && this._dests.has(sq) && showLegal) extra.push(t(code ? 'a11y.square.canCapture' : 'a11y.square.canMove'));
+      if (check === sq) extra.push(t('a11y.square.inCheck'));
+      if (this._lastMove && (this._lastMove[0] === sq || this._lastMove[1] === sq)) extra.push(t('a11y.square.lastMove'));
+      if (this._premove && (this._premove.from === sq || this._premove.to === sq)) extra.push(t('a11y.square.premove'));
+      if (extra.length) label = [label, ...extra].join(', ');
+      if (this._labelCache[i] !== label) {
+        el.setAttribute('aria-label', label);
+        this._labelCache[i] = label;
+      }
+      const sel = this._selected === sq ? 'true' : 'false';
+      if (el.getAttribute('aria-selected') !== sel) el.setAttribute('aria-selected', sel);
+      const ti = keyboard && sq === tabSq ? 0 : -1;
+      if (el.tabIndex !== ti) el.tabIndex = ti;
+    }
+    this._placeCursor();
+  }
+
+  /** Where the keyboard cursor starts: the selection, the last move's target, else near the user's king side. */
+  _defaultFocusSquare() {
+    if (this._selected) return this._selected;
+    if (this._lastMove) return this._lastMove[1];
+    return this._orientation === 'white' ? 'e2' : 'e7';
+  }
+
+  _placeCursor() {
+    const sq = this._focusSq || this._defaultFocusSquare();
+    if (!this._kbdEl || !sq) return;
+    this._placeEl(this._kbdEl, sq);
+    if (this._kbdName.textContent !== sq) this._kbdName.textContent = sq;
+  }
+
+  _showHoverName(sq) {
+    if (!this._hoverTag) return;
+    if (!sq) { this._hoverTag.classList.remove('on'); return; }
+    this._placeEl(this._hoverTag, sq);
+    if (this._hoverName.textContent !== sq) this._hoverName.textContent = sq;
+    this._hoverTag.classList.add('on');
+  }
+
+  /** Move the keyboard cursor (and DOM focus, when the board has it) to a square. */
+  _setFocusSquare(sq, { focus = true } = {}) {
+    if (!isSquare(sq)) return;
+    this._focusSq = sq;
+    this._a11yLabels();
+    if (focus) {
+      const el = this._sqEl(sq);
+      if (el && document.activeElement !== el) { try { el.focus({ preventScroll: true }); } catch { /* ignore */ } }
+    }
+  }
+
+  /** Give the board keyboard focus (focuses the cursor square). */
+  focus() {
+    if (this._destroyed) return;
+    this._setFocusSquare(this._focusSq || this._defaultFocusSquare());
+  }
+
+  _onFocusIn(e) {
+    const cell = e.target && e.target.closest ? e.target.closest('.gm-sq') : null;
+    if (cell && cell.dataset.square && cell.dataset.square !== this._focusSq) {
+      this._focusSq = cell.dataset.square;
+      this._a11yLabels();
+    }
+    // Keyboard users arrive with :focus-visible; mouse clicks don't show the ring.
+    let visible = false;
+    try { visible = !!(cell && cell.matches(':focus-visible')); } catch { visible = false; }
+    if (visible) this._kbd = true;
+    this.root.classList.toggle('kbd', this._kbd);
+    this.root.classList.add('has-focus');
+  }
+
+  _onFocusOut(e) {
+    if (e.relatedTarget && this.root.contains(e.relatedTarget)) return;
+    this.root.classList.remove('has-focus');
+  }
+
+  _onBoardKey(e) {
+    if (this._destroyed || this.opts.keyboard === false) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (this._promo) {
+      // Promotion picker: arrows cycle the choices; Enter/Space click natively; Esc handled globally.
+      if (/^Arrow/.test(e.key)) {
+        const btns = Array.from(this._promo.overlay.querySelectorAll('button'));
+        const i = btns.indexOf(document.activeElement);
+        const step = e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1;
+        const next = btns[(i + step + btns.length) % btns.length];
+        if (next) { e.preventDefault(); next.focus(); }
+      }
+      return;
+    }
+    const cell = e.target && e.target.closest ? e.target.closest('.gm-sq') : null;
+    if (!cell) return;
+    const sq = cell.dataset.square || this._focusSq;
+    if (!sq) return;
+    const [col, row] = this._vis(sq);
+    let target = null;
+    switch (e.key) {
+      case 'ArrowUp': target = this._sqFromVis(col, Math.max(0, row - 1)); break;
+      case 'ArrowDown': target = this._sqFromVis(col, Math.min(7, row + 1)); break;
+      case 'ArrowLeft': target = this._sqFromVis(Math.max(0, col - 1), row); break;
+      case 'ArrowRight': target = this._sqFromVis(Math.min(7, col + 1), row); break;
+      case 'Home': target = this._sqFromVis(0, row); break;
+      case 'End': target = this._sqFromVis(7, row); break;
+      case 'PageUp': target = this._sqFromVis(col, 0); break;
+      case 'PageDown': target = this._sqFromVis(col, 7); break;
+      case 'Enter':
+      case ' ':
+      case 'Spacebar':
+        e.preventDefault();
+        e.stopPropagation();
+        this._kbd = true;
+        this.root.classList.add('kbd');
+        this._activateSquare(sq);
+        return;
+      case 'Escape':
+        if (this._selected || this._premove) {
+          e.preventDefault();
+          e.stopPropagation();
+          const had = this._selected;
+          this._deselect();
+          if (!had && this._premove) { this.clearPremove(true); announce(t('a11y.board.premoveCancelled')); }
+          else announce(t('a11y.board.cancelled'));
+        }
+        return;
+      default:
+        return;
+    }
+    // Handled here: keep page-level shortcuts (← → move navigation) from also reacting.
+    e.preventDefault();
+    e.stopPropagation();
+    this._kbd = true;
+    this.root.classList.add('kbd');
+    if (target) this._setFocusSquare(target);
+  }
+
+  /** Enter/Space on a square: like a click (pick up, drop, or re-select). */
+  _activateSquare(sq) {
+    if (typeof this.opts.onSquareClick === 'function') {
+      try { this.opts.onSquareClick(sq); } catch (err) { console.error(err); }
+      if (this._destroyed) return;
+    }
+    if (this._selected && this._selected !== sq && this._dests.has(sq)) {
+      this._tryMove(this._selected, sq, { dragged: false });
+      if (!this._destroyed && this._promo) return; // focus is in the promotion picker
+      if (!this._destroyed) this._setFocusSquare(sq);
+      return;
+    }
+    if (this._selected === sq) {
+      this._deselect();
+      announce(t('a11y.board.cancelled'));
+      return;
+    }
+    if (this._canMove(sq) || this._canPremove(sq)) {
+      this._select(sq);
+      const code = this._pieces.get(sq)?.code;
+      const n = this._dests.size;
+      announce(n
+        ? t('a11y.board.pickedUp', { piece: coloredPiece(code), square: sq, count: n })
+        : t('a11y.board.noMoves', { piece: coloredPiece(code), square: sq }));
+      return;
+    }
+    if (this._selected) {
+      this._deselect();
+      announce(t('a11y.board.cannotMoveThere', { square: sq }));
+      return;
+    }
+    if (this._premove) { this.clearPremove(true); announce(t('a11y.board.premoveCancelled')); return; }
+    const code = this._pieces.get(sq)?.code;
+    if (!this._interactive && !this._premoveColor) announce(t('a11y.board.viewOnly'));
+    else if (code) announce(t('a11y.board.notYourPiece', { piece: coloredPiece(code), square: sq }));
+  }
+
+  /** Announce a move (user or programmatic) when enabled. */
+  _announceMove(mv, { mine = false } = {}) {
+    if (this.opts.announce === false || !mv) return;
+    announceMove(mv);
+    // After the opponent's move, tell the user it's their turn.
+    if (!mine && this._interactive && this._movable && this._movable !== 'both') {
+      let turn = null;
+      try { turn = this._chess.turn(); } catch { turn = null; }
+      let over = false;
+      try { over = this._chess.isGameOver(); } catch { over = false; }
+      if (!over && turn && (this._movable === 'white' ? 'w' : 'b') === turn) {
+        let on = true;
+        try { on = getSetting('announceMoves') !== false; } catch { on = true; }
+        if (on) announce(t('a11y.turn.you'));
+      }
+    }
   }
 
   _checkedKing() {
@@ -804,6 +1125,13 @@ export class Board {
   _onPointerDown(e) {
     if (this._destroyed || this._promo) return;
     if (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2) return;
+    if (this._kbd) { this._kbd = false; this.root.classList.remove('kbd'); }
+    // Mouse/touch never moves DOM focus onto a square: page shortcuts (← → move navigation) keep
+    // working after a click, and a focused text field (typed moves) keeps its focus.
+    if (e.cancelable) e.preventDefault();
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && !this.root.contains(ae) && typeof ae.blur === 'function'
+      && !/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) && !ae.isContentEditable) ae.blur();
     this._rect = null; // page may have scrolled since last measurement
     const sq = this._squareAt(e);
     if (!sq) return;
@@ -900,6 +1228,11 @@ export class Board {
         if (hover) this._sqEl(hover).classList.add('hover');
       }
       return;
+    }
+    // Square-name tag under the mouse (when "show square names" is on; CSS hides it otherwise).
+    if (e.pointerType === 'mouse') {
+      const sq = this._squareAt(e);
+      if (sq !== this._hoverNameSq) { this._hoverNameSq = sq; this._showHoverName(sq); }
     }
     // Idle hover: show a grab cursor over movable pieces (mouse only).
     if (e.pointerType === 'mouse' && (this._interactive || this._premoveColor)) {
@@ -1055,6 +1388,7 @@ export class Board {
     if (this._userArrows.length || this._userCircles.length) this.clearUserShapes();
     this._render({ animate: true, instant: dragged ? [mv.to] : [] });
     const moveObj = this._moveObject(mv);
+    this._announceMove(mv, { mine: true });
 
     let res;
     if (typeof this.opts.onMove === 'function') {
@@ -1199,8 +1533,10 @@ export class Board {
     pr.overlay.removeEventListener('click', pr.onClick);
     pr.overlay.removeEventListener('pointerdown', pr.onDown);
     document.removeEventListener('keydown', this._onKeyDown);
+    const hadFocus = pr.overlay.contains(document.activeElement);
     pr.overlay.remove();
     if (pr.victim) pr.victim.el.classList.remove('gm-hidden');
+    if (hadFocus && !this._destroyed) this._later(() => { if (!this._destroyed && !this._promo) this._setFocusSquare(this._focusSq || pr.to); }, 0);
     if (cancel) {
       const p = this._pieces.get(pr.from);
       if (p) this._placeEl(p.el, pr.from);
@@ -1384,7 +1720,7 @@ export class Board {
       if (r === 0) b.classList.add('edge-top');
       b.style.setProperty('--c', String(c));
       b.style.setProperty('--r', String(r));
-      b.style.setProperty('--cls', meta.color);
+      b.style.setProperty('--cls', meta.cssVar);
       b.title = meta.label;
       const sym = meta.symbol || '';
       b.textContent = sym;
@@ -1409,6 +1745,10 @@ export class Board {
     r.removeEventListener('pointercancel', this._onPointerCancel);
     r.removeEventListener('lostpointercapture', this._onPointerCancel);
     r.removeEventListener('contextmenu', this._onContextMenu);
+    r.removeEventListener('keydown', this._onBoardKey);
+    r.removeEventListener('focusin', this._onFocusIn);
+    r.removeEventListener('focusout', this._onFocusOut);
+    r.removeEventListener('pointerleave', this._onPointerLeave);
     document.removeEventListener('keydown', this._onKeyDown);
     if (this._ro) { this._ro.disconnect(); this._ro = null; }
     if (this._offSettings) { this._offSettings(); this._offSettings = null; }

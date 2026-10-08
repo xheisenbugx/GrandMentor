@@ -12,6 +12,7 @@
 import { h, icon, disposables, mdLite, escapeHtml, emptyState, loadingBlock } from '../ui.js';
 import { api, isAbort } from '../api.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { pieceUrl } from '../settings.js';
 import {
   ensureLearnCss, START_FEN, chessAt, applyUci, isSameMove, sideToMove, playLine, timerSet,
@@ -168,9 +169,12 @@ export async function mount(root, { params = {} } = {}) {
   const textEl = h('div', { class: 'lrn-text md' });
   const taskEl = h('div', { class: 'lrn-task', hidden: true });
   const feedbackEl = h('div', { class: 'lrn-feedback', role: 'status', 'aria-live': 'polite' });
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board, className: 'mt-3' });
+  bag.add(() => moveInput.destroy());
   const body = h('div', { class: 'panel-body' },
     h('div', { class: 'lrn-coach' }, h('div', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, '🎓'), textEl),
-    taskEl, feedbackEl);
+    taskEl, feedbackEl, moveInput.el);
 
   const backBtn = h('button', { class: 'btn btn-secondary', type: 'button', html: icon('chevron-left') + `<span>${escapeHtml(t('lesson.back'))}</span>`, onClick: () => go(-1) });
   const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + `<span>${escapeHtml(t('lesson.hint'))}</span>`, onClick: () => showHint() });
@@ -189,7 +193,7 @@ export async function mount(root, { params = {} } = {}) {
 
   root.replaceChildren(top, layout);
 
-  const board = new Board(boardSlot, {
+  board = new Board(boardSlot, {
     fen: steps[0].fen,
     orientation: steps[0].orientation,
     interactive: false,

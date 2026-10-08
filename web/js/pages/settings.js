@@ -6,7 +6,7 @@
 
 import { api, qs, isAbort } from '../api.js';
 import { h, icon, pageHeader, disposables, debounce, confirmDialog, toast, formatSan } from '../ui.js';
-import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, pieceUrl } from '../settings.js';
+import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, UI_SCALES, pieceUrl } from '../settings.js';
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 import { createBackupSection } from '../components/backup.js';
@@ -185,6 +185,33 @@ export async function mount(root) {
     location.reload();
   });
 
+  // ---- Accessibility ----------------------------------------------------------------
+  // High-contrast board is a quick switch over the board theme; remember the theme to go back to.
+  let lastBoardTheme = getSettings().boardTheme !== 'contrast' ? getSettings().boardTheme : 'green';
+  const boardContrastInput = h('input', { type: 'checkbox', 'aria-label': t('a11y.settings.boardContrastRow.title') });
+  bag.on(boardContrastInput, 'change', () => {
+    const cur = getSettings().boardTheme;
+    if (boardContrastInput.checked) { if (cur !== 'contrast') lastBoardTheme = cur; setSetting('boardTheme', 'contrast'); }
+    else setSetting('boardTheme', lastBoardTheme === 'contrast' ? 'green' : lastBoardTheme);
+  });
+  syncers.push((s) => { boardContrastInput.checked = s.boardTheme === 'contrast'; if (s.boardTheme !== 'contrast') lastBoardTheme = s.boardTheme; });
+  const a11ySection = h('section', { class: 'card', id: 'accessibility', 'aria-labelledby': 'settings-a11y-title' },
+    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-a11y-title', html: icon('eye') + `<span>${t('a11y.settings.section')}</span>` })),
+    h('p', { class: 'muted text-sm' }, t('a11y.settings.intro')),
+    row(t('a11y.settings.highContrast.title'), t('a11y.settings.highContrast.desc'), toggle('highContrast', t('a11y.settings.highContrast.title'))),
+    row(t('a11y.settings.boardContrastRow.title'), t('a11y.settings.boardContrastRow.desc'), h('label', { class: 'switch' }, boardContrastInput, h('span', { class: 'switch-track' }))),
+    row(t('a11y.settings.cbPalette.title'), t('a11y.settings.cbPalette.desc'), toggle('cbPalette', t('a11y.settings.cbPalette.title'))),
+    row(t('a11y.settings.motion.title'), t('a11y.settings.motion.desc'),
+      segmented('motion', [['system', t('a11y.settings.motion.system')], ['reduce', t('a11y.settings.motion.reduce')], ['full', t('a11y.settings.motion.full')]], t('a11y.settings.motion.title'))),
+    row(t('a11y.settings.announce.title'), t('a11y.settings.announce.desc'), toggle('announceMoves', t('a11y.settings.announce.title'))),
+    row(t('a11y.settings.squareNames.title'), t('a11y.settings.squareNames.desc'), toggle('squareNames', t('a11y.settings.squareNames.title'))),
+    row(t('a11y.settings.scale.title'), t('a11y.settings.scale.desc'),
+      segmented('uiScale', UI_SCALES.map((v) => [v, t('a11y.settings.scale.option', { percent: v })]), t('a11y.settings.scale.title'))),
+    h('div', { class: 'setting-row hub-setting-stack' },
+      h('div', { class: 'setting-row-text' },
+        h('h3', { class: 'setting-row-title' }, t('a11y.settings.keyboardHelp.title')),
+        h('p', { class: 'setting-row-desc' }, t('a11y.settings.keyboardHelp.text')))));
+
   // ---- Your data (backup, restore, device sync) — self-contained component -----------
   const dataSection = createBackupSection();
   bag.add(dataSection.destroy);
@@ -218,6 +245,7 @@ export async function mount(root) {
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + `<span>${t('settings.sections.playing')}</span>` })),
           row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria'))),
           row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
+        a11ySection,
         dataSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),

@@ -30,14 +30,14 @@
 .eg-drill .panel-footer .eg-push { margin-left: auto; }
 .eg-mastery { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-3); }
 .eg-phase { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-4); }
-.eg-phase-kicker { font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+.eg-phase-kicker { font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary-text); }
 .eg-steps { display: flex; gap: 6px; margin: var(--sp-2) 0 var(--sp-4); }
 .eg-steps i { flex: 1; height: 4px; border-radius: var(--r-full); background: var(--surface-3); display: block; transition: background var(--dur) var(--ease); }
 .eg-steps i.on { background: var(--primary); }
 .eg-desc { margin: var(--sp-3) 0 0; }
 
 .eg-pitfall { width: 100%; text-align: left; padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
-.eg-pitfall-title { display: flex; align-items: center; gap: 6px; font-weight: var(--fw-bold); font-size: var(--fs-sm); color: var(--danger); }
+.eg-pitfall-title { display: flex; align-items: center; gap: 6px; font-weight: var(--fw-bold); font-size: var(--fs-sm); color: var(--danger-text); }
 .eg-pitfall p { margin: 4px 0 0; font-size: var(--fs-sm); }
 .eg-streak-note { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 0; font-weight: var(--fw-medium); }
 

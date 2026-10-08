@@ -17,7 +17,8 @@ import {
   formatRelative, toast, modal, confirmDialog,
 } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
-import { getSetting, pieceUrl } from '../settings.js';
+import { getSetting, pieceUrl, scrollBehavior } from '../settings.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { Board } from '../components/board.js';
 import {
   ensureLearnCss, START_FEN, fenKey, timerSet, confetti, sfx, setFeedback, readStore, writeStore,
@@ -399,9 +400,11 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     details = h('div', { class: 'card card-sm rep-details' });
     feedback = h('div', { class: 'lrn-feedback' });
 
+    const buildInput = createMoveInput({ board: () => board });
+    mb.add(() => buildInput.destroy());
     const layout = h('div', { class: 'game-layout no-eval rep-layout rep-build' },
       h('div', { class: 'game-main' }, pathBar, h('div', { class: 'board-row' }, boardSlot), toolbar),
-      h('aside', { class: 'game-panel' }, treePanel, details));
+      h('aside', { class: 'game-panel' }, treePanel, buildInput.el, details));
     workspace.replaceChildren(layout);
 
     board = new Board(boardSlot, {
@@ -711,7 +714,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
           if (bag.disposed) return;
           const id = r.path[r.path.length - 1];
           toast(t('repertoire.recent.added'), 'success');
-          if (d.side === side) { selected = id; await refreshAll(); loadRecent(); workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          if (d.side === side) { selected = id; await refreshAll(); loadRecent(); workspace.scrollIntoView({ behavior: scrollBehavior(), block: 'start' }); }
           else location.hash = `#/repertoire/${d.side}?node=${id}`;
         } catch (e) { if (!isAbort(e)) toast(e.message, 'error'); } finally { addBtn.classList.remove('loading'); }
       });
@@ -745,7 +748,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       board.setArrows(arrows);
       setFeedback(feedback, 'info', escapeHtml(t('repertoire.recent.arrowsHint')));
     }
-    workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    workspace.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   }
 
   // ==================================================================
@@ -788,12 +791,14 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       body,
       h('div', { class: 'panel-footer rep-drill-actions' }, showBtn, skipBtn));
     const host = h('div', { class: 'rep-drill-host' });
+    const drillInput = createMoveInput({ board: () => board });
+    mb.add(() => drillInput.destroy());
     const layout = h('div', { class: 'game-layout no-eval rep-layout rep-drill' },
       h('div', { class: 'game-main' }, promptBar, h('div', { class: 'board-row' }, boardSlot)),
-      h('aside', { class: 'game-panel' }, panel));
+      h('aside', { class: 'game-panel' }, panel, drillInput.el));
     host.append(layout);
     workspace.replaceChildren(host);
-    workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    workspace.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
 
     board = new Board(boardSlot, { fen: START_FEN, orientation: side, interactive: false, movableColor: side, onMove: (mv) => onDrillMove(mv) });
     mb.add(() => { token++; if (board) board.destroy(); board = null; });
