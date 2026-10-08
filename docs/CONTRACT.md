@@ -380,3 +380,23 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Local two-player (Play a friend)
+
+Pass-and-play games between two people on one device. Frontend only; no new endpoints.
+
+**Route:** `#/local` (page `web/js/pages/local.js`, styles `web/css/local.css` injected by the page, strings in the `local` locale namespace).
+Optional query: `#/local?fen=<encodeURIComponent(FEN)>` preselects "Custom position" with that FEN (4-, 5- or 6-field FENs are accepted and normalized; invalid or already-finished positions show an inline error).
+
+**Setup:** player names (empty = translated "White"/"Black"; White is prefilled with the profile name the first time), the same time-control presets as Play (`none`, `1+0`, `3+2`, `5+0`, `10+0`, `15+10`, `30+0`), start position, and options `autoFlip` (default on for `(max-width: 1024px), (pointer: coarse)`), `showLegal`, `evalBar` (default off; uses `EngineClient` over `/api/engine/ws`, toggleable in-game).
+Preferences are stored in `localStorage["grandmentor.local.prefs.v1"]` = `{white, black, tc, autoFlip, showLegal, evalBar}`.
+
+**Game:** game end is detected with the vendored chess.js (checkmate, stalemate, threefold repetition, 50-move rule, insufficient material) plus clock flags (`timeout`, or `timeout vs insufficient material` when the winner has only a king). Takeback undoes one ply after the opponent (the side to move) allows it; a draw offer from the side to move needs the other player's acceptance; resign asks which side resigns. The clock pauses while a request dialog is open.
+
+**Saving:** when a game with at least 2 plies ends it is saved with `POST /api/games`:
+`{white, black, result, termination, start_fen, moves, bot_id: null, user_color /* 'white'|'black' when exactly one name equals the profile name, else null */, time_control /* tc id or null */, opening_name: null /* server detects */, notes /* takeback count */, tags: ["local"]}`.
+The server logs the `local_game` activity for `bot_id: null`. The game-over modal offers "Review this game" (→ `#/review/<id>`), a rematch with sides swapped, and a new game.
+
+**Resume:** an unfinished game is kept in `localStorage["grandmentor.local.current.v1"]` =
+`{v: 1, white, black, startFen, moves /* UCI */, tcId, opts, orientation, clocks: {white, black} | null, takebacks, updatedAt}`
+(written after every move and on `pagehide` / hidden / unmount; removed when the game ends or is discarded). The setup screen shows a resume card for it.
