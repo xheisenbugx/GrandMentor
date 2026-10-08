@@ -1,0 +1,627 @@
+{
+  "kq-vs-k": {
+    "title": "Matt mit der Dame",
+    "description": "Setze den einsamen König mit König und Dame matt. Das wichtigste Grundmatt – du solltest es in weniger als 10 Zügen schaffen.",
+    "hint": "Stell die Dame einen Springerzug vom gegnerischen König entfernt auf, um ihn einzusperren, und hol dann deinen eigenen König heran.",
+    "technique": [
+      "Verkleinere den Käfig des Königs mit der Dame (einen Springerzug entfernt folgt sie ihm wie ein Spiegelbild)",
+      "Dränge den König an den Rand",
+      "Hol deinen König heran – die Dame kann nicht allein mattsetzen",
+      "Lass dem König bis zum Matt immer einen legalen Zug (kein Patt!)"
+    ],
+    "pitfall": "Vorsicht vor Patt: Lass dem schwarzen König bis zum letzten Schach immer ein freies Feld.",
+    "lesson": [
+      "Die Dame kann nicht allein mattsetzen. Nutze sie zuerst, um **den Käfig zu verkleinern**, in dem der schwarze König steht.",
+      "Dann hol deinen König heran. Das Matt kommt am Rand, mit der Dame **gedeckt von deinem König**.",
+      "Die große Falle ist das **Patt**: Hier hat Schwarz keinen legalen Zug und steht nicht im Schach – remis!"
+    ]
+  },
+  "kq-vs-k-center": {
+    "title": "Damenmatt aus dem Zentrum",
+    "description": "Der schwarze König startet in der Brettmitte. Treib ihn an den Rand und setz ihn matt.",
+    "hint": "Qf6! nimmt auf einen Schlag einen ganzen Block von Feldern weg.",
+    "technique": [
+      "Schränke den König zuerst mit der Dame ein",
+      "Führe den König Richtung Rand",
+      "Setz matt mit der Dame, gedeckt vom König"
+    ],
+    "pitfall": "Zu langsam oder Patt. Halte die Dame einen Springerzug vom König entfernt und hol deinen eigenen König zur Hilfe.",
+    "lesson": [
+      "**Qf6!** kontrolliert die 6. Reihe und die f-Linie zugleich. Der schwarze König sitzt in einem kleineren Käfig fest.",
+      "Verkleinere den Käfig weiter mit ruhigen Damenzügen und führe dann deinen König heran, um am Rand mattzusetzen."
+    ]
+  },
+  "kr-vs-k": {
+    "title": "Matt mit dem Turm",
+    "description": "Setze den einsamen König mit König und Turm matt. Der König muss mithelfen, und die Opposition ist der Schlüssel.",
+    "hint": "Schneide den König mit dem Turm entlang einer Reihe ab und hol dann deinen König heran, bis er dem gegnerischen König gegenübersteht.",
+    "technique": [
+      "Schneide den König entlang einer Reihe oder Linie ab",
+      "Stell deinen König dem gegnerischen König gegenüber (Opposition)",
+      "Gib Schach am Rand, wenn sich die Könige gegenüberstehen",
+      "Nutze einen Wartezug mit dem Turm, um die Opposition zu gewinnen"
+    ],
+    "pitfall": "Der Turm allein kann nicht mattsetzen. Schneide den König ab, stell deinen König ihm gegenüber und gib erst Schach, wenn sich die Könige direkt gegenüberstehen.",
+    "lesson": [
+      "**Ra7!** schneidet den schwarzen König auf der Grundreihe ab. Er kann nie mehr zurück.",
+      "Führe jetzt deinen König heran, bis er dem schwarzen König gegenübersteht. Stehen sich die Könige gegenüber, ist ein Turmschach am Rand **Matt**."
+    ]
+  },
+  "kr-vs-k-center": {
+    "title": "Turmmatt aus dem Zentrum",
+    "description": "Eine schwierigere Version: Der gegnerische König steht zentral. Sperr ihn Schritt für Schritt ein.",
+    "hint": "Beginne mit Rh4 oder Rh5, um den König abzuschneiden, und nähere dich dann mit deinem König.",
+    "technique": [
+      "Mach den Käfig mit jedem Turmzug kleiner",
+      "Deck den Turm mit deinem König, wenn er angegriffen wird",
+      "Opposition + Schach am Rand = Matt"
+    ],
+    "pitfall": "Der Käfig ist nicht kleiner geworden. Jeder Turmzug sollte eine Reihe oder Linie wegnehmen – und halte den Turm vom schwarzen König fern.",
+    "lesson": [
+      "Schneide zuerst den König ab: **Rh4** hält ihn oberhalb der 4. Reihe.",
+      "Hol deinen König heran. Stehen sich die Könige gegenüber, gib Schach; sonst mach den Käfig um eine Reihe kleiner."
+    ]
+  },
+  "two-rooks-ladder": {
+    "title": "Zwei Türme: die Treppe",
+    "description": "Mit zwei Türmen brauchst du nicht einmal deinen König. Treib den gegnerischen König an den Rand, als ob du eine Treppe hinaufsteigst.",
+    "hint": "Ein Turm sperrt eine Reihe ab, der andere gibt auf der nächsten Reihe Schach. Halte die Türme weit vom König entfernt.",
+    "technique": [
+      "Turm 1 sperrt eine Reihe ab",
+      "Turm 2 gibt auf der nächsten Reihe Schach",
+      "Abwechselnd vorrücken, bis der König den Rand erreicht",
+      "Greift der König einen Turm an, zieh ihn auf die andere Seite des Bretts"
+    ],
+    "pitfall": "Ein Turm ist dem König zu nahe gekommen. Greift der König einen Turm an, schwenk ihn auf die andere Seite des Bretts.",
+    "lesson": [
+      "Ein Turm bewacht eine Reihe, der andere gibt auf der nächsten Schach: **Rh4**, dann **Ra5+**.",
+      "Steig die Treppe weiter hinauf, bis der König am Rand steht – dann ist es Matt."
+    ]
+  },
+  "two-bishops-mate": {
+    "title": "Matt mit zwei Läufern",
+    "description": "Zwei Läufer nebeneinander bilden eine Mauer, die der König nicht überqueren kann. Treib ihn in eine Ecke und setz ihn matt.",
+    "hint": "Stell die Läufer nebeneinander ins Zentrum und dränge den gegnerischen König mit deinem König zurück.",
+    "technique": [
+      "Läufer nebeneinander bilden eine unüberwindbare diagonale Mauer",
+      "Der König hilft, Felder wegzunehmen",
+      "Treib den König in eine Ecke",
+      "Vorsicht vor Patt in der Ecke"
+    ],
+    "pitfall": "Der König ist aus dem Eckbereich entwischt, oder es war Patt. Halte die Läufer nebeneinander und schiebe mit deinem König nach.",
+    "lesson": [
+      "Läufer nebeneinander bilden eine **diagonale Mauer**, die der König nicht überqueren kann.",
+      "Treib den gegnerischen König mit deinem König in eine Ecke. Das Schlussbild sieht so aus."
+    ]
+  },
+  "bishop-knight-mate": {
+    "title": "Matt mit Läufer und Springer",
+    "description": "Das schwierigste Grundmatt: Es kann bis zu 33 Züge dauern. Matt erzwingen kannst du nur in einer Ecke **in der Farbe des Läufers** (hier a8 oder h1).",
+    "hint": "Dränge den König zuerst an den Rand und treib ihn dann mit dem „W-Manöver“ des Springers in eine helle Ecke.",
+    "technique": [
+      "Zentralisiere alle drei Figuren",
+      "Treib den König an den Rand",
+      "Läuft er in die falsche (dunkle) Ecke, nutze das W-Manöver des Springers",
+      "Setz matt in der Ecke in der Farbe des Läufers (a8 oder h1)"
+    ],
+    "pitfall": "Matt erzwingen kannst du nur in einer Ecke in der Farbe des Läufers. Treib den König mit dem W-Manöver des Springers dorthin – und sei zügig, die 50-Züge-Regel lauert.",
+    "lesson": [
+      "Zentralisiere zuerst alle drei Figuren und dränge den schwarzen König Richtung Rand.",
+      "Matt ist nur in einer Ecke **in der Farbe des Läufers** möglich – hier a8 oder h1 (helle Felder).",
+      "Läuft der König in eine falsche (dunkle) Ecke, jagt ihn das **W-Manöver** des Springers am Rand entlang in die richtige."
+    ]
+  },
+  "queen-vs-rook": {
+    "title": "Dame gegen Turm",
+    "description": "Dame gegen Turm ist gewonnen, aber die Technik ist anspruchsvoll. Gewinne den Turm mit einer Gabel oder erzwinge Matt.",
+    "hint": "Strebe die Philidor-Stellung an: Bring die verteidigende Seite in Zugzwang, damit sich der Turm von seinem König trennen muss.",
+    "technique": [
+      "Halte deinen König nah am gegnerischen König",
+      "Nutze Zugzwang: Mach einen Wartezug mit der Dame",
+      "Sobald der Turm den König verlässt, such eine Damengabel (Schach + Turm)"
+    ],
+    "pitfall": "Der Turm hat immer weiter Schach gegeben oder einen Patttrick aufgebaut. Halte deinen König nah dran und warte, bis sich der Turm von seinem König löst.",
+    "lesson": [
+      "Der Turm klebt an seinem König. Nutze Schachs und **Wartezüge mit der Dame**, bis Schwarz ziehen muss und der Turm wegziehen muss.",
+      "Sobald sich der Turm von seinem König trennt, such ein **Schach mit Gabel** auf König und Turm."
+    ]
+  },
+  "kp-key-squares": {
+    "title": "König und Bauer: Schlüsselfelder",
+    "description": "Wandle deinen Bauern um. Steht dein König vor dem Bauern auf der 5. Reihe, erreichst du immer ein Schlüsselfeld.",
+    "hint": "Spiel Kd6 oder Kf6: Der König vor dem Bauern gewinnt.",
+    "technique": [
+      "König vor den Bauern, nicht dahinter",
+      "Erreiche ein Schlüsselfeld (d6, e6 oder f6)",
+      "Nutze die Opposition, wenn sich die Könige begegnen"
+    ],
+    "pitfall": "Der schwarze König ist mit Opposition vor deinen Bauern gekommen – das ist remis. Halte deinen König vor dem Bauern und erreiche zuerst ein Schlüsselfeld.",
+    "lesson": [
+      "**Schlüsselfelder**: Erreicht dein König d6, e6 oder f6, wandelt sich der Bauer um, egal was Schwarz macht.",
+      "Erst der König, dann der Bauer: Schieb den Bauern erst, wenn dein König den Weg frei gemacht hat."
+    ]
+  },
+  "kp-opposition": {
+    "title": "Die Opposition erobern",
+    "description": "Nur ein Zug gewinnt. Erobere die Opposition und geleite den Bauern.",
+    "hint": "Ke3! – stell dich dem schwarzen König gegenüber, mit einem Feld zwischen den Königen.",
+    "technique": [
+      "Könige auf derselben Linie mit einem Feld dazwischen = Opposition",
+      "Die Seite, die NICHT ziehen muss, hat die Opposition",
+      "Umgehen: Weicht der gegnerische König aus, geh auf der anderen Seite vorwärts"
+    ],
+    "pitfall": "Du hast die Opposition verloren: Der schwarze König stand vor deinem, du warst am Zug, und er hat den Bauern blockiert.",
+    "lesson": [
+      "**Opposition**: Die Könige stehen sich mit einem Feld dazwischen gegenüber. Die Seite, die *nicht* ziehen muss, gewinnt das Kräftemessen.",
+      "Nach **Ke3** muss Schwarz ausweichen, und dein König marschiert auf ein Schlüsselfeld: d4, e4 oder f4."
+    ]
+  },
+  "kp-king-sixth": {
+    "title": "König auf der sechsten Reihe",
+    "description": "Dein König steht neben seinem Bauern. Ein Zug gewinnt, die anderen führen zum Remis.",
+    "hint": "Kb6 – der König vor dem Bauern auf der 6. Reihe gewinnt immer.",
+    "technique": [
+      "König auf der 6. Reihe vor dem Bauern gewinnt, unabhängig von der Opposition",
+      "Dann schieb den Bauern mit Unterstützung des Königs vor"
+    ],
+    "pitfall": "Schiebst du den Bauern zu früh, kann ihn der schwarze König blockieren. Erst der König, dann der Bauer.",
+    "lesson": [
+      "Steht dein König auf der 6. Reihe **vor** dem Bauern, gewinnt das immer – egal, wer am Zug ist.",
+      "Von b6 aus kontrolliert dein König die Felder vor dem Bauern, also kann er bis nach b8 marschieren."
+    ]
+  },
+  "kp-defend-opposition": {
+    "title": "Verteidigen: Halte die Opposition",
+    "description": "Du verteidigst. Halte deinen König vor dem Bauern und nutze die Opposition, um remis zu halten.",
+    "hint": "Bleib auf der e-Linie vor dem Bauern. Kommt der weiße König auf die 6. Reihe, nimm die Opposition.",
+    "technique": [
+      "Bleib direkt vor dem Bauern",
+      "Zieh dich gerade zurück (nach e8), nicht zur Seite",
+      "Erreicht der weiße König die 6. Reihe, nimm die Opposition",
+      "Kommt der Bauer mit Schach auf die 7. Reihe, geh auf das Eckfeld direkt davor"
+    ],
+    "pitfall": "Der weiße König ist vor den Bauern auf ein Schlüsselfeld gekommen. Halte deinen König ihm gegenüber und nimm die Opposition, sobald er vorrückt.",
+    "lesson": [
+      "Dein König gehört **direkt vor den Bauern**. Bleib auf der e-Linie und stell dich dem weißen König gegenüber.",
+      "Erreicht der Bauer e7 und dein König steht auf e8, kann Weiß dich nur noch patt setzen – das ist das Remisbild."
+    ]
+  },
+  "rook-pawn-draw": {
+    "title": "Randbauer: Ab in die Ecke",
+    "description": "Ein Randbauer ist der schwächste Bauer. Erreicht der verteidigende König die Ecke, kann er nie mehr vertrieben werden.",
+    "hint": "Halte deinen König auf a8, b8 oder in der Nähe; Weiß kann dich nur patt setzen.",
+    "technique": [
+      "Bring den König in die Ecke vor den Bauern",
+      "Pendle zwischen a8 und b8/b7",
+      "Der einzige Versuch von Weiß endet im Patt"
+    ],
+    "pitfall": "Dein König hat den Eckbereich verlassen. Gegen einen Randbauern bleib auf a8/b8 und geh niemals weg.",
+    "lesson": [
+      "Ein Randbauer ist der schwächste Bauer: Sobald dein König die **Ecke** erreicht, kann er nie mehr vertrieben werden.",
+      "Pendle einfach zwischen a8 und b8. Der beste Versuch von Weiß endet im Patt."
+    ]
+  },
+  "square-of-the-pawn": {
+    "title": "Das Quadrat des Bauern",
+    "description": "Der weiße König ist weit weg. Kann dein König den Freibauern noch einholen?",
+    "hint": "Tritt diagonal ins Quadrat des Bauern: Kg7!",
+    "technique": [
+      "Zeichne das Quadrat vom Bauern bis zu seinem Umwandlungsfeld",
+      "Kann dein König ins Quadrat treten, holt er den Bauern ein",
+      "Diagonale Züge sind genauso schnell wie gerade"
+    ],
+    "pitfall": "Dein König ist außerhalb des Quadrats geblieben und konnte den Bauern nicht einholen.",
+    "lesson": [
+      "Zeichne ein **Quadrat** vom Bauern bis zu seinem Umwandlungsfeld. Kann dein König hineintreten, holt er den Bauern ein.",
+      "**Kg7!** tritt ins Quadrat. Von dort geht es direkt auf den Bauern zu."
+    ]
+  },
+  "reti-manoeuvre": {
+    "title": "Das Réti-Manöver",
+    "description": "Rétis berühmte Studie (1921). Der weiße König scheint hoffnungslos weit von beiden Bauern entfernt – und doch ist es remis!",
+    "hint": "Kg7! Der König jagt den h-Bauern und nähert sich gleichzeitig c6, indem er die Diagonale entlangläuft.",
+    "technique": [
+      "Ein König, der diagonal zieht, kann zwei Ziele zugleich verfolgen",
+      "Droh, deinen eigenen Bauern zu unterstützen",
+      "Zwing Schwarz, Zeit zu verlieren, und tritt dann ins Quadrat des h-Bauern"
+    ],
+    "pitfall": "Dein König hat nur ein Ziel verfolgt. Lauf die Diagonale entlang, damit er den h-Bauern jagt und gleichzeitig deinen c-Bauern unterstützt.",
+    "lesson": [
+      "**Kg7!** – der König läuft die Diagonale hinunter, jagt den h-Bauern **und** steuert auf deinen c-Bauern zu.",
+      "Ein diagonaler Königsmarsch ist genauso schnell wie ein gerader, also erledigt ein Weg zwei Aufgaben. Schwarz muss sich entscheiden – und so oder so ist es remis."
+    ]
+  },
+  "outside-passed-pawn": {
+    "title": "Der entfernte Freibauer",
+    "description": "Dein a-Bauer ist weit von den anderen Bauern entfernt. Nutze ihn als Köder, um die Bauern am Königsflügel zu gewinnen.",
+    "hint": "Schieb den a-Bauern vor. Läuft der schwarze König hinterher, marschiere mit deinem König zu den Bauern am Königsflügel.",
+    "technique": [
+      "Der entfernte Freibauer lockt den gegnerischen König weg",
+      "Dein König greift die zurückgelassenen Bauern an",
+      "Beeil dich nicht mit der Umwandlung, wenn der König schon im Quadrat steht – nutze den Bauern als Köder"
+    ],
+    "pitfall": "Dein König ist nicht rechtzeitig bei den Bauern am Königsflügel angekommen. Nutze den a-Bauern als Köder und marschiere dann direkt auf den anderen Flügel.",
+    "lesson": [
+      "Dein a-Bauer ist weit von den anderen Bauern entfernt. Schieb ihn vor: Der schwarze König muss hinüberlaufen, um ihn aufzuhalten.",
+      "Während der schwarze König auf der a-Linie beschäftigt ist, **schlägt sich dein König den Bauch voll** mit den Bauern am Königsflügel."
+    ]
+  },
+  "pawn-breakthrough": {
+    "title": "Der Bauerndurchbruch",
+    "description": "Drei Bauern gegen drei, beide Könige weit weg. Es gibt einen brillanten Weg, einen Freibauern zu schaffen.",
+    "hint": "b6!! – nach axb6 c6! oder cxb6 a6! wandelt sich ein weißer Bauer um.",
+    "technique": [
+      "Opfere zuerst den mittleren Bauern",
+      "Opfere dann den zweiten Bauern, um den Weg frei zu machen",
+      "Der letzte Bauer läuft durch"
+    ],
+    "pitfall": "Der Durchbruch funktioniert nur mit deinen Bauern auf der 5. Reihe und dem gegnerischen König weit weg. Beginne mit b6!",
+    "lesson": [
+      "**b6!!** – auf ...axb6 folgt c6!, und auf ...cxb6 folgt a6!",
+      "Einer deiner Bauern bricht durch, und der schwarze König auf h8 ist zu weit weg, um ihn aufzuhalten."
+    ]
+  },
+  "wrong-bishop": {
+    "title": "Der falsche Randbauer",
+    "description": "Weiß hat einen Läufer und einen Bauern mehr, und trotzdem ist es remis: Der Läufer kontrolliert das Umwandlungsfeld h8 nicht.",
+    "hint": "Bleib in der Ecke. Pendle zwischen h8 und g8 (oder g7). Weiß kann dich nicht vertreiben, ohne dich patt zu setzen.",
+    "technique": [
+      "Randbauer + Läufer der falschen Farbe = remis, wenn der verteidigende König die Ecke erreicht",
+      "Halte deinen König auf h8/g8/g7",
+      "Verlass die Ecke nicht"
+    ],
+    "pitfall": "Dein König hat die Ecke verlassen. Gegen den falschen Läufer ist die Ecke h8 eine Festung – bleib dort.",
+    "lesson": [
+      "Der weiße Läufer ist weißfeldrig, aber h8 ist ein **dunkles** Feld. Der Läufer kann deinen König nie aus der Ecke vertreiben.",
+      "Pendle zwischen h8 und g8 (oder g7). Weiß kann dich nur patt setzen."
+    ]
+  },
+  "lucena": {
+    "title": "Die Lucena-Stellung",
+    "description": "Das wichtigste gewonnene Turmendspiel. Dein Bauer steht auf der 7. Reihe, dein König davor, und der gegnerische König ist abgeschnitten.",
+    "hint": "Bau eine Brücke: Rd4!, dann bring den König heraus und blocke die Schachs mit dem Turm auf der 4. Reihe.",
+    "technique": [
+      "Heb deinen Turm auf die 4. Reihe (Rd4)",
+      "Bring deinen König vor dem Bauern heraus",
+      "Kommen die Schachs, zieh den Turm auf der b-Linie dazwischen (Rb4)",
+      "Wandle den Bauern um"
+    ],
+    "pitfall": "Die Schachs hörten nicht auf, oder der schwarze König kam zurück. Halte den schwarzen König abgeschnitten und bau die Brücke mit deinem Turm auf der 4. Reihe.",
+    "lesson": [
+      "Dein Turm schneidet den schwarzen König vom Bauern ab. Jetzt **baust du eine Brücke**: Rd4!",
+      "Zieh mit deinem König heraus. Gibt der schwarze Turm Schach, geh auf deinen Turm zu und **blocke das Schach auf der 4. Reihe**."
+    ]
+  },
+  "philidor": {
+    "title": "Die Philidor-Verteidigung",
+    "description": "Du hast einen Bauern weniger. Nutze Philidors Verteidigung auf der dritten Reihe, um das Remis zu halten.",
+    "hint": "Halte deinen Turm auf der 6. Reihe, bis der Bauer nach e6 zieht, dann lass ihn auf die 1. Reihe fallen und gib Schach von hinten.",
+    "technique": [
+      "Turm auf deiner 3. Reihe (hier die 6.) hält den König vom Vorrücken ab",
+      "Halte deinen König vor dem Bauern",
+      "Erreicht der Bauer e6, gib Schachs von hinten aus großer Entfernung",
+      "Der weiße König findet keinen Schutz"
+    ],
+    "pitfall": "Dein Turm hat die 6. Reihe zu früh (oder zu spät) verlassen, und der weiße König konnte vor den Bauern treten.",
+    "lesson": [
+      "**Philidors Verteidigung**: Halte deinen Turm auf der **6. Reihe**. Der weiße König kann nicht vorrücken, ohne in Schachs zu laufen.",
+      "Sobald der Bauer nach e6 zieht, schützt er seinen König nicht mehr: Lass deinen Turm auf die 1. Reihe fallen und **gib Schach von hinten**."
+    ]
+  },
+  "vancura": {
+    "title": "Die Vančura-Stellung",
+    "description": "Turm gegen Turm und a-Bauer. Steht der weiße Turm vor dem Bauern, hält die Vančura-Verteidigung: Greif den Bauern von der Seite an.",
+    "hint": "Halte deinen Turm auf der 6. Reihe, wo er a6 von der Seite angreift, und deinen König in der Nähe von g7/h7.",
+    "technique": [
+      "Der Turm greift den Bauern von der Seite an (von f6 aus)",
+      "Dein König bleibt auf g7/h7, außer Reichweite von Turmschachs auf der 7. Reihe",
+      "Kommt der weiße König näher, gib Schachs von der Seite und kehre auf die 6. Reihe zurück"
+    ],
+    "pitfall": "Dein Turm hat aufgehört, den Bauern von der Seite anzugreifen. In der Vančura-Stellung bleibt er auf der 6. Reihe, bis er von hinten Schach geben kann.",
+    "lesson": [
+      "Der weiße Turm steckt vor seinem Bauern fest. Greif den a6-Bauern mit deinem Turm auf der 6. Reihe **von der Seite** an.",
+      "Halte deinen König auf g7/h7. Kommt der weiße König, um den Bauern zu decken, gib ihm Schach von hinten."
+    ]
+  },
+  "rook-behind-passer": {
+    "title": "Turm hinter den Freibauern",
+    "description": "Tarraschs Regel: Türme gehören hinter Freibauern. Dein Turm unterstützt den a-Bauern von hinten, während der schwarze Turm passiv davor feststeckt.",
+    "hint": "Der schwarze Turm kann a7 nicht verlassen. Marschiere mit deinem König zum Damenflügel (oder greif die Bauern am Königsflügel an), und Schwarz gehen die Züge aus.",
+    "technique": [
+      "Turm hinter deinen Freibauern",
+      "Schieb den Bauern vor, um den schwarzen Turm zu binden",
+      "Aktiviere deinen König"
+    ],
+    "pitfall": "Dein Turm oder König hat den Griff gelockert. Halte den Turm hinter dem Bauern und dring mit deinem König ein, solange Schwarz gebunden ist.",
+    "lesson": [
+      "**Tarraschs Regel**: Türme gehören hinter Freibauern. Dein Turm schiebt den a-Bauern an, während der schwarze Turm davor feststeckt.",
+      "Der schwarze Turm kann nicht ziehen, also marschiert dein König nach vorn. Bald gehen Schwarz die guten Züge aus."
+    ]
+  },
+  "rook-vs-pawn": {
+    "title": "Turm gegen Bauer",
+    "description": "Ein Turm schlägt meist einen Bauern, aber nur, wenn dein König rechtzeitig hilft. Halte den Bauern auf und gewinne ihn.",
+    "hint": "Bring deinen König sofort zum Bauern (Kd2!) und halte ihn mit dem Turm von hinten oder auf der b-Linie auf.",
+    "technique": [
+      "Turm hinter den Bauern oder vor ihn auf seinen Weg",
+      "Bring deinen König zum Bauern",
+      "Achtung: Wandelt sich der Bauer mit Unterstützung des gegnerischen Königs um, kann es remis sein"
+    ],
+    "pitfall": "Der Bauer ist zu weit gekommen, oder dein Turm wurde angegriffen. Erst der König: Bring ihn sofort zum Bauern.",
+    "lesson": [
+      "Dein König muss sofort zurück: **Kd2!** Der Turm allein kann einen Bauern, den sein König unterstützt, nicht aufhalten.",
+      "Dann halte den Bauern mit dem Turm auf der b-Linie auf und gewinne ihn mit deinem König."
+    ]
+  },
+  "cut-off-king": {
+    "title": "Den König abschneiden",
+    "description": "Dein Turm schneidet den schwarzen König entlang der d-Linie ab. Halte ihn abgeschnitten und geleite den c-Bauern.",
+    "hint": "Rück mit dem König zusammen mit dem Bauern vor; gibt Schwarz von der Seite Schach, nähere dich dem Turm, um zu blocken.",
+    "technique": [
+      "Der abgeschnittene König kann seinem Turm nicht helfen",
+      "König und Bauer rücken gemeinsam vor",
+      "Strebe die Lucena-Stellung an"
+    ],
+    "pitfall": "Der schwarze König hat die d-Linie überquert. Halte ihn um jeden Preis abgeschnitten.",
+    "lesson": [
+      "Dein Turm auf der d-Linie hält den schwarzen König aus dem Spiel. **Lass ihn nie hinüber.**",
+      "Führe den Bauern mit deinem König daneben nach vorn. Gibt Schwarz von der Seite Schach, geh auf deinen Turm zu."
+    ]
+  },
+  "queen-vs-knight-pawn": {
+    "title": "Dame gegen Bauer auf der 7. (Springerbauer)",
+    "description": "Ein Bauer auf der 7. Reihe, unterstützt von seinem König. Gegen einen Springerbauern (oder Zentralbauern) gewinnt die Dame.",
+    "hint": "Gib Schach und greif den Bauern an, damit sich der König vor ihn stellen muss. Komm jedes Mal mit deinem König einen Schritt näher.",
+    "technique": [
+      "Zwing den gegnerischen König mit Schachs vor seinen Bauern",
+      "Das schenkt dir ein Tempo, um deinen König heranzuführen",
+      "Wiederhole das, bis dein König hilft, den Bauern zu schlagen oder mattzusetzen"
+    ],
+    "pitfall": "Der Bauer hat sich umgewandelt oder ist entwischt. Gib Schach, bis der König vor seinem Bauern steht, und komm dann mit deinem König näher.",
+    "lesson": [
+      "Gib Schach und greif den Bauern an, bis sich der schwarze König auf b1 **vor ihn** stellen muss.",
+      "Jedes Mal, wenn der König seinen eigenen Bauern blockiert, bekommst du einen Gratiszug: Komm mit deinem König einen Schritt näher. Wiederhole das."
+    ]
+  },
+  "triangulation-black": {
+    "title": "Dreiecksmanöver mit Schwarz (Alburt–Kasparow 1978)",
+    "description": "Kasparow gewann dieses Endspiel mit Schwarz durch ein Dreiecksmanöver. Der weiße König kann nur zwischen f1, g1 und f2 pendeln.",
+    "hint": "...Kf5! Kg1 Ke5! – dein König erreicht wieder e4, und Weiß ist am Zug.",
+    "technique": [
+      "Finde die Zugzwangstellung (schwarzer König auf e4, Weiß am Zug)",
+      "Verliere ein Tempo mit einem Königsdreieck f5–e5–e4",
+      "Dring dann über f4 und g3 ein, um den Bauern auf h3 zu gewinnen"
+    ],
+    "pitfall": "Du hast das Tempo nicht verloren. Erreiche dieselbe Stellung mit Weiß am Zug – dann steht Weiß im Zugzwang.",
+    "lesson": [
+      "Das ist **gegenseitiger Zugzwang**: Wer ziehen muss, verliert Boden. Verliere ein Tempo mit einem Dreieck: ...Kf5, ...Ke5, ...Ke4.",
+      "Der weiße König kann nur pendeln, also kann er dich nicht nachahmen. Sobald Weiß ausweichen muss, dringt dein König ein und der f-Bauer wandelt sich um."
+    ]
+  },
+  "rook-triangulation": {
+    "title": "Dreiecksmanöver mit dem Turm (Topalow–Karpow 2002)",
+    "description": "Sogar Türme können ein Tempo verlieren. Weiß kehrt mit Schachs in dieselbe Stellung zurück, nur mit Schwarz am Zug.",
+    "hint": "Rh7+ Kd8 Rh8+ Kd7 Rh6 – jetzt steht Schwarz im Zugzwang.",
+    "technique": [
+      "Gib zwei Schachs, die den Turm nach h6 zurückbringen",
+      "Der schwarze König muss vom Bauern weggehen",
+      "Befreie dann deinen König mit Ka7 und wandle um"
+    ],
+    "pitfall": "Dein König steckte weiter vor dem Bauern fest. Verliere mit Turmschachs ein Tempo, damit Schwarz in dieser Stellung ziehen muss.",
+    "lesson": [
+      "Wäre hier Schwarz am Zug, würde Schwarz verlieren. Kehr mit Schachs zurück, sodass Schwarz am Zug ist: **Rh7+ Kd8 Rh8+ Kd7 Rh6**.",
+      "Im Zugzwang muss der schwarze Turm oder König ausweichen, und dein Bauer wandelt sich um."
+    ]
+  },
+  "triangulation": {
+    "title": "Dreiecksmanöver",
+    "description": "Mit Schwarz am Zug wäre diese Stellung für Schwarz verloren – aber Weiß ist am Zug. Verliere mit dem König ein Tempo, damit Schwarz in Zugzwang gerät.",
+    "hint": "Ke5! Kc6 Kd4! Kd7 Kd5 – der König läuft ein Dreieck, während der schwarze König nur zwischen zwei Feldern pendeln kann.",
+    "technique": [
+      "Erkenne den gegenseitigen Zugzwang",
+      "Lauf mit deinem König ein Dreieck aus drei Feldern",
+      "Kehr in dieselbe Stellung zurück, mit dem Gegner am Zug",
+      "Dring dann mit Ke6–d6–e7–d7 ein"
+    ],
+    "pitfall": "Du hast Schwarz in der kritischen Stellung den Zug überlassen. Mach das Dreiecksmanöver: Ke5, Kd4, Kd5.",
+    "lesson": [
+      "Mit Schwarz am Zug wäre das für Schwarz verloren. Lauf mit deinem König ein **Dreieck** – e5, d4, d5 – und kehr mit Schwarz am Zug zurück.",
+      "Der schwarze König kann nur zwischen zwei Feldern pendeln, also kann er dein Dreieck nicht nachmachen. Dann dringt dein König ein."
+    ]
+  },
+  "kp-far-pawn": {
+    "title": "König und Bauer von Anfang an",
+    "description": "Selbst mit dem Bauern auf seinem Ausgangsfeld gewinnt Weiß – wenn der König vorangeht.",
+    "hint": "Zuerst Kd2 oder Kf2 – der König muss vorangehen. Schiebst du den Bauern zu früh, nimmt Schwarz die Opposition.",
+    "technique": [
+      "Erst der König, dann der Bauer",
+      "Ziel sind die Schlüsselfelder d4, e4 und f4",
+      "Nutze die Wahl des Bauern zwischen einem und zwei Schritten, um die Opposition zu gewinnen"
+    ],
+    "pitfall": "Du hast den Bauern zu früh geschoben, und der schwarze König hat vor ihm die Opposition genommen.",
+    "lesson": [
+      "**Erst der König!** Dein König muss vorangehen: Kd2 oder Kf2, dann vor dem Bauern das Brett hinauf.",
+      "Erreiche ein Schlüsselfeld (d4, e4 oder f4), bevor du den Bauern schiebst."
+    ]
+  },
+  "two-connected-pawns": {
+    "title": "Zwei Bauern gegen König",
+    "description": "Zwei Bauern gewinnen meistens leicht. Schieb sie gemeinsam vor, unterstützt von deinem König.",
+    "hint": "Hol zuerst den König heran; Bauern nebeneinander verteidigen sich gegenseitig.",
+    "technique": [
+      "Bauern nebeneinander kontrollieren die Felder vor ihnen",
+      "Greift der König einen Bauern an, schieb den anderen",
+      "Geleite sie mit deinem König"
+    ],
+    "pitfall": "Ein Bauer ging verloren. Halte die Bauern zusammen, damit sie sich gegenseitig schützen, und hol deinen König zur Hilfe.",
+    "lesson": [
+      "Hol zuerst deinen König heran – mit Begleitschutz kommen die Bauern schneller voran.",
+      "Schieb die Bauern gemeinsam vor. Greift der schwarze König einen an, schieb den anderen, damit sie sich gegenseitig decken."
+    ]
+  },
+  "right-bishop": {
+    "title": "Randbauer mit dem richtigen Läufer",
+    "description": "Hier kontrolliert der Läufer das dunkle Umwandlungsfeld h8, also gewinnt der Randbauer. Vorsicht vor Patt!",
+    "hint": "Deck g8/g7 mit dem Läufer, bevor du den Bauern nach h7 schiebst.",
+    "technique": [
+      "Der Läufer muss das Umwandlungsfeld kontrollieren",
+      "Setz den König in der Ecke nicht patt",
+      "Schieb h7 im richtigen Moment mit Schach"
+    ],
+    "pitfall": "Patt oder ein verlorener Bauer. Deck zuerst g8/g7 mit dem Läufer und lass dem schwarzen König immer einen Zug.",
+    "lesson": [
+      "Dein Läufer kontrolliert das **dunkle** Feld h8, also gewinnt dieser Randbauer.",
+      "Vorsicht vor Patt: Lass den schwarzen König nie ohne Zug, solange er nicht im Schach steht."
+    ]
+  },
+  "knight-and-pawn": {
+    "title": "Springer und Bauer gegen König",
+    "description": "Springer und Bauer gewinnen leicht, wenn der Bauer gedeckt ist und der König ihn unterstützt.",
+    "hint": "Bring den König vor den Bauern; halte den schwarzen König mit dem Springer fern.",
+    "technique": [
+      "Deck den Bauern mit König oder Springer",
+      "König vor den Bauern",
+      "Springerschachs gewinnen Tempi"
+    ],
+    "pitfall": "Der Bauer ging verloren, oder der schwarze König hat ihn blockiert. Halte den Bauern gedeckt und geh mit deinem König voran.",
+    "lesson": [
+      "Halte den Bauern gedeckt: Springer und Bauer schützen sich gegenseitig, sodass der schwarze König nichts schnappen kann.",
+      "Bring deinen König vor den Bauern, dann schieb ihn vor und nimm mit dem Springer Felder weg."
+    ]
+  },
+  "rook-vs-bishop-draw": {
+    "title": "Turm gegen Läufer: die richtige Ecke",
+    "description": "Turm gegen Läufer ist meist remis. Halte deinen König in der Ecke, die der Läufer NICHT kontrolliert (h8 ist dunkel, dein Läufer ist weißfeldrig).",
+    "hint": "Bleib in der Ecke h8 und blocke Schachs mit dem Läufer auf g8 oder h7.",
+    "technique": [
+      "Die sichere Ecke hat die entgegengesetzte Farbe deines Läufers",
+      "Blocke Turmschachs mit dem Läufer",
+      "Meide die Ecke in der Farbe deines Läufers – dort drohen Mattnetze"
+    ],
+    "pitfall": "Dein König ist in die falsche Ecke gegangen, oder der Läufer wurde eingesperrt. Bleib in der Ecke, die der Läufer NICHT kontrolliert.",
+    "lesson": [
+      "Dein Läufer ist weißfeldrig, also ist **die sichere Ecke die dunkle**: h8.",
+      "Blocke Schachs mit dem Läufer auf g8 oder h7 – in der richtigen Ecke verlierst du dabei nie den Läufer."
+    ]
+  },
+  "rook-vs-knight-draw": {
+    "title": "Turm gegen Springer: zusammenbleiben",
+    "description": "Turm gegen Springer ist remis, wenn der Springer nah bei seinem König bleibt. Ein einsamer Springer weit weg wird eingefangen.",
+    "hint": "Bring den Springer zurück zu deinem König (Nh3–f4 oder Ng4) und halte den König im Zentrum.",
+    "technique": [
+      "Halte den Springer neben dem König",
+      "Bleib weg von den Ecken",
+      "Lass den Springer nicht abschneiden"
+    ],
+    "pitfall": "Der Springer wurde von seinem König getrennt und eingefangen. Halte ihn nah bei dir.",
+    "lesson": [
+      "Dein Springer ist weit weg von seinem König, und der weiße König ist ihm nah. Hol ihn nach Hause: **...Nd3+**.",
+      "Springer neben dem König = remis. Ein einsamer Springer weit weg von seinem König kann eingefangen werden."
+    ]
+  },
+  "queen-vs-centre-pawn": {
+    "title": "Dame gegen Zentralbauer",
+    "description": "Der schwarze Bauer steht kurz vor der Umwandlung, aber gegen einen Zentralbauern gewinnt die Dame mit Schachs und Fesselungen.",
+    "hint": "Gib dem König Schach, bis er sich vor den Bauern stellen muss, und hol dann deinen König heran.",
+    "technique": [
+      "Nähere dich mit Schachs und Damenzügen, die den Bauern angreifen",
+      "Blockiert der König den Bauern, nutze das Tempo, um deinen König heranzuführen",
+      "Beende es mit dem Gewinn des Bauern oder mit Matt"
+    ],
+    "pitfall": "Der Bauer hat sich umgewandelt. Gib Schach, bis der König vor seinem Bauern steht, und hol dann deinen König heran.",
+    "lesson": [
+      "Nutze Schachs und Fesselungen, um den schwarzen König vor seinen Bauern auf **d1** zu zwingen.",
+      "Jedes Mal, wenn der König den Bauern blockiert, nutze den Gratiszug, um deinen König einen Schritt näher zu bringen."
+    ]
+  },
+  "queen-vs-pawn-2": {
+    "title": "Dame gegen Bauer: die Treppe",
+    "description": "Der schwarze König unterstützt einen Springerbauern auf b2. Halte ihn auf und gewinne.",
+    "hint": "Halte den Bauern mit der Dame unter Kontrolle (Qb1 blockiert ihn endgültig) und marschiere mit deinem König herüber.",
+    "technique": [
+      "Kontrolliere das Umwandlungsfeld",
+      "Hol deinen König zur Hilfe",
+      "Lass kein Patt in der Ecke zu"
+    ],
+    "pitfall": "Der Bauer hat sich umgewandelt. Blockiere das Umwandlungsfeld mit deiner Dame und hol dann deinen König.",
+    "lesson": [
+      "**Qb1!** blockiert den Bauern endgültig.",
+      "Ist der Bauer gestoppt, marschiere mit deinem König herüber und schnapp ihn dir."
+    ]
+  },
+  "opposition-distant": {
+    "title": "Fernopposition",
+    "description": "Der weiße König will vor seinen Bauern kommen. Nur ein Zug verhindert das: Nimm die Opposition aus der Ferne.",
+    "hint": "Kd7! – dieselbe Linie wie der weiße König, mit drei Feldern zwischen euch.",
+    "technique": [
+      "Könige auf derselben Linie mit einer ungeraden Zahl von Feldern dazwischen",
+      "Spiegle den weißen König, während er sich nähert",
+      "Die Fernopposition wird zur direkten Opposition"
+    ],
+    "pitfall": "Der weiße König ist an dir vorbeigekommen. Spiegle seine Züge: dieselbe Linie, eine ungerade Zahl von Feldern zwischen den Königen.",
+    "lesson": [
+      "Die Opposition funktioniert auch **aus der Ferne**: Könige auf derselben Linie mit einer ungeraden Zahl von Feldern dazwischen (3 oder 5).",
+      "Spiegle den weißen König weiter. Kommt er näher, wird aus der Fernopposition die normale Opposition – und Weiß kommt nicht durch."
+    ]
+  },
+  "opposition-diagonal": {
+    "title": "Diagonale Opposition",
+    "description": "Die Könige stehen weit auseinander. Nur ein Zug gewinnt: Nimm die Opposition auf der Diagonale.",
+    "hint": "Kc3! – auf derselben Diagonale wie der schwarze König, mit einer ungeraden Zahl von Feldern dazwischen.",
+    "technique": [
+      "Die Opposition funktioniert auch auf Diagonalen",
+      "Halte die Opposition, während sich die Könige nähern",
+      "Erreiche ein Schlüsselfeld vor deinem Bauern (d5, e5, f5)"
+    ],
+    "pitfall": "Du hast die Opposition verloren, und der schwarze König hat deinen Bauern blockiert.",
+    "lesson": [
+      "**Diagonale Opposition**: Könige auf derselben Diagonale mit einer ungeraden Zahl von Feldern dazwischen. **Kc3!** steht dem König auf g7 gegenüber.",
+      "Halte die Opposition, während sich die Könige nähern, und erreiche ein Schlüsselfeld: d5, e5 oder f5."
+    ]
+  },
+  "square-race": {
+    "title": "Die Quadratregel",
+    "description": "Dein König ist weit weg, der schwarze aber auch. Schafft es dein Bauer allein bis zur Umwandlung?",
+    "hint": "b5! – schieb sofort, bevor der schwarze König ins Quadrat tritt.",
+    "technique": [
+      "Zeichne das Quadrat vom Bauern bis zu seiner Umwandlungsreihe",
+      "Kann der gegnerische König nicht hineintreten, wandelt sich der Bauer allein um",
+      "Jeder Bauernzug macht das Quadrat kleiner"
+    ],
+    "pitfall": "Du hast dem schwarzen König Zeit gegeben, ins Quadrat des Bauern zu treten.",
+    "lesson": [
+      "**Die Quadratregel**: Zeichne ein Quadrat von deinem Bauern bis zur 8. Reihe. Der schwarze König auf g5 steht knapp außerhalb.",
+      "**b5!** macht das Quadrat sofort kleiner, und der schwarze König kann ihn nie mehr einholen."
+    ]
+  },
+  "queen-vs-bishop-pawn": {
+    "title": "Dame gegen Läuferbauer: der Patttrick",
+    "description": "Du verteidigst mit einem c-Bauern auf der 7. Reihe. Weil der weiße König weit weg ist, rettet dich ein Patttrick.",
+    "hint": "Bleib in der Nähe des Bauern: Kc1 oder Kd1. Blockiert die Dame c1, lauf nach a1 – den Bauern zu schlagen wäre Patt.",
+    "technique": [
+      "Halte deinen König neben dem Bauern",
+      "Blockiert die Dame, geh in die Ecke a1",
+      "Qxc2 wäre dann Patt"
+    ],
+    "pitfall": "Dein König hat sich vom Bauern entfernt. Mit einem Läuferbauern bleib in der Nähe von c1/b1/a1, damit der Patttrick funktioniert.",
+    "lesson": [
+      "Hier sitzt der schwarze König in der Ecke. Schlägt die Dame den Bauern auf c2, ist es **Patt**!",
+      "Bleib also neben dem Bauern und droh weiter mit der Umwandlung. Der weiße König ist zu weit weg, um zu helfen."
+    ]
+  },
+  "queen-vs-rook-pawn": {
+    "title": "Dame gegen Randbauer: die Eckfestung",
+    "description": "Du hast einen a-Bauern auf der 7. Reihe. Weil der weiße König weit weg ist, versteck dich in der Ecke, und es ist remis.",
+    "hint": "Kb2! – bleib neben dem Bauern. Wirst du nach a1 getrieben, muss Weiß dich freilassen, sonst ist es Patt.",
+    "technique": [
+      "Bleib neben dem Bauern (b1, b2)",
+      "Dein König vor dem Bauern auf a1 ist pattsicher",
+      "Der weiße König ist zu weit weg, um zu helfen"
+    ],
+    "pitfall": "Du hast den Eckbereich verlassen. Mit einem Randbauern auf der 7. Reihe halte deinen König auf b1, b2 oder a1.",
+    "lesson": [
+      "Gegen einen Randbauern ist die Ecke dein Freund: Steht dein König auf a1 vor dem Bauern, hat Schwarz keine Züge – **Patt**.",
+      "**Kb2!** hält deinen König neben dem Bauern. Der weiße König ist zu weit weg, um seiner Dame zu helfen."
+    ]
+  }
+}

@@ -1,0 +1,1648 @@
+{
+  "kings-pawn-opening": {
+    "name": "Königsbauerneröffnung",
+    "family": "Königsbauernspiel",
+    "description": "Der beliebteste erste Zug im Schach. 1.e4 besetzt das Zentrum, öffnet Linien für die Dame und den weißfeldrigen Läufer und führt meist zu offenen, taktischen Partien.",
+    "ideas": [
+      "Besetze das Zentrum mit einem Bauern",
+      "Öffne Diagonalen für die Dame und den Läufer auf f1",
+      "Mach weiter mit Nf3, Bc4/Bb5 und einer schnellen Rochade"
+    ],
+    "traps": [
+      "Anfänger holen die Dame oft früh mit Qh5 heraus – sie kann dann mit Tempogewinn gejagt werden"
+    ]
+  },
+  "queens-pawn-opening": {
+    "name": "Damenbauerneröffnung",
+    "family": "Damenbauernspiel",
+    "description": "1.d4 beansprucht das Zentrum mit einem Bauern, der bereits von der Dame gedeckt ist. Die Partien sind meist strategischer und geschlossener als nach 1.e4.",
+    "ideas": [
+      "Kontrolliere e5 und c5",
+      "Bereite c4 vor, um das schwarze Zentrum von der Seite anzugreifen",
+      "Entwickle dich in Ruhe: Nf3, Bf4/Bg5, e3"
+    ],
+    "traps": [
+      "Im Englund-Gambit (1...e5) steckt die Falle 2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+, und b2 geht verloren"
+    ]
+  },
+  "english-opening": {
+    "name": "Englische Eröffnung",
+    "family": "Englische Eröffnung",
+    "description": "Eine flexible Flankeneröffnung: Weiß kontrolliert d5 mit dem c-Bauern und stellt den Königsläufer oft ins Fianchetto. Sie kann in viele d4-Eröffnungen übergehen.",
+    "ideas": [
+      "Kontrolliere d5 von der Seite",
+      "Fianchetto mit g3 und Bg2",
+      "Halte dir den Übergang in Damengambit-Strukturen offen"
+    ]
+  },
+  "reti-opening": {
+    "name": "Réti-Eröffnung",
+    "family": "Réti-Eröffnung",
+    "description": "Ein hypermoderner Start: Weiß entwickelt einen Springer, kontrolliert das Zentrum aus der Ferne und wartet den schwarzen Aufbau ab, bevor es Bauern festlegt.",
+    "ideas": [
+      "Kontrolliere e5 und d4 mit einer Figur",
+      "Bleib flexibel: c4, g3 und b3 sind alle möglich",
+      "Geh in ein günstiges d4- oder c4-System über"
+    ]
+  },
+  "birds-opening": {
+    "name": "Bird-Eröffnung",
+    "family": "Bird-Eröffnung",
+    "description": "1.f4 kämpft um e5 und bereitet einen Angriff am Königsflügel vor – wie eine Holländische Verteidigung mit einem Tempo mehr. Der weiße König wird dabei etwas geschwächt.",
+    "ideas": [
+      "Kontrolliere e5 mit dem f-Bauern",
+      "Stell den Damenläufer mit b3 und Bb2 ins Fianchetto",
+      "Greif mit Qe1-h4 am Königsflügel an"
+    ],
+    "traps": [
+      "From-Gambit: 1...e5 2.fxe5 d6 3.exd6 Bxd6 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3# – spiel zuerst 4.Nf3"
+    ]
+  },
+  "nimzo-larsen-attack": {
+    "name": "Nimzowitsch-Larsen-Angriff",
+    "family": "Nimzowitsch-Larsen-Angriff",
+    "description": "Weiß stellt den Damenläufer sofort ins Fianchetto und richtet ihn auf die lange Diagonale und das Feld e5. Ein Liebling von Bent Larsen und modernen Blitzspielern.",
+    "ideas": [
+      "Setz e5 und die lange Diagonale a1-h8 unter Druck",
+      "Spiel später e3, Nf3 und c4",
+      "Umgeh die Theorie der Hauptvarianten"
+    ]
+  },
+  "kings-fianchetto-opening": {
+    "name": "Königsfianchetto-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Auch Benkö-Eröffnung genannt. Weiß bereitet Bg2 vor, um die lange Diagonale zu kontrollieren, und hält sich alle Möglichkeiten im Zentrum offen.",
+    "ideas": [
+      "Stell den Königsläufer ins Fianchetto",
+      "Rochiere schnell",
+      "Wähle den Zentrumsaufbau erst später (c4, d4 oder e4)"
+    ]
+  },
+  "polish-opening": {
+    "name": "Polnische Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Die Sokolski- oder Orang-Utan-Eröffnung: Weiß gewinnt Raum am Damenflügel und bereitet Bb2 gegen e5 vor. Schwarz kann den Bauern b4 direkt angreifen.",
+    "ideas": [
+      "Gewinne Raum am Damenflügel",
+      "Spiel Bb2, um Druck auf e5 zu machen",
+      "Stütze b4 danach mit a3 oder c3"
+    ],
+    "traps": [
+      "Nach 1...e5 2.Bb2 Bxb4 ist der Bauer weg – dafür holt sich Weiß mit 3.Bxe5 den Bauern e5"
+    ]
+  },
+  "grob-opening": {
+    "name": "Grob-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein aggressiver, aber zweifelhafter erster Zug: Er öffnet die lange Diagonale für Bg2 und schwächt dabei den weißen Königsflügel.",
+    "ideas": [
+      "Fianchetto mit Bg2 und Druck auf b7",
+      "Überrasche den Gegner früh",
+      "Spiel auf Tricks entlang der Diagonale h1-a8"
+    ],
+    "traps": [
+      "Nach 1...d5 2.Bg2 Bxg4 3.c4 c6 4.cxd5 cxd5 5.Qb3 greift Weiß b7 und d5 an – objektiv steht Schwarz aber gut",
+      "Gefahr des Narrenmatts: g4 zusammen mit f3/f4 erlaubt Qh4#"
+    ]
+  },
+  "van-geet-opening": {
+    "name": "Van-Geet-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Auch Dunst-Eröffnung genannt. Weiß entwickelt einen Springer Richtung Zentrum und hält sich e4 und d4 in Reserve.",
+    "ideas": [
+      "Entwickle dich schnell in Richtung e4/d5",
+      "Geht oft in 1.e4-Varianten über",
+      "Umgeh frühe Theorie"
+    ]
+  },
+  "anderssen-opening": {
+    "name": "Anderssen-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein Wartezug, den Adolf Anderssen benutzte: Weiß spielt praktisch die Eröffnungen von Schwarz mit dem Extratempo a3.",
+    "ideas": [
+      "Spiel umgekehrte Eröffnungen mit einem Tempo mehr",
+      "a3 verhindert Fesselungen mit ...Bb4",
+      "Bereite den Vorstoß b4 vor"
+    ]
+  },
+  "ware-opening": {
+    "name": "Ware-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein seltener Randbauernzug, der wenig fürs Zentrum tut. Weiß kann später mit Ra3 einen Turmschwenk folgen lassen, aber vor allem ist der Zug eine Überraschungswaffe.",
+    "ideas": [
+      "Bereite einen frühen Turmschwenk mit Ra3 vor",
+      "Gewinne Raum am Damenflügel",
+      "Umgeh die Theorie"
+    ]
+  },
+  "clemenz-opening": {
+    "name": "Clemenz-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein ruhiger Wartezug. Er verhindert ...Bg4, lässt Schwarz im Zentrum aber freie Hand.",
+    "ideas": [
+      "Verhindere Fesselungen mit ...Bg4",
+      "Bereite g4 für Raumgewinn vor",
+      "Geh später in einen normalen Aufbau über"
+    ]
+  },
+  "desprez-opening": {
+    "name": "Desprez-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Die Kádas-Eröffnung: ein Flankenbauernzug, der einen Turmschwenk über h3 vorbereitet, aber nichts fürs Zentrum tut.",
+    "ideas": [
+      "Bereite Rh3 vor",
+      "Gewinne Raum am Königsflügel",
+      "Nur als Überraschung nützlich"
+    ]
+  },
+  "saragossa-opening": {
+    "name": "Saragossa-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Weiß bereitet d4 vor und öffnet die Diagonale d1-a4 für die Dame. Solide, aber passiv.",
+    "ideas": [
+      "Unterstütze ein späteres d4",
+      "Mögliche Ideen mit Qa4+ oder Qb3",
+      "Spiel eine umgekehrte Caro-Kann-/Slawisch-Struktur"
+    ]
+  },
+  "mieses-opening": {
+    "name": "Mieses-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein bescheidener Zug, der den Läufer auf c1 befreit und oft in einen Königsindischen Angriff übergeht.",
+    "ideas": [
+      "Spiel später e4, Nf3, g3 und Bg2",
+      "Halte die Stellung geschlossen und flexibel",
+      "Spiel einen umgekehrten Pirc"
+    ]
+  },
+  "vant-kruijs-opening": {
+    "name": "Van’t-Kruijs-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Ein ruhiger Zug, der Linien für den Läufer auf f1 und die Dame öffnet. Er kann in umgekehrte Französisch- oder Damenbauern-Systeme übergehen.",
+    "ideas": [
+      "Entwickle den Läufer von f1",
+      "Mach weiter mit d4 oder c4",
+      "Umgeh scharfe Theorie"
+    ]
+  },
+  "barnes-opening": {
+    "name": "Barnes-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Einer der schlechtesten ersten Züge: Er nimmt dem Springer das Feld f3 weg und schwächt den König. Er ist der erste Schritt zum Narrenmatt.",
+    "ideas": [
+      "Bereitet (theoretisch) e4 vor",
+      "Raum am Königsflügel ohne Fianchetto",
+      "Vor allem eine Spaß-Eröffnung"
+    ],
+    "traps": [
+      "Narrenmatt: 1.f3 e5 2.g4?? Qh4# – das schnellste Matt im Schach"
+    ]
+  },
+  "durkin-opening": {
+    "name": "Durkin-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Der Natrium-Angriff: Weiß entwickelt den Springer an den Rand und will später Nc4 oder c3/Nc2 spielen.",
+    "ideas": [
+      "Führ den Springer nach c4 oder c2 um",
+      "Überrasche den Gegner",
+      "Umgeh die Theorie"
+    ],
+    "traps": [
+      "„Springer am Rand bringt Kummer und Schand“ – lass ihn nicht auf a3 stehen"
+    ]
+  },
+  "amar-opening": {
+    "name": "Amar-Eröffnung",
+    "family": "Seltene Eröffnung",
+    "description": "Die Pariser Eröffnung: Der Springer wird an den Rand entwickelt und will nach f4 oder g5. In ernsthaften Partien sieht man sie selten.",
+    "ideas": [
+      "Führ den Springer nach f4 um",
+      "Spiel g3/Bg2 mit Fianchetto",
+      "Überraschungswert"
+    ]
+  },
+  "open-game": {
+    "name": "Königsbauernspiel: Offene Partie",
+    "family": "Königsbauernspiel",
+    "description": "Schwarz spiegelt den ersten Zug von Weiß und beansprucht seinen Anteil am Zentrum. Das führt zu klassischen, offenen Stellungen mit viel Figurenspiel.",
+    "ideas": [
+      "Kämpfe symmetrisch um das Zentrum",
+      "Entwickle Springer und Läufer schnell",
+      "Achte auf Angriffe gegen f7"
+    ],
+    "traps": [
+      "Schäfermatt: 2.Qh5 Nc6 3.Bc4 Nf6?? 4.Qxf7#"
+    ]
+  },
+  "parham-attack": {
+    "name": "Parham-Angriff (Wanderdame)",
+    "family": "Königsbauernspiel",
+    "description": "Weiß bringt die Dame sofort heraus, zielt auf e5 und f7 und hofft auf das Schäfermatt. Gegen umsichtiges Spiel wird die Dame einfach gejagt.",
+    "ideas": [
+      "Droh Qxe5+ und Bc4 mit Qxf7#",
+      "Stell Anfängern frühe Fallen",
+      "Sei bereit, die Dame zurückzuziehen"
+    ],
+    "traps": [
+      "Schäfermatt: 2...Nc6 3.Bc4 Nf6?? 4.Qxf7#",
+      "Richtige Verteidigung: 2...Nc6 3.Bc4 g6 4.Qf3 Nf6, und Schwarz gewinnt Zeit gegen die Dame"
+    ]
+  },
+  "center-game": {
+    "name": "Mittelgambit",
+    "family": "Mittelgambit",
+    "description": "Weiß schlägt auf d4 mit der Dame zurück, die dann ...Nc6 mit Tempogewinn ausgesetzt ist. Es entstehen ungewöhnliche Stellungen, in denen Weiß oft lang rochiert.",
+    "ideas": [
+      "Zieh die Dame mit Qe3 zurück und rochiere lang",
+      "Greif schnell mit f4 und e5 an",
+      "Nutze die offene d-Linie"
+    ],
+    "traps": [
+      "Nach 3...Nc6 muss die Dame ziehen – stell sie nicht dorthin, wo ...Nb4 oder ...Bb4 sie wieder angreift"
+    ]
+  },
+  "danish-gambit": {
+    "name": "Nordisches Gambit",
+    "family": "Nordisches Gambit",
+    "description": "Weiß opfert zwei Bauern für zwei Läufer, die übers ganze Brett zielen, und einen riesigen Entwicklungsvorsprung. Auf Vereinsniveau sehr gefährlich.",
+    "ideas": [
+      "Zwei Läufer zielen auf f7 und g7",
+      "Blitzschnelle Entwicklung und Angriff",
+      "Schwarz sollte mit ...d5 Material zurückgeben"
+    ],
+    "traps": [
+      "Das sicherste Gegenmittel für Schwarz: 5...d5! 6.Bxd5 Nf6 – ein Bauer wird zurückgegeben, um in der Entwicklung aufzuholen"
+    ]
+  },
+  "scotch-game": {
+    "name": "Schottische Partie",
+    "family": "Schottische Partie",
+    "description": "Weiß öffnet das Zentrum sofort mit 3.d4. Das Spiel ist offen und direkt, mit weniger Theorie als in der Spanischen Partie.",
+    "ideas": [
+      "Öffne das Zentrum früh",
+      "Starker Springer auf d4",
+      "Schnelle Entwicklung und kurze Rochade"
+    ],
+    "traps": [
+      "4...Nxd4?! 5.Qxd4 zentralisiert nur die weiße Dame",
+      "4...Qh4!? (Steinitz) schnappt sich e4, wenn Weiß unaufmerksam ist"
+    ]
+  },
+  "scotch-classical": {
+    "name": "Schottische Partie: Klassische Variante",
+    "family": "Schottische Partie",
+    "description": "Schwarz greift den Springer auf d4 sofort an. Weiß spielt meist 5.Be3 oder 5.Nxc6, und das Spiel dreht sich um die Diagonale a7-g1.",
+    "ideas": [
+      "...Qf6 verdoppelt den Druck auf d4",
+      "Entwickle dich mit ...Nge7 und rochiere",
+      "Mit Nb3 gewinnt Weiß Zeit gegen den Läufer auf c5"
+    ]
+  },
+  "scotch-mieses": {
+    "name": "Schottische Partie: Mieses-Variante",
+    "family": "Schottische Partie",
+    "description": "Die moderne Hauptvariante der Schottischen Partie: Weiß gewinnt mit e5 und c4 Raum, während die schwarze Dame und der Läufer vorübergehend ungeschickt stehen.",
+    "ideas": [
+      "Der weiße Bauer auf e5 engt Schwarz ein",
+      "Schwarz setzt e5 mit ...Qe6/...f6 unter Druck",
+      "Die c-Doppelbauern geben Schwarz die offene b-Linie"
+    ],
+    "traps": [
+      "7...Ba6 fesselt den Bauern c4 – Weiß muss auf Taktiken mit b3/Qe4 achten"
+    ]
+  },
+  "scotch-gambit": {
+    "name": "Schottisches Gambit",
+    "family": "Schottische Partie",
+    "description": "Statt zurückzuschlagen, entwickelt Weiß den Läufer Richtung f7 und bietet einen Bauern für Entwicklung an. Oft geht es ins Zweispringerspiel über.",
+    "ideas": [
+      "Druck auf f7",
+      "Schnelle Entwicklung und frühe Rochade",
+      "Vorstoß e5, um einen Springer von f6 zu vertreiben"
+    ],
+    "traps": [
+      "4...Nf6 5.e5 d5! ist die sauberste Antwort für Schwarz – passive Verteidigung erlaubt Weiß einen Angriff auf f7"
+    ]
+  },
+  "goring-gambit": {
+    "name": "Göring-Gambit",
+    "family": "Schottische Partie",
+    "description": "Ein Gambit im Stil des Nordischen Gambits innerhalb der Schottischen Partie: Weiß bietet den c-Bauern für schnelle Entwicklung und Angriffschancen an.",
+    "ideas": [
+      "Zwei Läufer auf offenen Diagonalen",
+      "Entwicklungsvorsprung",
+      "Spiel auf einen schnellen Angriff gegen f7"
+    ],
+    "traps": [
+      "Schwarz kann mit 4...d5! 5.exd5 Qxd5 ablehnen und steht solide"
+    ]
+  },
+  "ponziani-opening": {
+    "name": "Ponziani-Eröffnung",
+    "family": "Ponziani-Eröffnung",
+    "description": "Weiß bereitet mit c3 den Vorstoß d4 vor und baut ein klassisches Zentrum auf. Schwarz kann direkt mit ...d5 oder ...Nf6 kontern.",
+    "ideas": [
+      "Bau mit d4 ein großes Zentrum auf",
+      "Ideen mit Qa4, die den Springer auf c6 fesseln",
+      "Umgeh die Theorie der Hauptvarianten"
+    ],
+    "traps": [
+      "3...Nf6 4.d4 Nxe4 5.d5 Ne7 6.Nxe5 Ng6 führt zu scharfem Spiel – kenn die Variante, bevor du sie ausprobierst"
+    ]
+  },
+  "italian-game": {
+    "name": "Italienische Partie",
+    "family": "Italienische Partie",
+    "description": "Eine der ältesten Eröffnungen. Weiß entwickelt sich schnell und richtet den Läufer auf das schwächste Feld von Schwarz: f7.",
+    "ideas": [
+      "Entwickle Springer vor Läufern",
+      "Rochiere früh",
+      "Bereite mit c3 den Vorstoß d4 für ein starkes Zentrum vor"
+    ],
+    "traps": [
+      "Fegatello-Angriff (Fried Liver) nach 3...Nf6 4.Ng5",
+      "Fallen im Stil des Seekadettenmatts nach ...Bg4 und einem frühen Nxe5"
+    ]
+  },
+  "giuoco-piano": {
+    "name": "Giuoco Piano",
+    "family": "Italienische Partie",
+    "description": "Das „ruhige Spiel“: Beide Seiten entwickeln ihre Läufer auf die besten Diagonalen. Weiß wählt zwischen ruhigen Aufbauten mit d3 und dem scharfen Durchbruch c3-d4.",
+    "ideas": [
+      "Beide Läufer zielen auf den f-Bauern des Gegners",
+      "c3 und d4 für ein großes Zentrum",
+      "Rochiere schnell und bring die Türme ins Zentrum"
+    ],
+    "traps": [
+      "Das Jerome-Gambit 4.Bxf7+? ist inkorrekt, aber tückisch"
+    ]
+  },
+  "giuoco-pianissimo": {
+    "name": "Giuoco Pianissimo",
+    "family": "Italienische Partie",
+    "description": "Die moderne Art, Italienisch zu spielen: Weiß hält die Spannung mit d3, c3, O-O, Re1 und manövriert langsam – so wie es heute die Spitzenspieler tun.",
+    "ideas": [
+      "Langsamer Aufbau: c3, O-O, Re1, Nbd2-f1-g3",
+      "Bereite d4 im richtigen Moment vor",
+      "Mit a4 schaffst du Platz für den Läufer auf a2"
+    ],
+    "traps": [
+      "Achte auf ...Ng4 gegen f2, wenn Weiß früh ohne h3 rochiert"
+    ]
+  },
+  "giuoco-piano-main": {
+    "name": "Giuoco Piano: Hauptvariante",
+    "family": "Italienische Partie",
+    "description": "Die klassische Hauptvariante: Weiß baut mit c3 und d4 das ideale Zentrum auf, und Schwarz schlägt mit einem Schach und Druck auf e4 zurück.",
+    "ideas": [
+      "Schwarz greift das Zentrum mit ...d5 an",
+      "Weiß kann mit Nc3 ein Gambit spielen",
+      "Mit Bd2 vereinfachen für einen sicheren Vorteil"
+    ],
+    "traps": [
+      "7.Nc3 Nxe4 8.O-O führt in den Møller-Angriff",
+      "7.Bd2 Bxd2+ 8.Nbxd2 d5! befreit das schwarze Spiel"
+    ]
+  },
+  "moller-attack": {
+    "name": "Giuoco Piano: Møller-Angriff",
+    "family": "Italienische Partie",
+    "description": "Ein wildes Gambit: Weiß opfert Material, um Linien gegen den unrochierten schwarzen König zu öffnen. Beide Seiten müssen präzise spielen.",
+    "ideas": [
+      "Öffne die e-Linie gegen den schwarzen König",
+      "Turm nach e1 mit Tempogewinn",
+      "Schwarz sollte mit ...Bf6 und ...Ne7 Material zurückgeben"
+    ],
+    "traps": [
+      "9...Bf6 10.Re1 Ne7 11.Rxe4 d6 ist die bekannte Verteidigung; andere Züge können schnell verlieren"
+    ]
+  },
+  "evans-gambit": {
+    "name": "Evansgambit",
+    "family": "Italienische Partie",
+    "description": "Weiß opfert den b-Bauern, um Zeit für c3 und d4 zu gewinnen. Ein Liebling von Morphy und Kasparow, der zu schnellen Angriffen führt.",
+    "ideas": [
+      "Lenke den Läufer auf c5 mit b4 ab",
+      "Gewinne Tempi für c3 und d4",
+      "Greif f7 mit Qb3 und Bc4 an"
+    ],
+    "traps": [
+      "Nach ...Bxb4 und ...Ba5 muss Schwarz genau mit ...d6 oder ...Nf6 fortsetzen",
+      "Achte auf Doppelangriffe mit Qb3 gegen f7 und b7"
+    ]
+  },
+  "evans-gambit-accepted": {
+    "name": "Angenommenes Evansgambit",
+    "family": "Italienische Partie",
+    "description": "Schwarz nimmt den Bauern, und Weiß schlägt sofort mit d4 im Zentrum zu. Der Bauer auf c3 und der Läufer auf c4 bringen starke Angriffschancen.",
+    "ideas": [
+      "Starkes Zentrum nach c3 und d4",
+      "Qb3 greift f7 an",
+      "Schwarz will den Bauern mit ...d6 oder ...exd4 zurückgeben"
+    ],
+    "traps": [
+      "5...Ba5 6.d4 exd4? 7.O-O dxc3?! 8.Qb3 gibt Weiß einen berühmten Angriff"
+    ]
+  },
+  "two-knights-defense": {
+    "name": "Zweispringerspiel im Nachzuge",
+    "family": "Italienische Partie",
+    "description": "Schwarz greift e4 an, statt Weiß nachzuahmen. Das lädt zum aggressiven 4.Ng5 ein und führt zu scharfem, taktischem Spiel.",
+    "ideas": [
+      "Greif e4 sofort an",
+      "Schnelle Entwicklung",
+      "Sei bereit für den Angriff Ng5 gegen f7"
+    ],
+    "traps": [
+      "4.Ng5 d5 5.exd5 Nxd5? 6.Nxf7! ist der Fegatello-Angriff",
+      "4.Ng5 Bc5!? ist der Traxler-Gegenangriff"
+    ]
+  },
+  "italian-two-knights-d3": {
+    "name": "Italienische Partie: Zweispringerspiel, d3-Variante",
+    "family": "Italienische Partie",
+    "description": "Weiß deckt e4 in aller Ruhe und behält einen langsamen italienischen Aufbau bei. So umgeht man scharfe Theorie, und es entstehen Manövrier-Mittelspiele.",
+    "ideas": [
+      "Solide Deckung von e4",
+      "Bereite c3, O-O, Re1 vor",
+      "Langfristiger Druck auf f7"
+    ],
+    "traps": [
+      "Achte auf die schwarzen Tricks mit ...Ng4 gegen f2"
+    ]
+  },
+  "fried-liver-attack": {
+    "name": "Fegatello-Angriff (Fried Liver)",
+    "family": "Italienische Partie",
+    "description": "Weiß opfert einen Springer auf f7, um den schwarzen König ins Freie zu zerren. Sehr gefährlich für Anfänger und ein großer Spaß zum Lernen.",
+    "ideas": [
+      "Opfere auf f7, um den König bloßzustellen",
+      "Qf3+ ist eine Gabel gegen König und Springer auf d5",
+      "Bring jede Figur in den Angriff"
+    ],
+    "traps": [
+      "6...Kxf7 7.Qf3+ Ke6 8.Nc3 – der schwarze König steckt im Zentrum fest",
+      "Schwarz vermeidet das mit 5...Na5! statt 5...Nxd5"
+    ]
+  },
+  "two-knights-polerio": {
+    "name": "Zweispringerspiel im Nachzuge: Polerio-Verteidigung",
+    "family": "Italienische Partie",
+    "description": "Die Hauptvariante gegen 4.Ng5: Schwarz gibt einen Bauern, jagt aber den Läufer auf c4 und holt einen großen Entwicklungsvorsprung heraus.",
+    "ideas": [
+      "Vertreib den Läufer mit ...Na5",
+      "Entwicklung für einen Bauern",
+      "...h6 und ...e4 gewinnen weitere Zeit"
+    ],
+    "traps": [
+      "6.Bb5+ c6 7.dxc6 bxc6 8.Be2 h6 9.Nf3 e4 – die schwarze Aktivität gleicht den Bauern aus"
+    ]
+  },
+  "traxler-counterattack": {
+    "name": "Zweispringerspiel im Nachzuge: Traxler-Gegenangriff",
+    "family": "Italienische Partie",
+    "description": "Schwarz ignoriert die Drohung gegen f7 und greift f2 an. Eine wilde, taktische Variante, in der beide Könige unter Beschuss geraten.",
+    "ideas": [
+      "Greif f2 sofort an",
+      "Nimm Materialverlust für die Initiative in Kauf",
+      "Blitzschnelle Taktik auf beiden Seiten"
+    ],
+    "traps": [
+      "5.Nxf7 Bxf2+! 6.Kxf2 Nxe4+ ist die kritische Variante",
+      "5.Bxf7+ Ke7 ist der sicherere Test für Weiß"
+    ]
+  },
+  "hungarian-defense": {
+    "name": "Ungarische Verteidigung",
+    "family": "Italienische Partie",
+    "description": "Eine solide, aber passive Antwort auf die Italienische Partie. Schwarz vermeidet alle Gambits und bereitet ...d6 und ...Nf6 vor.",
+    "ideas": [
+      "Umgeh scharfe Theorie",
+      "Solide Struktur mit ...d6",
+      "Entwickle dich in Ruhe und rochiere"
+    ],
+    "traps": [
+      "4.d4 exd4? 5.c3 gibt Weiß schnell die Initiative"
+    ]
+  },
+  "blackburne-shilling-gambit": {
+    "name": "Blackburne-Shilling-Gambit",
+    "family": "Italienische Partie",
+    "description": "Ein Fallenzug, der zu 4.Nxe5? einlädt – darauf folgt ein schnelles Matt. Gegen korrektes Spiel ist er einfach schwach.",
+    "ideas": [
+      "Verlocke Weiß, e5 zu schlagen",
+      "Dame nach g5 greift g2 und den Springer an",
+      "Eine reine Fallen-Eröffnung"
+    ],
+    "traps": [
+      "4.Nxe5? Qg5! 5.Nxf7?? Qxg2 6.Rf1 Qxe4+ 7.Be2 Nf3# – ein Matt ähnlich dem erstickten Matt",
+      "Richtig für Weiß: 4.Nxd4 exd4 5.c3 oder 4.O-O"
+    ]
+  },
+  "rousseau-gambit": {
+    "name": "Rousseau-Gambit",
+    "family": "Italienische Partie",
+    "description": "Eine aggressive Antwort: Schwarz greift e4 mit dem f-Bauern an, öffnet die f-Linie und schwächt dabei den König.",
+    "ideas": [
+      "Greif e4 an",
+      "Öffne die f-Linie",
+      "Überraschungswert"
+    ],
+    "traps": [
+      "4.d3 Nf6 5.Ng5 zielt auf die geschwächten weißen Felder"
+    ]
+  },
+  "jerome-gambit": {
+    "name": "Jerome-Gambit",
+    "family": "Italienische Partie",
+    "description": "Ein inkorrektes Opfer aus dem 19. Jahrhundert: Weiß gibt einen Läufer, um den König herauszulocken. Im Blitz lustig, gegen gute Verteidigung verloren.",
+    "ideas": [
+      "Stell den schwarzen König bloß",
+      "Mach weiter mit Nxe5+ und Qh5+",
+      "Reiner Schockeffekt"
+    ],
+    "traps": [
+      "4...Kxf7 5.Nxe5+ Nxe5 6.Qh5+ g6! 7.Qxe5 d6, und Schwarz steht klar besser"
+    ]
+  },
+  "ruy-lopez": {
+    "name": "Spanische Partie",
+    "family": "Spanische Partie",
+    "description": "Die Spanische Partie (Ruy López): Weiß setzt den Springer unter Druck, der e5 deckt, und spielt auf einen langfristigen Vorteil.",
+    "ideas": [
+      "Setz den Bauern e5 indirekt unter Druck",
+      "Rochiere und spiel Re1, c3 und d4",
+      "Lange, strategische Manövrierkämpfe"
+    ],
+    "traps": [
+      "Die Arche-Noah-Falle fängt den Läufer auf b3 mit ...c5-c4",
+      "Gewinne den Bauern e5 nicht zu früh: Bxc6 + Nxe5 erlaubt ...Qd4"
+    ]
+  },
+  "ruy-lopez-morphy": {
+    "name": "Spanische Partie: Morphy-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Schwarz stellt den Läufer mit ...a6 zur Rede. Weiß hält die Fesselung durch den Rückzug nach a4 aufrecht – das Tor zu den meisten Hauptvarianten der Spanischen Partie.",
+    "ideas": [
+      "...a6 und ...b5 gewinnen Raum am Damenflügel",
+      "Halte dir die Möglichkeit offen, die Fesselung aufzuheben",
+      "Entwickle dich mit ...Nf6, ...Be7 und rochiere"
+    ],
+    "traps": [
+      "Arche-Noah-Falle: Der weiße Läufer auf b3 kann mit ...c5 und ...c4 gefangen werden"
+    ]
+  },
+  "ruy-lopez-exchange": {
+    "name": "Spanische Partie: Abtauschvariante",
+    "family": "Spanische Partie",
+    "description": "Weiß gibt das Läuferpaar ab, um die schwarze Bauernstruktur zu beschädigen. Dank der gesunden 4-gegen-3-Mehrheit am Königsflügel strebt Weiß ein besseres Endspiel an.",
+    "ideas": [
+      "Tausch in ein Endspiel mit Bauernmehrheit am Königsflügel ab",
+      "Schwarz bekommt das Läuferpaar und freie Entwicklung",
+      "O-O und d4 sind die Hauptpläne von Weiß"
+    ],
+    "traps": [
+      "5.Nxe5? Qd4! holt den Bauern mit Vorteil zurück"
+    ]
+  },
+  "ruy-lopez-berlin": {
+    "name": "Spanische Partie: Berliner Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Die „Berliner Mauer“, berühmt geworden durch Kramnik: eine ultrasolide Verteidigung, die e4 angreift und oft in ein Mittelspiel ohne Damen führt.",
+    "ideas": [
+      "Greif e4 sofort an",
+      "Nimm das Endspiel mit dem Läuferpaar an",
+      "Felsenfeste Verteidigung auf jedem Niveau"
+    ]
+  },
+  "ruy-lopez-berlin-wall": {
+    "name": "Spanische Partie: Berliner Verteidigung, Berliner Mauer",
+    "family": "Spanische Partie",
+    "description": "Das Berliner Endspiel: Die Damen werden früh getauscht. Schwarz hat das Rochaderecht verloren, besitzt aber das Läuferpaar und eine solide, festungsartige Struktur.",
+    "ideas": [
+      "Schwarz blockiert mit ...h6, ...Ke8 und ...Be6",
+      "Weiß nutzt die Bauernmehrheit am Königsflügel (e5, f4-f5)",
+      "Langes technisches Endspiel"
+    ]
+  },
+  "ruy-lopez-anti-berlin": {
+    "name": "Spanische Partie: Berliner Verteidigung, d3-Variante",
+    "family": "Spanische Partie",
+    "description": "Weiß umgeht das Berliner Endspiel, indem es e4 ruhig mit d3 deckt. Die Damen bleiben auf dem Brett, und es entsteht ein langsames spanisches Spiel.",
+    "ideas": [
+      "Lass die Damen auf dem Brett",
+      "Langsamer Aufbau mit c3, O-O, Re1, Nbd2",
+      "Manövriere wie im geschlossenen Spanier"
+    ]
+  },
+  "ruy-lopez-closed": {
+    "name": "Spanische Partie: Geschlossene Variante",
+    "family": "Spanische Partie",
+    "description": "Schwarz entwickelt sich ruhig und bereitet die Rochade vor. Das führt zum geschlossenen Spanier – einem reichen, strategischen Kampf mit Manövern auf beiden Flügeln.",
+    "ideas": [
+      "Schwarz hält den Stützpunkt e5",
+      "Weiß baut c3 und d4 auf",
+      "Springermanöver Nb1-d2-f1-g3 für Weiß"
+    ],
+    "traps": [
+      "Nach 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 beginnt die Hauptvariante; ohne h3 kommt ...Bg4"
+    ]
+  },
+  "ruy-lopez-closed-main": {
+    "name": "Spanische Partie: Geschlossene Variante, Hauptvariante",
+    "family": "Spanische Partie",
+    "description": "Die klassische Tabija der Spanischen Partie. Schwarz wählt zwischen Tschigorin, Breyer, Saizew und anderen Systemen.",
+    "ideas": [
+      "Weiß bereitet d4 mit voller Unterstützung vor",
+      "h3 verhindert Fesselungen mit ...Bg4",
+      "Schwarz gruppiert die Figuren am Damenflügel um, bevor ...c5 oder ...d5 kommt"
+    ]
+  },
+  "ruy-lopez-chigorin": {
+    "name": "Spanische Partie: Geschlossene Variante, Tschigorin-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Schwarz vertreibt den Läufer von b3, spielt ...c5 und gewinnt Raum am Damenflügel. Ein klassisches System mit viel strategischem Tiefgang.",
+    "ideas": [
+      "...Na5 und ...c5 gewinnen Raum am Damenflügel",
+      "...Qc7 stützt e5",
+      "Weiß spielt Nbd2-f1-g3 und im richtigen Moment d5"
+    ]
+  },
+  "ruy-lopez-breyer": {
+    "name": "Spanische Partie: Geschlossene Variante, Breyer-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Schwarz zieht den Springer nach b8 zurück, um ihn nach d7 umzuleiten. So wird der c-Bauer frei, und es entsteht Platz für ...Bb7. Von Spasski und Carlsen geschätzt.",
+    "ideas": [
+      "Springerumweg ...Nb8-d7",
+      "...Bb7 und ...c5 oder ...c6",
+      "Sehr solide, flexible Struktur"
+    ]
+  },
+  "ruy-lopez-zaitsev": {
+    "name": "Spanische Partie: Geschlossene Variante, Saizew-Variante",
+    "family": "Spanische Partie",
+    "description": "Schwarz häuft mit ...Bb7 und ...Re8 Druck auf e4 an und bereitet ...Bf8 vor. Ein Lieblingssystem von Karpow in seinen WM-Kämpfen.",
+    "ideas": [
+      "Druck auf e4",
+      "...Bf8 stärkt den Königsflügel",
+      "Gegenspiel mit ...exd4 und ...c5"
+    ],
+    "traps": [
+      "10.Ng5 Rf8 11.Nf3 Re8 wiederholt die Züge – Weiß braucht einen anderen Plan, um Remis zu vermeiden"
+    ]
+  },
+  "ruy-lopez-marshall": {
+    "name": "Spanische Partie: Marshall-Angriff",
+    "family": "Spanische Partie",
+    "description": "Frank Marshalls berühmtes Bauernopfer: Schwarz gibt einen Bauern für einen gefährlichen Angriff am Königsflügel. Tief analysiert und völlig korrekt.",
+    "ideas": [
+      "Opfere d5 für schnelle Entwicklung",
+      "Angriff mit ...Bd6, ...Qh4 und ...Bg4",
+      "Weiß muss präzise verteidigen und Material zurückgeben"
+    ],
+    "traps": [
+      "Gierige Varianten mit Rxe5 erlauben ...Bd6 und ...Qh4 mit einem wilden Angriff"
+    ]
+  },
+  "ruy-lopez-anti-marshall": {
+    "name": "Spanische Partie: Anti-Marshall",
+    "family": "Spanische Partie",
+    "description": "Weiß umgeht das Marshall-Gambit, indem es mit 8.a4 den Bauern b5 angreift und stattdessen Druck am Damenflügel macht.",
+    "ideas": [
+      "Druck auf b5 mit a4",
+      "Umgeh die Marshall-Theorie",
+      "Nutze später die a-Linie"
+    ]
+  },
+  "ruy-lopez-open": {
+    "name": "Spanische Partie: Offene Variante",
+    "family": "Spanische Partie",
+    "description": "Schwarz schnappt sich den Bauern e4 und bekommt aktives Figurenspiel. Weiß holt ihn mit d4 zurück und gewinnt mit e5 einen Raumvorteil.",
+    "ideas": [
+      "Aktive Figuren für Schwarz",
+      "Struktur mit ...b5, ...d5 und ...Be6",
+      "Weiß spielt d4, dxe5 und c3"
+    ],
+    "traps": [
+      "Die Tarrasch-Falle: 6.d4 b5 7.Bb3 d5 8.dxe5 Be6 9.c3 Be7 10.Re1 O-O 11.Nd4 Qd7?? 12.Nxe6 fxe6 13.Rxe4 gewinnt"
+    ]
+  },
+  "ruy-lopez-schliemann": {
+    "name": "Spanische Partie: Schliemann-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Das Jaenisch-Gambit: Schwarz schlägt mit dem f-Bauern gegen e4 zurück. Es entstehen scharfe Stellungen wie im Königsgambit, nur mit vertauschten Farben.",
+    "ideas": [
+      "Öffne die f-Linie",
+      "Greif e4 schnell an",
+      "Nimm Risiko für Aktivität in Kauf"
+    ],
+    "traps": [
+      "4.Nc3 fxe4 5.Nxe4 d5 6.Nxe5! dxe4 7.Nxc6 ist eine lange, forcierte Variante, die man kennen sollte"
+    ]
+  },
+  "ruy-lopez-steinitz": {
+    "name": "Spanische Partie: Steinitz-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Schwarz deckt e5 solide mit ...d6, aber die Stellung ist passiv, und Weiß hat im Zentrum freie Hand.",
+    "ideas": [
+      "Halte e5 mit ...d6",
+      "Solide, aber eingeengt",
+      "...Bd7 hebt die Fesselung des Springers auf"
+    ],
+    "traps": [
+      "Tarrasch-Falle: 4.d4 Bd7 5.Nc3 Nf6 6.O-O Be7 7.Re1 O-O?? 8.Bxc6 Bxc6 9.dxe5 dxe5 10.Qxd8 Raxd8 11.Nxe5 gewinnt einen Bauern und bald die Qualität"
+    ]
+  },
+  "ruy-lopez-classical": {
+    "name": "Spanische Partie: Klassische Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Schwarz entwickelt den Läufer aktiv nach c5, wie in der Italienischen Partie. Weiß reagiert meist mit c3 und d4.",
+    "ideas": [
+      "Aktiver Läufer auf c5",
+      "Schnelle Entwicklung",
+      "Aufbauten mit ...Nge7 oder ...Nf6"
+    ],
+    "traps": [
+      "4.c3 f5!? ist das scharfe Cordel-Gambit"
+    ]
+  },
+  "ruy-lopez-arkhangelsk": {
+    "name": "Spanische Partie: Archangelsk-Variante",
+    "family": "Spanische Partie",
+    "description": "Schwarz entwickelt den Läufer früh nach b7 und verstärkt so den Druck auf e4 und die lange Diagonale. Eine dynamische Alternative zu den geschlossenen Varianten.",
+    "ideas": [
+      "Druck auf e4 mit ...Bb7",
+      "...Bc5 für aktives Spiel",
+      "Scharfe Taktik rund um e4 und f2"
+    ]
+  },
+  "ruy-lopez-moller": {
+    "name": "Spanische Partie: Møller-Verteidigung",
+    "family": "Spanische Partie",
+    "description": "Auch Neo-Archangelsk genannt: Schwarz stellt den Läufer nach c5, um Druck auf f2 und d4 zu machen.",
+    "ideas": [
+      "Aktiver Läufer auf c5",
+      "Kombiniere ...b5 und ...Bc5",
+      "Setz den weißen Durchbruch d4 unter Druck"
+    ]
+  },
+  "ruy-lopez-bird": {
+    "name": "Spanische Partie: Bird-Variante",
+    "family": "Spanische Partie",
+    "description": "Schwarz tauscht die Springer, um die Fesselung aufzuheben, und nimmt dafür einen Doppelbauern auf der d-Linie in Kauf. Selten, aber spielbar.",
+    "ideas": [
+      "Tausch den angegriffenen Springer",
+      "Der Bauer auf d4 engt Weiß ein",
+      "Schnell ...c6 und ...Ne7"
+    ]
+  },
+  "petrov-defense": {
+    "name": "Russische Verteidigung (Petrow)",
+    "family": "Russische Verteidigung",
+    "description": "Die Russische Partie: Schwarz greift e4 an, statt e5 zu decken. Extrem solide und bei Spitzenspielern beliebt, die Ausgleich suchen.",
+    "ideas": [
+      "Symmetrischer Gegenangriff",
+      "Solide Struktur mit wenigen Schwächen",
+      "Erst ausgleichen, dann den Gegner überspielen"
+    ],
+    "traps": [
+      "3.Nxe5 Nxe4?? 4.Qe2! Nf6?? 5.Nc6+ gewinnt die Dame durch Abzugsangriff",
+      "Richtig: 3.Nxe5 d6 4.Nf3 Nxe4"
+    ]
+  },
+  "petrov-classical": {
+    "name": "Russische Verteidigung: Klassischer Angriff",
+    "family": "Russische Verteidigung",
+    "description": "Die Hauptvariante der Russischen Verteidigung. Weiß gewinnt einen kleinen Raumvorteil, während der schwarze Springer auf e4 stark steht, aber angegriffen werden kann.",
+    "ideas": [
+      "Stell den Springer auf e4 mit Bd3, O-O, Re1, c4 infrage",
+      "Schwarz stützt e4 mit ...d5",
+      "Symmetrische, aber reichhaltige Stellungen"
+    ]
+  },
+  "petrov-steinitz": {
+    "name": "Russische Verteidigung: Steinitz-Angriff",
+    "family": "Russische Verteidigung",
+    "description": "Weiß öffnet das Zentrum sofort mit 3.d4. Das Spiel wird offener als in der Hauptvariante.",
+    "ideas": [
+      "Öffne das Zentrum schnell",
+      "Entwickle dich mit Bd3 und O-O",
+      "Nutze den Entwicklungsvorsprung"
+    ]
+  },
+  "stafford-gambit": {
+    "name": "Stafford-Gambit",
+    "family": "Russische Verteidigung",
+    "description": "Ein fallenreiches Gambit, das online beliebt ist: Schwarz gibt einen Bauern für schnelle Entwicklung und viele Tricks gegen den König.",
+    "ideas": [
+      "Verlocke den Springer, auf c6 zu schlagen",
+      "Bc5 und Ng4 gegen f2",
+      "Jede Menge Fallen im Blitz"
+    ],
+    "traps": [
+      "4.Nxc6 dxc6 5.d3?? Bc5 6.Bg5?? Nxe4! 7.Bxd8 Bxf2+ 8.Ke2 Bg4# – das berühmte Matt",
+      "Richtig für Weiß: 4.Nxc6 dxc6 5.d3 Bc5 6.Be2, und das Gambit ist schwach"
+    ]
+  },
+  "philidor-defense": {
+    "name": "Philidor-Verteidigung",
+    "family": "Philidor-Verteidigung",
+    "description": "Eine solide, aber passive Verteidigung, die e5 mit einem Bauern deckt. Weiß bekommt mehr Raum, aber die schwarze Stellung ist schwer zu knacken.",
+    "ideas": [
+      "Deck e5 mit ...d6",
+      "Solide Struktur",
+      "Strebe ...Nf6, ...Nbd7, ...Be7 an"
+    ],
+    "traps": [
+      "Légal-Falle: 3.Bc4 Bg4 4.Nc3 g6? 5.Nxe5! Bxd1?? 6.Bxf7+ Ke7 7.Nd5#",
+      "3.d4 exd4 führt in eine passive Abtauschvariante"
+    ]
+  },
+  "philidor-hanham": {
+    "name": "Philidor-Verteidigung: Hanham-Variante",
+    "family": "Philidor-Verteidigung",
+    "description": "Schwarz hält den Stützpunkt e5 mit ...Nbd7. Die Stellung ähnelt der Altindischen Verteidigung: solide, aber eingeengt.",
+    "ideas": [
+      "Halte e5 um jeden Preis",
+      "...Be7, ...O-O, ...c6",
+      "Bereite ...b5 oder ...exd4 im richtigen Moment vor"
+    ],
+    "traps": [
+      "5.Bc4 Be7 6.dxe5 dxe5? 7.Bxf7+! Kxf7 8.Ng5+ Kg8 9.Ne6 gewinnt die Dame – schlag stattdessen mit 6...Nxe5 zurück"
+    ]
+  },
+  "philidor-exchange": {
+    "name": "Philidor-Verteidigung: Abtauschvariante",
+    "family": "Philidor-Verteidigung",
+    "description": "Schwarz gibt das Zentrum auf, um die Figuren zu befreien. Weiß zentralisiert mit Nxd4 und bekommt einen angenehmen Raumvorteil.",
+    "ideas": [
+      "Öffne Linien für die Figuren",
+      "Ein Fianchetto mit ...g6 ist möglich",
+      "Gegenspiel gegen e4"
+    ]
+  },
+  "latvian-gambit": {
+    "name": "Lettisches Gambit",
+    "family": "Lettisches Gambit",
+    "description": "Ein sehr aggressives und riskantes Gambit: Schwarz greift e4 sofort mit dem f-Bauern an und schwächt den König für Aktivität.",
+    "ideas": [
+      "Öffne die f-Linie",
+      "Kämpfe um die Initiative",
+      "Überraschungswaffe"
+    ],
+    "traps": [
+      "3.Nxe5 Qf6 4.d4 d6 5.Nc4 fxe4 6.Nc3 Qg6 7.f3! ist stark für Weiß",
+      "Ideen mit Bc4 gegen die geschwächte Diagonale e8-h5"
+    ]
+  },
+  "elephant-gambit": {
+    "name": "Elefantengambit",
+    "family": "Elefantengambit",
+    "description": "Schwarz schlägt mit ...d5 sofort im Zentrum zurück. Objektiv zweifelhaft, kann aber unvorbereitete Gegner verwirren.",
+    "ideas": [
+      "Greif das Zentrum an",
+      "Öffne schnell Linien",
+      "Überraschungswaffe"
+    ],
+    "traps": [
+      "3.exd5 e4 4.Qe2 Nf6 5.d3, und Weiß steht besser"
+    ]
+  },
+  "damiano-defense": {
+    "name": "Damiano-Verteidigung",
+    "family": "Königsbauernspiel",
+    "description": "Eine schwache Deckung von e5, die die Diagonale zum König schwächt. Eine klassische Lektion, warum ...f6 gefährlich ist.",
+    "ideas": [
+      "(Nicht empfohlen) e5 mit einem Bauern decken",
+      "Lerne, warum ...f6 den König schwächt",
+      "Kenne die Widerlegung"
+    ],
+    "traps": [
+      "3.Nxe5! fxe5? 4.Qh5+ Ke7 (4...g6 5.Qxe5+) 5.Qxe5+ Kf7 6.Bc4+, und Weiß gewinnt"
+    ]
+  },
+  "four-knights-game": {
+    "name": "Vierspringerspiel",
+    "family": "Vierspringerspiel",
+    "description": "Eine klassische, symmetrische Eröffnung: Beide Seiten entwickeln zuerst die Springer. Einfache Prinzipien, gut zum Lernen.",
+    "ideas": [
+      "Springer vor Läufern",
+      "Symmetrische Entwicklung",
+      "Wähle Pläne mit Bb5 (spanisch) oder d4 (schottisch)"
+    ],
+    "traps": [
+      "4.Nxe5? Nxe5 5.d4 ist das Halloween-Gambit – ein echtes Springeropfer"
+    ]
+  },
+  "four-knights-spanish": {
+    "name": "Vierspringerspiel: Spanische Variante",
+    "family": "Vierspringerspiel",
+    "description": "Weiß fesselt den Springer auf c6 wie in der Spanischen Partie. Schwarz kann mit ...Bb4 spiegeln oder das scharfe Rubinstein-System ...Nd4 wählen.",
+    "ideas": [
+      "Druck auf e5 über die Fesselung",
+      "Rochiere und spiel d3 oder d4",
+      "Einfache, klassische Entwicklung"
+    ],
+    "traps": [
+      "4...Nd4 5.Nxe5? Qe7 holt das Material mit Zinsen zurück"
+    ]
+  },
+  "four-knights-scotch": {
+    "name": "Vierspringerspiel: Schottische Variante",
+    "family": "Vierspringerspiel",
+    "description": "Weiß öffnet das Zentrum mit d4. Nach 4...exd4 5.Nxd4 ähnelt das Spiel der Schottischen Partie, nur mit beiden Springern entwickelt.",
+    "ideas": [
+      "Öffne das Zentrum",
+      "Aktives Figurenspiel",
+      "Nutze Ideen mit Nxc6 und e5"
+    ]
+  },
+  "halloween-gambit": {
+    "name": "Vierspringerspiel: Halloween-Gambit",
+    "family": "Vierspringerspiel",
+    "description": "Ein gruseliges Springeropfer: Weiß gibt eine ganze Figur für ein großes Bauernzentrum und jagt die schwarzen Springer übers Brett.",
+    "ideas": [
+      "Großes Zentrum mit d4 und e5",
+      "Vertreib die Springer mit Tempogewinn",
+      "Schockeffekt im Blitz"
+    ],
+    "traps": [
+      "4...Nxe5 5.d4 Ng6 6.e5 Ng8 7.Bc4 – Schwarz muss ruhig verteidigen und steht dann deutlich besser"
+    ]
+  },
+  "three-knights-game": {
+    "name": "Dreispringerspiel",
+    "family": "Vierspringerspiel",
+    "description": "Weiß entwickelt den Damenspringer, bevor es sich für einen Plan entscheidet. Schwarz geht meist mit ...Nf6 ins Vierspringerspiel über.",
+    "ideas": [
+      "Entwickle zuerst die Springer",
+      "Flexibel: später Bb5, Bc4 oder d4",
+      "Ein Werkzeug für Zugumstellungen"
+    ]
+  },
+  "vienna-game": {
+    "name": "Wiener Partie",
+    "family": "Wiener Partie",
+    "description": "Weiß entwickelt zuerst den Damenspringer und hält den f-Bauern frei für einen frühen Vorstoß f4. Sie kann ruhig oder sehr aggressiv sein.",
+    "ideas": [
+      "Bereite f4 wie im Königsgambit vor",
+      "Kontrolliere d5",
+      "Bc4 macht Druck auf f7"
+    ],
+    "traps": [
+      "Frankenstein-Dracula: 2...Nf6 3.Bc4 Nxe4!? 4.Qh5 ist sehr scharf"
+    ]
+  },
+  "vienna-falkbeer": {
+    "name": "Wiener Partie: Falkbeer-Variante",
+    "family": "Wiener Partie",
+    "description": "Schwarz entwickelt sich und greift e4 an. Weiß wählt zwischen dem Wiener Gambit (f4), Bc4 oder einem ruhigen g3.",
+    "ideas": [
+      "Greif e4 an",
+      "Bereite ...d5 vor, um das Spiel zu befreien",
+      "Solide Entwicklung"
+    ]
+  },
+  "vienna-max-lange": {
+    "name": "Wiener Partie: Max-Lange-Verteidigung",
+    "family": "Wiener Partie",
+    "description": "Schwarz spiegelt die weiße Entwicklung. Weiß kann trotzdem f4, Bc4 oder einen langsamen Aufbau mit g3 spielen.",
+    "ideas": [
+      "Symmetrische Entwicklung",
+      "Kontrolliere d4",
+      "Flexible Pläne"
+    ]
+  },
+  "vienna-gambit": {
+    "name": "Wiener Gambit",
+    "family": "Wiener Partie",
+    "description": "Ein Königsgambit mit dem Springer schon auf c3. Weiß will die f-Linie öffnen und mit e5 den schwarzen Springer vertreiben.",
+    "ideas": [
+      "Vorstoß e5 für Raumgewinn",
+      "Öffne die f-Linie",
+      "Schneller Angriff am Königsflügel"
+    ],
+    "traps": [
+      "3...d5! ist die beste Antwort: 4.fxe5 Nxe4 5.Nf3 mit komplexem Spiel",
+      "3...exf4 4.e5 Ng8 gibt Weiß ein großes Zentrum"
+    ]
+  },
+  "vienna-frankenstein-dracula": {
+    "name": "Wiener Partie: Frankenstein-Dracula-Variante",
+    "family": "Wiener Partie",
+    "description": "Eine der wildesten Varianten im Schach: Weiß gewinnt einen Turm, aber der Springer auf a8 ist gefangen, und Schwarz bekommt ein mächtiges Zentrum und Angriff.",
+    "ideas": [
+      "Schwarz opfert die Qualität für ein riesiges Zentrum",
+      "Fang den Springer auf a8 ein",
+      "Die weiße Dame darf nicht eingesperrt werden"
+    ],
+    "traps": [
+      "4.Qh5 droht Qxf7# – Schwarz muss 4...Nd6 spielen"
+    ]
+  },
+  "bishops-opening": {
+    "name": "Läuferspiel",
+    "family": "Läuferspiel",
+    "description": "Weiß entwickelt zuerst den Läufer, zielt auf f7 und hält den f-Bauern frei. Oft geht es in die Italienische oder die Wiener Partie über.",
+    "ideas": [
+      "Nimm früh f7 ins Visier",
+      "Halte dir f4 offen",
+      "Flexible Zugumstellungen"
+    ]
+  },
+  "bishops-opening-berlin": {
+    "name": "Läuferspiel: Berliner Verteidigung",
+    "family": "Läuferspiel",
+    "description": "Schwarz greift sofort e4 an. Weiß deckt meist mit d3 und spielt ein langsames Spiel im italienischen Stil.",
+    "ideas": [
+      "Greif e4 an",
+      "Durchbruch ...d5",
+      "Einfache Entwicklung"
+    ],
+    "traps": [
+      "3.d4 exd4 4.Nf3 ist das Urussow-Gambit – scharfes Spiel"
+    ]
+  },
+  "kings-gambit": {
+    "name": "Königsgambit",
+    "family": "Königsgambit",
+    "description": "Das romantische Gambit des 19. Jahrhunderts: Weiß bietet den f-Bauern an, um den schwarzen e-Bauern abzulenken, die f-Linie zu öffnen und ein großes Zentrum aufzubauen.",
+    "ideas": [
+      "Lenke den Bauern e5 ab und spiel d4",
+      "Öffne die f-Linie für einen Angriff auf f7",
+      "Schnelle Entwicklung"
+    ],
+    "traps": [
+      "Nach 2...exf4 3.Nf3 g5 4.h4 g4 5.Ne5 (Kieseritzky) kämpft Weiß um den Bauern f4",
+      "Ohne Nf3 zwingt ...Qh4+ den weißen König zu ziehen – 3.Nf3 verhindert das"
+    ]
+  },
+  "kings-gambit-accepted": {
+    "name": "Angenommenes Königsgambit",
+    "family": "Königsgambit",
+    "description": "Schwarz nimmt den Bauern. Der Kampf dreht sich darum, ob Schwarz den Bauern f4 halten kann oder ihn für Entwicklung zurückgeben muss.",
+    "ideas": [
+      "Schwarz kann den Bauern mit ...g5 halten",
+      "Weiß spielt Nf3, d4 und Bxf4",
+      "Die Könige bleiben oft im Zentrum"
+    ],
+    "traps": [
+      "3.Nf3 g5 4.Bc4 g4 5.O-O!? gxf3 6.Qxf3 ist das Muzio-Gambit"
+    ]
+  },
+  "kings-gambit-kieseritzky": {
+    "name": "Königsgambit: Kieseritzky-Gambit",
+    "family": "Königsgambit",
+    "description": "Weiß untergräbt die schwarze Bauernkette mit h4 und stellt den Springer auf e5. Eine der angesehensten Varianten des Königsgambits.",
+    "ideas": [
+      "Untergrab g5 mit h4",
+      "Der Springer auf e5 greift f7 und g4 an",
+      "Hol f4 mit d4 und Bxf4 zurück"
+    ]
+  },
+  "kings-gambit-muzio": {
+    "name": "Königsgambit: Muzio-Gambit",
+    "family": "Königsgambit",
+    "description": "Weiß opfert einen ganzen Springer, um die f-Linie gegen f7 zu öffnen. Eine spektakuläre romantische Variante mit riesigen Angriffschancen.",
+    "ideas": [
+      "Opfere den Springer auf f3 für Entwicklung",
+      "Angriffe mit Qxf3 und Bxf7+",
+      "Alle Figuren machen beim Angriff mit"
+    ]
+  },
+  "kings-gambit-fischer": {
+    "name": "Königsgambit: Fischer-Verteidigung",
+    "family": "Königsgambit",
+    "description": "Bobby Fischers „Widerlegung“: Schwarz verhindert Ne5 mit ...d6, bevor es ...g5 spielt, um den Mehrbauern zu behalten.",
+    "ideas": [
+      "Verhindere Ne5 mit ...d6",
+      "Dann ...g5, um f4 zu halten",
+      "Solider Mehrbauer"
+    ]
+  },
+  "kings-gambit-bishops": {
+    "name": "Königsgambit: Läufergambit",
+    "family": "Königsgambit",
+    "description": "Weiß entwickelt den Läufer statt Nf3 zu spielen. Das erlaubt ...Qh4+, aber der König bleibt auf f1 aktiv.",
+    "ideas": [
+      "Druck auf f7",
+      "Der König geht sicher nach f1",
+      "Entwickle dich schnell und hol f4 zurück"
+    ]
+  },
+  "kings-gambit-falkbeer": {
+    "name": "Abgelehntes Königsgambit: Falkbeer-Gegengambit",
+    "family": "Königsgambit",
+    "description": "Schwarz lehnt mit einem Gegengambit ab, schlägt im Zentrum zu und öffnet Linien gegen den geschwächten weißen König.",
+    "ideas": [
+      "Gegenangriff, statt anzunehmen",
+      "...e4 engt Weiß ein",
+      "Öffne Linien gegen den weißen König"
+    ]
+  },
+  "kings-gambit-declined-classical": {
+    "name": "Abgelehntes Königsgambit: Klassische Variante",
+    "family": "Königsgambit",
+    "description": "Schwarz ignoriert das Gambit und entwickelt den Läufer nach c5. So kann Weiß nicht mehr so leicht kurz rochieren.",
+    "ideas": [
+      "Verhindere die weiße Rochade",
+      "Behalte den Bauern e5",
+      "Druck auf der Diagonale g1-a7"
+    ],
+    "traps": [
+      "3.fxe5?? Qh4+ 4.g3 Qxe4+ gewinnt den Turm auf h1"
+    ]
+  },
+  "sicilian-defense": {
+    "name": "Sizilianische Verteidigung",
+    "family": "Sizilianische Verteidigung",
+    "description": "Die beliebteste Antwort von Schwarz auf 1.e4: Mit einem Flankenbauern um das Feld d4 kämpfen und ein unausgeglichenes Spiel schaffen.",
+    "ideas": [
+      "Tausch den c-Bauern gegen den weißen d-Bauern",
+      "Nutze die halboffene c-Linie",
+      "Gegenangriff am Damenflügel"
+    ],
+    "traps": [
+      "In vielen Varianten opfert Weiß auf e6, d5 oder b5 – achte auf Springeropfer"
+    ]
+  },
+  "sicilian-old": {
+    "name": "Sizilianische Verteidigung: Alter Sizilianer",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz entwickelt den Damenspringer, um um d4 zu kämpfen. Das führt zu Sweschnikow, Klassisch, Beschleunigtem Drachen oder Rossolimo.",
+    "ideas": [
+      "Kontrolliere d4 mit einer Figur",
+      "Halte dir ...e5, ...g6 und ...d6 offen",
+      "Flexible Zugfolge"
+    ]
+  },
+  "sicilian-modern": {
+    "name": "Sizilianische Verteidigung: Moderne Varianten",
+    "family": "Sizilianische Verteidigung",
+    "description": "Die häufigste Zugfolge im Sizilianer: ...d6 bereitet ...Nf6 vor und hält Najdorf, Drachen, Klassisch und Scheveningen offen.",
+    "ideas": [
+      "Kontrolliere e5",
+      "Bereite ...Nf6 vor, ohne dass e5 den Springer vertreibt",
+      "Wähle das System später"
+    ]
+  },
+  "sicilian-french-variation": {
+    "name": "Sizilianische Verteidigung: Französische Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz spielt ...e6 und steuert auf Kan, Taimanow oder das sizilianische Vierspringerspiel zu. Flexibel und solide.",
+    "ideas": [
+      "Kontrolliere d5",
+      "Flexible Figurenaufstellung",
+      "Die Dame geht oft nach c7"
+    ]
+  },
+  "sicilian-open": {
+    "name": "Sizilianische Verteidigung: Offene Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß öffnet das Zentrum mit d4 und schlägt mit dem Springer zurück. Weiß bekommt einen Entwicklungsvorsprung, Schwarz die halboffene c-Linie und eine Bauernmehrheit im Zentrum.",
+    "ideas": [
+      "Weiß greift am Königsflügel an",
+      "Schwarz kontert am Damenflügel",
+      "Scharfes, zweischneidiges Spiel"
+    ]
+  },
+  "sicilian-najdorf": {
+    "name": "Sizilianische Verteidigung: Najdorf-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Der berühmteste Sizilianer, gespielt von Fischer und Kasparow. Das ruhige ...a6 kontrolliert b5 und bereitet ...e5 oder ...e6 mit einem Gegenangriff am Damenflügel vor.",
+    "ideas": [
+      "...a6 verhindert Nb5 und Bb5+",
+      "Flexibel: ...e5 oder ...e6",
+      "Ausdehnung am Damenflügel mit ...b5"
+    ],
+    "traps": [
+      "6.Bg5 e6 7.f4 Qb6 ist der Vergiftete Bauer – b2 zu schlagen ist riskant, aber korrekt",
+      "Achte auf Opfer mit Nd5 und Bxe6"
+    ]
+  },
+  "najdorf-english-attack": {
+    "name": "Sizilianisch Najdorf: Englischer Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß spielt Be3, f3, Qd2 und O-O-O und stürmt dann mit g4-g5 am Königsflügel. Eine moderne, aggressive Waffe.",
+    "ideas": [
+      "Rochaden auf verschiedenen Seiten",
+      "Bauernsturm mit g4-g5",
+      "Kontrolliere d5"
+    ]
+  },
+  "najdorf-6bg5": {
+    "name": "Sizilianisch Najdorf: 6.Bg5",
+    "family": "Sizilianische Verteidigung",
+    "description": "Der klassische Angriff gegen den Najdorf. Weiß fesselt den Springer und bereitet die Durchbrüche e5 oder f5 mit einem direkten Sturmangriff vor.",
+    "ideas": [
+      "Fessle den Springer auf f6",
+      "Durchbruch mit e5 oder f5",
+      "Rochiere lang und greif an"
+    ],
+    "traps": [
+      "7...Qb6 8.Qd2 Qxb2 ist der Vergiftete Bauer",
+      "7...b5?! 8.e5! dxe5 9.fxe5 Qc7 10.exf6 Qe5+ ist die Polugajewski-Variante"
+    ]
+  },
+  "najdorf-poisoned-pawn": {
+    "name": "Sizilianisch Najdorf: Vergifteter Bauer",
+    "family": "Sizilianische Verteidigung",
+    "description": "Die schwarze Dame schlägt den Bauern b2 und muss einen wilden Angriff überstehen. Eine der am gründlichsten analysierten Varianten im Schach.",
+    "ideas": [
+      "Schwarz nimmt Material und verteidigt sich",
+      "Weiß opfert für Entwicklung",
+      "Die schwarze Dame kann gefangen werden – präzise Züge nötig"
+    ],
+    "traps": [
+      "9.Rb1 Qa3 10.f5 und 10.e5 sind die wichtigsten Angriffsversuche von Weiß"
+    ]
+  },
+  "najdorf-opocensky": {
+    "name": "Sizilianisch Najdorf: Opočenský-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß spielt das ruhige 6.Be2, Schwarz antwortet mit ...e5. Es entsteht ein Positionskampf um das Feld d5.",
+    "ideas": [
+      "Kampf um d5",
+      "Rückständiger Bauer d6 gegen aktive Figuren",
+      "Aufbau mit ...Be6, ...Be7, ...O-O"
+    ]
+  },
+  "sicilian-dragon": {
+    "name": "Sizilianische Verteidigung: Drachenvariante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz stellt den Königsläufer ins Fianchetto und schafft so einen mächtigen „Drachen“ auf der langen Diagonale. Führt zu messerscharfen Kämpfen mit Rochaden auf verschiedenen Seiten.",
+    "ideas": [
+      "Fianchetto-Läufer auf g7",
+      "Angriff am Damenflügel mit ...Rc8 und ...Qa5",
+      "Qualitätsopfer ...Rxc3"
+    ],
+    "traps": [
+      "Achte auf den Abtausch mit Bh6 – ohne den Läufer auf g7 ist der König geschwächt",
+      "Qualitätsopfer mit Rxc3 sind typisch für Schwarz"
+    ]
+  },
+  "dragon-yugoslav-attack": {
+    "name": "Sizilianisch Drache: Jugoslawischer Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß rochiert lang und stürmt mit h4-h5, um die h-Linie gegen den schwarzen König zu öffnen. Ein klassisches Angriffsrennen.",
+    "ideas": [
+      "Bh6 tauscht den schwarzen Drachenläufer",
+      "h4-h5 öffnet die h-Linie",
+      "Lange Rochade und schneller Angriff"
+    ],
+    "traps": [
+      "Das schwarze Qualitätsopfer ...Rxc3 kann den weißen Damenflügel zertrümmern"
+    ]
+  },
+  "sicilian-classical": {
+    "name": "Sizilianische Verteidigung: Klassische Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz entwickelt beide Springer und hält sich alle Möglichkeiten offen. Weiß wählt zwischen Richter-Rauser (Bg5), Sosin (Bc4) oder ruhigeren Varianten.",
+    "ideas": [
+      "Natürliche Entwicklung",
+      "Flexibel: ...e6 oder ...g6",
+      "Kontrolle über das Zentrum"
+    ]
+  },
+  "sicilian-richter-rauzer": {
+    "name": "Sizilianische Verteidigung: Richter-Rauser-Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß fesselt den Springer auf f6 und plant Qd2 und O-O-O. Das verhindert den Drachenaufbau und bereitet einen Angriff vor.",
+    "ideas": [
+      "Fessle den Springer",
+      "Lange Rochade",
+      "Beschädige die schwarzen Bauern mit Bxf6"
+    ]
+  },
+  "sicilian-sozin": {
+    "name": "Sizilianische Verteidigung: Sosin-Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß richtet den Läufer auf e6 und f7 – ein Lieblingssystem von Bobby Fischer. Opfer auf e6 und d5 sind häufig.",
+    "ideas": [
+      "Läufer auf der Diagonale a2-g8",
+      "Opfer auf e6 oder d5",
+      "f4-f5 öffnet Linien"
+    ]
+  },
+  "sicilian-scheveningen": {
+    "name": "Sizilianische Verteidigung: Scheveningen-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz baut mit Bauern auf d6 und e6 ein „kleines Zentrum“ auf. Solide, aber flexibel – ein Lieblingssystem von Kasparow.",
+    "ideas": [
+      "Bauern auf d6/e6 kontrollieren das Zentrum",
+      "...a6, ...Qc7, ...Be7, ...O-O",
+      "Warte auf den richtigen Moment für ...d5 oder ...e5"
+    ],
+    "traps": [
+      "Der Keres-Angriff 6.g4! ist der schärfste Test"
+    ]
+  },
+  "sicilian-keres-attack": {
+    "name": "Sizilianisch Scheveningen: Keres-Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß wirft den g-Bauern sofort nach vorn, um den schwarzen Springer zu vertreiben und einen Angriff am Königsflügel zu starten.",
+    "ideas": [
+      "Vertreib den Springer von f6 mit g5",
+      "Schnelle Ausdehnung am Königsflügel",
+      "Rochiere lang"
+    ]
+  },
+  "sicilian-sveshnikov": {
+    "name": "Sizilianische Verteidigung: Sweschnikow-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz nimmt ein Loch auf d5 und einen rückständigen Bauern in Kauf und bekommt dafür dynamisches Figurenspiel und das Läuferpaar. Eine moderne Hauptvariante, die Carlsen spielt.",
+    "ideas": [
+      "Dynamisches Spiel gegen das Loch auf d5",
+      "Durchbrüche mit ...b5 und ...f5",
+      "Das Läuferpaar"
+    ],
+    "traps": [
+      "Nach 8.Bg5 a6 9.Na3 b5 muss Schwarz die Pläne mit ...f5 und ...Bg7 kennen"
+    ]
+  },
+  "sicilian-kalashnikov": {
+    "name": "Sizilianische Verteidigung: Kalaschnikow-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Ein Verwandter des Sweschnikow: Schwarz spielt ...e5 vor ...Nf6 und behält Möglichkeiten wie ...Be7 und ...f5.",
+    "ideas": [
+      "Nimm das Loch auf d5 für Aktivität in Kauf",
+      "Durchbruch ...f5",
+      "Flexible Entwicklung am Königsflügel"
+    ]
+  },
+  "sicilian-taimanov": {
+    "name": "Sizilianische Verteidigung: Taimanow-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Ein flexibles System: Schwarz entwickelt den Springer nach c6 und hält sich die Läufer und den d-Bauern offen. Auf Spitzenniveau beliebt.",
+    "ideas": [
+      "Flexible Bauernstruktur",
+      "Dame auf c7 und ...a6",
+      "Schnelles Spiel am Damenflügel"
+    ],
+    "traps": [
+      "5.Nb5 d6 6.c4 führt in einen Aufbau ähnlich dem Maróczy-Aufbau"
+    ]
+  },
+  "sicilian-taimanov-main": {
+    "name": "Sizilianisch Taimanow: Hauptvariante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Die moderne Taimanow-Tabija. Weiß spielt oft Qd2/Qf3 und O-O-O, während Schwarz ...Nf6, ...Bb4 oder ...b5 anstrebt.",
+    "ideas": [
+      "Die Dame auf c7 kontrolliert e5",
+      "...b5 und ...Bb7",
+      "Druck auf c3 und e4"
+    ]
+  },
+  "sicilian-kan": {
+    "name": "Sizilianische Verteidigung: Kan-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Paulsen/Kan: Schwarz spielt früh ...a6, um maximal flexibel zu bleiben. Oft entsteht eine Igelstruktur.",
+    "ideas": [
+      "Flexible Entwicklung",
+      "Igelaufbau mit ...d6, ...b6",
+      "Dame auf c7"
+    ],
+    "traps": [
+      "5.Bd3 und c4 errichten einen Maróczy-Aufbau – Schwarz muss die Durchbrüche ...b5 oder ...d5 finden"
+    ]
+  },
+  "sicilian-four-knights": {
+    "name": "Sizilianische Verteidigung: Vierspringervariante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz entwickelt beide Springer und bereitet ...Bb4 vor, um Druck auf e4 zu machen. Kann in viele andere Sizilianisch-Varianten übergehen.",
+    "ideas": [
+      "...Bb4 fesselt und setzt e4 unter Druck",
+      "Schnelle Entwicklung",
+      "Durchbruch ...d5"
+    ],
+    "traps": [
+      "6.Ndb5 Bb4 7.a3 Bxc3+ 8.Nxc3 d5 ist die Hauptvariante"
+    ]
+  },
+  "sicilian-accelerated-dragon": {
+    "name": "Sizilianische Verteidigung: Beschleunigter Drache",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz spielt das Fianchetto ohne ...d6, spart ein Tempo und bereitet ...d5 in einem Zug vor. Der Hauptversuch von Weiß ist der Maróczy-Aufbau mit c4.",
+    "ideas": [
+      "Der Läufer auf g7 zielt über die lange Diagonale",
+      "...d5 in einem Zug",
+      "Vermeidet den Jugoslawischen Angriff"
+    ],
+    "traps": [
+      "5.Nc3 Bg7 6.Be3 Nf6 7.Bc4 O-O 8.Bb3 Na5? 9.e5 Ne8 10.Bxf7+! Kxf7 11.Ne6! gewinnt die Dame"
+    ]
+  },
+  "sicilian-maroczy-bind": {
+    "name": "Sizilianische Verteidigung: Maróczy-Aufbau",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß klammert d5 mit Bauern auf c4 und e4 und schränkt das schwarze Gegenspiel ein. Ein strategischer Aufbau mit Raumgewinn.",
+    "ideas": [
+      "Kontrolliere d5 mit Bauern",
+      "Schnür die schwarze Stellung ein",
+      "Schwarz sucht die Durchbrüche ...b5 oder ...f5"
+    ]
+  },
+  "sicilian-hyper-accelerated-dragon": {
+    "name": "Sizilianische Verteidigung: Hyperbeschleunigter Drache",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz spielt das Fianchetto schon im zweiten Zug und bleibt maximal flexibel. Weiß kann mit d4 oder einem frühen c3 antworten.",
+    "ideas": [
+      "Frühes Fianchetto",
+      "Flexibel: ...Nc6 / ...d6",
+      "Umgeh die Theorie der Hauptvarianten"
+    ]
+  },
+  "sicilian-alapin": {
+    "name": "Sizilianische Verteidigung: Alapin-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß bereitet d4 vor, um ein volles Bauernzentrum aufzubauen, und umgeht die umfangreiche Theorie des offenen Sizilianers. Ein beliebtes Anti-Sizilianisch auf jedem Niveau.",
+    "ideas": [
+      "Bereite d4 mit c3 vor",
+      "Einfache, prinzipielle Entwicklung",
+      "Oft entstehen Stellungen mit isoliertem d-Bauern"
+    ]
+  },
+  "sicilian-alapin-nf6": {
+    "name": "Sizilianisch Alapin: 2...Nf6",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz greift sofort e4 an; Weiß gewinnt mit e5 Raum, und der Springer findet auf d5 ein Zuhause im Zentrum.",
+    "ideas": [
+      "Der Springer auf d5 steht stark",
+      "...d6 stellt e5 infrage",
+      "Stellungen mit isoliertem Damenbauern für Weiß"
+    ]
+  },
+  "sicilian-alapin-d5": {
+    "name": "Sizilianisch Alapin: 2...d5",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz schlägt auf d5, und die Dame steht zentral; weil c3 dem Springer sein Feld genommen hat, ist die Dame sicher.",
+    "ideas": [
+      "Aktive Dame auf d5",
+      "...Nf6, ...e6 und ...Nc6",
+      "Kämpfe gegen den isolierten Damenbauern"
+    ]
+  },
+  "smith-morra-gambit": {
+    "name": "Smith-Morra-Gambit",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß opfert einen Bauern für einen Entwicklungsvorsprung und offene c- und d-Linien. Im Verein und online sehr gefährlich.",
+    "ideas": [
+      "Offene Linien für die Türme",
+      "Schnelle Entwicklung: Nc3, Nf3, Bc4, O-O, Qe2, Rd1",
+      "Druck auf d6 und f7"
+    ],
+    "traps": [
+      "Sibirische Falle: 4.Nxc3 Nc6 5.Nf3 e6 6.Bc4 Qc7 7.O-O Nf6 8.Qe2 Ng4! 9.h3?? Nd4! gewinnt die Dame oder setzt auf h2 matt",
+      "Schwarz kann mit 3...Nf6 oder 3...d3 ablehnen"
+    ]
+  },
+  "smith-morra-accepted": {
+    "name": "Angenommenes Smith-Morra-Gambit",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz nimmt den Bauern. Der weiße Entwicklungsvorsprung ist erheblich; Schwarz muss sich vorsichtig entwickeln.",
+    "ideas": [
+      "Bc4, Nf3, O-O, Qe2 und Rd1",
+      "Druck auf d6 und die c-Linie",
+      "Springersprünge mit Nd5 und Nb5"
+    ],
+    "traps": [
+      "Bei Aufbauten mit ...d6, ...Nf6, ...e6 muss Schwarz auf den Durchbruch e5 und auf Nb5 achten"
+    ]
+  },
+  "sicilian-closed": {
+    "name": "Sizilianische Verteidigung: Geschlossene Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß öffnet das Zentrum nicht und spielt einen langsamen Aufbau am Königsflügel mit g3, Bg2, d3, f4. Spasskis Lieblingssystem.",
+    "ideas": [
+      "Fianchetto am Königsflügel",
+      "Ausdehnung am Königsflügel mit f4-f5",
+      "Halte das Zentrum geschlossen"
+    ]
+  },
+  "sicilian-closed-main": {
+    "name": "Geschlossener Sizilianer: Hauptvariante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Die klassische Stellung des geschlossenen Sizilianers mit Fianchettos auf beiden Seiten. Weiß spielt am Königsflügel, Schwarz am Damenflügel.",
+    "ideas": [
+      "Weiß: Be3, Qd2, f4 und Angriff am Königsflügel",
+      "Schwarz: ...Rb8 und ...b5",
+      "Langsames Manövrieren"
+    ]
+  },
+  "sicilian-grand-prix": {
+    "name": "Sizilianische Verteidigung: Grand-Prix-Angriff",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß spielt früh f4 und entwickelt den Läufer nach c4 oder b5, um direkt am Königsflügel anzugreifen. Im Vereinsschach beliebt.",
+    "ideas": [
+      "Angriff am Königsflügel mit f4-f5",
+      "Bc4 oder Bb5",
+      "Angriffsideen mit Qe1-h4"
+    ]
+  },
+  "sicilian-rossolimo": {
+    "name": "Sizilianische Verteidigung: Rossolimo-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß entwickelt den Läufer nach b5, um den Springer zu fesseln, und verdoppelt oft mit Bxc6 die schwarzen Bauern. Ein solides Anti-Sizilianisch.",
+    "ideas": [
+      "Fesseln und eventuell auf c6 schlagen",
+      "Schnelle Rochade",
+      "Strategisches Spiel gegen die c-Doppelbauern"
+    ]
+  },
+  "sicilian-moscow": {
+    "name": "Sizilianische Verteidigung: Moskauer Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß gibt mit dem Läufer Schach, um zu vereinfachen, und umgeht so Najdorf und Drachen. Oft werden die Läufer auf d7 getauscht.",
+    "ideas": [
+      "Tausch die weißfeldrigen Läufer",
+      "Zentrum mit c3 und d4",
+      "Solides Spiel mit wenig Theorie"
+    ]
+  },
+  "sicilian-okelly": {
+    "name": "Sizilianische Verteidigung: O’Kelly-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz spielt schon im zweiten Zug ...a6, um sich Möglichkeiten offenzuhalten und Fallen gegen natürliche Züge wie 3.d4 zu stellen.",
+    "ideas": [
+      "Nach 3.d4 cxd4 4.Nxd4 Nf6 greift Schwarz e4 an",
+      "Flexible Aufbauten",
+      "Überraschungswert"
+    ],
+    "traps": [
+      "3.c3! ist die beste Antwort"
+    ]
+  },
+  "sicilian-nimzowitsch": {
+    "name": "Sizilianische Verteidigung: Nimzowitsch-Variante",
+    "family": "Sizilianische Verteidigung",
+    "description": "Schwarz greift e4 an wie in der Aljechin-Verteidigung. Nach 3.e5 Nd5 ähnelt das Spiel einem Aljechin mit eingeschobenem ...c5.",
+    "ideas": [
+      "Provoziere e5",
+      "Springer auf d5",
+      "Untergrab das weiße Zentrum"
+    ],
+    "traps": [
+      "3.e5 Nd5 4.Nc3 e6 5.Nxd5 exd5 6.d4 gibt Weiß einen schönen Vorteil"
+    ]
+  },
+  "sicilian-wing-gambit": {
+    "name": "Sizilianische Verteidigung: Flügelgambit",
+    "family": "Sizilianische Verteidigung",
+    "description": "Weiß opfert den b-Bauern, um den Bauern c5 abzulenken und mit d4 ein Zentrum aufzubauen. Selten und zweifelhaft.",
+    "ideas": [
+      "Lenke c5 ab",
+      "Bau ein Zentrum mit d4/e4 auf",
+      "Überraschungswaffe"
+    ]
+  },
+  "french-defense": {
+    "name": "Französische Verteidigung",
+    "family": "Französische Verteidigung",
+    "description": "Eine solide Verteidigung, in der Schwarz ...d5 vorbereitet und das weiße Zentrum angreift. Der weißfeldrige Läufer von Schwarz ist oft ein Sorgenkind.",
+    "ideas": [
+      "Greif das Zentrum mit ...d5 an",
+      "Gegenangriff mit ...c5 und ...f6",
+      "Solide Bauernkette"
+    ],
+    "traps": [
+      "Der weißfeldrige Läufer auf c8 kann hinter dem Bauern e6 zum „schlechten“ Läufer werden"
+    ]
+  },
+  "french-kia": {
+    "name": "Französische Verteidigung: Königsindischer Angriff",
+    "family": "Französische Verteidigung",
+    "description": "Weiß umgeht die Französisch-Theorie mit einem königsindischen Aufbau: d3, Nd2, Ngf3, g3, Bg2, O-O und ein Angriff am Königsflügel mit e5.",
+    "ideas": [
+      "Fianchetto und Rochade",
+      "Vorstoß e5 für Raum am Königsflügel",
+      "Angriff mit h4, Nf1-h2-g4"
+    ]
+  },
+  "french-advance": {
+    "name": "Französische Verteidigung: Vorstoßvariante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß schließt das Zentrum mit e5 und gewinnt Raum am Königsflügel. Schwarz greift mit ...c5 und ...Qb6 die Basis der Kette an.",
+    "ideas": [
+      "Raumvorteil durch e5",
+      "Deck d4 mit c3 und Nf3",
+      "Schwarz greift d4 mit ...c5, ...Nc6, ...Qb6 an"
+    ],
+    "traps": [
+      "Wenn die schwarze Dame auf d4 schlägt, kann sie an Taktiken mit Bb5+ scheitern",
+      "Das Milner-Barry-Gambit opfert d4 für Entwicklung"
+    ]
+  },
+  "french-advance-milner-barry": {
+    "name": "Französisch Vorstoß: Milner-Barry-Gambit",
+    "family": "Französische Verteidigung",
+    "description": "Weiß opfert den Bauern d4 für schnelle Entwicklung und einen gefährlichen Angriff gegen den unrochierten schwarzen König.",
+    "ideas": [
+      "Opfere d4 für Entwicklung",
+      "Angriffe mit Nb5 und Re1",
+      "Halte den schwarzen König im Zentrum fest"
+    ],
+    "traps": [
+      "10...Qxe5?? 11.Re1 Qb8 12.Nxd5! mit vernichtendem Angriff"
+    ]
+  }
+}

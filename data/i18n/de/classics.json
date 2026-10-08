@@ -1,0 +1,2008 @@
+{
+ "opera-game": {
+  "title": "Die Opernpartie",
+  "event": "Pariser Oper",
+  "opening": "Philidor-Verteidigung",
+  "summary": "Gespielt in einer Loge der Pariser Oper mitten in einer Vorstellung, ist dies die berühmteste Lektion über schnelle Entwicklung. Morphy bringt jede Figur ins Spiel, öffnet Linien gegen den unrochierten König und vollendet mit einem Damenopfer. Die Lehre: Entwickle schnell, rochiere und bestrafe einen Gegner, der zurückbleibt.",
+  "annotations": [
+   {
+    "text": "Paris, 1858. Paul Morphy, der junge amerikanische Star, spielt gegen zwei Adlige, die gemeinsam beraten – direkt in ihrer Loge in der Oper. Achte darauf, wie schnell er **alle** seine Figuren in den Kampf bringt."
+   },
+   {
+    "text": "2...d6 ist die Philidor-Verteidigung. Sie deckt e5 solide, sperrt aber auch den eigenen Läufer auf f8 ein. Solide, aber etwas passiv."
+   },
+   {
+    "text": "3...Bg4 fesselt den Springer auf f3 an die Dame. Das sieht aktiv aus, aber Schwarz wird diesen Läufer bald abtauschen, und jeder solche Tausch hilft Weiß bei der Entwicklung."
+   },
+   {
+    "text": "4...Bxf3 gibt den Läufer für den Springer. Die weiße Dame schlägt zurück und kommt gratis ins Spiel, während Schwarz eine Figur weniger im Einsatz hat."
+   },
+   {
+    "text": "6.Bc4 bringt einen zweiten Angreifer gegen f7. Weiß droht jetzt Qxf7 mit Schachmatt, also muss Schwarz reagieren."
+   },
+   {
+    "text": "7.Qb3 ist ein **Doppelangriff**: Die Dame stellt sich hinter den Läufer gegen f7 und greift zusätzlich den Bauern auf b7 an."
+   },
+   {
+    "text": "7...Qe7 deckt f7, aber jetzt versperrt die Dame den Läufer auf f8. Die schwarzen Figuren am Königsflügel stecken fest, und an eine Rochade ist nicht zu denken."
+   },
+   {
+    "text": "9.Bg5 fesselt den Springer auf f6 an die Dame. Morphy schnappt keine Bauern, sondern holt weiter Figuren heraus. Schwarz hat nur Dame und einen Springer entwickelt."
+   },
+   {
+    "text": "10.Nxb5! Morphy gibt einen ganzen Springer, um die Linien um den schwarzen König aufzureißen. Mit so viel mehr Figuren im Spiel kann er sich das leisten.",
+    "label": "Springeropfer"
+   },
+   {
+    "text": "11.Bxb5+ gibt Schach und fesselt den Springer auf d7. Dieser Springer kann nicht ziehen, ohne den eigenen König bloßzustellen."
+   },
+   {
+    "text": "12.O-O-O! Die Rochade bringt den König in Sicherheit und stellt einen Turm direkt auf die offene d-Linie, gegen den gefesselten Springer.",
+    "label": "Der Turm greift mit an"
+   },
+   {
+    "text": "13.Rxd7! Morphy gibt einen Turm für den Springer, um den Druck aufrechtzuerhalten. Jeder Schlagabtausch öffnet die d-Linie noch weiter.",
+    "label": "Turm für Springer"
+   },
+   {
+    "text": "14.Rd1 bringt den letzten Turm auf die d-Linie. Der Turm auf d7 ist gefesselt und doppelt angegriffen, und die schwarzen Figuren am Königsflügel haben sich immer noch nicht bewegt."
+   },
+   {
+    "text": "14...Qe6 deckt d7 ein weiteres Mal und bietet den Damentausch an. Schwarz hofft, die Lage zu beruhigen, aber Morphy hat eine schärfere Idee."
+   },
+   {
+    "text": "15.Bxd7+ beseitigt den Turm mit Schach. Schwarz muss mit dem Springer zurückschlagen."
+   },
+   {
+    "text": "15...Nxd7. Jetzt ist dieser Springer die einzige Figur, die die d-Linie versperrt. Könnte man ihn weglocken, käme der Turm nach d8. Schafft Weiß das?"
+   },
+   {
+    "text": "16...Nxb8 war erzwungen. Der Springer musste d7 verlassen, und die d-Linie ist weit offen."
+   },
+   {
+    "text": "17.Rd8# Schachmatt! Der Turm ist durch den Läufer auf g5 gedeckt. Morphy gewann mit nur noch zwei Figuren, weil jede seiner Figuren mitarbeitete. **Entwickle schnell und öffne Linien!**",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Springer auf d7 ist der letzte Wächter der d-Linie. Findest du einen verblüffenden Weg, ihn wegzulocken?",
+    "hint": "Biete deine Dame mit Schach auf einem Feld an, das nur der Springer erreichen kann.",
+    "explanation": "16.Qb8+! ist ein Damenopfer. Die einzige Antwort ist 16...Nxb8, und sobald der Springer d7 verlassen hat, setzt der Turm auf d8 matt."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Siehst du es?",
+    "hint": "Die d-Linie ist bis zur Grundreihe offen.",
+    "explanation": "17.Rd8# Der Turm gibt Schach auf der Grundreihe, und der Läufer auf g5 deckt ihn. Der schwarze König kann nirgendwohin."
+   }
+  ]
+ },
+ "immortal-game": {
+  "title": "Die Unsterbliche Partie",
+  "event": "London (freie Partie)",
+  "opening": "Angenommenes Königsgambit, Läufergambit",
+  "summary": "Anderssen gibt einen Läufer, beide Türme und schließlich seine Dame her und setzt dann mit drei Leichtfiguren matt. Die Partie ist das Sinnbild der romantischen Ära des Schachs. Die Lehre: Aktive, gut platzierte Figuren können wichtiger sein als das Materialverhältnis.",
+  "annotations": [
+   {
+    "text": "London, 1851. In einer Pause des ersten internationalen Turniers spielten Adolf Anderssen und Lionel Kieseritzky diese Freundschaftspartie. Sie wurde so berühmt, dass man sie **die Unsterbliche Partie** nannte."
+   },
+   {
+    "text": "2.f4 ist das Königsgambit. Weiß bietet einen Bauern an, um die f-Linie zu öffnen und schnell ein starkes Zentrum zu bekommen. Eine typische Eröffnung des 19. Jahrhunderts."
+   },
+   {
+    "text": "3...Qh4+ gibt dem König Schach, der nun nicht mehr rochieren kann. Weiß muss nach f1 gehen, aber die schwarze Dame ist früh draußen und kann zur Zielscheibe werden."
+   },
+   {
+    "text": "4...b5 gibt einen Bauern zurück, um den weißen Läufer von seiner schönen Diagonale wegzulocken. Auch Schwarz spielt ganz schön riskant!"
+   },
+   {
+    "text": "7.d3 ist ein ruhiger Zug: Er stützt e4 und öffnet den Weg für den Läufer auf c1. Weiß entwickelt sich weiter, während die schwarze Dame umherwandert."
+   },
+   {
+    "text": "9.Nf5 stellt den Springer auf ein tolles Feld: Er greift g7 an und steht nah am schwarzen König."
+   },
+   {
+    "text": "11.Rg1 deckt den g-Bauern und lässt den Läufer auf b5 einfach stehen. Anderssen sind Zeit und Angriff wichtiger als ein Läufer."
+   },
+   {
+    "text": "12.h4 beginnt, die schwarze Dame mit Bauern zu jagen. Jeder Damenzug kostet Schwarz ein Tempo, das eigentlich in die Entwicklung gehen sollte."
+   },
+   {
+    "text": "14...Ng8 schickt den Springer nach Hause zurück. Sieh dir die schwarze Stellung an: fast nichts entwickelt, während immer mehr weiße Figuren dazukommen."
+   },
+   {
+    "text": "15.Bxf4 gewinnt den Bauern zurück und bringt den letzten Läufer mit Tempogewinn gegen die Dame ins Spiel."
+   },
+   {
+    "text": "16...Bc5 entwickelt endlich, und der Läufer greift den Turm auf g1 an. Schwarz hofft, Material zu gewinnen, während Weiß mit dem Angriff beschäftigt ist."
+   },
+   {
+    "text": "17.Nd5! Anderssen ignoriert den Turm auf g1. Der Springer greift die schwarze Dame an und droht Nxc7+, eine Gabel gegen König und Turm.",
+    "label": "Die Drohungen ignorieren"
+   },
+   {
+    "text": "18.Bd6!! Weiß bietet **beide Türme** an. Der Läufer kontrolliert f8 und e7, sodass der schwarze König eingeschnürt wird.",
+    "label": "Beide Türme verschenkt"
+   },
+   {
+    "text": "19.e5 sperrt die lange Diagonale, sodass die schwarze Dame nicht zur Verteidigung von g7 zurückkommen kann. Leise, aber tödlich."
+   },
+   {
+    "text": "19...Qxa1+ Schwarz hat beide Türme geschlagen und riesig viel Material mehr. Aber all diese schwarzen Figuren sind weit weg von ihrem König."
+   },
+   {
+    "text": "20...Na6 deckt das Feld c7 gegen ein Springerschach. Jetzt braucht Weiß etwas Zwingendes."
+   },
+   {
+    "text": "21.Nxg7+ Der Springer schlägt einen Bauern mit Schach und kontrolliert jetzt auch e8. Der König wird nach d8 gedrängt."
+   },
+   {
+    "text": "22...Nxf6 war erzwungen. Weiß hat einen Läufer, zwei Türme und die Dame hergegeben.",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "23.Be7# Schachmatt mit nur einem Läufer und zwei Springern gegen eine ganze Armee! **Aktive Figuren schlagen Mehrmaterial.**",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Du hast schon viel hergegeben. Findest du den spektakulärsten Zug auf dem Brett?",
+    "hint": "Deine Dame kann auf einem Feld Schach geben, auf dem nur ein Springer sie schlagen kann.",
+    "explanation": "22.Qf6+!! Der Springer muss schlagen, 22...Nxf6, und das macht dem Läufer den Weg frei, um auf e7 matt zu setzen."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Welche Figur gibt das Matt?",
+    "hint": "Schau auf das dunkle Feld direkt neben dem schwarzen König.",
+    "explanation": "23.Be7# Der Läufer gibt Schach, der Springer auf d5 deckt ihn, und jedes Fluchtfeld wird von den Springern kontrolliert."
+   }
+  ]
+ },
+ "evergreen-game": {
+  "title": "Die Immergrüne Partie",
+  "event": "Berlin (freie Partie)",
+  "opening": "Evansgambit",
+  "summary": "Anderssen opfert Bauern für einen schnellen Entwicklungsvorsprung und findet dann eine berühmte Kombination mit Turmopfer, Damenopfer und Doppelschach. Sie zeigt, wie offene Linien und aktive Figuren zu einem erzwungenen Matt führen können.",
+  "annotations": [
+   {
+    "text": "Berlin, 1852. Adolf Anderssen spielt eine freie Partie gegen seinen Freund Jean Dufresne. Sie endete mit einer so schönen Kombination, dass man sie **die Immergrüne** nannte: für immer frisch."
+   },
+   {
+    "text": "4.b4 ist das Evansgambit. Weiß bietet einen Bauern an, damit c3 und d4 mit Tempo folgen können und ein großes Zentrum entsteht."
+   },
+   {
+    "text": "6.d4 schlägt im Zentrum zu. Weiß gibt gern Bauern her, wenn er dafür offene Linien und schnelle Entwicklung bekommt."
+   },
+   {
+    "text": "7...d3 schiebt den Bauern tief ins weiße Lager. Das ist lästig, weil er den weißen Figuren am Damenflügel im Weg steht."
+   },
+   {
+    "text": "8.Qb3 stellt die Dame hinter den Läufer gegen f7, den schwächsten Punkt beim schwarzen König."
+   },
+   {
+    "text": "9.e5 gewinnt Raum und vertreibt die schwarze Dame. Weiß spielt weiter Züge mit Drohungen."
+   },
+   {
+    "text": "11.Ba3 stellt den Läufer auf eine lange Diagonale, die auf e7 und das Feld f8 zielt. So wird die Rochade für Schwarz schwierig."
+   },
+   {
+    "text": "11...b5 gibt einen Bauern zurück, um die weiße Dame für einen Moment vom Königsflügel wegzulocken."
+   },
+   {
+    "text": "15.Ne4 führt den Springer Richtung Königsflügel und nimmt f6 ins Visier. Die weißen Figuren sammeln sich beim schwarzen König."
+   },
+   {
+    "text": "16.Bxd3 beseitigt endlich den lästigen Bauern und richtet den Läufer auf den Königsflügel."
+   },
+   {
+    "text": "17.Nf6+! Ein Springeropfer. Nach 17...gxf6 18.exf6 öffnet sich die e-Linie, und der Springer auf e7 gerät unter Beschuss.",
+    "label": "Springeropfer"
+   },
+   {
+    "text": "18...Rg8 Schwarz bereitet einen Gegenangriff auf der g-Linie vor. Kommt Schwarz jemals zu ...Qxf3, dann ist ...Qxg2 matt."
+   },
+   {
+    "text": "19.Rad1!! Ein ruhiger Zug mitten im Kampf. Anderssen ignoriert die Drohung und bringt seine letzte Figur auf die d-Linie. Analytiker fanden später Verteidigungen für Schwarz, aber am Brett war es verblüffend.",
+    "label": "Der immergrüne Zug"
+   },
+   {
+    "text": "19...Qxf3 Schwarz schlägt den Springer und droht ...Qxg2 matt. Weiß muss ununterbrochen Schach geben."
+   },
+   {
+    "text": "20.Rxe7+ beseitigt den Verteidiger mit Schach, sodass Schwarz keine Zeit für ...Qxg2 hat."
+   },
+   {
+    "text": "21...Kxd7 war erzwungen. Der Läufer auf d3 steht vor dem Turm auf d1. Wenn der Läufer zieht, gibt der Turm Schach.",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "22.Bf5+ ist ein **Doppelschach**: vom Läufer und vom Turm dahinter. Auf ein Doppelschach kann man nur mit einem Königszug antworten.",
+    "label": "Doppelschach!"
+   },
+   {
+    "text": "23.Bd7+ jagt den König nach f8, genau in die Schusslinie des Läufers auf a3."
+   },
+   {
+    "text": "24.Bxe7# Schachmatt! Der Läufer ist durch den Bauern auf f6 gedeckt. Ein perfektes Beispiel dafür, wie offene Linien und aktive Figuren einen Mattangriff erzeugen.",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Schwarz droht Matt auf g2. Findest du ein Schach, das alles verändert?",
+    "hint": "Dein Turm auf d1 steht auf der d-Linie bereit. Was wäre, wenn der Bauer auf d7 mit Schach verschwände?",
+    "explanation": "21.Qxd7+!! Der König muss schlagen, und dann geben Läufer und Turm mit 22.Bf5+ Doppelschach, was zum Matt führt."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Der schwarze König steht auf f8. Kannst du die Partie beenden?",
+    "hint": "Dein schwarzfeldriger Läufer wartet schon die ganze Partie auf a3.",
+    "explanation": "24.Bxe7# Der Läufer schlägt den Springer mit Schach, der Bauer auf f6 deckt ihn, und der König hat keine Felder mehr."
+   }
+  ]
+ },
+ "game-of-the-century": {
+  "title": "Die Partie des Jahrhunderts",
+  "event": "Rosenwald-Gedenkturnier, New York",
+  "opening": "Grünfeld-Indische Verteidigung",
+  "summary": "Der 13-jährige Bobby Fischer gibt gegen einen der besten amerikanischen Meister seine Dame her und gewinnt mit einem atemberaubenden Team aus Leichtfiguren. Die Lehre: Ein König, der im Zentrum feststeckt, ist eine Zielscheibe, und eine Dame ist nur so viel wert, wie sie auf dem Brett leisten kann.",
+  "annotations": [
+   {
+    "text": "New York, 1956. Bobby Fischer ist gerade einmal **13 Jahre alt** und trifft auf Donald Byrne, einen der besten Spieler Amerikas. Was folgt, wurde bald die Partie des Jahrhunderts genannt."
+   },
+   {
+    "text": "Fischer stellt seinen Läufer nach g7, wo er die lange Diagonale beherrscht. Er lässt Weiß ein Zentrum aufbauen und plant, es später anzugreifen."
+   },
+   {
+    "text": "5...d5 greift sofort das Zentrum an. Dieser Aufbau mit ...g6 und ...d5 ist die **Grünfeld-Indische Verteidigung**."
+   },
+   {
+    "text": "Weiß besitzt jetzt ein großes Bauernzentrum. Aber sieh dir seinen König an: noch in der Mitte, und die Figuren am Königsflügel schlafen. Fischer wird ihn dafür bezahlen lassen."
+   },
+   {
+    "text": "10.Qc5 ist bereits der dritte Damenzug. Jeder Damenzug ist ein Zug, den Weiß nicht in Entwicklung oder Rochade steckt."
+   },
+   {
+    "text": "11...Na4!! Ein verblüffendes Angebot. Auf 12.Nxa4 folgt 12...Nxe4, das sowohl die Dame auf c5 als auch den Läufer auf g5 angreift, und die weiße Stellung bricht zusammen.",
+    "label": "Springer auf a4 angeboten"
+   },
+   {
+    "text": "13...Nxe4! Fischer gewinnt den Zentrumsbauern und greift auch den Bauern auf c3 an. Der weiße König steckt derweil immer noch im Zentrum fest."
+   },
+   {
+    "text": "16...Rfe8+ öffnet die e-Linie mit Schach. Der weiße König muss nach f1 gehen und kann nun nie mehr rochieren."
+   },
+   {
+    "text": "Weiß hat die Dame genommen, und jetzt beginnt die Abrechnung. Der Läufer gibt Schach, und der schwarze Springer und Läufer werden gleich um den weißen König herumtanzen.",
+    "label": "Die Abrechnung beginnt"
+   },
+   {
+    "text": "20...Nxd4+ ist ein **Abzugsschach**: Der Springer zieht weg, und der Läufer auf c4 gibt Schach. Schach, schlagen, wieder Schach: Dieses Muster heißt Zwickmühle.",
+    "label": "Die Zwickmühle"
+   },
+   {
+    "text": "Die Zwickmühle ist vorbei. Für seine Dame hat Fischer schon zwei Läufer und einen Bauern gewonnen, sein Turm auf a8 greift jetzt die weiße Dame an, und der Springer auf c3 attackiert den Turm auf d1."
+   },
+   {
+    "text": "25...Nxd1 kassiert auch noch den Turm. Weiß hat zwar noch eine Dame, aber die schwarzen Figuren arbeiten als Team, während sich der weiße Turm auf h1 nie bewegt hat."
+   },
+   {
+    "text": "Die weiße Dame gibt ein paar Schachs, aber echte Gefahr besteht nicht. Schwarz deckt in aller Ruhe seinen König und behält seine Mehrfiguren."
+   },
+   {
+    "text": "Mit großem Materialvorteil schiebt Fischer seine Damenflügelbauern vor und macht jede Figur bereit für die Jagd auf den weißen König."
+   },
+   {
+    "text": "Zeit, die Partie zu beenden. 36...Ng3+ eröffnet die letzte Jagd: Springer, Läufer und Turm geben abwechselnd Schach und treiben den König an den Damenflügel.",
+    "label": "Die letzte Jagd"
+   },
+   {
+    "text": "41...Rc2# Der Turm setzt matt, gedeckt vom Läufer auf b3, während der Springer auf c3 die Felder b1 und d1 kontrolliert. Ein 13-Jähriger hatte gerade eine der berühmtesten Partien der Geschichte gespielt.",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Deine Dame auf b6 wird vom Läufer auf c5 angegriffen. Findest du Fischers legendäre Antwort?",
+    "hint": "Rette nicht die Dame. Denk an den weißen König auf f1.",
+    "explanation": "17...Be6!! gibt die Dame her. Der Läufer greift den Läufer auf c4 an und bereitet einen Sturm von Schachgeboten vor. Auf 18.Bxe6 führt 18...Qb5+ zu einem wunderschönen erstickten Matt; nimmt Weiß die Dame, wie in der Partie, gewinnt Schwarz einen Berg Material zurück."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Du hast deine Dame geopfert, und jetzt ist es Zeit zu kassieren. Welches Schach bringt alles ins Rollen?",
+    "hint": "Dein Springer auf c3 kann ein Feld neben dem weißen König erreichen, und dein Läufer auf c4 zielt auf f1.",
+    "explanation": "19...Ne2+ erzwingt 20.Kf1. Jetzt kann der Springer mit Abzugsschach durch den Läufer auf c4 wegspringen und jedes Mal Material einsammeln, während der weiße König nur hin und her pendeln kann."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Der weiße König wurde bis nach c1 gejagt. Findest du das Schachmatt?",
+    "hint": "Dein Turm auf a2 will mitfeiern.",
+    "explanation": "41...Rc2# Der Turm gibt auf c2 Schach und ist durch den Läufer auf b3 gedeckt. Der König kann wegen des Springers auf c3 weder nach b1 noch nach d1, und der Turm kontrolliert b2 und d2."
+   }
+  ]
+ },
+ "kasparov-topalov-1999": {
+  "title": "Kasparows Unsterbliche",
+  "event": "Hoogovens-Turnier, Wijk aan Zee",
+  "opening": "Pirc-Verteidigung",
+  "summary": "Kasparow opfert einen Turm und jagt dann Topalows König von einer Seite des Bretts bis ganz auf die andere. Diese Partie gilt oft als größte Angriffspartie aller Zeiten. Sie zeigt, wie man einen ungeschützten König zur Strecke bringen kann, selbst wenn der Angreifer weniger Material hat.",
+  "annotations": [
+   {
+    "text": "Wijk aan Zee, 1999. Weltmeister Garri Kasparow, auf dem Höhepunkt seiner Kräfte, spielt gegen den jungen bulgarischen Star Weselin Topalow. Was folgt, wird oft **Kasparows Unsterbliche** genannt."
+   },
+   {
+    "text": "Die **Pirc-Verteidigung**: Schwarz lässt Weiß ein großes Bauernzentrum aufbauen und will es später mit Figuren und Bauern angreifen."
+   },
+   {
+    "text": "Kasparow rochiert lang, auf den Damenflügel. Dort ist sein König sicher, solange die Figuren um ihn herum stabil stehen."
+   },
+   {
+    "text": "Auch Topalow rochiert lang, aber seine Bauern auf a6, b5 und c6 sind schon vorgerückt. Das hinterlässt Löcher um seinen König, und das wird später wichtig."
+   },
+   {
+    "text": "**18.Na5** pflanzt einen Springer direkt neben den schwarzen König. Er ist lästig, und Schwarz kann ihn nur schwer vertreiben."
+   },
+   {
+    "text": "**21...d4** greift den Springer auf c3 an und sieht für Schwarz stark aus. Kasparow antwortet mit dem Sprung nach d5."
+   },
+   {
+    "text": "Die Stellung wirkt ruhig. Der schwarze Bauer auf d4 scheint gut gedeckt, und die schwarze Dame hat die weißen Figuren im Blick. Aber Kasparow hat etwas Unglaubliches gesehen."
+   },
+   {
+    "text": "Topalow nimmt den Turm. Jetzt beginnt die lange Jagd: Der weiße Turm kommt mit Schach nach e7, und der schwarze König wird aus seinem Unterschlupf getrieben.",
+    "label": "Turmopfer!"
+   },
+   {
+    "text": "Der schwarze König tritt nach b6 vor. Er steht schon im Freien, mit der weißen Dame und dem Turm in der Nähe."
+   },
+   {
+    "text": "Der König schlägt den Springer auf a5 und marschiert weiter das Brett hinauf. Jeder Schritt führt ihn weiter weg von seiner eigenen Armee.",
+    "label": "Die Königsjagd beginnt"
+   },
+   {
+    "text": "Der König steht jetzt auf a4, tief in der weißen Bretthälfte. Kasparow bringt weiter Figuren heran, um ihn einzukreisen."
+   },
+   {
+    "text": "Der schwarze König sammelt weiter Bauern ein, aber jeder Schlagzug zieht ihn tiefer in die Gefahr."
+   },
+   {
+    "text": "Der schwarze König steht auf c3! Weiß gibt weiter Schach, um ihn noch tiefer ins Brett zu treiben."
+   },
+   {
+    "text": "Der König ist von c8 bis nach d1 gewandert, quer über das ganze Brett. Jetzt braucht Kasparow den entscheidenden Schlag.",
+    "label": "Quer über das ganze Brett"
+   },
+   {
+    "text": "**36.Bf1!** ist ein ruhiger Zug mit großer Wucht. Der Läufer greift die schwarze Dame auf c4 an und zieht das Netz um den König enger.",
+    "label": "Leise, aber tödlich"
+   },
+   {
+    "text": "Noch ein Turmangebot. **37.Rd7** fordert den schwarzen Turm auf der d-Linie heraus und lenkt ihn von der Verteidigung ab."
+   },
+   {
+    "text": "Weiß hat Material zurückgewonnen und hat jetzt Dame gegen Turm. Der Rest ist Technik."
+   },
+   {
+    "text": "Nach **44.Qa7** gab Topalow auf: Die weiße Dame und das Mehrmaterial entscheiden. Die Lehre: Wenn der gegnerische König seinen Unterschlupf verlässt, halte ihn mit Schachgeboten auf Trab und bring jede Figur zur Jagd.",
+    "label": "Schwarz gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Bauer auf d4 scheint sicher. Kasparow fand einen der berühmtesten Züge aller Zeiten. Findest du ihn auch?",
+    "hint": "Gib einen Turm, um die e-Linie zu öffnen.",
+    "explanation": "**24.Rxd4!!** gibt einen Turm für einen Bauern. Nach **24...cxd4 25.Re7+** wird der schwarze König ins Freie gezerrt, und die weiße Dame schließt sich der Jagd an."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Läufer ist nach b7 gekommen, um den König zu schützen. Was machst du mit ihm?",
+    "hint": "Beseitige den Verteidiger.",
+    "explanation": "**30.Rxb7!** schlägt den verteidigenden Läufer. Der Turm beherrscht jetzt die b-Linie, und der schwarze König hat noch weniger Verstecke."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Topalow hat gerade den Turm auf d7 geschlagen. Wie gewinnt Weiß das Material zurück?",
+    "hint": "Schau, was der Läufer auf f1 angreift.",
+    "explanation": "**38.Bxc4** schnappt sich die schwarze Dame. Das war der Sinn von **36.Bf1**: Der Läufer hatte c4 die ganze Zeit im Visier."
+   }
+  ]
+ },
+ "reti-tartakower-1910": {
+  "title": "Rétis glänzende Miniatur",
+  "event": "Wien (freie Partie)",
+  "opening": "Caro-Kann-Verteidigung",
+  "summary": "In nur elf Zügen opfert Réti seine Dame und setzt mit Läufer und Turm matt. Ein perfektes Beispiel für ein Doppelschach durch Abzug. Die Lehre: Wenn du lang rochierst, landet der Turm auf der d-Linie, und das kann gegen einen König im Zentrum tödlich sein.",
+  "annotations": [
+   {
+    "text": "Wien, 1910. Zwei künftige Schachlegenden, Richard Réti und Savielly Tartakower, treffen sich zu einer freien Partie. Sie dauert nur elf Züge."
+   },
+   {
+    "text": "1...c6 ist die Caro-Kann-Verteidigung. Schwarz bereitet ...d5 vor, um das Zentrum auf solide Weise anzugreifen."
+   },
+   {
+    "text": "3...dxe4 Schwarz tauscht im Zentrum. Weiß schlägt mit dem Springer zurück, der ein schönes Zentralfeld bekommt."
+   },
+   {
+    "text": "5.Qd3 ist ungewöhnlich. Die Dame deckt den Springer und bereitet die lange Rochade vor, die einen Turm auf die d-Linie bringt."
+   },
+   {
+    "text": "5...e5 Schwarz bietet einen Bauern an, um Linien zu öffnen, solange der weiße König noch in der Mitte steht."
+   },
+   {
+    "text": "6...Qa5+ gibt dem König Schach und greift gleichzeitig den Bauern auf e5 an, sodass Schwarz den Bauern zurückgewinnt."
+   },
+   {
+    "text": "7...Qxe5 fesselt den Springer auf e4 an den weißen König. Es sieht so aus, als würde Schwarz eine Figur gewinnen."
+   },
+   {
+    "text": "8.O-O-O! Weiß rochiert, sodass der Springer nicht mehr gefesselt ist, lässt ihn aber ungedeckt stehen. Der Turm landet auf d1, hinter dem Läufer auf d2.",
+    "label": "Rochade in den Angriff"
+   },
+   {
+    "text": "8...Nxe4? Schwarz schnappt sich den Springer, vergisst aber, dass der König noch auf e8 steht und die d-Linie offen ist.",
+    "label": "Der verhängnisvolle Raub"
+   },
+   {
+    "text": "9...Kxd8 war erzwungen. Jetzt steht nur noch der Läufer auf d2 zwischen dem Turm auf d1 und dem schwarzen König."
+   },
+   {
+    "text": "10.Bg5+ ist ein **Doppelschach**: Der Läufer gibt Schach auf der Diagonale und der Turm auf der d-Linie. Nur ein Königszug hilft.",
+    "label": "Doppelschach!"
+   },
+   {
+    "text": "10...Kc7 Nach 10...Ke8 setzt Weiß mit 11.Rd8# matt. Auch Kc7 verliert, nur auf schönere Weise."
+   },
+   {
+    "text": "11.Bd8# Schachmatt! Der Läufer ist durch den Turm gedeckt, und die eigenen schwarzen Figuren versperren dem König die Flucht. **Lass deinen König nicht im Zentrum, wenn sich die d-Linie öffnet.**",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Du hast einen Springer verloren, aber der schwarze König steht noch im Zentrum. Findest du einen schockierenden Zug?",
+    "hint": "Die d-Linie ist offen. Was wäre, wenn der schwarze König nach d8 gezwungen würde?",
+    "explanation": "9.Qd8+!! Der König muss schlagen, und dann gibt 10.Bg5+ Doppelschach mit Läufer und Turm, was zum Matt führt."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Siehst du es?",
+    "hint": "Der Turm auf d1 beherrscht die gesamte d-Linie.",
+    "explanation": "11.Bd8# Der Läufer gibt dem König auf c7 Schach, der Turm deckt ihn, und die eigenen schwarzen Bauern und Figuren lassen keinen Fluchtweg."
+   }
+  ]
+ },
+ "lasker-thomas-1912": {
+  "title": "Laskers Königsjagd",
+  "event": "London (freie Partie)",
+  "opening": "Holländische Verteidigung",
+  "summary": "Nach einem Damenopfer auf h7 wird der schwarze König mit Schachgeboten von g8 bis nach g1 gejagt und auf der weißen Grundreihe mattgesetzt. Es ist die berühmteste Königsjagd der Schachgeschichte. Die Lehre: Ein König, der aus seinem Unterschlupf gelockt wird, kann von wenigen aktiven Figuren zur Strecke gebracht werden.",
+  "annotations": [
+   {
+    "text": "London, 1912. Edward Lasker (nicht zu verwechseln mit Weltmeister Emanuel Lasker) spielt gegen Sir George Thomas. Mach dich bereit für die berühmteste Königswanderung im Schach."
+   },
+   {
+    "text": "2...f5 ergibt einen Aufbau der Holländischen Verteidigung. Er kämpft um e4, schwächt aber die Felder rund um den schwarzen König."
+   },
+   {
+    "text": "5.Bxf6 beseitigt den Springer, der e4 bewacht hat, sodass Weiß das Zentrum mit e4 öffnen kann."
+   },
+   {
+    "text": "7.Nxe4 Nach dem Tausch der e-Bauern landet der Springer im Zentrum und zielt auf den schwarzen Königsflügel."
+   },
+   {
+    "text": "8.Ne5 Beide Springer stehen jetzt auf starken Zentralfeldern, bereit zum Sprung Richtung König."
+   },
+   {
+    "text": "9.Bd3 richtet den Läufer auf h7. Der Springer auf e4 steht davor, und das wird bald wichtig."
+   },
+   {
+    "text": "10.Qh5 Die Dame schließt sich dem Angriff an und zielt ebenfalls auf h7. Die weißen Figuren haben sich beim rochierten König versammelt."
+   },
+   {
+    "text": "10...Qe7? sieht natürlich aus, hilft dem König aber nicht. Schwarz hätte sich zuerst um die Springer kümmern müssen."
+   },
+   {
+    "text": "11...Kxh7 war erzwungen. Weiß hat die Dame gegeben, aber jetzt ist der König aus seinem Unterschlupf heraus.",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "12.Nxf6+ ist ein **Doppelschach**: Der Springer gibt Schach, und sein Abzug öffnet die Linie des Läufers auf d3 gegen h7. Der König muss ziehen.",
+    "label": "Doppelschach!"
+   },
+   {
+    "text": "13.Neg4+ Der andere Springer mischt mit, und der König wird weiter das Brett hinaufgetrieben.",
+    "label": "Die Königsjagd beginnt"
+   },
+   {
+    "text": "14.h4+ Ein Bauer gibt Schach. Weiß hält den König mit jedem Zug auf der Flucht."
+   },
+   {
+    "text": "15.g3+ Noch ein Bauernschach, das den König noch tiefer ins weiße Lager drängt."
+   },
+   {
+    "text": "16.Be2+ Der Läufer kommt dazu. Der König ist von g8 bis nach f3 gewandert, umzingelt von der weißen Armee."
+   },
+   {
+    "text": "17.Rh2+ Der Turm gibt Schach, und der König muss nach g1, auf die weiße Grundreihe."
+   },
+   {
+    "text": "18.Kd2# Schachmatt! Der Königszug gibt die Linie des Turms auf a1 frei. Auch die lange Rochade hätte mattgesetzt. **Ein König, der ins Freie gelockt wird, kann zur Strecke gebracht werden.**",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Alle deine Figuren zielen auf den schwarzen König. Findest du den schockierenden ersten Schlag?",
+    "hint": "Denk an den Läufer, der sich hinter dem Springer auf e4 versteckt.",
+    "explanation": "11.Qxh7+!! Der König muss schlagen, und dann ist 12.Nxf6+ ein Doppelschach, das die Jagd eröffnet."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Der schwarze König steht auf g1. Findest du es?",
+    "hint": "Dein Turm auf a1 ist bereit, wenn nur dein eigener König aus dem Weg ginge.",
+    "explanation": "18.Kd2# Der König tritt zur Seite und gibt den Turm auf a1 frei, der auf der Grundreihe Schach gibt. Auch die lange Rochade (18.O-O-O#) setzt matt."
+   }
+  ]
+ },
+ "steinitz-bardeleben-1895": {
+  "title": "Der unantastbare Turm",
+  "event": "Turnier von Hastings",
+  "opening": "Italienische Partie (Giuoco Piano)",
+  "summary": "Der erste Weltmeister baut mit 59 Jahren Druck auf der e-Linie auf und entfesselt dann einen Turm, der nicht geschlagen werden kann. Eine glänzende Lektion darüber, wie man die Initiative behält: Wenn jeder Zug ein Schach ist, bekommt dein Gegner nie Zeit, seine eigenen Drohungen auszuführen.",
+  "annotations": [
+   {
+    "text": "Hastings, 1895. Wilhelm Steinitz, der erste offizielle Weltmeister, ist 59 Jahre alt und spielt mit Weiß gegen den starken deutschen Meister Curt von Bardeleben. Diese Partie gewann den Schönheitspreis des Turniers."
+   },
+   {
+    "text": "3.Bc4. Die Italienische Partie: Der weiße Läufer zielt direkt auf f7, den schwächsten Punkt beim schwarzen König."
+   },
+   {
+    "text": "6...Bb4+. Weiß hat ein großes Bauernzentrum aufgebaut, also gibt Schwarz Schach, um die weiße Entwicklung zu bremsen."
+   },
+   {
+    "text": "7...d5. Eine gute Antwort! Schwarz schlägt im Zentrum zurück, bevor die weißen Bauern vorrollen können."
+   },
+   {
+    "text": "13...Nxe7. Nach einer Reihe von Abtauschen fällt eines auf: Der schwarze König sitzt immer noch in der Mitte auf e8."
+   },
+   {
+    "text": "14.Re1. Der Turm besetzt die offene e-Linie. Der schwarze Springer auf e7 ist jetzt **gefesselt**: Er kann nicht ziehen, ohne den König bloßzustellen.",
+    "label": "Gefesselt auf der e-Linie"
+   },
+   {
+    "text": "14...f6. Schwarz plant ...Kf7, um aus der Fesselung herauszutreten, aber der Bauernzug lockert die Felder um seinen König."
+   },
+   {
+    "text": "17.d5! Weiß gibt einen Bauern, um das Feld d4 für seinen Springer freizumachen. Von dort kann er Richtung schwarzer König springen.",
+    "label": "Bauernopfer"
+   },
+   {
+    "text": "18...Kf7. Der König tritt endlich aus der Fesselung und hofft, seine Türme zu verbinden."
+   },
+   {
+    "text": "19.Ne6! Der Springer landet tief im schwarzen Lager. Kein schwarzer Bauer kann ihn vertreiben, und er nimmt c7, d8, f8 und g7 ins Visier.",
+    "label": "Springer-Vorposten"
+   },
+   {
+    "text": "19...Rhc8. Schwarz wehrt sich auf der c-Linie und macht sich bereit, den weißen Turm auf c1 zu tauschen oder zu gewinnen."
+   },
+   {
+    "text": "20...g6. Die weiße Dame drohte Qxg7+, also muss Schwarz die g-Linie sperren."
+   },
+   {
+    "text": "21...Ke8. Schau genau hin: Der Springer hat e6 verlassen, also greift die schwarze Dame jetzt die weiße Dame auf g4 an. Auch der weiße Turm auf c1 ist angegriffen. Zwei Figuren hängen!"
+   },
+   {
+    "text": "22...Kf8. Schwarz droht immer noch ...Qxg4 und ...Rxc1+. Also muss Weiß Zug um Zug weiter Schach geben."
+   },
+   {
+    "text": "23.Rf7+! Der Turm gibt weiter Schach. Er kann nicht geschlagen werden, weil der Springer auf g5 das Feld f7 deckt.",
+    "label": "Der Turmtanz"
+   },
+   {
+    "text": "24.Rg7+. Schon wieder! Auf 24...Kxg7 gewinnt 25.Qxd7+ die schwarze Dame, denn die Dame auf g4 sieht jetzt über die Diagonale nach d7."
+   },
+   {
+    "text": "25.Rxh7+. Hier verließ von Bardeleben still den Saal und kam nie zurück; er verlor durch Zeitüberschreitung. Steinitz zeigte dem Publikum danach ein erzwungenes Matt, beginnend mit 25...Kg8 26.Rg7+ Kh8 27.Qh4+. Die Lehre: Wenn jeder Zug ein Schach ist, kommen die Drohungen deines Gegners nie an die Reihe.",
+    "label": "Bardeleben geht"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der Springer auf e6 ist ein Monster, und Schwarz hat gerade die g-Linie gesperrt. Findest du einen forcierenden Zug, der den Springer noch näher an den König bringt?",
+    "hint": "Suche einen Springersprung, der Schach gibt.",
+    "explanation": "21.Ng5+! Das Schach gewinnt Zeit, und der Springer bewacht weiter f7 und h7. Zwar öffnet es die Linie zwischen den beiden Damen, aber Steinitz hatte etwas viel Tieferes gesehen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Deine Dame und dein Turm auf c1 sind beide angegriffen. Findest du statt einer Verteidigung einen Zug, der weiter Schach gibt?",
+    "hint": "Der gefesselte Springer auf e7 ist nur durch König und Dame gedeckt.",
+    "explanation": "22.Rxe7+!! Der Turm schlägt den Springer mit Schach und kann nicht genommen werden: 22...Qxe7 23.Rxc8+ Rxc8 24.Qxc8+ gewinnt, und nach 22...Kxe7 23.Re1+ läuft der König in einen tödlichen Angriff."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der Turm hat dreimal hintereinander Schach gegeben. Wie hältst du den Angriff am Laufen?",
+    "hint": "Der Springer auf g5 deckt noch ein weiteres Feld neben dem König.",
+    "explanation": "25.Rxh7+! Noch ein Schach, und der Springer auf g5 deckt den Turm. Nach 25...Kg8 26.Rg7+ Kh8 27.Qh4+ greift die Dame ein, und das Matt ist nicht mehr aufzuhalten."
+   }
+  ]
+ },
+ "botvinnik-capablanca-1938": {
+  "title": "Botwinniks AVRO-Meisterwerk",
+  "event": "AVRO-Turnier, Niederlande",
+  "opening": "Nimzowitsch-Indische Verteidigung",
+  "summary": "Der junge Botwinnik besiegt den legendären Capablanca, indem er seine Zentrumsbauern vorrollen lässt und dann einen Läufer und einen Springer opfert, damit ein einzelner Bauer die achte Reihe erreichen kann. Eine perfekte Lektion darüber, dass ein Freibauer mehr wert sein kann als eine ganze Figur.",
+  "annotations": [
+   {
+    "text": "Das AVRO-Turnier von 1938 versammelte die besten Spieler der Welt. Hier trifft der aufstrebende sowjetische Star Michail Botwinnik auf Ex-Weltmeister José Raúl Capablanca, der dafür berühmt war, fast nie zu verlieren."
+   },
+   {
+    "text": "Mit **5...Bxc3+** gibt Schwarz seinen Läufer her, um Weiß Doppelbauern auf der c-Linie zu verpassen. Weiß bekommt das Läuferpaar und ein starkes Zentrum; Schwarz hofft, dass die Doppelbauern zu Zielscheiben werden. Ein klassischer Kompromiss."
+   },
+   {
+    "text": "**14...c4** schließt den Damenflügel und verschafft Schwarz dort ein Bauernplus. Aber es nimmt auch den Druck vom Zentrum, sodass Weiß in Ruhe **e3-e4** mit seinen eigenen Zentrumsbauern vorbereiten kann."
+   },
+   {
+    "text": "Capablancas Springer macht eine lange Reise nach b3, tief ins weiße Lager, und als Nächstes schnappt sich seine Dame den Bauern auf a4. Aber beachte, wie weit diese Figuren jetzt von ihrem eigenen König entfernt stehen."
+   },
+   {
+    "text": "Botwinnik verteidigt den a-Bauern nicht. **19.e4** startet den eigentlichen Plan: Seine Bauern rollen im Zentrum und am Königsflügel vor, wo Schwarz weniger Verteidiger hat.",
+    "label": "Der Durchbruch im Zentrum"
+   },
+   {
+    "text": "Schwarz hat einen Bauern mehr, aber seine Dame und sein Springer stehen beide auf der anderen Seite des Bretts. Im Schach zählt oft mehr, wo deine Figuren stehen, als die Anzahl der Bauern."
+   },
+   {
+    "text": "**22.f4** bringt einen weiteren Bauern in den Angriff. Die Drohung ist **f4-f5**, um Linien zum schwarzen König aufzubrechen."
+   },
+   {
+    "text": "**24.f5** drückt weiter vor. Die weißen Bauern wirken wie ein Rammbock gegen den schwarzen Königsflügel."
+   },
+   {
+    "text": "Nach dem Turmtausch hat Weiß einen **Freibauern** auf e6: Kein schwarzer Bauer kann ihn jemals aufhalten. Er ist nur noch zwei Schritte von der Umwandlung in eine Dame entfernt.",
+    "label": "Ein Freibauer auf e6"
+   },
+   {
+    "text": "Capablanca stellt seine Dame auf e7, direkt vor den Bauern, um ihn zu blockieren. Die Dame erfüllt eine lebenswichtige Aufgabe. Kann Weiß sie von diesem Feld vertreiben?"
+   },
+   {
+    "text": "Schwarz muss schlagen: Verlässt die Dame die e-Linie, marschiert der Bauer nach e7. Aber jetzt steht die Dame auf a3, weit weg vom Geschehen, und die weiße Dame und der Springer gehen auf den König los.",
+    "label": "Läuferopfer!"
+   },
+   {
+    "text": "Capablanca nimmt auch die zweite Figur. Sein König hat seinen Bauernschutz verloren, und die weiße Dame kann jetzt Schach geben und den Springer auf f6 schnappen."
+   },
+   {
+    "text": "**33.Qxf6+** gewinnt den Springer mit Schach. Weiß hat zwei Figuren geopfert, aber der e-Bauer erreicht gleich die Ziellinie."
+   },
+   {
+    "text": "Die einzige Hoffnung für Schwarz ist ein **Dauerschach**: dem weißen König immer wieder Schach geben, um ein Remis zu erzwingen. Botwinnik muss ein sicheres Versteck finden.",
+    "label": "Auf der Jagd nach Remis"
+   },
+   {
+    "text": "Der weiße König marschiert mutig das Brett hinauf und schnappt sich sogar den Bauern auf h5. Das sieht beängstigend aus, aber Botwinnik hat berechnet, dass die Schachgebote ausgehen werden."
+   },
+   {
+    "text": "**40.g4** blockt das Schach mit einem Bauern. Der König hat jetzt einen Unterschlupf auf h5."
+   },
+   {
+    "text": "Nach **41.Kh5** hat Schwarz keine sinnvollen Schachgebote mehr, und nichts kann **e8=Q** aufhalten. Capablanca gab auf. Die Lehre: Ein weit vorgerückter Freibauer kann mehr wert sein als Läufer und Springer zusammen.",
+    "label": "Schwarz gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame blockiert den e-Bauern. Wie kann Weiß sie von e7 weglocken?",
+    "hint": "Suche eine Figur, die du der Dame anbieten könntest.",
+    "explanation": "**30.Ba3!** greift die Dame an. Verlässt sie die e-Linie, läuft der Bauer nach e7; schlägt sie den Läufer, steht sie weit weg von ihrem König. So oder so gewinnt Weiß."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame ist nach a3 gegangen. Zeit, den König anzugreifen. Was würdest du spielen?",
+    "hint": "Ein Springerschach öffnet etwas.",
+    "explanation": "**31.Nh5+!** opfert den Springer. Nach **31...gxh5** steht der schwarze König entblößt da, und die weiße Dame kann auf g5 Schach geben und dann den Springer auf f6 schlagen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der Springer auf f6 ist weg. Was ist der schnellste Weg zum Sieg?",
+    "hint": "Dein bester Spieler ist ein Bauer.",
+    "explanation": "**34.e7!** droht **e8=Q**. Schwarz kann nur noch Schach geben, und Botwinnik hat längst berechnet, dass sein König den Schachgeboten entkommt."
+   }
+  ]
+ },
+ "fischer-spassky-1972-g6": {
+  "title": "Fischer–Spasski, 6. Partie",
+  "event": "Weltmeisterschaft, Reykjavík",
+  "opening": "Abgelehntes Damengambit (Tartakower-Variante)",
+  "summary": "Fischer überrascht alle mit 1.c4, setzt die schwarzen Zentrumsbauern unter Druck und verwandelt eine ruhige Stellung in einen vernichtenden Angriff am Königsflügel. So schön, dass Spasski selbst applaudierte. Ein Musterbeispiel dafür, wie man langsam Druck aufbaut, bevor man zuschlägt.",
+  "annotations": [
+   {
+    "text": "Reykjavík, 1972, Weltmeisterschaft. Der Wettkampf steht 2½–2½. Alle erwarten, dass Fischer mit 1.e4 eröffnet, wie fast immer."
+   },
+   {
+    "text": "1.c4! So hatte Fischer fast nie eröffnet. Eine Überraschung schon im ersten Zug.",
+    "label": "1.c4, eine Überraschung!"
+   },
+   {
+    "text": "Die Spieler landen in einem klassischen Abgelehnten Damengambit. Mit 7...b6 wählt Spasski einen soliden Aufbau, den er seit Jahren spielte."
+   },
+   {
+    "text": "Viele Abtausche. Schwarz hat einen Bauern auf d5 und bekommt bald einen auf c5. Solche nebeneinanderstehenden Bauern sind stark, wenn sie vorrücken, können aber auch zu Zielscheiben werden."
+   },
+   {
+    "text": "Jetzt hat Schwarz sein Paar Zentrumsbauern auf c5 und d5. Der Plan von Weiß: Druck darauf ausüben und sie am Vorrücken hindern."
+   },
+   {
+    "text": "16...Ra7 ist ein ungewöhnlicher Weg, den Turm Richtung Zentrum zu bringen. Fischer verbessert in aller Ruhe seine Figuren."
+   },
+   {
+    "text": "Weiß tauscht seinen Springer gegen den Läufer. Der neue schwarze Bauer auf e6 deckt d5, ist aber eine weitere Zielscheibe für die weißen Figuren."
+   },
+   {
+    "text": "Spasski schiebt vorbei. Sein d-Bauer ist jetzt ein gedeckter Freibauer, aber er ist blockiert, und die Felder e5 und c4 gehören jetzt Weiß."
+   },
+   {
+    "text": "22.e5 gewinnt Raum und nimmt dem schwarzen Springer das Feld f6. Die weißen Figuren werden sich gegen e6 sammeln."
+   },
+   {
+    "text": "Der Läufer landet auf seiner Traumdiagonale und zielt auf e6 und darüber hinaus Richtung g8.",
+    "label": "Traumdiagonale"
+   },
+   {
+    "text": "24.Qh3 gesellt sich zum Läufer gegen e6. Die schwarzen Figuren sind an dessen Verteidigung gebunden."
+   },
+   {
+    "text": "Die f-Linie ist offen, und Fischers Türme werden sich darauf aufreihen. Der schwarze König hat sehr wenige Verteidiger."
+   },
+   {
+    "text": "31.e6! Der Bauer wird zum Monster: frei, vom Läufer gedeckt und er spaltet die schwarzen Figuren in zwei Hälften.",
+    "label": "Monster auf e6"
+   },
+   {
+    "text": "Fischer verbessert in aller Ruhe seine Figuren mit a4, R1f2, R2f3 und Bd3, während Spasski nur seine Dame hin und her schieben kann. Keine Eile, wenn dein Gegner keine sinnvollen Züge hat."
+   },
+   {
+    "text": "Nach 38...gxf6 39.Rxf6 steht der schwarze König weit offen. Weiße Dame, Turm und Läufer sind alle bereit zuzuschlagen."
+   },
+   {
+    "text": "41.Qf4 droht Qxh6+ und mehr, und Spasski gab auf. Danach applaudierte er zusammen mit dem Publikum für Fischer. Fischer ging erstmals in Führung und wurde schließlich Weltmeister.",
+    "label": "Spasski applaudiert"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Die schwarzen Bauern auf c5 und d5 halten das Zentrum. Wie kannst du sie sofort herausfordern?",
+    "hint": "Greif den Bauern auf d5 mit einem deiner eigenen Bauern an.",
+    "explanation": "20.e4! greift d5 an. Schlägt Schwarz, fällt sein Zentrum auseinander; zieht er wie in der Partie 20...d4, bleiben seine Bauern stecken, und die weißen Figuren übernehmen die Felder vor ihnen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Deine Figuren zielen auf den schwarzen Königsflügel. Welcher Bauernzug öffnet Linien für deine Türme?",
+    "hint": "Dein f-Bauer will nach vorn.",
+    "explanation": "26.f5! bricht die f-Linie auf. Nach 26...exf5 27.Rxf5 schließt sich der weiße Turm dem Angriff an, und der Bauer auf e5 wird zum Freibauern."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der Springer auf f6 ist der letzte Verteidiger des schwarzen Königs. Was ist der zwingendste Weg, mit ihm fertigzuwerden?",
+    "hint": "Manchmal ist ein Turm weniger wert als ein offener König.",
+    "explanation": "38.Rxf6! gibt einen Turm für den Springer. Nach 38...gxf6 39.Rxf6 steht der König nackt da, und gegen weiße Dame, Turm, Läufer und e-Bauer ist kein Kraut gewachsen."
+   }
+  ]
+ },
+ "deep-blue-kasparov-1996": {
+  "title": "Deep Blues erster Sieg",
+  "event": "Wettkampf Deep Blue gegen Kasparow, Philadelphia",
+  "opening": "Sizilianische Verteidigung, Alapin-Variante",
+  "summary": "Das erste Mal, dass ein Computer einen amtierenden Weltmeister in einer Partie mit normaler Bedenkzeit besiegte. Deep Blue schnappt sich in aller Ruhe Bauern, während Kasparow seinen König angreift, denn er hat berechnet, dass sein eigener Angriff zuerst ankommt. Kasparow gewann den Wettkampf trotzdem mit 4:2.",
+  "annotations": [
+   {
+    "text": "Philadelphia, Februar 1996. IBMs Deep Blue, eine Maschine, die jede Sekunde Millionen von Stellungen betrachtet, trifft in der 1. Partie eines Wettkampfs über sechs Partien auf Weltmeister Garri Kasparow."
+   },
+   {
+    "text": "Gegen die Sizilianische Verteidigung wählt Deep Blue **2.c3**, einen ruhigen Zug, der **d2-d4** vorbereitet, um ein vollständiges Bauernzentrum aufzubauen."
+   },
+   {
+    "text": "Kasparows Dame kommt früh nach d5. Das ist hier in Ordnung, weil Weiß noch keinen Springer auf c3 hat, der sie verjagen könnte."
+   },
+   {
+    "text": "Weiß hat jetzt einen **isolierten Bauern** auf d4: Keine eigenen Bauern auf der c- oder e-Linie können ihn decken. Er verschafft Weiß aktive Figuren, kann aber auch zur Schwäche werden."
+   },
+   {
+    "text": "**13.Nb5** verjagt die schwarze Dame und nimmt das Feld d6 ins Visier. Deep Blue hält seine Figuren aktiv."
+   },
+   {
+    "text": "Nach **18.Bxf6 gxf6** ist die schwarze Bauernstruktur am Königsflügel zerrissen. Dafür bekommt Kasparow eine offene g-Linie gegen den weißen König."
+   },
+   {
+    "text": "**23.d5!** wird den isolierten Bauern los und öffnet Linien für die weißen Figuren. Ein sauberer Weg, eine Schwäche in Aktivität zu verwandeln.",
+    "label": "Befreiungsschlag"
+   },
+   {
+    "text": "Kasparow stellt seinen König nach h8, damit sein Turm die g-Linie nutzen kann. Er ist bereit, Bauern zu geben, um den weißen König anzugreifen."
+   },
+   {
+    "text": "Der schwarze Turm landet auf g8 und zielt direkt auf den weißen König. Das Wettrennen läuft: Schwarz greift den König an, Weiß zählt Bauern."
+   },
+   {
+    "text": "Deep Blue schnappt sich noch einen Bauern, während sich die schwarzen Figuren bei seinem König sammeln. Viele Menschen würden in Panik geraten. Die Maschine hatte berechnet, dass es sicher war.",
+    "label": "Mutig oder gierig?"
+   },
+   {
+    "text": "**30...f3** stochert am weißen König und droht, auf g2 durchzubrechen. Es wird scharf."
+   },
+   {
+    "text": "**31.g3** hält den Königsflügel geschlossen. Deep Blue verteidigt nur so viel wie nötig."
+   },
+   {
+    "text": "Kasparow wirft mit **33...Re1+** alles nach vorn. Sein Turm, Springer, seine Dame und der Bauer auf f3 stehen alle nah am weißen König."
+   },
+   {
+    "text": "Die schwarzen Figuren umschwärmen den weißen König, und wenn Weiß zögert, bricht der schwarze Angriff durch. Aber Weiß ist am Zug, und Deep Blue hat Schachgebote."
+   },
+   {
+    "text": "Nach **37.Rxh7+** ist der schwarze König gefangen und das Matt nah, also gab Kasparow auf. Zum ersten Mal hatte eine Maschine den Weltmeister besiegt. Kasparow schlug zurück und gewann den Wettkampf mit 4:2.",
+    "label": "Geschichte geschrieben"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Bauer auf b6 hat keine Verteidiger. Kann man ihn gefahrlos schlagen?",
+    "hint": "Zähle, wer b6 deckt.",
+    "explanation": "**26.Qxb6** gewinnt einfach einen Bauern. Deep Blue hatte berechnet, dass der schwarze Gegenangriff nicht rechtzeitig ankommen würde."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Schwarz droht, gegen deinen König durchzubrechen. Kannst du zuerst angreifen?",
+    "hint": "Erst Schachgebote. Schau auf den Bauern auf f7.",
+    "explanation": "**35.Nxf7+!** startet eine Kette von Schachgeboten. Der schwarze König wird herausgezogen, und weißer Springer, Turm und Dame rücken heran, bevor Schwarz überhaupt zuschlagen kann."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze König steht auf h6. Wie vollendest du den Angriff?",
+    "hint": "Turm schlägt einen Bauern mit Schach.",
+    "explanation": "**37.Rxh7+** reißt den letzten Bauern beim König weg. Weiße Dame, Turm und Springer fangen ihn jetzt ein, also gab Kasparow auf."
+   }
+  ]
+ },
+ "rotlewi-rubinstein-1907": {
+  "title": "Rubinsteins Unsterbliche",
+  "event": "Łódź",
+  "opening": "Abgelehntes Damengambit",
+  "summary": "Rubinstein opfert seine Dame und einen Turm, damit seine beiden Läufer den weißen König über die langen Diagonalen beschießen können. Ein perfektes Beispiel dafür, wie aktive, gut ausgerichtete Figuren einen großen Haufen Mehrmaterial schlagen können.",
+  "annotations": [
+   {
+    "text": "Łódź, 1907. Akiba Rubinstein, ein stilles Genie, das einer der besten Spieler der Welt werden sollte, spielt mit Schwarz gegen Georg Rotlewi. Das Finale ist so verblüffend, dass diese Partie **Rubinsteins Unsterbliche** genannt wird."
+   },
+   {
+    "text": "6.dxc5. Weiß löst die Spannung im Zentrum. Schwarz schlägt mit dem Läufer zurück und entwickelt dabei gleich eine Figur."
+   },
+   {
+    "text": "7...a6. Beide Seiten spiegeln einander: Sie halten gegnerische Figuren von b5 fern und bereiten den Vorstoß am Damenflügel vor."
+   },
+   {
+    "text": "11...dxc4. Schwarz schlägt, damit der weiße Läufer noch einmal ziehen muss, und bald wird er durch ...b5 erneut verjagt."
+   },
+   {
+    "text": "12...b5. Schwarz gewinnt mit Tempo Raum und macht Platz für den Läufer auf b7."
+   },
+   {
+    "text": "14...Bb7. Merk dir diesen Läufer! Sobald der Springer auf c6 wegzieht, blickt er über die lange Diagonale auf den weißen König."
+   },
+   {
+    "text": "16...Bxe5. Nach dem Tausch ist die lange Diagonale von b7 bis nach g2 weit offen."
+   },
+   {
+    "text": "17.f4. Weiß vertreibt den Läufer und plant e4 und e5. Aber der Zug des f-Bauern öffnet auch eine Diagonale zum eigenen König auf g1."
+   },
+   {
+    "text": "17...Bc7. Der Läufer zieht sich ruhig zurück. Bald taucht er auf b6 wieder auf und zielt direkt auf den weißen König."
+   },
+   {
+    "text": "19.e5. Weiß verjagt den Springer auf f6 und wirkt sehr aktiv. Rubinstein hat eine verblüffende Antwort vorbereitet."
+   },
+   {
+    "text": "19...Bb6+. Schach! Da der f-Bauer nicht mehr auf f2 steht, schneidet der Läufer bis nach g1 durch."
+   },
+   {
+    "text": "20...Ng4. Der Springer springt Richtung weißer König. Als Nächstes kommt ...Qh4 mit Ziel h2."
+   },
+   {
+    "text": "21...Qh4. Schwarz droht 22...Qxh2 matt. Weiß muss sich darum kümmern."
+   },
+   {
+    "text": "23.gxh4. Weiß nimmt die Dame. Schwarz hat eine ganze Dame weniger, aber sieh dir die beiden Läufer an, die auf den weißen König zielen!",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "24.Qxd2. Weiß schnappt sich auch den Turm. Aber jetzt hat die Dame e2 verlassen und deckt den Läufer auf e4 nicht mehr.",
+    "label": "Turmopfer!"
+   },
+   {
+    "text": "24...Bxe4+. Schach über die lange Diagonale! Der Läufer, der die ganze Partie auf b7 gewartet hat, schlägt endlich zu."
+   },
+   {
+    "text": "25...Rh3! Die weiße Dame ist durch den Läufer auf e4 an ihren König gefesselt, also kann sie den Turm nicht schlagen. Es gibt keinen guten Weg, ...Rxh2 matt zu verhindern, und Weiß gab auf. Zwei Läufer, die auf einen König zielen, können mehr wert sein als eine Dame!",
+    "label": "Unaufhaltsames Matt"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Weiß hat gerade mit 22.g3 deine Dame angegriffen. Findest du statt eines Damenzugs einen kühnen Zug, der die lange Diagonale für dich arbeiten lässt?",
+    "hint": "Der Springer auf c3 ist die Figur, die e4 bewacht.",
+    "explanation": "22...Rxc3!! Schwarz ignoriert die Dame und beseitigt den Verteidiger von e4. Auf 23.gxh4 reißt der nächste Schlag 23...Rd2!! die weiße Stellung auseinander."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Du hast deine Dame gegeben. Finde jetzt den Zug, der die weiße Dame von der Deckung des Läufers auf e4 weglockt.",
+    "hint": "Ein Turm kann mit Angriff auf der zweiten Reihe landen.",
+    "explanation": "23...Rd2!! Der Turm greift die weiße Dame an. Nach 24.Qxd2 öffnet die Antwort 24...Bxe4+ die lange Diagonale mit Schach."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Weiß hat das Schach mit der Dame auf g2 geblockt. Finde den stillen Zug, der die Partie beendet.",
+    "hint": "Die Dame auf g2 kann sich nicht frei bewegen. Welcher Turmzug zielt auf h2?",
+    "explanation": "25...Rh3! Die Dame kann nicht schlagen, weil sie an ihren König gefesselt ist. Schwarz droht ...Rxh2 matt, und Weiß hat keine gute Verteidigung."
+   }
+  ]
+ },
+ "paulsen-morphy-1857": {
+  "title": "Morphys Damenopfer",
+  "event": "1. Amerikanischer Schachkongress, New York",
+  "opening": "Vierspringerspiel",
+  "summary": "Im Finale des ersten Amerikanischen Schachkongresses gibt Morphy seine Dame her, um den weißen Königsflügel aufzubrechen. Seine Türme und Läufer jagen dann den König, bis Paulsen aufgibt. Die Lehre: Wenn deine Figuren viel aktiver sind, kann sich ein großes Opfer auszahlen.",
+  "annotations": [
+   {
+    "text": "New York, 1857. Im Finale des ersten Amerikanischen Schachkongresses trifft der 20-jährige Paul Morphy auf Louis Paulsen, einen starken deutschen Meister. Wir schauen aus Morphys Sicht zu, mit Schwarz."
+   },
+   {
+    "text": "6...Re8 Paulsen hat den Bauern auf e5 genommen, aber Morphy hat es nicht eilig, ihn zurückzugewinnen. Er entwickelt sich und stellt seinen Turm auf die offene e-Linie."
+   },
+   {
+    "text": "7...dxc6 Das Zurückschlagen Richtung Zentrum öffnet die d-Linie und befreit den Läufer auf c8. Die schwarzen Figuren haben viel Platz."
+   },
+   {
+    "text": "9...Nxe4 Morphy gewinnt den Bauern mit einer kleinen Taktik zurück. Sein Turm auf e8 stützt den Springer, sodass Schwarz nach den Abtauschen den Bauern zurückhat."
+   },
+   {
+    "text": "10...Rxe4 Der schwarze Turm ist jetzt mitten auf dem Brett sehr aktiv."
+   },
+   {
+    "text": "12...Qd3! Die Dame springt tief ins weiße Lager. Sie blockiert den d-Bauern, sodass der weiße Läufer auf c1 und der Turm auf a1 sich nur mühsam entwickeln können."
+   },
+   {
+    "text": "15...Bd7 Morphy bringt in aller Ruhe seine letzte Leichtfigur heraus. Alle seine Figuren zielen jetzt auf den weißen König."
+   },
+   {
+    "text": "16...Rae8 Beide Türme stehen auf der e-Linie. Die weiße Dame ist auf Bauernjagd am Damenflügel gegangen, weit weg von zu Hause."
+   },
+   {
+    "text": "18.gxf3 Weiß musste die Dame nehmen, aber das Bauernschild vor dem König ist jetzt zerbrochen.",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "19...Bh3 Der Läufer droht ...Bg2+ und Mattideen auf der g-Linie. Der weiße König ist in echter Gefahr."
+   },
+   {
+    "text": "21...Bxf3+ Morphy sammelt einen Bauern mit Schach ein. Jeder seiner Züge kommt mit einer Drohung."
+   },
+   {
+    "text": "24...Bxf2 Der andere Läufer kommt dazu und deckt jetzt g1. Schwarz droht ...Bg2 matt, und Weiß kann es nur verhindern, indem er die Dame hergibt."
+   },
+   {
+    "text": "25...Bxf1 Weiß hat die Dame zurückgegeben, um das Matt zu verhindern, also hat Schwarz jetzt mehr Material, und der Angriff läuft weiter.",
+    "label": "Die Dame zurückgewonnen"
+   },
+   {
+    "text": "26...Re2 Der Turm dringt auf der zweiten Reihe ein, nah am weißen König."
+   },
+   {
+    "text": "27...Rh6 Der andere Turm schwenkt auf die h-Linie und zielt auf h2."
+   },
+   {
+    "text": "28...Be3 Der Läufer deckt g1, sodass ...Rxh2 Schachmatt sein wird, und Weiß kann es nicht lange verhindern. Paulsen gab auf. **Aktive Figuren nahe am gegnerischen König können mehr wert sein als eine Dame.**",
+    "label": "Weiß gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Die weiße Dame steht weit weg auf a6. Findest du einen kühnen Weg, den weißen König aufzureißen?",
+    "hint": "Welche weiße Figur bewacht den König, und was kann sie schlagen?",
+    "explanation": "17...Qxf3!! Nach 18.gxf3 verliert der König sein Bauernschild, und der schwarze Turm und die Läufer schwärmen mit Schachgeboten heran."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Du hast deine Dame geopfert, und der weiße Königsflügel ist offen. Wie hältst du den Angriff am Laufen?",
+    "hint": "Suche ein Schach auf der frisch geöffneten g-Linie.",
+    "explanation": "18...Rg6+ Der Turm gibt auf der g-Linie Schach, und der weißfeldrige Läufer kommt bald mit ...Bh3 und ...Bg2+ dazu."
+   }
+  ]
+ },
+ "fischer-benko-1963": {
+  "title": "Fischers Turm auf f6",
+  "event": "US-Meisterschaft, New York",
+  "opening": "Pirc-Verteidigung (Österreichischer Angriff)",
+  "summary": "Auf dem Weg zu perfekten 11 aus 11 bei der US-Meisterschaft öffnet Fischer die f-Linie und stellt einen Turm direkt vor den schwarzen König. Die Partie zeigt, wie offene Linien und ein Turm, den man nicht gefahrlos schlagen kann, eine Partie in wenigen Zügen entscheiden können.",
+  "annotations": [
+   {
+    "text": "New York, Dezember 1963. Fischer ist auf dem Weg zu perfekten **11 aus 11** bei der US-Meisterschaft. Sein Gegner Pal Benkö ist ein starker Großmeister und selbst ein gefährlicher Spieler."
+   },
+   {
+    "text": "Benkö wählt einen flexiblen Aufbau: Läufer nach g7, dann ...d6 und ...Nf6. Er überlässt Weiß das Zentrum und hofft, später zurückzuschlagen."
+   },
+   {
+    "text": "4.f4 ist der **Österreichische Angriff**. Weiß nimmt sich noch mehr Raum und bereitet den Vorstoß des f-Bauern gegen den schwarzen König vor."
+   },
+   {
+    "text": "Benkö gibt seinen Läufer für den Springer. Weiß behält beide Läufer, und seine Dame kommt nach f3 und zielt schon auf den Königsflügel."
+   },
+   {
+    "text": "11.f5! Der Bauer stürmt vor. Nach 11...gxf5 12.Qxf5 ist die f-Linie für den weißen Turm offen, und der schwarze König verliert einen schützenden Bauern.",
+    "label": "Die f-Linie öffnen"
+   },
+   {
+    "text": "12...Nd4 springt auf ein tolles Zentralfeld und vertreibt die weiße Dame. Schwarz versucht, sich zu wehren."
+   },
+   {
+    "text": "Der andere schwarze Springer steuert d6 an, um bei der Verteidigung zu helfen. Aber Verteidigen kostet Zeit, und Weiß nutzt sie."
+   },
+   {
+    "text": "Die Rochade bringt den Turm nach f1, direkt auf die offene Linie. Jetzt zielt jede weiße Figur auf den Königsflügel."
+   },
+   {
+    "text": "Die Dame ist über g3, g4 und jetzt h5 gewandert, immer nah am schwarzen König und mit Blick auf h7."
+   },
+   {
+    "text": "18.Bxd4 exd4 hat den starken Springer von d4 beseitigt. Der weiße Turm hat jetzt einen Weg ins schwarze Lager, und gleich passiert etwas Erstaunliches."
+   },
+   {
+    "text": "Benkö zieht seinen König weg. Den Turm zu schlagen war nicht besser: Nach 19...Bxf6 20.e5 schließt sich der Läufer auf d3 der Dame gegen h7 an, und der Angriff bricht durch.",
+    "label": "Der Turm ist tabu"
+   },
+   {
+    "text": "20...h6 versperrt der Dame vorerst den Weg nach h7. Aber die schwarzen Figuren stehen beengt, und der König ist weiter unter Beschuss."
+   },
+   {
+    "text": "21.Ne2! bringt die letzte Figur in den Angriff: Der Springer steuert f4 an, um Dame und Turm zu unterstützen. Benkö sah, dass er nicht alles verteidigen konnte, und gab auf.",
+    "label": "Benkö gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Jede weiße Figur zielt auf den schwarzen König. Findest du Fischers verblüffenden Turmzug?",
+    "hint": "Stell deinen Turm dorthin, wo es so aussieht, als könnte man ihn einfach schlagen.",
+    "explanation": "19.Rf6!! landet vor dem König, greift den Springer auf d6 an und sperrt den Läufer auf g7 ab. Auf 19...Bxf6 öffnet 20.e5 die Diagonale des Läufers nach h7, und der Angriff ist nicht mehr aufzuhalten."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze König ist gerade nach g8 geflüchtet. Ein Bauernzug öffnet eine tödliche Linie. Welcher?",
+    "hint": "Dein Läufer auf d3 würde zu gern h7 sehen.",
+    "explanation": "20.e5! macht den Weg für den Läufer auf d3 frei, sodass Weiß Qxh7 Schachmatt droht. Der Bauer greift außerdem den Springer auf d6 an."
+   }
+  ]
+ },
+ "levitsky-marshall-1912": {
+  "title": "Die Goldmünzen-Partie",
+  "event": "Breslau",
+  "opening": "Französische Verteidigung",
+  "summary": "Frank Marshall gewinnt mit einem der spektakulärsten Züge, die je gespielt wurden: Die Dame zieht auf ein Feld, auf dem sie dreimal geschlagen werden kann – und jedes Schlagen verliert. Lerne, wie Springer und Türme gemeinsam gegen einen König arbeiten und warum offene Linien so wichtig sind.",
+  "annotations": [
+   {
+    "text": "Breslau, 1912. Frank Marshall, Amerikas Meister und ein furchtloser Angreifer, spielt mit Schwarz gegen Stepan Lewitzki. Der Legende nach waren die Zuschauer vom letzten Zug so begeistert, dass sie Goldmünzen auf das Brett regnen ließen."
+   },
+   {
+    "text": "3...c5. Schwarz greift das weiße Zentrum sofort an: eine aggressive Spielweise der Französischen Verteidigung."
+   },
+   {
+    "text": "5...exd5. Das Zentrum öffnet sich. Offene Linien helfen meist der Seite, deren Figuren bereit sind, sie zu nutzen."
+   },
+   {
+    "text": "9.dxc5. Weiß schnappt sich einen Bauern, aber die schwarzen Figuren sind lebendig, und Schwarz holt ihn bald zurück."
+   },
+   {
+    "text": "11...fxe6. Schwarz schlägt zum Zentrum hin zurück und bekommt eine halboffene f-Linie für seinen Turm. Diese Linie wird später wichtig.",
+    "label": "Die f-Linie öffnet sich"
+   },
+   {
+    "text": "15...Rxf6. Der Turm schlägt zurück und steht jetzt auf f6, bereit, über die 6. Reihe zu schwenken."
+   },
+   {
+    "text": "17...Bxc3. Schwarz gibt den Läufer für den Springer, um die weißen Bauern am Damenflügel zu zerreißen."
+   },
+   {
+    "text": "18...Qxc3. Schwarz gewinnt einen Bauern, und seine Dame ist jetzt sehr aktiv."
+   },
+   {
+    "text": "19.Rxd5. Weiß holt sich den Bauern auf d5 zurück, aber seine Dame auf e2 wird gleich gejagt."
+   },
+   {
+    "text": "19...Nd4! Der Springer springt ins Zentrum, greift die weiße Dame an und hat die Felder e2 und f3 nahe dem weißen König im Blick.",
+    "label": "Springer nach d4!"
+   },
+   {
+    "text": "20.Qh5. Die Dame flieht in Richtung des schwarzen Königs und hofft auf Gegenspiel."
+   },
+   {
+    "text": "21...Rh6. Der Turm schwenkt über die 6. Reihe und jagt die weiße Dame. Hinter der Dame steht der Läufer auf h3."
+   },
+   {
+    "text": "22.Qg5. Die Dame weicht aus, aber jetzt ist der Läufer auf h3 im Visier des Turms."
+   },
+   {
+    "text": "23.Rc5. Weiß greift die schwarze Dame an. Die meisten Spieler würden sie einfach in Sicherheit bringen, aber Marshall hatte etwas viel Besseres."
+   },
+   {
+    "text": "23...Qg3!! Die Dame springt auf ein Feld, auf dem drei weiße Steine sie schlagen können, und jedes Schlagen verliert: 24.hxg3 Ne2 matt, 24.fxg3 Ne2+ 25.Kh1 Rxf1 matt, und nach 24.Qxg3 Ne2+ 25.Kh1 Nxg3+ hat Schwarz eine Figur mehr. Gleichzeitig droht ...Qxh2 matt. Weiß gab auf.",
+    "label": "Der goldene Zug"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Die weiße Dame ist gerade nach g5 gegangen. Findest du einen Weg, Material zu gewinnen?",
+    "hint": "Wenn der Bauer g2 zurückschlägt: Welcher Springersprung trifft König und Dame zugleich?",
+    "explanation": "22...Rxh3! Der Läufer fällt. Nach 23.gxh3 folgt 23...Nf3+ mit einer Gabel gegen den weißen König und die Dame auf g5."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Weiß greift deine Dame auf c3 an. Zieh dich nicht einfach zurück: Finde den Zug, der der Legende nach einen Goldmünzenregen auslöste!",
+    "hint": "Stell deine Dame dorthin, wo sie auf drei verschiedene Arten geschlagen werden kann.",
+    "explanation": "23...Qg3!! Jedes Schlagen verliert: hxg3 läuft in ...Ne2 matt, fxg3 in ...Ne2+ und ...Rxf1 matt, und Qxg3 in ...Ne2+ und ...Nxg3+. Ignoriert Weiß den Zug, ist ...Qxh2 matt."
+   }
+  ]
+ },
+ "short-timman-1991": {
+  "title": "Shorts Königsmarsch",
+  "event": "Tilburg",
+  "opening": "Aljechin-Verteidigung",
+  "summary": "Short fesselt die schwarzen Figuren und marschiert dann mit seinem eigenen König von g1 nach g5, um beim Matt zu helfen. Dieser Königsmarsch ist einer der berühmtesten überhaupt und lehrt etwas Überraschendes: Wenn der Gegner nicht angreifen kann, wird sogar der König zum Angreifer.",
+  "annotations": [
+   {
+    "text": "Tilburg, 1991. Der Engländer Nigel Short spielt gegen den niederländischen Star Jan Timman. Diese Partie ist für einen der überraschendsten Pläne der Schachgeschichte berühmt."
+   },
+   {
+    "text": "**Aljechin-Verteidigung**: Schwarz lockt die weißen Bauern nach vorn und hofft, dass sie später zu Zielscheiben werden."
+   },
+   {
+    "text": "Weiß behält einen Bauern auf e5. Er nimmt den schwarzen Figuren die Felder f6 und d6 weg und engt Schwarz ein."
+   },
+   {
+    "text": "Die schwarze Dame steht zentral auf d4, aber Weiß wird sie bald mit Tempogewinn herumjagen."
+   },
+   {
+    "text": "**21.Qh4** bringt die weiße Dame an den Königsflügel, direkt neben den schwarzen König."
+   },
+   {
+    "text": "**23.Bh6** bietet den Tausch des besten schwarzen Verteidigers an: den Läufer auf g7, der die dunklen Felder um den König bewacht."
+   },
+   {
+    "text": "Timman weicht dem Tausch mit **23...Bh8** aus, aber auf h8 ist der Läufer sehr passiv."
+   },
+   {
+    "text": "**24.Rd8** dringt mit dem Turm ein und bindet die schwarzen Figuren an die Grundreihe."
+   },
+   {
+    "text": "Der Turm setzt sich auf d7 fest, auf der 7. Reihe, und greift c7 und f7 an. Schwarz wird immer mehr eingeschnürt."
+   },
+   {
+    "text": "Die weiße Dame steht auf f6, direkt neben dem schwarzen König. Ein weiterer Angreifer auf g7 oder h8 wäre Matt. Aber welche Figur kommt dorthin?"
+   },
+   {
+    "text": "Noch hält Schwarz: Keine weiße Figur erreicht g7 oder h8. Die schwarzen Figuren sind aber wie eingefroren, und Timman kann nur hin- und herziehen."
+   },
+   {
+    "text": "**31.Kh2!** Die Antwort ist der König! Schwarz kann ihn nirgends angreifen, also darf der weiße König übers Brett marschieren und beim Matt helfen.",
+    "label": "Der Königsmarsch beginnt"
+   },
+   {
+    "text": "Schritt zwei: **32.Kg3**. Timmans Figuren können nur hin- und herziehen."
+   },
+   {
+    "text": "**33.Kf4** marschiert weiter, über die dunklen Felder, die Schwarz nicht mehr verteidigen kann."
+   },
+   {
+    "text": "Timman gab auf. Der Plan ist **Kh6**, und dann ist **Qg7** Schachmatt. Die Lehre: Wenn der Gegner deinen König nicht angreifen kann, wird er zu einer starken Angriffsfigur.",
+    "label": "Schwarz gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Läufer auf g7 schützt die dunklen Felder um den König. Was würdest du tun?",
+    "hint": "Beseitige den Verteidiger.",
+    "explanation": "**27.Bxg7** tauscht den besten schwarzen Verteidiger ab. Jetzt sind die dunklen Felder um den schwarzen König schwach, und die weiße Dame kann eindringen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Ohne seinen Läufer hat der schwarze König überall Löcher um sich. Wohin gehört die Dame?",
+    "hint": "Finde ein Schach auf einem dunklen Feld.",
+    "explanation": "**29.Qf6+** stellt die Dame direkt neben den König. Von f6 aus hat sie g7 und h8 im Blick, und Schwarz muss diese Felder für immer verteidigen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Dein König hat schon f4 erreicht. Was ist der nächste Schritt des Marsches?",
+    "hint": "Marschiere weiter Richtung h6.",
+    "explanation": "**34.Kg5!** Der König steuert h6 an, von wo aus er die Dame auf g7 beim Matt decken wird. Schwarz kann ihn nicht aufhalten."
+   }
+  ]
+ },
+ "saemisch-nimzowitsch-1923": {
+  "title": "Die Unsterbliche Zugzwangpartie",
+  "event": "Kopenhagen",
+  "opening": "Damenindische Verteidigung",
+  "summary": "Nimzowitsch schnürt Weiß langsam ein, bis jede seiner Figuren gebunden ist. Am Ende hat Weiß viele legale Züge, aber keinen guten: ein seltener Zugzwang mitten im Mittelspiel, mit fast allen Figuren noch auf dem Brett.",
+  "annotations": [
+   {
+    "text": "Kopenhagen, 1923. Aron Nimzowitsch, einer der tiefsten Denker der Schachgeschichte, spielt mit Schwarz gegen Friedrich Sämisch. Das Ende ist so ungewöhnlich, dass man sie die **Unsterbliche Zugzwangpartie** nennt: Weiß gehen die guten Züge aus, obwohl das Brett noch voller Figuren ist."
+   },
+   {
+    "text": "1...Nf6. Nimzowitsch kontrollierte das Zentrum gern mit Figuren aus der Ferne, statt seine Bauern vorzustürmen."
+   },
+   {
+    "text": "4...Bb7. Die Damenindische Verteidigung: Der schwarze Läufer überwacht die lange Diagonale und das wichtige Feld e4."
+   },
+   {
+    "text": "8.Ne5. Der weiße Springer springt nach vorn und öffnet dem Läufer auf g2 den Weg zum schwarzen Damenflügel."
+   },
+   {
+    "text": "11...b5. Schwarz gewinnt Raum am Damenflügel und nimmt den weißen Figuren das Feld c4 weg."
+   },
+   {
+    "text": "15...Nh5. Der Springer geht mit Absicht an den Rand: Er greift den Läufer auf f4 an und bereitet ...f5 vor."
+   },
+   {
+    "text": "16...f5. Schwarz übernimmt fest die Kontrolle über e4. Den weißen Figuren gehen langsam die guten Felder aus."
+   },
+   {
+    "text": "18.Nb1. Der Springer muss ganz zurück auf sein Ausgangsfeld. Weiß wird immer mehr eingeengt.",
+    "label": "Zurückgedrängt"
+   },
+   {
+    "text": "18...Bb5. Der Läufer findet eine tolle Diagonale und hat e2 und die hellen Felder im weißen Lager im Blick."
+   },
+   {
+    "text": "20.e4. Weiß versucht endlich, sich zu befreien. Da der e-Bauer nicht mehr auf e2 steht, greift seine Dame auf d1 jetzt den Springer auf h5 an."
+   },
+   {
+    "text": "21.Qxh5. Weiß gewinnt den Springer, doch Schwarz bekommt dafür Bauern, die offene f-Linie und einen anhaltenden Angriff.",
+    "label": "Springeropfer"
+   },
+   {
+    "text": "22.Qg5. Die Dame eilt zur Verteidigung zurück, aber die weißen Figuren auf b1, c1 und d2 schlafen immer noch."
+   },
+   {
+    "text": "22...Raf8. Schwarz verdoppelt die Türme auf der f-Linie. Beide Türme zielen jetzt auf den weißen König."
+   },
+   {
+    "text": "23...R8f5. Der Turm vertreibt die weiße Dame von g5."
+   },
+   {
+    "text": "24...Bd3. Der Läufer landet auf d3 und schneidet die weiße Stellung in zwei Hälften. Die schwarzen Figuren beherrschen das ganze Brett.",
+    "label": "Völlig eingeschnürt"
+   },
+   {
+    "text": "25...h6!! Ein ruhiger Bauernzug, der dem schwarzen König auch ein Fluchtfeld gibt. Jetzt steht Weiß im **Zugzwang**: Er hat viele legale Züge, aber jeder verliert Material oder lässt den schwarzen Angriff durchbrechen. Sämisch gab auf.",
+    "label": "Zugzwang!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Weiß hat deinen Bauern auf f5 angegriffen, und seine Dame auf d1 greift jetzt deinen Springer auf h5 an. Was ist die mutige Antwort?",
+    "hint": "Öffne Linien für deine Türme, auch wenn es eine Figur kostet.",
+    "explanation": "20...fxe4! Schwarz gibt den Springer her. Dafür bekommt er Bauern, die offene f-Linie und einen anhaltenden Angriff auf den weißen König."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Weiß hat gerade deinen Springer geschlagen. Schlag jetzt auf der offenen f-Linie zurück!",
+    "hint": "Welcher Bauer neben dem weißen König ist ungedeckt?",
+    "explanation": "21...Rxf2! Der Turm bricht in die zweite Reihe von Weiß ein, fesselt den Läufer auf g2 an den König, und die weiße Dame steht weit weg auf h5."
+   }
+  ]
+ },
+ "adams-torre-1920": {
+  "title": "Adams gegen Torre: Tanz auf der Grundreihe",
+  "event": "New Orleans",
+  "opening": "Philidor-Verteidigung",
+  "summary": "Weiß bietet seine Dame immer wieder an, und Schwarz kann sie nie nehmen, weil seine eigene Grundreihe zu schwach ist. Die berühmteste Lektion überhaupt über Grundreihenschwäche und Ablenkung: Eine Figur, die etwas bewachen muss, kann so lange gejagt werden, bis sie zusammenbricht.",
+  "annotations": [
+   {
+    "text": "New Orleans, 1920. Edwin Adams trifft auf Carlos Torre, ein junges Talent aus Mexiko. Das ist die berühmteste **Grundreihen**-Kombination aller Zeiten (manche Historiker vermuten, dass sie komponiert wurde, aber die Ideen sind Gold wert)."
+   },
+   {
+    "text": "2...d6 ist die Philidor-Verteidigung: solide, aber etwas passiv. Die schwarzen Figuren werden weniger Platz haben."
+   },
+   {
+    "text": "Der schwarze Springer hatte die weiße Dame auf d4 angegriffen, deshalb fesselt 5.Bb5 ihn an den schwarzen König."
+   },
+   {
+    "text": "Beide Seiten entwickeln sich und rochieren. Die eigentliche Geschichte spielt sich auf der e-Linie ab, die sich gleich öffnet."
+   },
+   {
+    "text": "Die Bauern werden abgetauscht. Jetzt sind die e-Linie und die c-Linie offen, und die Partie wird zum Kampf der Türme und Damen."
+   },
+   {
+    "text": "16.Rae1: Die weißen Türme sind auf der offenen e-Linie verdoppelt und starren auf den Turm auf e8.",
+    "label": "Türme verdoppelt"
+   },
+   {
+    "text": "17.Bxf6 beseitigt den Springer. Jetzt hat Schwarz ein Problem auf der Grundreihe: Sein König hat kein Fluchtfeld, und nur die Dame hält e8 sicher."
+   },
+   {
+    "text": "Die Dame geht nach b5 und deckt e8 weiter über die Diagonale. Der Tanz hat begonnen!",
+    "label": "Der Tanz beginnt"
+   },
+   {
+    "text": "19.Qc4! Wieder wird die Dame angeboten. Schlagen erlaubt Rxe8+ und Matt, also muss die schwarze Dame erneut ziehen."
+   },
+   {
+    "text": "Zurück nach d7, immer noch mit Blick auf e8. Der schwarzen Dame gehen die guten Felder aus."
+   },
+   {
+    "text": "Schwarz kann nicht auf c7 schlagen: Sowohl 20...Qxc7 als auch 20...Rxc7 erlauben Weiß, auf e8 zu schlagen, und das Matt folgt. Also kehrt die Dame nach b5 zurück."
+   },
+   {
+    "text": "21.a4! Sogar ein Bauer macht mit. Das einzige Feld, von dem aus e8 noch gedeckt ist, ist a4, also muss Schwarz schlagen.",
+    "label": "Sogar ein Bauer macht mit"
+   },
+   {
+    "text": "22.Re4! griff die Dame an, und wieder musste sie ein Feld finden, das e8 deckt: b5. Jetzt kommt der letzte Schlag."
+   },
+   {
+    "text": "23.Qxb7! Die schwarze Dame darf die Diagonale a4–e8 nicht verlassen und kann auch nicht angegriffen stehen bleiben. Schwarz gab auf. Die Lehre: Eine schwache Grundreihe kann deine stärkste Figur zur Gefangenen machen.",
+    "label": "Schwarz gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame auf d7 ist die einzige Wache des Turms auf e8. Wie kannst du sie weglocken?",
+    "hint": "Stell deine Dame dorthin, wo die schwarze Dame sie schlagen könnte.",
+    "explanation": "18.Qg4! Nach 18...Qxg4 folgt 19.Rxe8+ Rxe8 20.Rxe8, und das ist Schachmatt. Die schwarze Dame muss also weiter e8 decken und kann das Geschenk nicht annehmen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame ist zurück auf d7. Findest du den kühnsten Damenzug von allen?",
+    "hint": "Biete deine Dame dort an, wo zwei schwarze Figuren sie schlagen können.",
+    "explanation": "20.Qc7!! Weder die Dame noch der Turm auf c8 kann sie schlagen: Jedes Schlagen erlaubt Weiß, auf e8 mit Matt zu nehmen. Gleichzeitig droht Weiß Qxb7 und die Dame weiter zu jagen."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame hat auf a4 geschlagen und deckt noch immer e8. Wie jagst du sie wieder?",
+    "hint": "Ein Turm kann über die 4. Reihe angreifen.",
+    "explanation": "22.Re4! greift die Dame an. Den Turm zu schlagen würde nach 23.Rxe4 einfach die Dame verlieren, also muss die Dame ein anderes Feld finden, das e8 noch deckt – und nur b5 ist übrig."
+   }
+  ]
+ },
+ "alekhine-nimzowitsch-1930": {
+  "title": "Aljechins Kanone",
+  "event": "San Remo",
+  "opening": "Französische Verteidigung, Winawer-Variante",
+  "summary": "Weltmeister Aljechin gewinnt Raum, setzt einen Bauern tief auf a6 fest und stapelt seine Schwerfiguren auf der c-Linie, bis Schwarz völlig gelähmt ist. Die Aufstellung mit zwei Türmen und der Dame dahinter heißt bis heute Aljechins Kanone.",
+  "annotations": [
+   {
+    "text": "San Remo, 1930. Weltmeister Alexander Aljechin spielt mit Weiß gegen Aron Nimzowitsch, einen Meister darin, die gegnerischen Figuren einzuschränken. Hier schlägt Aljechin ihn mit seinen eigenen Waffen und gewinnt das Turnier mit Glanz."
+   },
+   {
+    "text": "3...Bb4. Die Winawer-Variante der Französischen Verteidigung: Schwarz fesselt den Springer auf c3 und setzt e4 unter Druck."
+   },
+   {
+    "text": "4.e5. Weiß gewinnt Raum im Zentrum. Die Bauernkette engt die schwarzen Figuren am Königsflügel ein."
+   },
+   {
+    "text": "6.Nb5. Der Springer steuert d6 an, ein Feld, das Schwarz nur schwer decken kann."
+   },
+   {
+    "text": "6...Bxd2+. Schwarz gibt seinen schwarzfeldrigen Läufer her. Ohne ihn wird d6 zu einem Loch, einem perfekten Zuhause für den weißen Springer.",
+    "label": "Ein Loch auf d6"
+   },
+   {
+    "text": "9.f4. Weiß stützt den Bauern auf e5. Das Zentrum ist geschlossen, und Weiß hat mehr Raum."
+   },
+   {
+    "text": "11.a4. Aljechin beginnt am Damenflügel vorzurücken, wo er Linien öffnen will."
+   },
+   {
+    "text": "13.cxb4. Die c-Linie ist jetzt offen. Wer sie beherrscht, hat die Oberhand."
+   },
+   {
+    "text": "14...f5. Schwarz schließt die Tür am Königsflügel. Jetzt entscheidet sich der Kampf am Damenflügel, wo Weiß viel stärker ist."
+   },
+   {
+    "text": "16.Nxb7. Aljechin tauscht seinen stolzen Springer gegen den schwarzen Läufer, denn jetzt kann sein eigener Läufer die hellen Felder beherrschen."
+   },
+   {
+    "text": "17.a6! Der Bauer gräbt sich auf a6 ein und friert den schwarzen Damenflügel ein. Die schwarzen Figuren werden für den Rest der Partie um Platz ringen.",
+    "label": "Ein Stachel auf a6"
+   },
+   {
+    "text": "18.Bb5. Der Läufer bezieht einen wunderbaren Posten und drückt gegen den Springer auf c6."
+   },
+   {
+    "text": "20.Rfc1. Beide Seiten stellen sich auf der c-Linie auf, aber Weiß hat viel mehr Raum, um Verstärkung heranzuführen."
+   },
+   {
+    "text": "22...Rab8. Schwarz gehen die nützlichen Züge aus. Er kann nur noch seine Figuren hin- und herschieben und abwarten."
+   },
+   {
+    "text": "26.Qc1. Zwei Türme und dahinter die Dame, alle auf der c-Linie. Diese Batterie heißt bis heute **Aljechins Kanone**.",
+    "label": "Aljechins Kanone"
+   },
+   {
+    "text": "27.Ba4. Der Läufer zieht sich zurück, hält aber den Springer auf c6 gegen die schwarze Dame auf d7 gefesselt."
+   },
+   {
+    "text": "28...Ke8. Der schwarze König wandert zum Damenflügel, um bei der Verteidigung zu helfen – der einzige Teil des Bretts, der jetzt zählt."
+   },
+   {
+    "text": "30.h4. Aljechin macht einen ruhigen Bauernzug und wartet ab. Schwarz ist völlig gebunden: Sein Springer auf c6 ist gefesselt, er hat kaum einen nützlichen Zug, und b5 kommt, um den Springer zu gewinnen. Nimzowitsch gab auf.",
+    "label": "Völlige Lähmung"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarzfeldrige Läufer von Schwarz ist weg. Wohin soll dein Springer von b5 springen?",
+    "hint": "Such ein Feld im schwarzen Lager, das kein schwarzer Bauer angreifen kann.",
+    "explanation": "14.Nd6! Der Springer setzt sich im Loch auf d6 fest. Kein schwarzer Bauer kann ihn vertreiben, und von dort greift er den Läufer auf b7 an und drückt tief in die schwarze Stellung."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Schwarz hat gerade 27...b5 gespielt, um deinen Läufer anzugreifen. Was ist die beste Antwort?",
+    "hint": "Ist der Bauer auf b5 gedeckt?",
+    "explanation": "28.Bxb5! Weiß gewinnt einfach einen Bauern, und der Läufer kehrt direkt auf seinen idealen Posten zurück und drückt weiter auf c6."
+   }
+  ]
+ },
+ "fischer-fine-1963": {
+  "title": "Fischer gegen Fine: Evansgambit",
+  "event": "Freie Partie, New York",
+  "opening": "Evansgambit",
+  "summary": "In einer freundschaftlichen Partie gibt Fischer Bauern her, um seine Figuren schnell ins Spiel zu bringen, und ein früherer Großmeister der Weltspitze ist nach 17 Zügen verloren. Eine perfekte Lektion darüber, warum Entwicklung und Königssicherheit wichtiger sind als Bauernraub.",
+  "annotations": [
+   {
+    "text": "New York, 1963. In einer freundschaftlichen Partie trifft Fischer auf Reuben Fine, einen früheren Großmeister der Weltspitze. Fischer wählt eine alte, verwegene Eröffnung, um zu zeigen, dass **schnelle Entwicklung** Mehrbauern schlagen kann."
+   },
+   {
+    "text": "Beide Läufer zielen auf die schwächsten Felder im jeweiligen Lager: f7 und f2. Das ist die Italienische Partie."
+   },
+   {
+    "text": "4.b4!? ist das **Evansgambit**. Weiß gibt einen Bauern, um Zeit zu gewinnen: Nimmt Schwarz ihn, baut Weiß mit c3 und d4 ein großes Zentrum auf und greift dabei an.",
+    "label": "Das Evansgambit"
+   },
+   {
+    "text": "6.d4 öffnet Linien. Fischer sorgt sich nicht um Bauern; er will seine Figuren schnell herausbringen."
+   },
+   {
+    "text": "Fine schnappt sich einen dritten Bauern. Gierig! Schwarz hat mehr Material, aber die meisten seiner Figuren stehen noch zu Hause, und sein König steht im Zentrum."
+   },
+   {
+    "text": "8.Qb3 stellt Dame und Läufer gegen f7 auf, den schwächsten Punkt neben dem schwarzen König."
+   },
+   {
+    "text": "Weiß holt einen Bauern zurück und bringt eine weitere Figur heraus. Sieh dir den Unterschied an: Fast alle weißen Figuren sind im Spiel, während Schwarz nur drei draußen hat und sein König noch im Zentrum steht."
+   },
+   {
+    "text": "10.Nd5 springt nach vorn und greift die Dame auf e7 an. Fast jeder weiße Zug kommt mit einer Drohung."
+   },
+   {
+    "text": "Schwarz versucht, Figuren zu tauschen. Tauschen ist eine gute Art zu verteidigen, aber der schwarze König steckt immer noch in der Mitte fest."
+   },
+   {
+    "text": "13.Bb2 bringt den letzten Läufer auf die lange Diagonale, greift die Dame auf e5 an und zielt auf g7."
+   },
+   {
+    "text": "14.h4! bietet noch einen Bauern an, um die schwarze Dame wegzulocken. Fischer will sie so weit wie möglich vom Geschehen weg haben.",
+    "label": "Noch ein Bauernopfer"
+   },
+   {
+    "text": "Fine nimmt ihn, aber jetzt steht seine Dame am Brettrand, weit weg von ihrem König."
+   },
+   {
+    "text": "15.Bxg7 schnappt einen Bauern und greift den Turm auf h8 an. Sobald der Turm zieht, kann Schwarz nicht mehr kurz rochieren."
+   },
+   {
+    "text": "Der König schlüpft nach d8, ist dort aber von seinen eigenen Figuren umzingelt und hat kein sicheres Zuhause."
+   },
+   {
+    "text": "Fine gab auf. Nach 17...Qxg3 ist 18.Bf6 Schachmatt, und sonst gewinnt 18.Bf6+ die schwarze Dame. Nur 17 Züge: Entwicklung hat Material geschlagen.",
+    "label": "Schwarz gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze König steht noch im Zentrum, und die e-Linie ist weit offen. Wie gehst du auf ihn los?",
+    "hint": "Bring einen Turm mit Schach ins Spiel.",
+    "explanation": "16.Rfe1+ nutzt die offene e-Linie. Der König hat kein gutes Feld: Nach 16...Kd8 ist er eingesperrt, genau dort, wo der weiße Läufer und die Dame ihn erreichen können."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Findest du den ruhigen Damenzug, der Schwarz ohne Verteidigung lässt?",
+    "hint": "Biete einen Damentausch an, den Schwarz nicht annehmen kann.",
+    "explanation": "17.Qg3! bereitet 18.Bf6+ vor, das dem König Schach gibt und gleichzeitig die Dame auf h4 angreift. Schlägt Schwarz die Dame, ist 18.Bf6 Schachmatt, weil der Turm auf e1 die Felder e8 und e7 deckt."
+   }
+  ]
+ },
+ "deep-blue-kasparov-1997": {
+  "title": "Deep Blue gewinnt den Wettkampf",
+  "event": "Revanchematch Deep Blue gegen Kasparow, New York",
+  "opening": "Caro-Kann-Verteidigung",
+  "summary": "Die entscheidende Partie des Revanchematchs von 1997. Kasparow patzt in der Eröffnung, Deep Blue opfert einen Springer, um den schwarzen König im Zentrum festzuhalten, und der Weltmeister gibt nach nur 19 Zügen auf. Zum ersten Mal gewann ein Computer einen Wettkampf gegen einen amtierenden Weltmeister.",
+  "annotations": [
+   {
+    "text": "New York, Mai 1997. Das Revanchematch zwischen Kasparow und einem verbesserten Deep Blue steht vor der sechsten und letzten Partie 2,5:2,5. Alles steht auf dem Spiel."
+   },
+   {
+    "text": "Kasparow wählt die **Caro-Kann-Verteidigung**, eine sehr solide Verteidigung, die er selten spielte. Er hoffte, scharfen Kämpfen gegen die Maschine aus dem Weg zu gehen."
+   },
+   {
+    "text": "**4...Nd7** bereitet **...Ngf6** vor: Tauscht Weiß die Springer, kann Schwarz mit dem anderen Springer zurückschlagen und eine gesunde Bauernstruktur behalten."
+   },
+   {
+    "text": "**5.Ng5** ist eine scharfe Idee: Der Springer hat f7 und e6 im Blick, zwei empfindliche Felder nahe dem schwarzen König."
+   },
+   {
+    "text": "**7...h6?** vertreibt den Springer, ist aber genau in dieser Stellung ein bekannter Fehler: Er erlaubt ein Springeropfer auf e6. Kasparow hatte die Zugfolge verwechselt.",
+    "label": "Ein fataler Ausrutscher"
+   },
+   {
+    "text": "Kasparow schlägt nicht sofort. Seine Dame auf e7 greift den Springer an und blockiert vorerst die e-Linie."
+   },
+   {
+    "text": "Deep Blue hat es nicht eilig. Er rochiert zuerst und bringt den Turm näher an die e-Linie, wo der schwarze König festsitzen wird."
+   },
+   {
+    "text": "Schwarz hat einen Springer mehr, aber sein König steht noch im Zentrum, und der f-Bauer hat gezogen, was die Diagonale nach e8 öffnet."
+   },
+   {
+    "text": "**10.Bg6+** zwingt den König zu ziehen. Schwarz kann jetzt nie mehr rochieren, und seine Figuren stehen sich gegenseitig im Weg.",
+    "label": "Keine Rochade mehr"
+   },
+   {
+    "text": "Kasparow versucht, mit **11...b5** am Damenflügel Platz für seinen König zu schaffen. Die weiße Antwort **12.a4** greift diesen Bauern sofort an."
+   },
+   {
+    "text": "Der König flieht nach c8, aber der Läufer auf f8 und der Turm auf h8 schlafen noch. Der schwarze Mehrspringer bewirkt nicht viel."
+   },
+   {
+    "text": "**16.Qd3** bringt die Dame in den Angriff. Alle weißen Figuren sind aktiv, von den schwarzen nur die Hälfte."
+   },
+   {
+    "text": "Das Material ist wieder ungefähr ausgeglichen, aber der schwarze König ist entblößt und seine Figuren sind verknäult. Der weiße Angriff rollt weiter."
+   },
+   {
+    "text": "**19.c4** öffnet noch mehr Linien zum schwarzen König, und Kasparow gab auf. Es war der erste Wettkampfsieg eines Computers über einen Weltmeister. Die Lehre: Kenne die Zugfolgen deiner Eröffnung, und ein König, der im Zentrum festsitzt, ist ein großes Ziel.",
+    "label": "Kasparow gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Schwarz hat gerade 7...h6 gespielt und greift den Springer auf g5 an. Wohin kann der Springer mit einem Paukenschlag springen?",
+    "hint": "Der Bauer auf e6 schützt den schwarzen König.",
+    "explanation": "**8.Nxe6!** gibt den Springer für einen Bauern. Nimmt Schwarz ihn, bleibt der König im Zentrum stecken, rundherum offene Linien."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Die schwarze Dame auf e7 steht auf derselben Linie wie dein Turm, nur der Bauer auf e6 steht dazwischen. Wie kannst du diesen Bauern beseitigen?",
+    "hint": "Biete einen Läufer an, den der Bauer nicht ablehnen kann.",
+    "explanation": "**17.Bf5!** Nach **17...exf5** öffnet sich die e-Linie, und der weiße Turm greift die schwarze Dame an."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Die e-Linie ist offen. Was schlägst du?",
+    "hint": "Auf e7 steht etwas Großes.",
+    "explanation": "**18.Rxe7** gewinnt die Dame für einen Turm, und der schwarze König bleibt ungeschützt."
+   }
+  ]
+ },
+ "spassky-bronstein-1960": {
+  "title": "Die „Liebesgrüße aus Moskau“-Partie",
+  "event": "UdSSR-Meisterschaft, Leningrad",
+  "opening": "Angenommenes Königsgambit",
+  "summary": "Der junge Spasski spielt das kühne Königsgambit, lässt Schwarz eine neue Dame bekommen und greift trotzdem weiter an. Eine Version der Schlussstellung tauchte im James-Bond-Film „Liebesgrüße aus Moskau“ auf. Die Lehre: Ein Angriff auf den König kann viel mehr wert sein als ein Turm.",
+  "annotations": [
+   {
+    "text": "Leningrad, 1960, sowjetische Meisterschaft. Der junge Boris Spasski spielt das kühne Königsgambit gegen David Bronstein, einen der kreativsten Spieler aller Zeiten. Eine Version dieser Partie erschien später in einem James-Bond-Film."
+   },
+   {
+    "text": "2.f4 bietet einen Bauern an, um den schwarzen e-Bauern vom Zentrum wegzulocken und die f-Linie für den weißen Turm zu öffnen. Eine romantische, angriffslustige Wahl.",
+    "label": "Das Königsgambit"
+   },
+   {
+    "text": "Bronstein schlägt sofort im Zentrum zurück. Einen Bauern zurückzugeben, um die eigenen Figuren zu befreien, ist eine klassische Antwort auf das Gambit."
+   },
+   {
+    "text": "Beide Seiten entwickeln sich schnell. Der weiße Plan: rochieren, den Bauern auf f4 zurückgewinnen und die offene f-Linie nutzen."
+   },
+   {
+    "text": "9.Ne4 lässt Schwarz auf d5 schlagen. Spasski zieht aktive Figuren einem Bauern vor: Der Springer will nach d6 und f6."
+   },
+   {
+    "text": "10...Ne3 ist eine Gabel gegen die Dame auf d1 und den Turm auf f1. Spasski schlägt den Springer einfach."
+   },
+   {
+    "text": "Schwarz hat jetzt einen Bauern auf e3, tief in der weißen Stellung. Behalte ihn im Auge!"
+   },
+   {
+    "text": "12.c5 vertreibt den Läufer von d6, dem Feld, das der weiße Springer haben will."
+   },
+   {
+    "text": "14...e2! Der Bauer greift den Turm auf f1 an und will zur Dame werden. Die meisten Spieler würden den Turm retten. Spasski hat andere Pläne.",
+    "label": "Der Bauer schlägt zu"
+   },
+   {
+    "text": "Bronstein bringt den Springer nach f8, um h7 zu decken. Doch jetzt ist der Bauer auf f7 schwach."
+   },
+   {
+    "text": "Schwarz wandelt mit Schach in eine neue Dame um! Aber Weiß schlägt sie einfach zurück, und seine Figuren schwärmen um den schwarzen König."
+   },
+   {
+    "text": "Schwarz versucht, die weiße Dame abzusperren, aber der Läufer auf f5 ist einfach verloren."
+   },
+   {
+    "text": "Das Material ist wieder ungefähr ausgeglichen, und der Springer auf f7 sitzt wie ein Stachel direkt neben dem schwarzen König."
+   },
+   {
+    "text": "Der zweite Springer springt nach e5. Beide weißen Springer stehen jetzt direkt vor dem schwarzen König."
+   },
+   {
+    "text": "21.Bb3 stellt den Läufer hinter den Springer auf f7 und zielt auf den König auf g8. Wenn der Springer zieht, ist das ein **Abzugsschach**."
+   },
+   {
+    "text": "22.Nxe5+ ist dieses Abzugsschach. Der König muss nach h7 fliehen.",
+    "label": "Abzugsschach"
+   },
+   {
+    "text": "23.Qe4+, und Bronstein gab auf. Wegen des Läufers auf b3 kann der König nicht zurück nach g8, und die weiße Dame, der Turm und der Springer brechen gleich durch.",
+    "label": "Bronstein gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Bauer auf e2 greift deinen Turm an und will zur Dame werden. Was würdest du tun?",
+    "hint": "Vergiss den Turm. Welcher Punkt nahe dem schwarzen König ist am schwächsten?",
+    "explanation": "15.Nd6!! ignoriert die Drohung. Der Springer greift den Turm auf e8 an und hat f7 im Blick. Nach 15...Bxd6 beginnt mit 16.Qh7+ ein heftiger Angriff. Spasski urteilte, dass sein Angriff mehr wert war als ein Turm."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Springer ist zur Verteidigung nach f8 gegangen. Wo schlägt dein Springer als Nächstes zu?",
+    "hint": "Sieh dir den Bauern neben dem schwarzen König an.",
+    "explanation": "16.Nxf7! schnappt den Bauern, greift die Dame auf d8 an und öffnet die f-Linie zum schwarzen König. Schwarz kann auf f1 eine neue Dame bekommen, aber sie wird einfach zurückgeschlagen."
+   }
+  ]
+ },
+ "bernstein-capablanca-1914": {
+  "title": "Capablancas Blitz auf der Grundreihe",
+  "event": "Moskau (Schaupartie)",
+  "opening": "Abgelehntes Damengambit",
+  "summary": "Capablanca schiebt geduldig einen Freibauern vor, lässt Weiß ihn gewinnen und schlägt dann mit einem verblüffenden Damenzug zu, der die schwache weiße Grundreihe ausnutzt. Eine klassische Erinnerung daran, nie das Fluchtfeld deines Königs zu vergessen.",
+  "annotations": [
+   {
+    "text": "Moskau, 1914. José Raúl Capablanca, der kubanische Star, der 1921 Weltmeister werden sollte, spielt in einer Schaupartie mit Schwarz gegen den starken Meister Ossip Bernstein. Behalte die weiße Grundreihe im Auge."
+   },
+   {
+    "text": "5...O-O. Ein klassisches Abgelehntes Damengambit: Schwarz behält ein solides Zentrum und rochiert schnell."
+   },
+   {
+    "text": "8...exd5. Nach dem Tausch im Zentrum hat Schwarz einen festen Bauern auf d5 und eine offene Bahn für seinen weißfeldrigen Läufer."
+   },
+   {
+    "text": "10.Ba6. Weiß bietet den Tausch der weißfeldrigen Läufer an und beseitigt damit einen guten Verteidiger des schwarzen Damenflügels."
+   },
+   {
+    "text": "11...c5. Schwarz greift das Zentrum an und gibt seinen Figuren mehr Raum."
+   },
+   {
+    "text": "13...bxc5. Schwarz hat jetzt zwei Bauern nebeneinander auf c5 und d5, sogenannte **hängende Bauern**: zusammen stark, aber sie brauchen Pflege."
+   },
+   {
+    "text": "15...c4. Schwarz rückt vor und gewinnt Raum am Damenflügel."
+   },
+   {
+    "text": "16...Rfd8. Der schwarze Turm besetzt die d-Linie. Merk ihn dir: Dieser Turm spielt ganz am Ende die Hauptrolle."
+   },
+   {
+    "text": "17...Bb4. Der Läufer fesselt den Springer auf c3 und erhöht den Druck auf den weißen Damenflügel."
+   },
+   {
+    "text": "19...dxc4. Weiß hat keine Bauern mehr auf der b-, c- oder d-Linie, also ist der schwarze c-Bauer jetzt ein **Freibauer**, der freie Bahn hat.",
+    "label": "Ein Freibauer"
+   },
+   {
+    "text": "21...Nd5. Der Springer landet auf einem tollen Feld, greift den Turm auf c3 an und unterstützt den c-Bauern."
+   },
+   {
+    "text": "23...Rc5. Der Turm deckt den Bauern auf c3 von hinten und hält ihn am Leben."
+   },
+   {
+    "text": "26.Nb5. Der weiße Springer nimmt den Bauern auf c3 ins Visier. Bernstein arbeitet hart daran, ihn zu gewinnen."
+   },
+   {
+    "text": "27.Nxc3. Weiß gewinnt endlich den Bauern, und es folgt eine Reihe von Abtäuschen auf c3.",
+    "label": "Weiß gewinnt den Bauern"
+   },
+   {
+    "text": "29.Rxc3. Weiß hat einen Bauern mehr und fühlt sich sicher. Aber sieh dir seinen König an: Er hat kein Fluchtfeld, und der schwarze Turm beherrscht noch immer die d-Linie."
+   },
+   {
+    "text": "29...Qb2!! Ein Blitz aus heiterem Himmel. Die weiße Dame kann wegen ...Rd1 matt nicht schlagen, und sie kann nicht gleichzeitig die Grundreihe und den Turm auf c3 decken. Bernstein gab auf. Gib deinem König immer etwas Luft!",
+    "label": "Blitz aus heiterem Himmel"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Schwarz ist am Zug. Dein Freibauer auf c4 wird vom Springer auf d5 gut unterstützt. Wie kannst du ihn noch gefährlicher machen?",
+    "hint": "Freibauern müssen laufen!",
+    "explanation": "22...c3! Der Bauer kommt der Umwandlung einen Schritt näher, gedeckt vom Springer. Die weißen Figuren müssen jetzt ihre Zeit damit verbringen, ihn aufzuhalten."
+   },
+   {
+    "prompt": "Schwarz ist am Zug. Weiß hat gerade einen Bauern gewonnen und wirkt zufrieden. Sieh dir die weiße Grundreihe an: Findest du den Zug, der die Partie auf der Stelle beendet?",
+    "hint": "Greif die weiße Dame und den Turm gleichzeitig an.",
+    "explanation": "29...Qb2!! Die Dame greift sowohl die weiße Dame als auch den Turm auf c3 an. 30.Qxb2 läuft in 30...Rd1 matt, weil der weiße König kein Fluchtfeld hat. Sonst verliert Weiß Material."
+   }
+  ]
+ },
+ "lasker-bauer-1889": {
+  "title": "Laskers doppeltes Läuferopfer",
+  "event": "Turnier in Amsterdam",
+  "opening": "Bird-Eröffnung",
+  "summary": "Der junge Emanuel Lasker opfert beide Läufer, um die schwarze Königsstellung aufzureißen, und gewinnt das Material dann mit einem Turmschwenk und einem Doppelangriff zurück. Das doppelte Läuferopfer auf h7 und g7 wurde zu einem klassischen Angriffsmuster, das jeder Spieler kennen sollte.",
+  "annotations": [
+   {
+    "text": "Amsterdam, 1889. Der 20-jährige Emanuel Lasker, der später 27 Jahre lang Weltmeister sein sollte, spielt mit Weiß gegen Johann Bauer. Achte darauf, wohin die beiden weißen Läufer zielen."
+   },
+   {
+    "text": "1.f4. Die Bird-Eröffnung: Weiß kontrolliert das Feld e5 mit einem Bauern, statt wie üblich 1.e4 oder 1.d4 zu spielen."
+   },
+   {
+    "text": "5.Bd3. Beide Läufer zielen jetzt auf den schwarzen Königsflügel: einer auf h7, der andere über die lange Diagonale."
+   },
+   {
+    "text": "8...O-O. Schwarz rochiert direkt in die Schusslinie dieser beiden Läufer."
+   },
+   {
+    "text": "10.Ng3. Der Springer steuert h5 an, bereit, sich dem Angriff auf den schwarzen König anzuschließen."
+   },
+   {
+    "text": "12.Bxe5. Nach dem Tausch steht der Läufer auf e5 und starrt auf g7. Nur der Springer auf f6 hält die schwarze Stellung zusammen."
+   },
+   {
+    "text": "13...a6? Schwarz plant einen Vorstoß am Damenflügel und vergisst seinen König. Dieser langsame Zug gibt Lasker die Zeit, die er braucht.",
+    "label": "Ein langsamer Zug"
+   },
+   {
+    "text": "14.Nh5! Weiß bietet den Springer an, um den Springer auf f6 wegzulocken, den wichtigsten Verteidiger von h7."
+   },
+   {
+    "text": "15...Kxh7. Der erste Läufer ist weg, aber jetzt gewinnt 16.Qxh5+ den Springer mit Schach zurück, und die Dame schließt sich dem Angriff an.",
+    "label": "Erstes Läuferopfer"
+   },
+   {
+    "text": "17...Kxg7. Beide Läufer sind geopfert, aber der schwarze König hat seinen ganzen Bauernschutz verloren.",
+    "label": "Der zweite Läufer!"
+   },
+   {
+    "text": "19...e5. Die einzige Verteidigung. Dieser Zug öffnet die 6. Reihe, damit die schwarze Dame ein Schach auf h6 abblocken kann."
+   },
+   {
+    "text": "21.Rxh6+. Weiß gewinnt die schwarze Dame. Zähl nach: Lasker gab zwei Läufer und einen Turm und bekam einen Springer, die Dame und zwei Bauern zurück.",
+    "label": "Dame gewonnen"
+   },
+   {
+    "text": "23.Qxb7. Der Läufer fällt. Das Material ist jetzt ungefähr ausgeglichen, aber der schwarze König ist entblößt, und die weiße Dame und der Turm machen weiter Druck."
+   },
+   {
+    "text": "27.fxe5. Weiß öffnet die f-Linie für seinen Turm, der direkt auf den schwarzen König auf f8 zielt."
+   },
+   {
+    "text": "28.e6. Der Mehrbauer marschiert vorwärts, engt Schwarz ein und lockert die Verteidigung um seinen König noch mehr."
+   },
+   {
+    "text": "30.Rxf6+! Der Turm bricht durch. Nach 30...Bxf6 31.Qxf6+ jagt die Dame den König und zielt auf den ungedeckten Turm auf b7."
+   },
+   {
+    "text": "34.Qxb7. Der Turm auf b7 fällt mithilfe der Damenschachs. Weiß hat jetzt Dame gegen Turm: ein gewonnenes Endspiel."
+   },
+   {
+    "text": "38.Qxd3. Die letzte Hoffnung von Schwarz, der d-Freibauer, ist weg, und Bauer gab auf. Das Opfer auf h7 und g7 ist heute als **Lasker-Kombination** bekannt. Pass auf, wenn beide gegnerischen Läufer auf deinen König zielen!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Schwarz hat gerade deinen Springer auf h5 geschlagen. Beide deiner Läufer zielen auf den schwarzen König. Wie geht es mutig weiter?",
+    "hint": "Beginne mit einem Schach auf h7.",
+    "explanation": "15.Bxh7+! Der Läufer reißt den Bauern auf h7 mit Schach weg. Nach 15...Kxh7 16.Qxh5+ gewinnt Weiß den Springer mit Schach zurück, und der schwarze König steht ungeschützt."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Einen Läufer hast du schon geopfert. Findest du den nächsten Schlag?",
+    "hint": "Auch dein anderer Läufer auf e5 hat ein Ziel.",
+    "explanation": "17.Bxg7! Der zweite Läufer beseitigt den letzten schützenden Bauern. Er droht auch 18.Qh8 matt; und schlägt Schwarz ihn, dringen Dame und Turm ein."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze König steht ungeschützt auf h7. Wie bringst du noch eine Figur in den Angriff?",
+    "hint": "Ein Turm kann über die 3. Reihe fahren.",
+    "explanation": "19.Rf3! Der Turm schwenkt für ein tödliches Schach nach h3. Die einzige Verteidigung von Schwarz ist 19...e5 20.Rh3+ Qh6, und dann gewinnt Weiß die Dame."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Dein Angriff hat das Material zurückgewonnen. Finde jetzt einen Zug, der zwei schwarze Figuren gleichzeitig angreift!",
+    "hint": "Sieh dir die Läufer auf e7 und b7 an.",
+    "explanation": "22.Qd7! Ein Doppelangriff: Die Dame greift sowohl den Läufer auf e7 als auch den Läufer auf b7 an. Schwarz kann nur einen davon retten."
+   }
+  ]
+ },
+ "tal-smyslov-1959": {
+  "title": "Tal gegen Smyslow: Der Magier",
+  "event": "Kandidatenturnier, Jugoslawien",
+  "opening": "Caro-Kann-Verteidigung",
+  "summary": "Michail Tal, der Magier aus Riga, lässt einen Läufer stehen, wirft seine Figuren auf den König eines früheren Weltmeisters und vollendet mit einem Damenopfer. Die Partie zeigt, wie Aktivität und Drohungen mehr wert sein können als Material.",
+  "annotations": [
+   {
+    "text": "Jugoslawien, 1959: das Kandidatenturnier, in dem entschieden wurde, wer den Weltmeister herausfordern darf. Michail Tal, **der Magier aus Riga**, trifft auf den früheren Weltmeister Wassili Smyslow."
+   },
+   {
+    "text": "2.d3 ist eine ruhige, ungewöhnliche Antwort auf die Caro-Kann-Verteidigung. Tal verlässt die ausgetretenen Pfade und sucht den Kampf."
+   },
+   {
+    "text": "Das Zentrum öffnet sich schnell. Ohne die Bauern entscheiden aktive Figuren alles."
+   },
+   {
+    "text": "9.O-O-O: Tal rochiert lang, während Schwarz kurz rochieren wird. Mit Königen auf verschiedenen Seiten wird es ein Wettrennen um den Angriff."
+   },
+   {
+    "text": "10.Nd6! Der Springer springt tief ins schwarze Lager, hat f7 und b7 im Blick und steht den schwarzen Figuren im Weg.",
+    "label": "Springer taucht nach d6"
+   },
+   {
+    "text": "12.Bd2!? greift die Dame auf a5 an und lässt den Läufer auf c4 einfach stehen. Tal vertraut seinem Angriff mehr als seinem Material.",
+    "label": "Läufer bleibt hängen"
+   },
+   {
+    "text": "Der Springer schwenkt nach f5 und hat den Läufer auf e7 und die Felder nahe dem schwarzen König im Blick. Tals Figuren sammeln sich am Königsflügel."
+   },
+   {
+    "text": "Schwarz schlägt endlich den Läufer. Er hat eine Figur mehr, aber die weiße Dame und der Springer stehen nahe an seinem König."
+   },
+   {
+    "text": "17...Qxa2 schlägt zurück: Die schwarze Dame taucht neben dem weißen König auf und droht ...Qa1+."
+   },
+   {
+    "text": "18...Nf6 greift die weiße Dame an. Jetzt sind beide Könige in Gefahr. Wer schlägt zuerst zu?"
+   },
+   {
+    "text": "19.Qxf7!! Die Dame springt in die Höhle des Löwen. Tal hat gesehen, dass sein Springer auf h6 und sein Turm auf d1 das Material zurückgewinnen.",
+    "label": "Damenopfer!"
+   },
+   {
+    "text": "Smyslow gibt zuerst Schach. Der weiße König geht nach d2, und beachte: Die schwarze Dame auf a1 steht jetzt vor dem weißen Turm auf d1."
+   },
+   {
+    "text": "Der Pulverdampf verzieht sich. Weiß hat zwei Türme gegen einen, und der schwarze König steht ungeschützt da."
+   },
+   {
+    "text": "24.Nxc6 gewinnt einen Bauern und greift den Läufer auf d8 und den Bauern auf a7 an."
+   },
+   {
+    "text": "26.Bd4 blockt das Schach. Weiß hat die Qualität mehr, und die schwarzen Figuren sind verstreut, also gab Smyslow auf. Tal gewann das Turnier und wurde 1960 Weltmeister.",
+    "label": "Smyslow gibt auf"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der Läufer auf d8 greift deine Dame auf g5 an. Kannst du die Dame retten und gleichzeitig etwas gewinnen?",
+    "hint": "Zuerst kommt ein Springerschach.",
+    "explanation": "16.Nh6+! treibt den König in die Ecke (nach 16...gxh6 schnappt die Dame trotzdem h5, und der schwarze König steht weit offen). Dann gewinnt 17.Qxh5 den Springer zurück, und der Angriff läuft weiter."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Turm hat gerade deine Dame geschlagen. Kannst du alles zurückgewinnen?",
+    "hint": "Schlag mit Schach zurück und schau dann auf a1.",
+    "explanation": "21.Nxf7+ schlägt den Turm mit Schach. Nach dem Königszug schnappt 22.Rxa1 die schwarze Dame, und Weiß steht besser da."
+   }
+  ]
+ },
+ "legal-mate-1750": {
+  "title": "Das Seekadettenmatt",
+  "event": "Café de la Régence, Paris",
+  "opening": "Philidor-Verteidigung",
+  "summary": "Eine Miniatur in sieben Zügen, die einer klassischen Falle ihren Namen gab. Weiß gibt die Dame her, und drei Leichtfiguren setzen matt. Die Lehre: Eine Fesselung ist nur dann eine Fesselung, wenn ihr Aufheben wirklich etwas kostet – und die Dame zu schnappen, ohne hinzuschauen, kann tödlich sein.",
+  "annotations": [
+   {
+    "text": "Paris, um 1750, im berühmten Café de la Régence. Légal, einer der besten Spieler seiner Zeit, stellt eine Falle, in die Spieler noch heute tappen."
+   },
+   {
+    "text": "1.e4 besetzt das Zentrum und öffnet Linien für die Dame und den Läufer."
+   },
+   {
+    "text": "1...e5 Schwarz antwortet genauso und sichert sich seinen Anteil am Zentrum."
+   },
+   {
+    "text": "2.Bc4 richtet den Läufer auf f7, den schwächsten Punkt im schwarzen Lager, der nur vom König gedeckt wird."
+   },
+   {
+    "text": "2...d6 deckt e5 und öffnet dem Läufer auf c8 den Weg."
+   },
+   {
+    "text": "3.Nf3 entwickelt einen Springer und greift den Bauern auf e5 an."
+   },
+   {
+    "text": "3...Bg4 fesselt den Springer an die weiße Dame: Zieht der Springer, steht die Dame auf d1 ungeschützt.",
+    "label": "Die Fesselung"
+   },
+   {
+    "text": "4.Nc3 entwickelt eine weitere Figur und kontrolliert still ein weiteres Mal das Feld d5."
+   },
+   {
+    "text": "4...g6? Ein langsamer Zug. Schwarz sollte Figuren entwickeln, und gegen den versteckten weißen Trick auf e5 tut dieser Zug nichts."
+   },
+   {
+    "text": "5...Bxd1? Schwarz schlägt die Dame, ohne darauf zu achten, was Weiß droht. Das ist der Verlustzug.",
+    "label": "Den Köder schlucken"
+   },
+   {
+    "text": "6.Bxf7+ Der Läufer schlägt mit Schach auf f7, gedeckt vom Springer auf e5. Der König hat nur ein Feld: e7."
+   },
+   {
+    "text": "6...Ke7 war der einzige Zug. Sieh dir jetzt an, welche Felder um den König noch frei sind."
+   },
+   {
+    "text": "7.Nd5# Schachmatt mit drei Leichtfiguren! Schwarz hat eine Dame mehr, aber die Partie verloren. **Bevor du Material schnappst, frag dich immer, was dein Gegner droht.**",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Dein Springer auf f3 ist an die Dame gefesselt. Kannst du die Fesselung trotzdem aufheben?",
+    "hint": "Ist der Verlust der Dame wirklich ein Problem, wenn du etwas Stärkeres parat hast?",
+    "explanation": "5.Nxe5! Schlägt Schwarz die Dame mit 5...Bxd1, setzt Weiß mit 6.Bxf7+ und 7.Nd5# matt. Nach 5...dxe5 folgt dagegen 6.Qxg4, und Weiß hat einen Bauern mehr."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt. Schwarz hat gerade deine Dame geschlagen. Kannst du das bestrafen?",
+    "hint": "Dein Springer auf c3 hat einen Sprung, der Schach gibt.",
+    "explanation": "7.Nd5# Der Springer gibt von d5 aus Schach, und der Läufer und der andere Springer decken jedes Fluchtfeld."
+   }
+  ]
+ },
+ "carlsen-ernst-2004": {
+  "title": "Carlsen mit 13",
+  "event": "Corus-Turnier, Gruppe C, Wijk aan Zee",
+  "opening": "Caro-Kann-Verteidigung",
+  "summary": "Der 13-jährige Magnus Carlsen opfert einen Springer, einen Läufer und einen Turm, um den schwarzen König aufzureißen, und vollendet mit einem wunderschönen Matt. Mit dieser Partie wurde die Schachwelt auf den künftigen Weltmeister aufmerksam, und sie zeigt, wie ein Bauer auf h5 zur Speerspitze eines Angriffs werden kann.",
+  "annotations": [
+   {
+    "text": "Wijk aan Zee, Januar 2004. Der dreizehnjährige Magnus Carlsen spielt gegen den niederländischen Großmeister Sipke Ernst. Mit diesem Angriff wurde die Schachwelt auf ihn aufmerksam. Carlsen wurde 2013 Weltmeister."
+   },
+   {
+    "text": "Die **Caro-Kann-Verteidigung**: Schwarz unterstützt **...d5** mit dem c-Bauern, eine solide Art, um das Zentrum zu kämpfen."
+   },
+   {
+    "text": "**4...Bf5** bringt den weißfeldrigen Läufer heraus, bevor **...e6** gespielt wird, damit er nicht eingesperrt wird."
+   },
+   {
+    "text": "**6.h4** schiebt den h-Bauern vor, um den Läufer zu jagen und Raum am Königsflügel zu gewinnen."
+   },
+   {
+    "text": "Der Bauer erreicht h5. Merk ihn dir: Er spielt später eine Hauptrolle."
+   },
+   {
+    "text": "Carlsen rochiert lang. Mit Königen auf verschiedenen Seiten können beide Spieler Bauern und Figuren gegen den anderen König werfen."
+   },
+   {
+    "text": "Ernst rochiert kurz, direkt vor den weißen Bauern auf h5. Dieser Bauer kontrolliert schon g6."
+   },
+   {
+    "text": "**16.Ne5** stellt den Springer auf ein starkes Zentralfeld, mit Blick auf f7 und g6."
+   },
+   {
+    "text": "Ernst schlägt mit **17...c5** im Zentrum zurück. Aber die weißen Figuren zielen auf den schwarzen König. Gibt es einen Weg hinein?"
+   },
+   {
+    "text": "Ernst schlägt den Springer. Jetzt hat der Bauer auf e6 seinen Freund auf f7 verloren, und der weiße Bauer auf h5 kann auf g6 zurückschlagen.",
+    "label": "Springeropfer!"
+   },
+   {
+    "text": "**19.Qxe6+** bricht mit Schach ein und greift den Läufer auf e7 an."
+   },
+   {
+    "text": "Der h-Bauer steht jetzt auf g6, ein Stachel direkt neben dem schwarzen König. Als Nächstes will Weiß die h-Linie öffnen."
+   },
+   {
+    "text": "Die h-Linie ist offen, und Weiß gibt einen Turm her, damit das so bleibt. Dem schwarzen König gehen die Verteidiger aus.",
+    "label": "Auch noch ein Turmopfer!"
+   },
+   {
+    "text": "**23.Qxe7** schlägt den Läufer und droht **Qh7#**, wobei der Bauer auf g6 die Dame deckt."
+   },
+   {
+    "text": "Schwarz hat mit **23...Nf7** geblockt, also schlägt der Bauer ihn einfach. Jetzt steht der Bauer auf f7, tief im schwarzen Lager."
+   },
+   {
+    "text": "**25.Rd3!** Der letzte Turm schwenkt Richtung g-Linie, um sich dem Angriff anzuschließen.",
+    "label": "Turmschwenk"
+   },
+   {
+    "text": "**29.Qd7#** Schachmatt! Die Dame gibt über die 7. Reihe Schach, und der Turm auf g3 deckt die g-Linie. Ein brillantes Finale eines 13-Jährigen.",
+    "label": "Schachmatt!"
+   }
+  ],
+  "questions": [
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze Bauer auf f7 deckt e6 und g6. Kannst du ihn weglocken?",
+    "hint": "Ein Springerangebot direkt neben dem König.",
+    "explanation": "**18.Ng6!** Nach **18...fxg6** fällt der Bauer auf e6 mit Schach, und der Bauer auf h5 schlägt auf g6 zurück, direkt neben dem schwarzen König."
+   },
+   {
+    "prompt": "Weiß ist am Zug. Der schwarze König versteckt sich hinter dem Bauern auf h6. Wie sprengst du die h-Linie auf?",
+    "hint": "Ein Läufer kann einen Bauern schlagen.",
+    "explanation": "**21.Bxh6!** Nach **21...gxh6** folgt **22.Rxh6+**, und die h-Linie ist weit offen."
+   },
+   {
+    "prompt": "Weiß zieht und setzt in einem Zug matt!",
+    "hint": "Dein Turm auf g3 deckt schon die g-Linie.",
+    "explanation": "**29.Qd7#** gibt über die 7. Reihe Schach. Wegen des Turms kann der König nicht auf die g-Linie, und e6, e7 und e8 deckt die Dame."
+   }
+  ]
+ }
+}
