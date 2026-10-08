@@ -77,6 +77,19 @@
 /* Square under a dragged piece. */
 .gm-sq.hover { box-shadow: inset 0 0 0 0.62cqw rgba(255, 255, 255, 0.75); }
 
+/* Premoves: the queued move's squares in a muted red (chess.com style); premove targets get
+   reddish dots so it's clear the move only happens after the opponent replies. */
+.gm-sq.premove { --gm-tint: var(--board-premove, rgba(214, 79, 66, 0.55)); }
+.gm-sq.light.premove { --gm-tint: var(--board-premove-light, rgba(226, 104, 86, 0.6)); }
+.gm-sq.premove-dest.dest::after { background: var(--board-premove-dot, rgba(176, 52, 40, 0.42)); }
+.gm-sq.premove-dest.capture::after { box-shadow: inset 0 0 0 1.1cqw var(--board-premove-dot, rgba(176, 52, 40, 0.42)); }
+
+/* Blindfold: pieces are invisible (still there for moves); "peek" shows them while held. */
+.gm-board.blindfold .gm-piece:not(.gm-dragging) { opacity: 0; }
+.gm-board.blindfold .gm-piece.gm-dragging { opacity: 0.85; }
+.gm-board.blindfold.peek .gm-piece { opacity: 1; }
+.gm-board.blindfold .gm-badges { display: none; }
+
 /* Coordinates (inside the board corners). */
 .gm-coord {
   position: absolute;

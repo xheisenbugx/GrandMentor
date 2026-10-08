@@ -100,6 +100,10 @@ export class Board {
       onMove: null,
       onSquareClick: null,
       sounds: true,
+      // Premoves: pieces of this colour can be queued to move while the other side is to move.
+      premoveColor: null, // 'white' | 'black' | null
+      onPremove: null,    // ({from,to,promotion}|null) => void, when the user sets or cancels one
+      blindfold: false,   // hide the pieces (squares, coordinates and moves still work)
       ...opts,
     };
     this._destroyed = false;
@@ -125,6 +129,11 @@ export class Board {
     this._badges = new Map();     // square -> classification
     this._rect = null;
     this._cursorSq = null;
+    this._premoveColor = this.opts.premoveColor === 'white' || this.opts.premoveColor === 'black' ? this.opts.premoveColor : null;
+    this._premove = null;     // queued premove {from,to,promotion?}
+    this._selPremove = false; // current selection is a premove selection
+    this._blindfold = !!this.opts.blindfold;
+    this._peek = false;
 
     this._build();
     this._bind();
@@ -242,7 +251,9 @@ export class Board {
     r.dataset.orientation = this._orientation;
     r.dataset.coords = this._cfg('showCoords') === false ? 'off' : 'on';
     r.style.setProperty('--gm-anim', `${this._animMs()}ms`);
-    r.classList.toggle('interactive', this._interactive);
+    r.classList.toggle('interactive', this._interactive || !!this._premoveColor);
+    r.classList.toggle('blindfold', this._blindfold);
+    r.classList.toggle('peek', this._blindfold && this._peek);
     this._labelSquares();
     if (this._selected) this._showDests();
   }
@@ -316,6 +327,7 @@ export class Board {
       console.warn('[Board] invalid FEN ignored:', fen);
       return false;
     }
+    const keep = this._takeInteraction();
     this._cancelInteraction();
     const prevFen = this._chess ? this._chess.fen() : '';
     const prevMap = this._pieces.size ? this._currentMap() : null;
@@ -330,10 +342,42 @@ export class Board {
       this._renderShapes();
     }
     this._render({ animate });
+    this._restoreInteraction(keep);
     if (sound && changed && prevMap && this._lastMove && this.opts.sounds) {
       this._landSound(this._soundForTransition(prevMap, this._lastMove), animate);
     }
     return true;
+  }
+
+  /**
+   * Detach a premove selection / drag in progress so a position update (the opponent's move
+   * landing) doesn't snatch the piece out of the user's hand. Pair with _restoreInteraction.
+   */
+  _takeInteraction() {
+    if (!this._premoveColor || !this._selected || this._promo) return null;
+    const from = this._selected;
+    const code = this._pieces.get(from)?.code;
+    if (!code) return null;
+    const drag = this._drag && this._drag.from === from ? this._drag : null;
+    if (drag) this._drag = null; // keep it alive through _cancelInteraction
+    return { from, code, drag };
+  }
+
+  _restoreInteraction(keep) {
+    if (!keep || this._destroyed) return;
+    const { from, code, drag } = keep;
+    const p = this._pieces.get(from);
+    const ok = p && p.code === code && p.el === (drag ? drag.el : p.el) && (this._canMove(from) || this._canPremove(from));
+    if (ok) {
+      this._select(from);
+      if (drag) this._drag = drag;
+      return;
+    }
+    if (drag) {
+      // The piece is gone or can't move any more: drop the drag quietly.
+      this._drag = drag;
+      this._endDrag(true);
+    }
   }
 
   getFen() {
@@ -367,8 +411,10 @@ export class Board {
     if (this._destroyed) return;
     this._interactive = !!interactive;
     if (movableColor !== undefined) this._movable = movableColor;
+    const keep = this._takeInteraction();
     this._cancelInteraction();
     this._applyConfig();
+    this._restoreInteraction(keep);
   }
 
   /** Programmatically play a move (UCI or {from,to,promotion}). Returns the move object or null. */
@@ -393,6 +439,164 @@ export class Board {
   legalMoves() {
     try { return this._chess.moves({ verbose: true }); } catch { return []; }
   }
+
+  // ------------------------------------------------------------- premoves
+
+  /**
+   * Allow queuing one premove for `color` ('white'|'black') while the other side is to move,
+   * or turn premoves off (null; also clears a queued premove).
+   */
+  setPremoveColor(color) {
+    if (this._destroyed) return;
+    const c = color === 'white' || color === 'black' ? color : null;
+    if (c === this._premoveColor) return;
+    this._premoveColor = c;
+    if (!c) this.clearPremove();
+    if (this._selPremove) { this._selected = null; this._dests = new Map(); this._selPremove = false; }
+    this._applyConfig();
+    this._renderMarks();
+  }
+
+  /** The queued premove `{from,to,promotion?}` or null. */
+  getPremove() { return this._premove ? { ...this._premove } : null; }
+
+  /** Queue (or replace) a premove programmatically; null clears it. Does not call onPremove. */
+  setPremove(pm) {
+    if (this._destroyed) return;
+    this._premove = pm && isSquare(pm.from) && isSquare(pm.to) && pm.from !== pm.to
+      ? { from: pm.from, to: pm.to, promotion: /^[qrbn]$/.test(pm.promotion || '') ? pm.promotion : undefined }
+      : null;
+    this._renderMarks();
+  }
+
+  /** Cancel the queued premove. `notify` calls onPremove(null) (user-initiated cancels). */
+  clearPremove(notify = false) {
+    if (!this._premove) return;
+    this._premove = null;
+    if (this._promo && this._promo.premove) this._closePromo(true);
+    if (!this._destroyed) this._renderMarks();
+    if (notify) this._emitPremove();
+  }
+
+  /**
+   * Try to play the queued premove in the current position. If it is legal it is played exactly
+   * like a user move (onMove is called) and the move object is returned; otherwise the premove
+   * is dropped and null is returned.
+   */
+  playPremove() {
+    const pm = this._premove;
+    if (!pm || this._destroyed || !this._chess) return null;
+    this._premove = null;
+    this._cancelInteraction();
+    let legal = null;
+    try {
+      legal = this._chess.moves({ square: pm.from, verbose: true })
+        .filter((m) => m.to === pm.to)
+        .find((m) => !m.promotion || m.promotion === (pm.promotion || 'q')) || null;
+    } catch { legal = null; }
+    if (!legal) { this._renderMarks(); return null; }
+    const before = this._chess.fen();
+    this._commit(legal.from, legal.to, legal.promotion || undefined, false);
+    if (this._destroyed || !this._chess || this._chess.fen() === before) return null;
+    return this._moveObject(legal);
+  }
+
+  _emitPremove() {
+    if (typeof this.opts.onPremove !== 'function') return;
+    try { this.opts.onPremove(this.getPremove()); } catch (err) { console.error('[Board] onPremove error', err); }
+  }
+
+  /** Squares a piece could reach "in principle" (rays ignore blockers), like lichess/chess.com. */
+  _premoveDests(sq) {
+    const p = this._pieces.get(sq);
+    if (!p) return [];
+    const color = p.code[0];
+    const role = p.code[1];
+    const f = fileOf(sq);
+    const r = rankOf(sq);
+    const out = [];
+    const add = (df, dr) => {
+      const nf = f + df; const nr = r + dr;
+      if (nf < 0 || nf > 7 || nr < 0 || nr > 7) return false;
+      out.push(FILES[nf] + (nr + 1));
+      return true;
+    };
+    const ray = (df, dr) => { for (let i = 1; i < 8; i++) if (!add(df * i, dr * i)) break; };
+    if (role === 'P') {
+      const dir = color === 'w' ? 1 : -1;
+      add(0, dir);
+      if ((color === 'w' && r === 1) || (color === 'b' && r === 6)) add(0, 2 * dir);
+      add(-1, dir); add(1, dir);
+    } else if (role === 'N') {
+      for (const [df, dr] of [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]) add(df, dr);
+    } else if (role === 'K') {
+      for (let df = -1; df <= 1; df++) for (let dr = -1; dr <= 1; dr++) if (df || dr) add(df, dr);
+      const home = color === 'w' ? 'e1' : 'e8';
+      if (sq === home) {
+        const rank = color === 'w' ? '1' : '8';
+        let rights = '';
+        try { rights = this._chess.fen().split(' ')[2] || ''; } catch { rights = ''; }
+        const [kc, qc] = color === 'w' ? ['K', 'Q'] : ['k', 'q'];
+        if (rights.includes(kc)) out.push('g' + rank);
+        if (rights.includes(qc)) out.push('c' + rank);
+      }
+    } else {
+      const dirs = [];
+      if (role === 'B' || role === 'Q') dirs.push([1, 1], [1, -1], [-1, 1], [-1, -1]);
+      if (role === 'R' || role === 'Q') dirs.push([1, 0], [-1, 0], [0, 1], [0, -1]);
+      for (const [df, dr] of dirs) ray(df, dr);
+    }
+    // Never onto one of our own pieces (clicking those re-selects instead).
+    return [...new Set(out)].filter((to) => this._pieces.get(to)?.code[0] !== color);
+  }
+
+  _canPremove(sq) {
+    if (!this._premoveColor || !this._chess) return false;
+    const p = this._pieces.get(sq);
+    if (!p) return false;
+    const c = this._premoveColor === 'white' ? 'w' : 'b';
+    let turn;
+    try { turn = this._chess.turn(); } catch { return false; }
+    return p.code[0] === c && turn !== c;
+  }
+
+  _queuePremove(from, to, dragged) {
+    const p = this._pieces.get(from);
+    const color = p ? p.code[0] : null;
+    const lastRank = color === 'w' ? '8' : '1';
+    const isPromo = p && p.code[1] === 'P' && to[1] === lastRank;
+    this._selected = null;
+    this._dests = new Map();
+    this._selPremove = false;
+    if (p) { if (dragged) this._placeEl(p.el, from); }
+    if (isPromo && !this._cfg('autoQueen')) {
+      this._renderMarks();
+      this._openPromo(from, to, false, true);
+      return;
+    }
+    this._premove = { from, to, promotion: isPromo ? 'q' : undefined };
+    this._renderMarks();
+    this._emitPremove();
+  }
+
+  // ------------------------------------------------------------- blindfold
+
+  /** Hide (true) or show the pieces. Moves keep working; coordinates stay visible. */
+  setBlindfold(on) {
+    if (this._destroyed) return;
+    this._blindfold = !!on;
+    if (!this._blindfold) this._peek = false;
+    this._applyConfig();
+  }
+
+  /** While blindfolded, temporarily reveal the pieces (e.g. while a "peek" button is held). */
+  setPeek(on) {
+    if (this._destroyed) return;
+    this._peek = !!on && this._blindfold;
+    this._applyConfig();
+  }
+
+  get blindfold() { return this._blindfold; }
 
   _currentMap() {
     const m = new Map();
@@ -508,11 +712,15 @@ export class Board {
   _renderMarks() {
     if (this._destroyed) return;
     for (const s of this._sqEls) {
-      s.classList.remove('last', 'selected', 'check', 'dest', 'capture', 'hover',
+      s.classList.remove('last', 'selected', 'check', 'dest', 'capture', 'hover', 'premove', 'premove-dest',
         'hl-hint', 'hl-good', 'hl-bad', 'hl-selected', 'hl-target');
     }
     if (this._lastMove) {
       for (const sq of this._lastMove) this._sqEl(sq).classList.add('last');
+    }
+    if (this._premove) {
+      this._sqEl(this._premove.from).classList.add('premove');
+      this._sqEl(this._premove.to).classList.add('premove');
     }
     for (const [sq, kind] of this._highlights) this._sqEl(sq).classList.add(`hl-${kind}`);
     const kingSq = this._checkedKing();
@@ -522,7 +730,9 @@ export class Board {
       if (this._cfg('showLegal') !== false) {
         for (const [to, moves] of this._dests) {
           const isCap = this._pieces.has(to) || moves.some((m) => m.flags.includes('e'));
-          this._sqEl(to).classList.add(isCap ? 'capture' : 'dest');
+          const el = this._sqEl(to);
+          el.classList.add(isCap ? 'capture' : 'dest');
+          if (this._selPremove) el.classList.add('premove-dest');
         }
       }
     }
@@ -555,8 +765,13 @@ export class Board {
   _select(sq) {
     this._selected = sq;
     this._dests = new Map();
+    this._selPremove = !this._canMove(sq) && this._canPremove(sq);
     let moves = [];
-    try { moves = this._chess.moves({ square: sq, verbose: true }); } catch { moves = []; }
+    if (this._selPremove) {
+      moves = this._premoveDests(sq).map((to) => ({ from: sq, to, flags: '' }));
+    } else {
+      try { moves = this._chess.moves({ square: sq, verbose: true }); } catch { moves = []; }
+    }
     for (const m of moves) {
       const list = this._dests.get(m.to);
       if (list) list.push(m); else this._dests.set(m.to, [m]);
@@ -570,6 +785,7 @@ export class Board {
     if (!this._selected) return;
     this._selected = null;
     this._dests = new Map();
+    this._selPremove = false;
     this._renderMarks();
   }
 
@@ -580,6 +796,7 @@ export class Board {
     this._hoverSq = null;
     this._selected = null;
     this._dests = new Map();
+    this._selPremove = false;
   }
 
   // ------------------------------------------------------------- pointers
@@ -593,7 +810,14 @@ export class Board {
 
     if (e.button === 2) {
       e.preventDefault();
-      this._rdrag = { from: sq, to: sq, color: this._shapeColor(e), pointerId: e.pointerId };
+      // Right-click cancels a queued premove (or a premove selection) instead of drawing.
+      if (this._premove || this._selPremove) {
+        if (this._drag) this._endDrag(true);
+        this._deselect();
+        this.clearPremove(true);
+        return;
+      }
+      this._rdrag ={ from: sq, to: sq, color: this._shapeColor(e), pointerId: e.pointerId };
       try { this.root.setPointerCapture(e.pointerId); } catch { /* ignore */ }
       return;
     }
@@ -618,7 +842,7 @@ export class Board {
       return;
     }
 
-    if (this._canMove(sq)) {
+    if (this._canMove(sq) || this._canPremove(sq)) {
       e.preventDefault();
       const wasSelected = this._selected === sq;
       if (!wasSelected) this._select(sq);
@@ -646,6 +870,8 @@ export class Board {
 
     // Clicked a square the selected piece can't go to.
     if (this._selected) this._deselect();
+    // Clicking anywhere else cancels a queued premove (like chess.com / lichess).
+    else if (this._premove) this.clearPremove(true);
   }
 
   _onPointerMove(e) {
@@ -676,11 +902,11 @@ export class Board {
       return;
     }
     // Idle hover: show a grab cursor over movable pieces (mouse only).
-    if (e.pointerType === 'mouse' && this._interactive) {
+    if (e.pointerType === 'mouse' && (this._interactive || this._premoveColor)) {
       const sq = this._squareAt(e);
       if (sq !== this._cursorSq) {
         this._cursorSq = sq;
-        const grab = sq && (this._canMove(sq) || (this._selected && this._dests.has(sq)));
+        const grab = sq && (this._canMove(sq) || this._canPremove(sq) || (this._selected && this._dests.has(sq)));
         this.root.classList.toggle('can-grab', !!grab);
       }
     }
@@ -793,6 +1019,10 @@ export class Board {
   _tryMove(from, to, { dragged }) {
     const candidates = this._dests.get(to) || [];
     if (!candidates.length) return;
+    if (this._selPremove) {
+      this._queuePremove(from, to, dragged);
+      return;
+    }
     const promo = candidates.some((m) => m.promotion);
     if (!promo) {
       this._commit(from, to, undefined, dragged);
@@ -895,19 +1125,19 @@ export class Board {
 
   // ------------------------------------------------------------ promotion
 
-  _openPromo(from, to, dragged) {
+  _openPromo(from, to, dragged, premove = false) {
     const color = this._pieces.get(from)?.code[0] || this._chess.turn();
-    // Show the pawn on the promotion square while choosing.
+    // Show the pawn on the promotion square while choosing (not for a premove: nothing moved yet).
     const p = this._pieces.get(from);
-    if (p) {
+    if (p && !premove) {
       if (dragged) { p.el.style.transition = 'none'; this._placeEl(p.el, to); void p.el.offsetWidth; p.el.style.transition = ''; }
       else this._placeEl(p.el, to);
     }
-    const victim = this._pieces.get(to);
+    const victim = premove ? null : this._pieces.get(to);
     if (victim) victim.el.classList.add('gm-hidden');
 
     const overlay = document.createElement('div');
-    overlay.className = 'gm-promo';
+    overlay.className = premove ? 'gm-promo gm-promo-premove' : 'gm-promo';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-label', t('ui.board.promoteChoose'));
     const [col, row] = this._vis(to);
@@ -934,7 +1164,13 @@ export class Board {
       if (btn) {
         const pc = btn.dataset.piece;
         this._closePromo(false);
-        this._commit(from, to, pc, true);
+        if (premove) {
+          this._premove = { from, to, promotion: pc };
+          this._renderMarks();
+          this._emitPremove();
+        } else {
+          this._commit(from, to, pc, true);
+        }
       } else {
         this._closePromo(true);
       }
@@ -944,7 +1180,7 @@ export class Board {
     overlay.addEventListener('pointerdown', onDown);
     document.addEventListener('keydown', this._onKeyDown);
     this.root.appendChild(overlay);
-    this._promo = { overlay, onClick, onDown, from, to, victim };
+    this._promo = { overlay, onClick, onDown, from, to, victim, premove };
     const first = overlay.querySelector('button');
     if (first) { try { first.focus({ preventScroll: true }); } catch { /* ignore */ } }
   }
@@ -1186,6 +1422,8 @@ export class Board {
     this._chess = null;
     this.opts.onMove = null;
     this.opts.onSquareClick = null;
+    this.opts.onPremove = null;
+    this._premove = null;
   }
 }
 

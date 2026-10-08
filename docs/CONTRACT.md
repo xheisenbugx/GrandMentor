@@ -380,3 +380,54 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Play experience (adaptive bot, play from a position, premoves, confirm, blindfold)
+
+### Adaptive bot & estimated rating
+
+- **Bot** `id: "adaptive"` ("Sparky", `gm_bots::ADAPTIVE_ID`). `GET /api/bots` reports its `elo` as the user's
+  current adaptive level. `POST /api/bot/move` with `bot_id: "adaptive"` plays at the stored level
+  (`gm_bots::choose_move_at(engine, content, bot_id, start_fen, moves, elo: Option<u16>, lang)`; the level is
+  clamped to `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO` = 250..=2800).
+- `GET /api/adaptive/estimate` →
+  `{"rating": n|null, "games": n, "provisional": bool, "bot_level": n, "bot_games": n}`.
+  `rating` is null until the first counted game; `provisional` until 5 games.
+- `POST /api/adaptive/result` `{"game_id": n}` → counts a **saved** game (`POST /api/games`) against a bot. Idempotent
+  per game (a second call returns the stored change with `counted: false`). Response:
+  `{"counted": bool, "previous": n|null, "rating": n, "delta": n, "games": n, "provisional": bool, "bot_level": n,
+  "bot_level_delta": n, "estimate": {…estimate…}}`, or `{"skipped": "unfinished"|"not_bot"|"custom_position"|"too_short",
+  "estimate": {…}}` when the game does not count (result `*`, no/unknown bot or user colour, non-standard start
+  position, < 2 plies). Errors: 400 without `game_id`, 404 unknown game.
+- Model (`gm_store::adaptive`): Elo update from prior 800 with K = 80 (first 5 games) / 48 (< 15) / 32, clamped
+  100..3000, opponent = the bot's Elo (adaptive bot: its level at the time). Adaptive level: starts at the user's
+  estimate (600 without one), moves ±160 → ±50 (shrinking per game played vs it) after a win/loss, unchanged on a draw.
+  Store: `Store::adaptive_estimate()`, `Store::adaptive_record_game(game_id, opponent_elo, score, vs_adaptive)`.
+
+### Play page URL
+
+`#/play?fen=<encodeURIComponent(FEN)>[&color=w|b][&bot=<botId>]` opens the setup with that start position
+(invalid or finished positions show a friendly toast and fall back to the normal start). `color` defaults to the side
+to move. Games store it in `start_fen`. Entry points: Game Review toolbar (robot icon, current ply, same bot and the
+user's colour) and the Analysis board ("Play bot" action, current node). `#/local` is linked from the setup.
+
+Play prefs (`localStorage['grandmentor.play.prefs.v1']`) gain `extras: {premoves: true, confirmMove: false,
+typeMoves: false, blindfold: false}`; saved unfinished games also keep `extras`.
+
+### Board additions (`web/js/components/board.js`, backwards compatible)
+
+```js
+new Board(el, { …, premoveColor /* 'white'|'black'|null, default null */, onPremove /* (pm|null) => void */,
+  blindfold /* bool, default false */ });
+board.setPremoveColor(color|null);   // pieces of `color` can be queued while the other side is to move; null clears
+board.getPremove();                  // {from, to, promotion?} | null
+board.setPremove(pm|null);           // programmatic (e.g. a typed move); no onPremove call
+board.clearPremove(notify = false);
+board.playPremove();                 // plays it if legal now (calls onMove like a user move) → move object | null (dropped)
+board.setBlindfold(bool); board.setPeek(bool); board.blindfold;   // hide pieces; peek shows them while held
+```
+Premove destinations are geometric (rays ignore blockers, pawn pushes/captures, castling squares while the rights
+exist; never onto one's own piece). Promotion premoves open the picker (or queen with `autoQueen`). A queued premove
+is drawn with `.gm-sq.premove` (tokens `--board-premove`, `--board-premove-light`, `--board-premove-dot`, with
+fallbacks); right-click, clicking an empty/non-target square, or `clearPremove()` cancels it. With `premoveColor` set,
+a premove selection or drag in progress survives `setPosition` / `setInteractive` (the opponent's move landing) and
+turns into a normal move if it's now legal. Pages that don't pass the new options behave exactly as before.

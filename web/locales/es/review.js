@@ -80,6 +80,8 @@ export default {
     flip: 'Girar tablero',
     analyse: 'Abrir en el tablero de análisis',
     analyseTip: 'Analizar esta posición',
+    playFromHere: 'Jugar desde aquí contra un bot',
+    playFromHereTip: 'Toma el control: juega esta posición contra un bot',
   },
 
   mentor: {
