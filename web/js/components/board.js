@@ -14,6 +14,7 @@
 import { Chess, DEFAULT_POSITION } from '../../vendor/chess.js';
 import { getSetting, onSettingsChange } from '../settings.js';
 import { classificationMeta } from '../ui.js';
+import { t } from '../i18n.js';
 import { playSound } from './sound.js';
 
 const FILES = 'abcdefgh';
@@ -137,7 +138,7 @@ export class Board {
     const root = document.createElement('div');
     root.className = 'gm-board';
     root.setAttribute('role', 'application');
-    root.setAttribute('aria-roledescription', 'chess board');
+    root.setAttribute('aria-roledescription', t('ui.board.roleDescription'));
     root.tabIndex = -1;
 
     const squares = document.createElement('div');
@@ -908,16 +909,16 @@ export class Board {
     const overlay = document.createElement('div');
     overlay.className = 'gm-promo';
     overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-label', 'Choose a piece to promote to');
+    overlay.setAttribute('aria-label', t('ui.board.promoteChoose'));
     const [col, row] = this._vis(to);
     const down = row === 0;
-    const names = { q: 'Queen', n: 'Knight', r: 'Rook', b: 'Bishop' };
+    const names = { q: t('common.pieces.queen'), n: t('common.pieces.knight'), r: t('common.pieces.rook'), b: t('common.pieces.bishop') };
     PROMO_PIECES.forEach((pc, i) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'gm-promo-choice';
       btn.dataset.piece = pc;
-      btn.setAttribute('aria-label', `Promote to ${names[pc]}`);
+      btn.setAttribute('aria-label', t('ui.board.promoteTo', { piece: names[pc] }));
       btn.title = names[pc];
       const r = down ? row + i : row - i;
       btn.style.left = `${col * 12.5}%`;

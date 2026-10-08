@@ -1,16 +1,19 @@
 // Settings page (#/settings): appearance (theme, board theme, piece set), live preview board,
 // board behaviour (coords, legal dots, animation, auto-queen, notation), game (eval bar, sounds)
-// and a "danger zone". Everything goes through ../settings.js.
+// and a "danger zone". Everything goes through ../settings.js. The language picker sits at the top
+// of Appearance; switching language makes app.js remount this page.
 
 import { api, qs, isAbort } from '../api.js';
 import { h, icon, pageHeader, disposables, debounce, confirmDialog, toast, formatSan } from '../ui.js';
 import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, pieceUrl } from '../settings.js';
 import { ensureHubCss, fenBoardSvg } from './library.js';
+import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 
-export const title = 'Settings';
+export const title = () => t('nav.routes.settings');
 
 const PREVIEW_FEN = 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4';
-const SPEEDS = [[0, 'Off'], [100, 'Fast'], [200, 'Normal'], [400, 'Slow']];
+// Animation presets: [ms, i18n key] (resolved at render time).
+const SPEEDS = [[0, 'settings.speed.off'], [100, 'settings.speed.fast'], [200, 'settings.speed.normal'], [400, 'settings.speed.slow']];
 const RECREATE_KEYS = new Set(['pieceSet', 'showCoords', 'showLegal', 'animationMs', 'autoQueen', 'sounds']);
 
 export async function mount(root) {
@@ -52,45 +55,54 @@ export async function mount(root) {
     control);
 
   // Board themes: swatches with a tiny 4x4 checkerboard.
-  const themePicker = h('div', { class: 'hub-swatches', role: 'radiogroup', 'aria-label': 'Board theme' },
-    Object.entries(BOARD_THEMES).map(([k, t]) => h('button', { type: 'button', class: 'hub-swatch-btn', role: 'radio', dataset: { v: k }, 'aria-label': t.label },
-      h('span', { class: 'hub-swatch-board', style: { '--l': t.light, '--d': t.dark } }),
-      h('span', { class: 'hub-swatch-label' }, t.label))));
+  const themePicker = h('div', { class: 'hub-swatches', role: 'radiogroup', 'aria-label': t('settings.boardTheme') },
+    Object.entries(BOARD_THEMES).map(([k, bt]) => h('button', { type: 'button', class: 'hub-swatch-btn', role: 'radio', dataset: { v: k }, 'aria-label': t(bt.labelKey) },
+      h('span', { class: 'hub-swatch-board', style: { '--l': bt.light, '--d': bt.dark } }),
+      h('span', { class: 'hub-swatch-label' }, t(bt.labelKey)))));
   bag.on(themePicker, 'click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setSetting('boardTheme', b.dataset.v); });
   syncers.push((s) => markActive(themePicker, s.boardTheme));
 
   // Piece sets: preview K Q R B N P.
-  const piecePicker = h('div', { class: 'hub-piecesets', role: 'radiogroup', 'aria-label': 'Piece set' },
-    Object.entries(PIECE_SETS).map(([k, p]) => h('button', { type: 'button', class: 'hub-pieceset', role: 'radio', dataset: { v: k }, 'aria-label': p.label },
+  const piecePicker = h('div', { class: 'hub-piecesets', role: 'radiogroup', 'aria-label': t('settings.pieceSet') },
+    Object.entries(PIECE_SETS).map(([k, p]) => h('button', { type: 'button', class: 'hub-pieceset', role: 'radio', dataset: { v: k }, 'aria-label': t(p.labelKey) },
       h('span', { class: 'hub-pieceset-row' }, ['wK', 'wQ', 'wN', 'bB', 'bR', 'bP'].map((c) => h('img', { src: pieceUrl(c, k), alt: '', width: '34', height: '34', loading: 'lazy', decoding: 'async' }))),
-      h('span', { class: 'hub-swatch-label' }, p.label))));
+      h('span', { class: 'hub-swatch-label' }, t(p.labelKey)))));
   bag.on(piecePicker, 'click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setSetting('pieceSet', b.dataset.v); });
   syncers.push((s) => markActive(piecePicker, s.pieceSet));
 
   // Animation speed: presets + fine slider.
-  const speedSeg = segmented('animationMs', SPEEDS, 'Animation speed');
-  const range = h('input', { type: 'range', class: 'range', min: '0', max: '1000', step: '20', 'aria-label': 'Animation duration in milliseconds' });
+  // Language: one button per supported language, labelled with its native name.
+  const langPicker = h('div', { class: 'segmented', role: 'radiogroup', 'aria-label': t('settings.language.title') },
+    Object.entries(LANGUAGES).map(([code, l]) => h('button', { type: 'button', role: 'radio', lang: code, dataset: { v: code }, 'aria-checked': String(code === getLanguage()), class: code === getLanguage() ? 'active' : null }, l.nativeName)));
+  bag.on(langPicker, 'click', (e) => {
+    const b = e.target.closest('button[data-v]');
+    if (b && b.dataset.v !== getLanguage()) setLanguage(b.dataset.v);
+  });
+  syncers.push((s) => markActive(langPicker, s.language));
+
+  const speedSeg = segmented('animationMs', SPEEDS.map(([v, k]) => [v, t(k)]), t('settings.animationSpeed'));
+  const range = h('input', { type: 'range', class: 'range', min: '0', max: '1000', step: '20', 'aria-label': t('settings.animationDuration') });
   const rangeVal = h('span', { class: 'muted text-sm tabular hub-range-val' });
   const setAnim = debounce((v) => setSetting('animationMs', v), 120);
   bag.add(setAnim.cancel);
-  bag.on(range, 'input', () => { rangeVal.textContent = `${range.value} ms`; setAnim(Number(range.value)); });
-  syncers.push((s) => { range.value = String(s.animationMs); rangeVal.textContent = `${s.animationMs} ms`; });
+  bag.on(range, 'input', () => { rangeVal.textContent = t('settings.ms', { ms: range.value }); setAnim(Number(range.value)); });
+  syncers.push((s) => { range.value = String(s.animationMs); rangeVal.textContent = t('settings.ms', { ms: s.animationMs }); });
 
   const notationExample = h('span', { class: 'muted text-sm mono' });
   syncers.push((s) => { notationExample.textContent = ['Nf3', 'Bb5', 'O-O', 'Qxd8+'].map((m) => formatSan(m, s.moveNotation)).join('  '); });
 
-  const testSoundBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('volume') + '<span>Test</span>' });
+  const testSoundBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('volume') + `<span>${t('settings.testSound')}</span>` });
   bag.on(testSoundBtn, 'click', async () => {
     try {
       const m = await import('../components/sound.js');
       m.playSound?.('move');
       bag.timeout(() => { try { m.playSound?.('capture'); } catch { /* ignore */ } }, 260);
-    } catch { toast('Sounds aren’t available yet', 'warning'); }
+    } catch { toast(t('settings.soundsUnavailable'), 'warning'); }
   });
 
   // ---- Preview board -----------------------------------------------------------
   const previewSlot = h('div', { class: 'hub-preview-board' });
-  const resetPreviewBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 16 }) + '<span>Reset</span>' });
+  const resetPreviewBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 16 }) + `<span>${t('common.reset')}</span>` });
   let board = null;
   let BoardCls = null;
   let previewFen = PREVIEW_FEN;
@@ -101,7 +113,7 @@ export async function mount(root) {
     const s = getSettings();
     if (board) { try { previewFen = board.getFen() || previewFen; } catch { /* ignore */ } board.destroy(); board = null; }
     previewSlot.replaceChildren();
-    if (!BoardCls) { previewSlot.innerHTML = fenBoardSvg(previewFen, { label: 'Board preview' }); return; }
+    if (!BoardCls) { previewSlot.innerHTML = fenBoardSvg(previewFen, { label: t('settings.boardPreview') }); return; }
     const holder = h('div', { class: 'hub-preview-inner' });
     previewSlot.appendChild(holder);
     try {
@@ -112,28 +124,28 @@ export async function mount(root) {
       });
     } catch (e) {
       console.error('[settings] preview board failed', e);
-      previewSlot.innerHTML = fenBoardSvg(previewFen, { label: 'Board preview' });
+      previewSlot.innerHTML = fenBoardSvg(previewFen, { label: t('settings.boardPreview') });
     }
   };
   const rebuildSoon = debounce(buildBoard, 150);
   bag.add(rebuildSoon.cancel);
   bag.on(resetPreviewBtn, 'click', () => { previewFen = PREVIEW_FEN; if (board) board.setPosition(PREVIEW_FEN, { animate: true }); else buildBoard(); });
-  previewSlot.innerHTML = fenBoardSvg(previewFen, { label: 'Board preview' });
+  previewSlot.innerHTML = fenBoardSvg(previewFen, { label: t('settings.boardPreview') });
   import('../components/board.js').then((m) => { if (bag.disposed) return; BoardCls = m.Board || null; buildBoard(); })
     .catch(() => { /* static preview stays */ });
 
   // ---- Danger zone -----------------------------------------------------------------
-  const resetSettingsBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('refresh') + '<span>Reset settings</span>' });
+  const resetSettingsBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('refresh') + `<span>${t('settings.reset.button')}</span>` });
   bag.on(resetSettingsBtn, 'click', async () => {
-    const ok = await confirmDialog({ title: 'Reset all settings?', message: 'Board theme, pieces, sounds and every other preference will go back to the defaults. Your games and progress are kept.', confirmLabel: 'Reset settings', danger: true });
+    const ok = await confirmDialog({ title: t('settings.reset.confirmTitle'), message: t('settings.reset.confirmMessage'), confirmLabel: t('settings.reset.button'), danger: true });
     if (!ok || bag.disposed) return;
     resetSettings();
-    toast('Settings restored to defaults', 'success');
+    toast(t('settings.reset.done'), 'success');
   });
 
-  const deleteGamesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('trash') + '<span>Delete all games</span>' });
+  const deleteGamesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('trash') + `<span>${t('settings.deleteGames.button')}</span>` });
   bag.on(deleteGamesBtn, 'click', async () => {
-    const ok = await confirmDialog({ title: 'Delete every saved game?', message: 'All games in your library, including their reviews, notes and tags, will be permanently deleted. This can’t be undone.', confirmLabel: 'Delete all games', danger: true });
+    const ok = await confirmDialog({ title: t('settings.deleteGames.confirmTitle'), message: t('settings.deleteGames.confirmMessage'), confirmLabel: t('settings.deleteGames.button'), danger: true });
     if (!ok || bag.disposed) return;
     deleteGamesBtn.classList.add('loading');
     let deleted = 0;
@@ -146,17 +158,20 @@ export async function mount(root) {
           deleted++;
         }
       }
-      toast(deleted ? `Deleted ${deleted} ${deleted === 1 ? 'game' : 'games'}` : 'Your library was already empty', 'success');
+      toast(deleted ? t('settings.deleteGames.done', { count: deleted }) : t('settings.deleteGames.alreadyEmpty'), 'success');
     } catch (e) {
-      if (!isAbort(e)) toast(`${e?.message || 'Could not delete games'}${deleted ? ` (${deleted} deleted)` : ''}`, 'error');
+      if (!isAbort(e)) {
+        const msg = e?.message || t('settings.deleteGames.failed');
+        toast(deleted ? t('settings.deleteGames.partial', { message: msg, count: deleted }) : msg, 'error');
+      }
     } finally {
       deleteGamesBtn.classList.remove('loading');
     }
   });
 
-  const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('x-circle') + '<span>Clear browser data</span>' });
+  const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('x-circle') + `<span>${t('settings.clearData.button')}</span>` });
   bag.on(clearLocalBtn, 'click', async () => {
-    const ok = await confirmDialog({ title: 'Clear data stored in this browser?', message: 'This removes GrandMentor preferences and any in-progress state saved in this browser, then reloads the app. Games stored on the server are not affected.', confirmLabel: 'Clear and reload', danger: true });
+    const ok = await confirmDialog({ title: t('settings.clearData.confirmTitle'), message: t('settings.clearData.confirmMessage'), confirmLabel: t('settings.clearData.confirmButton'), danger: true });
     if (!ok || bag.disposed) return;
     try {
       for (const store of [localStorage, sessionStorage]) {
@@ -170,37 +185,43 @@ export async function mount(root) {
 
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
-    pageHeader({ title: 'Settings', subtitle: 'Make the board look and feel just right', icon: 'settings' }),
+    pageHeader({ title: t('settings.title'), subtitle: t('settings.subtitle'), icon: 'settings' }),
     h('div', { class: 'hub-settings-layout' },
       h('div', { class: 'stack-lg hub-settings-main' },
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('palette') + '<span>Appearance</span>' })),
-          row('Theme', 'Dark is easy on the eyes; light is great in bright rooms.', segmented('theme', [['dark', 'Dark'], ['light', 'Light']], 'Color theme')),
-          h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, 'Board colors'), themePicker),
-          h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, 'Pieces'), piecePicker)),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('palette') + `<span>${t('settings.sections.appearance')}</span>` })),
+          h('div', { class: 'setting-row hub-language-row' },
+            h('div', { class: 'setting-row-text' },
+              h('div', { class: 'setting-row-title', html: icon('globe', { size: 18 }) + `<span>${t('settings.language.title')}</span>`, style: 'display:flex;align-items:center;gap:var(--sp-2)' }),
+              h('div', { class: 'setting-row-desc' }, t('settings.language.desc')),
+              h('div', { class: 'setting-row-desc subtle text-xs' }, t('settings.language.moreSoon'))),
+            langPicker),
+          row(t('settings.theme.title'), t('settings.theme.desc'), segmented('theme', [['dark', t('settings.theme.dark')], ['light', t('settings.theme.light')]], t('settings.theme.aria'))),
+          h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, t('settings.boardColors')), themePicker),
+          h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, t('settings.pieces')), piecePicker)),
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('board') + '<span>Board</span>' })),
-          row('Show coordinates', 'Letters (a–h) and numbers (1–8) on the board edge help you read moves.', toggle('showCoords', 'Show coordinates')),
-          row('Show legal moves', 'Dots show where the piece you picked up can go.', toggle('showLegal', 'Show legal moves')),
-          row('Always promote to a queen', 'Skip the promotion menu when a pawn reaches the last rank.', toggle('autoQueen', 'Auto-queen')),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('board') + `<span>${t('settings.sections.board')}</span>` })),
+          row(t('settings.coords.title'), t('settings.coords.desc'), toggle('showCoords', t('settings.coords.title'))),
+          row(t('settings.legal.title'), t('settings.legal.desc'), toggle('showLegal', t('settings.legal.title'))),
+          row(t('settings.autoQueen.title'), t('settings.autoQueen.desc'), toggle('autoQueen', t('settings.autoQueen.aria'))),
           h('div', { class: 'setting-row hub-setting-stack' },
-            h('div', { class: 'setting-row-text' }, h('div', { class: 'setting-row-title' }, 'Piece animation'), h('div', { class: 'setting-row-desc' }, 'How fast pieces slide across the board.')),
+            h('div', { class: 'setting-row-text' }, h('div', { class: 'setting-row-title' }, t('settings.animation.title')), h('div', { class: 'setting-row-desc' }, t('settings.animation.desc'))),
             h('div', { class: 'stack-sm hub-anim-ctl' }, speedSeg, h('div', { class: 'row-sm' }, range, rangeVal))),
-          row('Move notation', h('span', null, 'How moves are written. Example: ', notationExample), segmented('moveNotation', [['san', 'Letters'], ['figurine', 'Figurines']], 'Move notation'))),
+          row(t('settings.notation.title'), h('span', null, t('settings.notation.desc'), ' ', notationExample), segmented('moveNotation', [['san', t('settings.notation.letters')], ['figurine', t('settings.notation.figurines')]], t('settings.notation.title')))),
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + '<span>Playing</span>' })),
-          row('Evaluation bar', 'The bar beside the board that shows who is winning.', toggle('showEvalBar', 'Show evaluation bar')),
-          row('Sounds', 'Move, capture and check sounds.', h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', 'Sounds')))),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + `<span>${t('settings.sections.playing')}</span>` })),
+          row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria'))),
+          row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
         h('section', { class: 'card hub-danger' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + '<span>Danger zone</span>' })),
-          row('Reset settings', 'Go back to the default look and behaviour.', resetSettingsBtn),
-          row('Delete all games', 'Permanently remove every game in your library.', deleteGamesBtn),
-          row('Clear browser data', 'Forget preferences saved in this browser and reload.', clearLocalBtn))),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
+          row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),
+          row(t('settings.deleteGames.button'), t('settings.deleteGames.desc'), deleteGamesBtn),
+          row(t('settings.clearData.button'), t('settings.clearData.desc'), clearLocalBtn))),
       h('aside', { class: 'hub-settings-aside' },
         h('div', { class: 'card hub-preview-card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('eye') + '<span>Live preview</span>' }), resetPreviewBtn),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('eye') + `<span>${t('settings.preview.title')}</span>` }), resetPreviewBtn),
           previewSlot,
-          h('p', { class: 'subtle text-xs mt-2' }, 'Try moving a piece — changes apply instantly.')))));
+          h('p', { class: 'subtle text-xs mt-2' }, t('settings.preview.hint'))))));
   root.appendChild(page);
 
   const syncAll = () => { const s = getSettings(); for (const fn of syncers) fn(s); };
@@ -208,7 +229,7 @@ export async function mount(root) {
   bag.add(onSettingsChange((s, key) => {
     syncAll();
     if (RECREATE_KEYS.has(key)) {
-      if (key === 'pieceSet' && !board) previewSlot.innerHTML = fenBoardSvg(previewFen, { label: 'Board preview', pieceSet: s.pieceSet });
+      if (key === 'pieceSet' && !board) previewSlot.innerHTML = fenBoardSvg(previewFen, { label: t('settings.boardPreview'), pieceSet: s.pieceSet });
       else rebuildSoon();
     }
   }));

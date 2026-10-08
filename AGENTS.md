@@ -64,6 +64,7 @@ These rules are mandatory.
 - Use the design tokens and classes from `docs/STYLEGUIDE.md` and the helpers in `web/js/ui.js`; don't hard-code colours.
 - Keep it dependency-free; don't add a bundler or framework.
 - Beginner-friendly copy: short, warm and jargon-free.
+- **Every user-visible string goes through `t()`** (`web/js/i18n.js`) with keys in `web/locales/en/` **and** `web/locales/es/`. Never hard-code UI text, and never call `t()` at module top level. Server-generated text takes the request's `Lang`. See [`docs/I18N.md`](docs/I18N.md).
 
 **Content (`data/*.json`)**
 - Every move must be legal; `cargo test -p gm-content` must pass and the loader must not drop any entry.
@@ -75,4 +76,5 @@ These rules are mandatory.
 - [ ] All `web/js` files pass the module syntax check
 - [ ] UI changes checked in a real browser (desktop and ~390px mobile), no console errors
 - [ ] `docs/CONTRACT.md` updated if an interface changed
+- [ ] New UI text translated in every language under `web/locales/` (English is the fallback)
 - [ ] PR targets `dev`, has an **In plain words** section and screenshot/GIF evidence

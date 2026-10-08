@@ -16,8 +16,8 @@ const MAX_SCAN_PLIES: usize = 60;
 pub struct BookCandidate {
     pub uci: String,
     pub weight: f64,
-    /// Name of the opening this move completes, if any.
-    pub name: Option<String>,
+    /// Id of the opening this move completes, if any.
+    pub opening_id: Option<String>,
 }
 
 fn contains_any(hay: &str, needles: &[&str]) -> bool {
@@ -95,14 +95,14 @@ pub fn candidates(content: &Content, pos: &Chess, style: Style) -> Vec<BookCandi
                 match out.iter_mut().find(|c| &c.uci == u) {
                     Some(c) => {
                         c.weight += w;
-                        if completes && c.name.is_none() {
-                            c.name = Some(o.name.clone());
+                        if completes && c.opening_id.is_none() {
+                            c.opening_id = Some(o.id.clone());
                         }
                     }
                     None => out.push(BookCandidate {
                         uci: u.clone(),
                         weight: w,
-                        name: completes.then(|| o.name.clone()),
+                        opening_id: completes.then(|| o.id.clone()),
                     }),
                 }
             }
@@ -113,8 +113,8 @@ pub fn candidates(content: &Content, pos: &Chess, style: Style) -> Vec<BookCandi
     out
 }
 
-/// Name of the deepest opening whose final position is `pos` (for chat flavor).
-pub fn opening_name_at(content: &Content, pos: &Chess) -> Option<String> {
+/// Id of the deepest opening whose final position is `pos` (for chat flavor).
+pub fn opening_id_at(content: &Content, pos: &Chess) -> Option<String> {
     let target = hash(pos);
     content
         .openings
@@ -129,5 +129,5 @@ pub fn opening_name_at(content: &Content, pos: &Chess) -> Option<String> {
             hash(&p) == target
         })
         .max_by_key(|o| (o.uci.len(), o.popularity))
-        .map(|o| o.name.clone())
+        .map(|o| o.id.clone())
 }

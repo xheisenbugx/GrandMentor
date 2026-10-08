@@ -1,6 +1,8 @@
 // GrandMentor REST client + EngineClient (live analysis websocket).
 // Contract: docs/CONTRACT.md §4–§5.
 
+import { getSetting } from './settings.js';
+
 const DEFAULT_TIMEOUT_MS = 60000;
 
 /** Error thrown by api.* on network failures or non-2xx responses. */
@@ -25,7 +27,7 @@ async function request(method, path, body, opts = {}) {
     else outer.addEventListener('abort', onOuterAbort, { once: true });
   }
 
-  const init = { method, headers: { Accept: 'application/json' }, signal: ctrl.signal };
+  const init = { method, headers: { Accept: 'application/json', 'Accept-Language': getSetting('language') || 'en' }, signal: ctrl.signal };
   if (body !== undefined) {
     init.headers['Content-Type'] = 'application/json';
     init.body = JSON.stringify(body);

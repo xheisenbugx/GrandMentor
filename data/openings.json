@@ -4767,7 +4767,7 @@
   "side": "black",
   "popularity": 5,
   "level": "intermediate",
-  "description": "Black plays a Sicilian with colors reversed. White has an extra tempo in a Sicilian-like structure.",
+  "description": "White plays a Sicilian with colors reversed, so White has an extra tempo in a Sicilian-like structure.",
   "ideas": [
    "...Nc6, ...Nf6, ...d5 or ...g6",
    "Central control",

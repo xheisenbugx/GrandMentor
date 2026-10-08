@@ -9,8 +9,9 @@ import {
   ensureLearnCss, START_FEN, chessAt, applyUci, isSameMove, sideToMove, playLine, timerSet,
   confetti, flashClass, sfx, setFeedback, breadcrumbs, rememberLesson, errorBlock, CATEGORIES,
 } from './learn.js';
+import { t } from '../i18n.js';
 
-export const title = 'Lesson';
+export const title = () => t('lesson.title');
 
 const ARROW_COLORS = new Set(['green', 'red', 'blue', 'yellow']);
 const REPLY_DELAY_MS = 550;
@@ -48,7 +49,7 @@ export async function mount(root, { params = {} } = {}) {
   const lessonId = params.lessonId;
   const courseHref = `#/learn/${encodeURIComponent(courseId)}`;
 
-  root.appendChild(loadingBlock('Opening your lesson…'));
+  root.appendChild(loadingBlock(t('lesson.loading')));
 
   let course;
   try {
@@ -56,7 +57,7 @@ export async function mount(root, { params = {} } = {}) {
   } catch (e) {
     if (isAbort(e) || bag.disposed) return () => bag.dispose();
     root.replaceChildren(h('div', { class: 'page' }, e && e.status === 404
-      ? emptyState({ emoji: '🔍', title: 'Course not found', text: 'This course does not exist (anymore).', action: { label: 'Back to Learn', href: '#/learn' } })
+      ? emptyState({ emoji: '🔍', title: t('learn.course.notFound'), text: t('learn.course.notFoundText'), action: { label: t('learn.error.backToLearn'), href: '#/learn' } })
       : errorBlock(e && e.message)));
     return () => bag.dispose();
   }
@@ -66,11 +67,11 @@ export async function mount(root, { params = {} } = {}) {
   const lessonIdx = lessons.findIndex((l) => l.id === lessonId);
   const lesson = lessons[lessonIdx];
   if (!lesson) {
-    root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: 'Lesson not found', text: 'We could not find this lesson in the course.', action: { label: 'Back to course', href: courseHref } })));
+    root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: t('lesson.notFound'), text: t('lesson.notFoundText'), action: { label: t('lesson.backToCourse'), href: courseHref } })));
     return () => bag.dispose();
   }
   const nextLesson = lessons[lessonIdx + 1] || null;
-  const steps = prepareSteps(Array.isArray(lesson.steps) && lesson.steps.length ? lesson.steps : [{ text: lesson.summary || 'This lesson has no steps yet.' }]);
+  const steps = prepareSteps(Array.isArray(lesson.steps) && lesson.steps.length ? lesson.steps : [{ text: lesson.summary || t('lesson.noSteps') }]);
   rememberLesson(course.id, lesson.id, 0);
 
   // -------------------------------------------------------------------------
@@ -79,11 +80,11 @@ export async function mount(root, { params = {} } = {}) {
   const cat = CATEGORIES.find((c) => c.key === course.category);
   const stepCount = h('span', { class: 'lrn-step-count' });
   const progressBar = h('div', { class: 'progress-bar', style: 'width:0%' });
-  const closeBtn = h('a', { class: 'btn btn-ghost btn-icon', href: courseHref, 'aria-label': 'Close lesson', 'data-tooltip': 'Back to course', html: icon('close') });
+  const closeBtn = h('a', { class: 'btn btn-ghost btn-icon', href: courseHref, 'aria-label': t('lesson.closeAria'), 'data-tooltip': t('lesson.backToCourse'), html: icon('close') });
   const top = h('div', { class: 'lrn-player-top' },
-    breadcrumbs([{ label: 'Learn', href: '#/learn' }, { label: course.title, href: courseHref }, { label: lesson.title }]),
+    breadcrumbs([{ label: t('learn.title'), href: '#/learn' }, { label: course.title, href: courseHref }, { label: lesson.title }]),
     stepCount,
-    h('div', { class: 'progress progress-sm', role: 'progressbar', 'aria-label': 'Lesson progress' }, progressBar),
+    h('div', { class: 'progress progress-sm', role: 'progressbar', 'aria-label': t('lesson.progressAria') }, progressBar),
     closeBtn);
 
   const boardSlot = h('div', { class: 'board-slot' });
@@ -96,10 +97,10 @@ export async function mount(root, { params = {} } = {}) {
     h('div', { class: 'lrn-coach' }, h('div', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, '🎓'), textEl),
     taskEl, feedbackEl);
 
-  const backBtn = h('button', { class: 'btn btn-secondary', type: 'button', html: icon('chevron-left') + '<span>Back</span>', onClick: () => go(-1) });
-  const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + '<span>Hint</span>', onClick: () => showHint() });
-  const retryBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + '<span>Retry</span>', onClick: () => enterStep(cur) });
-  const nextBtn = h('button', { class: 'btn btn-primary', type: 'button', html: '<span>Next</span>' + icon('chevron-right'), onClick: () => go(1) });
+  const backBtn = h('button', { class: 'btn btn-secondary', type: 'button', html: icon('chevron-left') + `<span>${escapeHtml(t('lesson.back'))}</span>`, onClick: () => go(-1) });
+  const hintBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + `<span>${escapeHtml(t('lesson.hint'))}</span>`, onClick: () => showHint() });
+  const retryBtn = h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('lesson.retry'))}</span>`, onClick: () => enterStep(cur) });
+  const nextBtn = h('button', { class: 'btn btn-primary', type: 'button', html: `<span>${escapeHtml(t('lesson.next'))}</span>` + icon('chevron-right'), onClick: () => go(1) });
   const footer = h('div', { class: 'panel-footer lrn-nav' }, backBtn, hintBtn, retryBtn, nextBtn);
 
   const panelHeader = h('div', { class: 'panel-header' },
@@ -164,9 +165,9 @@ export async function mount(root, { params = {} } = {}) {
     if (step.task) {
       const side = sideToMove(step.fen);
       taskEl.hidden = false;
-      taskEl.innerHTML = `<div class="lrn-task-label">${icon('target')}<span>Your turn</span>`
-        + `<span class="lrn-turn ${side}" aria-hidden="true"></span><span>${side === 'white' ? 'White' : 'Black'} to move</span></div>`
-        + `<div class="lrn-task-prompt md">${mdLite(step.task.prompt || 'Find the best move.')}</div>`;
+      taskEl.innerHTML = `<div class="lrn-task-label">${icon('target')}<span>${escapeHtml(t('lesson.yourTurn'))}</span>`
+        + `<span class="lrn-turn ${side}" aria-hidden="true"></span><span>${escapeHtml(t(side === 'white' ? 'lesson.whiteToMove' : 'lesson.blackToMove'))}</span></div>`
+        + `<div class="lrn-task-prompt md">${mdLite(step.task.prompt || t('lesson.defaultPrompt'))}</div>`;
       board.setInteractive(true, side);
     } else {
       taskEl.hidden = true;
@@ -183,15 +184,15 @@ export async function mount(root, { params = {} } = {}) {
     const step = steps[cur];
     const pct = ((cur + (step.task && !solved ? 0 : 1)) / steps.length) * 100;
     progressBar.style.width = `${pct.toFixed(1)}%`;
-    stepCount.textContent = `Step ${cur + 1} of ${steps.length}`;
+    stepCount.textContent = t('lesson.stepCount', { n: cur + 1, total: steps.length });
     backBtn.disabled = cur === 0;
     const needsSolve = !!step.task && !solved;
     hintBtn.hidden = !step.task || solved;
     retryBtn.hidden = !step.task || !solved;
     nextBtn.disabled = needsSolve;
-    nextBtn.title = needsSolve ? 'Solve the task to continue' : '';
+    nextBtn.title = needsSolve ? t('lesson.solveToContinue') : '';
     const last = cur === steps.length - 1;
-    nextBtn.innerHTML = last ? icon('check') + '<span>Finish</span>' : '<span>Next</span>' + icon('chevron-right');
+    nextBtn.innerHTML = last ? icon('check') + `<span>${escapeHtml(t('lesson.finish'))}</span>` : `<span>${escapeHtml(t('lesson.next'))}</span>` + icon('chevron-right');
     nextBtn.classList.toggle('ready', !!step.task && solved);
   }
 
@@ -237,7 +238,7 @@ export async function mount(root, { params = {} } = {}) {
       } else {
         busy = true;
         board.setInteractive(false, null);
-        setFeedback(feedbackEl, 'good', 'Correct! Now watch the reply…');
+        setFeedback(feedbackEl, 'good', escapeHtml(t('lesson.correctWatch')));
         sfx('correct');
         timers.later(playReply, REPLY_DELAY_MS);
       }
@@ -251,7 +252,7 @@ export async function mount(root, { params = {} } = {}) {
       board.setHighlights([{ square: mv.to, kind: 'bad' }]);
       timers.later(() => { if (!solved) board.setHighlights(idx === 0 ? stepHighlights(step) : []); }, 650);
     }
-    setFeedback(feedbackEl, 'bad', '<strong>Not quite — try again.</strong> Stuck? Press <strong>Hint</strong>.');
+    setFeedback(feedbackEl, 'bad', t('lesson.wrong'));
     return false;
   }
 
@@ -270,7 +271,7 @@ export async function mount(root, { params = {} } = {}) {
     busy = false;
     if (idx >= sol.length) { onSolved(); return; }
     board.setInteractive(true, sideToMove(curFen));
-    setFeedback(feedbackEl, 'info', `${m.color === 'w' ? 'White' : 'Black'} replied <strong>${escapeHtml(m.san)}</strong>. Your move!`);
+    setFeedback(feedbackEl, 'info', t(m.color === 'w' ? 'lesson.whiteReplied' : 'lesson.blackReplied', { san: escapeHtml(m.san) }));
   }
 
   function onSolved() {
@@ -279,7 +280,7 @@ export async function mount(root, { params = {} } = {}) {
     busy = false;
     board.setInteractive(false, null);
     board.clearArrows();
-    setFeedback(feedbackEl, 'good', mdLite(step.task && step.task.success ? step.task.success : 'Well done!'));
+    setFeedback(feedbackEl, 'good', mdLite(step.task && step.task.success ? step.task.success : t('lesson.wellDone')));
     sfx('correct');
     flashClass(boardWrap, 'flash-good', timers, 900);
     confetti(boardSlot, timers, { count: 28 });
@@ -295,13 +296,13 @@ export async function mount(root, { params = {} } = {}) {
     if (hintStage === 0) {
       hintStage = 1;
       board.setHighlights([{ square: from, kind: 'hint' }]);
-      const text = idx === 0 && step.task.hint ? mdLite(step.task.hint) : 'Look at the highlighted piece — it wants to move.';
+      const text = idx === 0 && step.task.hint ? mdLite(step.task.hint) : escapeHtml(t('lesson.hintPiece'));
       setFeedback(feedbackEl, 'warn', text);
     } else {
       hintStage = 2;
       board.setHighlights([{ square: from, kind: 'hint' }]);
       board.setArrows([{ from, to, color: 'green' }]);
-      setFeedback(feedbackEl, 'warn', 'Play the move shown by the green arrow.');
+      setFeedback(feedbackEl, 'warn', escapeHtml(t('lesson.hintArrow')));
     }
   }
 
@@ -314,29 +315,29 @@ export async function mount(root, { params = {} } = {}) {
     rememberLesson(course.id, lesson.id, 0);
 
     const nextHref = nextLesson ? `#/learn/${encodeURIComponent(course.id)}/${encodeURIComponent(nextLesson.id)}` : courseHref;
-    const status = h('p', { class: 'text-sm subtle' }, 'Saving your progress…');
+    const status = h('p', { class: 'text-sm subtle' }, t('lesson.saving'));
     const card = h('div', { class: 'lrn-complete' },
       h('div', { class: 'lrn-complete-badge', html: icon('check') }),
-      h('h2', null, 'Lesson complete!'),
-      h('p', null, nextLesson ? `Up next: ${nextLesson.title}` : `You finished the last lesson of “${course.title}”.`),
+      h('h2', null, t('lesson.complete')),
+      h('p', null, nextLesson ? t('lesson.upNext', { title: nextLesson.title }) : t('lesson.finishedCourse', { course: course.title })),
       status,
       h('div', { class: 'lrn-nav' },
-        h('a', { class: 'btn btn-primary btn-lg', href: nextHref, html: nextLesson ? '<span>Next lesson</span>' + icon('chevron-right') : icon('trophy') + '<span>Back to course</span>' }),
-        nextLesson ? h('a', { class: 'btn btn-secondary', href: courseHref, html: icon('list') + '<span>Back to course</span>' }) : h('a', { class: 'btn btn-secondary', href: '#/learn', html: icon('learn') + '<span>More courses</span>' }),
-        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + '<span>Replay lesson</span>', onClick: () => { completed = false; restoreBody(); enterStep(0); } })));
+        h('a', { class: 'btn btn-primary btn-lg', href: nextHref, html: nextLesson ? `<span>${escapeHtml(t('lesson.nextLesson'))}</span>` + icon('chevron-right') : icon('trophy') + `<span>${escapeHtml(t('lesson.backToCourse'))}</span>` }),
+        nextLesson ? h('a', { class: 'btn btn-secondary', href: courseHref, html: icon('list') + `<span>${escapeHtml(t('lesson.backToCourse'))}</span>` }) : h('a', { class: 'btn btn-secondary', href: '#/learn', html: icon('learn') + `<span>${escapeHtml(t('lesson.moreCourses'))}</span>` }),
+        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('lesson.replay'))}</span>`, onClick: () => { completed = false; restoreBody(); enterStep(0); } })));
 
     body.replaceChildren(card);
     footer.hidden = true;
-    stepCount.textContent = 'Completed';
+    stepCount.textContent = t('lesson.completed');
     sfx('gameEnd');
     confetti(boardSlot, timers, { count: 48 });
 
     try {
       await api.post('/api/progress', { course_id: course.id, lesson_id: lesson.id, completed: true }, { signal: ctrl.signal });
-      if (!bag.disposed) status.textContent = 'Progress saved ✓';
+      if (!bag.disposed) status.textContent = t('lesson.saved');
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
-      status.textContent = 'Could not save progress — is the server running?';
+      status.textContent = t('lesson.saveFailed');
       status.classList.add('text-danger');
     }
   }
@@ -349,8 +350,8 @@ export async function mount(root, { params = {} } = {}) {
   // Keyboard: ← / → step through the lesson (Enter = next when ready).
   bag.on(window, 'keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const t = e.target;
-    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const tgt = e.target;
+    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
     if (document.querySelector('.modal-backdrop')) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }

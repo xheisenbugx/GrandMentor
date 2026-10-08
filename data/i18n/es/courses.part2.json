@@ -1,0 +1,707 @@
+{
+  "openings-for-black": {
+    "title": "Aperturas populares con negras",
+    "description": "Contraataca desde la primera jugada. Aprende la Siciliana y la Caro-Kann contra 1.e4, la clásica 1...e5, y la dinámica India de Rey y el sólido Gambito de Dama Rehusado contra 1.d4.",
+    "lessons": {
+      "sicilian-defense": {
+        "title": "La Defensa Siciliana",
+        "summary": "La respuesta más popular y combativa a 1.e4.",
+        "steps": [
+          {
+            "text": "**1...c5**, la **Defensa Siciliana**, lucha por d4 con un peón de flanco. La posición se vuelve desequilibrada: las blancas suelen atacar en el flanco de rey, y las negras contraatacan en el flanco de dama y por la **columna c** semiabierta."
+          },
+          {
+            "text": "Juega la Siciliana Abierta, Variante Najdorf: la elección de Fischer y Kaspárov.",
+            "task": {
+              "prompt": "Juega ...c5, ...d6, ...cxd4, ...Nf6 y ...a6.",
+              "hint": "c5, luego d6, captura en d4 con el peón c, desarrolla el caballo a f6 y termina con la flexible ...a6.",
+              "success": "¡La Najdorf! ...a6 controla b5 y prepara ...e5 o ...b5."
+            }
+          },
+          {
+            "text": "**La Dragón**: las negras fianchetan el alfil en g7, desde donde escupe fuego por la gran diagonal hacia el flanco de dama blanco."
+          },
+          {
+            "text": "**Ideas clave de las negras en la Siciliana:**\n\n- La ruptura **...d5** libera el juego de las negras.\n- Aprovecha la **columna c** con una torre en c8.\n- Cambiar en c3 (...Rxc3!) es un sacrificio de calidad típico para destrozar el enroque blanco.\n- No abras el centro mientras tu rey siga sin enrocar."
+          },
+          {
+            "text": "**Contra la Alapin (2.c3)**, golpea el centro de inmediato con ...d5 o ...Nf6.",
+            "task": {
+              "prompt": "Golpea en el centro con tu peón d.",
+              "hint": "Avanza el peón d dos casillas para desafiar e4 de inmediato.",
+              "success": "¡Correcto! Tras exd5 Qxd5, las blancas no pueden jugar Nc3 para perseguir a tu dama porque el peón de c3 estorba."
+            }
+          }
+        ]
+      },
+      "caro-kann": {
+        "title": "La Defensa Caro-Kann",
+        "summary": "Estructura sólida como una roca con juego activo de piezas.",
+        "steps": [
+          {
+            "text": "**1...c6** prepara **...d5** con apoyo de peón. La Caro-Kann es sólida como la Defensa Francesa, pero el alfil de casillas blancas de las negras sale antes de jugar ...e6."
+          },
+          {
+            "text": "Juega la Variante Clásica.",
+            "task": {
+              "prompt": "Juega ...c6, ...d5, ...dxe4 y ...Bf5.",
+              "hint": "Primero c6, luego d5. Captura en e4 y desarrolla el alfil a f5 ganando un tiempo sobre el caballo.",
+              "success": "¡La Caro-Kann Clásica! El alfil está activo y la posición negra es muy sólida."
+            }
+          },
+          {
+            "text": "**La Variante del Avance** (3.e5) gana espacio. Las negras desarrollan el alfil a **f5** y luego golpean la cadena blanca con **...c5**."
+          },
+          {
+            "text": "**¡Cuidado con la trampa del mate de la coz!** Tras 4...Nd7 5.Qe2, la natural 5...Ngf6?? cae en 6.Nd6#: el peón de e7 no puede capturar porque está clavado por la dama."
+          },
+          {
+            "text": "Evita la trampa de la Caro-Kann.",
+            "task": {
+              "prompt": "Lleva un caballo a f6 sin permitir Nd6#: juega ...Ndf6.",
+              "hint": "Mueve el caballo de d7 a f6. Así d6 sigue cubierta por el peón de e7: ¡nada de mate de la coz!",
+              "success": "Sano y salvo. El peón de e7 sigue vigilando d6, así que Nd6# es imposible."
+            }
+          }
+        ]
+      },
+      "open-games-black": {
+        "title": "Responder a 1.e4 con 1...e5",
+        "summary": "Clásica, con principios y llena de trampas.",
+        "steps": [
+          {
+            "text": "**1...e5** es la respuesta más clásica. Lucha por el centro y abre líneas para la dama y el alfil. Debes saber cómo afrontar la Italiana, la Española y los gambitos."
+          },
+          {
+            "text": "Elige la activa **Defensa de los Dos Caballos** contra la Italiana.",
+            "task": {
+              "prompt": "Juega ...e5, ...Nc6 y ...Nf6.",
+              "hint": "Peón central y después ambos caballos.",
+              "success": "¡Los Dos Caballos! Contraatacas e4 en lugar de defenderte pasivamente."
+            }
+          },
+          {
+            "text": "Tras 4.Ng5 d5 5.exd5, **no** recaptures con 5...Nxd5? (¡el Fried Liver!). La línea principal es **5...Na5**, atacando al alfil de c4."
+          },
+          {
+            "text": "Evita el Fried Liver.",
+            "task": {
+              "prompt": "Ataca al alfil con tu caballo de c6.",
+              "hint": "Tu caballo salta a la banda; aquí está justificado porque ataca al alfil de c4.",
+              "success": "¡Correcto! Las negras entregan un peón a cambio de un desarrollo rápido y la iniciativa."
+            }
+          },
+          {
+            "text": "Contra la Española, la **Defensa Berlinesa** (3...Nf6) y la **Defensa Morphy** (3...a6) son las respuestas más fiables. En el final de la Berlinesa las damas se cambian pronto y las negras quedan increíblemente sólidas."
+          }
+        ]
+      },
+      "kings-indian": {
+        "title": "La Defensa India de Rey",
+        "summary": "Deja que las blancas construyan un centro… y luego hazlo saltar por los aires.",
+        "steps": [
+          {
+            "text": "En la **Defensa India de Rey**, las negras permiten a las blancas un gran centro, se enrocan rápido tras un alfil fianchetado y luego atacan el centro con **...e5** o **...c5**."
+          },
+          {
+            "text": "Monta la India de Rey.",
+            "task": {
+              "prompt": "Juega ...Nf6, ...g6, ...Bg7, ...d6 y enroca.",
+              "hint": "Caballo a f6, fianchetto con ...g6 y ...Bg7, luego ...d6 y enroque corto.",
+              "success": "Un esquema de India de Rey perfecto. Ahora toca golpear el centro."
+            }
+          },
+          {
+            "text": "Golpea el centro.",
+            "task": {
+              "prompt": "Desafía el centro blanco con tu peón e.",
+              "hint": "Avanza el peón e dos casillas para atacar d4.",
+              "success": "¡Esa es la línea principal! Empieza la batalla por el centro."
+            }
+          },
+          {
+            "text": "**El plan Mar del Plata**: tras d5 el centro se cierra. Las negras apartan el caballo y avanzan **...f5–f4** y **...g5–g4**, lanzando una avalancha de peones contra el rey blanco mientras las blancas atacan en el flanco de dama."
+          }
+        ]
+      },
+      "queens-gambit-declined": {
+        "title": "El Gambito de Dama Rehusado",
+        "summary": "La respuesta más sólida a 1.d4.",
+        "steps": [
+          {
+            "text": "**1.d4 d5 2.c4 e6** rehúsa el gambito y mantiene un peón fuerte en d5. El principal problema de las negras es el alfil de casillas blancas de c8, bloqueado por e6. Planes como **...b6 + ...Bb7** o las rupturas **...c5 / ...e5** lo resuelven."
+          },
+          {
+            "text": "Juega el Gambito de Dama Rehusado clásico.",
+            "task": {
+              "prompt": "Juega ...d5, ...e6, ...Nf6, ...Be7 y enroca.",
+              "hint": "d5, e6, caballo a f6, desclava con Be7 y enroca.",
+              "success": "Sólido como una roca. El rey negro está seguro y d5 se mantiene firme."
+            }
+          },
+          {
+            "text": "**Maniobra liberadora:** ...Ne4 cambia piezas para aliviar la presión (la Defensa Lasker).",
+            "task": {
+              "prompt": "Cambia piezas con la maniobra Lasker.",
+              "hint": "Salta con el caballo de f6 a e4.",
+              "success": "Tras Bxe7 Qxe7, las negras han cambiado dos parejas de piezas menores y están muy cómodas."
+            }
+          },
+          {
+            "text": "Recuerda la **Trampa del Elefante** del curso de táctica: si las blancas capturan el peón de d5 con Nxd5 mientras el caballo de f6 está clavado, ¡...Nxd5! gana una pieza."
+          }
+        ]
+      }
+    }
+  },
+  "middlegame-strategy": {
+    "title": "Estrategia de medio juego",
+    "description": "Qué hacer cuando no hay táctica. Comprende las estructuras de peones, las casillas fuertes y débiles, las columnas abiertas, los alfiles buenos y malos, la actividad de las piezas y cómo trazar un plan.",
+    "lessons": {
+      "pawn-structure": {
+        "title": "Estructura de peones",
+        "summary": "Los peones son el alma del ajedrez.",
+        "steps": [
+          {
+            "text": "«Los peones son el alma del ajedrez» — Philidor. Los peones no pueden retroceder, así que cada jugada de peón crea fortalezas y debilidades **permanentes**. Aprende a reconocer:\n\n- **Peones aislados** (sin peones propios en las columnas vecinas)\n- **Peones doblados** (dos peones en la misma columna)\n- **Peones retrasados** (no pueden ser apoyados por otros peones)\n- **Peones pasados** (ningún peón rival puede detenerlos)"
+          },
+          {
+            "text": "**El peón de dama aislado (PDA).** El peón blanco de d4 no tiene vecinos. Da a las blancas espacio y piezas activas (casillas fuertes en e5 y c5), pero en el final se convierte en una debilidad.\n\nLa casilla **delante** de un peón aislado es el hogar perfecto para una pieza rival: nada puede expulsarla."
+          },
+          {
+            "text": "Lucha contra el peón aislado.",
+            "task": {
+              "prompt": "Bloquea el peón aislado: coloca un caballo en la casilla de delante.",
+              "hint": "El caballo de f6 puede saltar a d5.",
+              "success": "¡Un bloqueo sólido como una roca! Ningún peón blanco podrá atacar nunca a tu caballo de d5."
+            }
+          },
+          {
+            "text": "**¡Los peones pasados deben avanzar!** (Nimzowitsch). Un peón pasado ata a las piezas rivales, y cuanto más avanza, más fuerte se vuelve. Un peón pasado **protegido** (defendido por otro peón) es especialmente fuerte."
+          },
+          {
+            "text": "Aprovecha tus peones pasados.",
+            "task": {
+              "prompt": "Avanza tus peones pasados unidos: juega c6 y luego d6.",
+              "hint": "Avanza primero el peón c y luego pon el peón d a su lado. Juntos se protegen mutuamente.",
+              "success": "Los peones pasados unidos avanzan juntos como una apisonadora. ¡El rey negro no puede detener a los dos!"
+            }
+          }
+        ]
+      },
+      "outposts-weak-squares": {
+        "title": "Casillas fuertes y casillas débiles",
+        "summary": "Encuentra agujeros en el campo rival y ocúpalos.",
+        "steps": [
+          {
+            "text": "Una **casilla débil** (o **agujero**) es una casilla que ya no puede ser defendida por un peón. Una **casilla fuerte** (puesto avanzado) es una casilla débil en el campo rival, idealmente protegida por un peón propio, donde tu pieza no puede ser expulsada.\n\n¡A los caballos les encantan las casillas fuertes!"
+          },
+          {
+            "text": "En esta Siciliana Najdorf, la jugada ...e5 de las negras dejó un agujero en **d5**. Las piezas blancas quieren ocuparlo.",
+            "task": {
+              "prompt": "Ocupa la casilla fuerte de d5.",
+              "hint": "¿Qué caballo puede llegar a d5 de un salto?",
+              "success": "¡Un caballo monstruoso en d5! Si las negras lo capturan, las blancas recapturan con el peón e y obtienen un peón pasado protegido."
+            }
+          },
+          {
+            "text": "**Crear casillas débiles**: cada avance de peón renuncia al control de algunas casillas. Tras ...g6, las casillas negras **f6** y **h6** alrededor del rey negro se debilitan, sobre todo si se cambia el alfil de g7."
+          },
+          {
+            "text": "**Regla práctica**: no avances peones sin un buen motivo. Cada jugada de peón es permanente; asegúrate de que las casillas que deja atrás no le sirvan al rival."
+          }
+        ]
+      },
+      "open-files": {
+        "title": "Columnas abiertas y la séptima fila",
+        "summary": "Donde las torres se vuelven monstruos.",
+        "steps": [
+          {
+            "text": "Una **columna abierta** no tiene peones. Las torres pertenecen a las columnas abiertas, desde donde pueden penetrar en la posición rival. **Doblar las torres** en una columna abierta las hace aún más fuertes.\n\nUna columna **semiabierta** solo tiene peones rivales; también es excelente para las torres."
+          },
+          {
+            "text": "La columna d es la única columna abierta.",
+            "task": {
+              "prompt": "Coloca tu torre de a1 en la columna d abierta.",
+              "hint": "Desliza la torre de a1 a d1.",
+              "success": "¡Bien! Ahora la torre de f1 puede unirse a ella en la columna d o apoyar e4 más adelante."
+            }
+          },
+          {
+            "text": "Una torre en la **séptima fila** (la 7.ª para las blancas, la 2.ª para las negras) ataca peones que solo pueden ser defendidos por piezas y corta al rey rival. Dos torres en séptima suelen ser decisivas."
+          },
+          {
+            "text": "La torre negra está pasiva en c8. La columna d es tuya.",
+            "task": {
+              "prompt": "Invade la séptima fila con tu torre.",
+              "hint": "Usa la columna d abierta para llegar a d7.",
+              "success": "La torre de d7 ataca a7 y f7 y ata a las negras. ¡Ese es el poder de la séptima fila!"
+            }
+          }
+        ]
+      },
+      "bishops": {
+        "title": "Alfiles buenos, alfiles malos y la pareja de alfiles",
+        "summary": "No todos los alfiles son iguales.",
+        "steps": [
+          {
+            "text": "Un **alfil malo** está bloqueado por sus propios peones situados en casillas de su color. Un **alfil bueno** tiene sus peones en el color contrario y se mueve libremente.\n\nEn la Defensa Francesa, el alfil de casillas blancas de c8 de las negras suele ser malo: los peones de e6 y d5 lo bloquean."
+          },
+          {
+            "text": "**Solución**: ¡cambia el alfil malo! Las negras preparan ...b6 y ...Ba6 para cambiarlo por el alfil bueno de las blancas.",
+            "task": {
+              "prompt": "Ofrece el cambio de tu alfil malo con ...Ba6.",
+              "hint": "El alfil de c8 va a a6, donde se enfrenta al alfil blanco de f1.",
+              "success": "Muy listo: las negras cambian su alfil malo por el alfil bueno de las blancas."
+            }
+          },
+          {
+            "text": "**La pareja de alfiles** —dos alfiles contra alfil y caballo o contra dos caballos— es una ventaja real en posiciones **abiertas**. Juntos cubren ambos colores y barren el tablero.\n\nSi tienes la pareja de alfiles, abre la posición. Si te enfrentas a ella, mantenla cerrada."
+          },
+          {
+            "text": "**Caballos contra alfiles**: los caballos son mejores en posiciones **cerradas**, con cadenas de peones bloqueadas y casillas fuertes. Los alfiles prefieren posiciones abiertas con peones en ambos flancos.\n\nAquí el alfil de casillas blancas de las negras es **malo**: sus propios peones de d5, e6 y f5 lo bloquean. El caballo blanco se dirige a la casilla fuerte de c5 y domina."
+          }
+        ]
+      },
+      "piece-activity": {
+        "title": "Actividad de las piezas",
+        "summary": "Mejora tu peor pieza.",
+        "steps": [
+          {
+            "text": "Cuando no sepas qué hacer, busca tu **pieza peor situada** y mejórala. Una pieza pasiva en la banda es como jugar con una pieza menos.\n\nAquí el caballo blanco de a4 no hace nada. Su ruta **a4–c3–e2–f4** o **–d5** lo devuelve al juego."
+          },
+          {
+            "text": "Mejora tu peor pieza.",
+            "task": {
+              "prompt": "Trae el caballo desde la banda de vuelta hacia el centro.",
+              "hint": "«Caballo en la banda, mala andanza». Devuélvelo a c3.",
+              "success": "Mucho mejor. Ahora el caballo apunta a d5, e4 y b5."
+            }
+          },
+          {
+            "text": "**Activa tus torres**: conéctalas (sin nada entre ellas en la primera fila) y luego colócalas en columnas abiertas o semiabiertas. Los **levantamientos** de torre (Re3–g3, Rd3–h3) llevan las torres al ataque."
+          },
+          {
+            "text": "**Cambia tus piezas malas y conserva las buenas.** Cambia las piezas que defienden bien al rival (como un caballo fuerte en una casilla fuerte) y mantén en el tablero tus piezas más activas."
+          }
+        ]
+      },
+      "planning": {
+        "title": "Cómo trazar un plan",
+        "summary": "Convierte tu comprensión en una estrategia.",
+        "steps": [
+          {
+            "text": "Un método sencillo para planificar en cualquier posición:\n\n1. **Primero la seguridad**: ¿hay amenazas? (jaques, capturas, amenazas)\n2. **Mira los peones**: ¿en qué flanco debo jugar? ¿Qué ruptura de peón quiero?\n3. **Busca debilidades**: peones débiles, agujeros, un rey expuesto.\n4. **Mejora tus piezas**: primero la peor.\n5. **Después actúa**: abre la posición donde seas más fuerte."
+          },
+          {
+            "text": "Las **rupturas de peón** son la forma principal de abrir líneas. En la Francesa del Avance, las negras atacan la base de la cadena de peones blanca con ...c5 (y más tarde ...f6)."
+          },
+          {
+            "text": "Encuentra la ruptura de peón correcta.",
+            "task": {
+              "prompt": "Golpea la base de la cadena de peones blanca.",
+              "hint": "La base de la cadena es d4. ¿Qué peón puede atacarla?",
+              "success": "¡Exacto, ataca la base de la cadena! ...c5 es la jugada principal en la Francesa del Avance."
+            }
+          },
+          {
+            "text": "**Juega en el flanco donde tengas más espacio.** Las cadenas de peones marcan el camino: en la India de Rey, la cadena blanca (d5–e4) apunta al flanco de dama, así que las blancas atacan allí con c5. La cadena negra (e5–d6) apunta al flanco de rey, así que las negras atacan con ...f5."
+          },
+          {
+            "text": "**Ataque de minorías**: en la estructura Carlsbad, las blancas avanzan dos peones del flanco de dama (b4–b5) contra tres para crear una debilidad en c6, un plan que usan los campeones desde hace 100 años."
+          }
+        ]
+      }
+    }
+  },
+  "attack-and-defense": {
+    "title": "Ataque al rey y defensa",
+    "description": "Aprende a atacar al rey enrocado —el sacrificio griego, las baterías, las avalanchas de peones y los enroques opuestos— y a defenderte con profilaxis: pregúntate siempre qué quiere tu rival.",
+    "lessons": {
+      "attack-principles": {
+        "title": "Principios del ataque",
+        "summary": "Cuándo y cómo ir a por el rey.",
+        "steps": [
+          {
+            "text": "Un ataque al rey tiene éxito cuando tienes **más atacantes que defensores tiene el rival** en esa zona. Antes de atacar, comprueba:\n\n- ¿Tengo **ventaja en desarrollo**?\n- ¿El centro está **cerrado o estable**? (Los ataques por el flanco fracasan si se abre el centro.)\n- ¿Hay **objetivos**: peones debilitados o defensores ausentes, como el caballo de f6?"
+          },
+          {
+            "text": "**Baterías**: alinea dos piezas en la misma diagonal o columna. Dama delante y alfil detrás —o alfil delante y dama detrás— apuntando a h7 o h2 es un patrón de mate clásico."
+          },
+          {
+            "text": "El caballo de f6, el mejor defensor de h7, ya no está.",
+            "task": {
+              "prompt": "Da jaque mate en una con la batería de dama y alfil.",
+              "hint": "Captura en h7 con la dama. El alfil de d3 la protege.",
+              "success": "¡Jaque mate! La batería de dama y alfil es letal."
+            }
+          }
+        ]
+      },
+      "greek-gift": {
+        "title": "El sacrificio griego",
+        "summary": "¡Bxh7+! El sacrificio de ataque más famoso.",
+        "steps": [
+          {
+            "text": "El **sacrificio griego** es un sacrificio de alfil en h7 (o h2). Los ingredientes:\n\n- Alfil en d3 apuntando a h7\n- Caballo que puede saltar a **g5**\n- Dama que puede llegar a **h5** (o a la columna h)\n- Ningún caballo negro en f6 (a menudo expulsado por un peón en e5)"
+          },
+          {
+            "text": "Están todos los ingredientes. ¡Empieza el ataque!",
+            "task": {
+              "prompt": "Sacrifica el alfil en h7 y continúa con un jaque de caballo.",
+              "hint": "Captura en h7 con jaque. Cuando el rey recapture, el caballo salta a g5 con jaque.",
+              "success": "El rey está expuesto. Ahora la dama se une al ataque..."
+            }
+          },
+          {
+            "text": "Las negras se retiraron con ...Kg8. Trae la artillería pesada.",
+            "task": {
+              "prompt": "Lleva tu dama al ataque con una amenaza de mate.",
+              "hint": "La dama amenaza mate en h7.",
+              "success": "Qh5 amenaza Qh7#. Las negras deben entregar la dama con ...Qxg5: el sacrificio griego ha dado sus frutos."
+            }
+          },
+          {
+            "text": "**¿Cuándo falla?** Si las negras pueden defender h7 con un caballo (…Nf6/…Nf8), o el rey puede escapar con seguridad a g6/h6 y las blancas no tienen continuación, el sacrificio es solo una pieza perdida. ¡Calcula siempre la salida del rey ...Kg6!"
+          }
+        ]
+      },
+      "opposite-castling": {
+        "title": "Enroques opuestos y avalanchas de peones",
+        "summary": "Una carrera: gana quien abra líneas primero.",
+        "steps": [
+          {
+            "text": "Cuando los reyes se enrocan en **flancos opuestos**, ambos jugadores pueden lanzar sus peones contra el rey rival sin debilitar el propio. Se convierte en una **carrera**: la velocidad importa más que el material.\n\nEn el Ataque Yugoslavo, las blancas juegan **h4–h5**, cambian el alfil de g7 con **Bh6** y dan mate por la columna h."
+          },
+          {
+            "text": "**Abrir la columna h**: sacrificar un peón (¡g4!) o incluso la calidad para abrir las columnas delante del rey es típico.\n\nLas negras contraatacan con ¡...Rxc3! y avalanchas de peones en el flanco de dama."
+          },
+          {
+            "text": "**Cambia al defensor clave.** En la Dragón, el alfil de g7 protege las casillas negras alrededor del rey negro.",
+            "task": {
+              "prompt": "Presiona al caballo de f6, el defensor clave: juega Bg5.",
+              "hint": "Mueve el alfil de e3 a g5, presionando f6.",
+              "success": "Bg5 es una línea principal: clava o ataca al caballo de f6 y apoya los planes f4-f5 o g4."
+            }
+          }
+        ]
+      },
+      "prophylaxis": {
+        "title": "Profilaxis y defensa",
+        "summary": "Pregúntate: ¿qué quiere mi rival?",
+        "steps": [
+          {
+            "text": "La **profilaxis** consiste en impedir las ideas de tu rival *antes* de que ocurran. Antes de cada jugada, pregúntate: **«¿Qué quiere hacer mi rival?»**\n\nA menudo la mejor defensa es una jugada que frena su plan y a la vez mejora tu posición."
+          },
+          {
+            "text": "Las blancas amenazan **Qxh7#**. Varias jugadas lo impiden, pero una además ataca.",
+            "task": {
+              "prompt": "Defiéndete de la amenaza de mate ganando un tiempo.",
+              "hint": "¿Qué pieza puede defender h7 y atacar a la dama al mismo tiempo?",
+              "success": "¡Excelente defensa! El caballo cubre h7 y ataca a la dama."
+            }
+          },
+          {
+            "text": "**Luft** («aire»): una pequeña jugada de peón como **h3/h6** da a tu rey una casilla de escape y elimina los mates en la última fila para el resto de la partida. Una jugada como **...h6** también frena las ideas Ng5 y Bg5."
+          },
+          {
+            "text": "**Principios defensivos:**\n\n- Cambia piezas atacantes (sobre todo el mejor atacante del rival).\n- Mantén un caballo en f6 (f3): es el mejor defensor del rey.\n- Contraataca en el centro: a un ataque por el flanco se responde mejor con acción en el centro.\n- Que no cunda el pánico: devuelve material si eso apaga el ataque."
+          }
+        ]
+      }
+    }
+  },
+  "endgame-essentials": {
+    "title": "Finales esenciales",
+    "description": "«Para mejorar, estudia primero los finales» — Capablanca. Domina la oposición, las casillas clave, la regla del cuadrado, la triangulación, el peón pasado alejado y los finales de torre imprescindibles: Lucena y Philidor.",
+    "lessons": {
+      "king-activity": {
+        "title": "El rey activo",
+        "summary": "En el final, el rey se convierte en una pieza de combate.",
+        "steps": [
+          {
+            "text": "Con menos piezas en el tablero, ya no hay peligro de mate. El rey se convierte en una **pieza de ataque fuerte** que vale unos 4 peones. Regla número uno del final: **¡activa tu rey!**\n\nLlévalo hacia el centro o hacia los peones que importan."
+          },
+          {
+            "text": "**Reyes delante de los peones.** En los finales de rey y peón, el rey atacante debe colocarse **delante** de su peón, no detrás. El rey defensor quiere situarse **justo delante** del peón rival."
+          },
+          {
+            "text": "Tu rey está al lado de su peón. ¡Ponte delante!",
+            "task": {
+              "prompt": "Encuentra la única jugada ganadora.",
+              "hint": "Coloca tu rey justo delante del peón, en la 6.ª fila.",
+              "success": "Con el rey en la 6.ª fila delante de su peón, las blancas siempre ganan (salvo con un peón de torre)."
+            }
+          }
+        ]
+      },
+      "opposition": {
+        "title": "La oposición",
+        "summary": "La idea más importante de los finales de rey y peón.",
+        "steps": [
+          {
+            "text": "Dos reyes en la misma columna (o fila) con **una casilla entre ellos** están en **oposición**. El jugador que **no** tiene que mover «tiene la oposición»: el otro rey debe ceder el paso.\n\nAquí los reyes están frente a frente. Quien mueva debe apartarse."
+          },
+          {
+            "text": "Toma la oposición para ganar.",
+            "task": {
+              "prompt": "Toma la oposición.",
+              "hint": "Coloca tu rey en la misma columna que el rey negro, con una casilla entre ellos.",
+              "success": "¡Tienes la oposición! Las negras deben ceder el paso y tu rey avanza hacia las casillas clave."
+            }
+          },
+          {
+            "text": "El rey negro está atrapado cerca de la esquina. Usa la oposición para escoltar al peón.",
+            "task": {
+              "prompt": "Encuentra la única jugada ganadora.",
+              "hint": "Ponte frente al rey negro con una casilla de por medio.",
+              "success": "¡Oposición! Las negras deben apartarse y tu rey acompaña al peón hasta la casilla de coronación."
+            }
+          }
+        ]
+      },
+      "key-squares": {
+        "title": "Casillas clave",
+        "summary": "Llega a ellas y el peón corona.",
+        "steps": [
+          {
+            "text": "Cada peón tiene **casillas clave**: si el rey atacante llega a una de ellas, el peón corona pase lo que pase.\n\nPara un peón en la 2.ª, 3.ª o 4.ª fila, las casillas clave son las tres casillas situadas **dos filas por delante** de él. Para un peón en la 5.ª o 6.ª fila, hay seis casillas clave."
+          },
+          {
+            "text": "Las casillas clave del peón de d3 son c5, d5 y e5. El rey negro las vigila. Usa la oposición para abrirte paso.",
+            "task": {
+              "prompt": "Encuentra la única jugada ganadora.",
+              "hint": "Toma la oposición en la columna c.",
+              "success": "Con la oposición, tu rey llegará a una casilla clave y el peón coronará."
+            }
+          },
+          {
+            "text": "**Los peones de torre son especiales.** Con un peón a o h, el rey defensor en la esquina no puede ser expulsado: estos finales son casi siempre **tablas**. ¡Recuérdalo cuando cambies piezas para ir a un final de peones!"
+          }
+        ]
+      },
+      "square-of-the-pawn": {
+        "title": "La regla del cuadrado",
+        "summary": "¿Puede el rey alcanzar al peón? Cuéntalo con un cuadrado.",
+        "steps": [
+          {
+            "text": "Para saber si un rey puede alcanzar a un peón pasado sin ayuda, imagina un **cuadrado** cuyo lado va desde el peón hasta su casilla de coronación.\n\nSi el rey defensor puede entrar **en el cuadrado** en su turno, alcanza al peón. Si no, el peón corona.\n\n(Si el peón está en su fila inicial, cuenta desde la casilla de delante: puede avanzar dos casillas.)"
+          },
+          {
+            "text": "Juegan las negras. El rey blanco está lejos. ¿Puedes alcanzar al peón?",
+            "task": {
+              "prompt": "Entra en el cuadrado del peón.",
+              "hint": "Tras el siguiente avance del peón blanco, el cuadrado se reduce. Muévete en diagonal hacia el camino del peón.",
+              "success": "Estás dentro del cuadrado: el peón no puede escapar de tu rey. ¡Tablas!"
+            }
+          },
+          {
+            "text": "Moverse en diagonal es tan rápido como moverse en línea recta. Esto significa que un rey puede **perseguir** un peón y **acercarse** a otro objetivo al mismo tiempo: la famosa **maniobra de Réti** (Réti, 1921) usa exactamente esta idea para salvar una posición aparentemente perdida."
+          }
+        ]
+      },
+      "triangulation": {
+        "title": "Triangulación",
+        "summary": "Pierde un tiempo a propósito para poner a tu rival en zugzwang.",
+        "steps": [
+          {
+            "text": "**Zugzwang** significa que cualquier jugada empeora tu posición. Aquí, si **juegan las negras**, pierden: el rey debe abandonar el peón de b7 o las casillas de la columna d.\n\nPero **juegan las blancas**. Las blancas necesitan pasarle el turno a las negras, y los reyes no pueden pasar."
+          },
+          {
+            "text": "**Triangulación**: el rey blanco recorre un triángulo de tres casillas (d5–e5–d4–d5), mientras que el rey negro solo puede ir y venir entre dos casillas (d7 y c6). Tras tres jugadas se repite la misma posición… ¡pero ahora juegan las negras!"
+          },
+          {
+            "text": "Pierde un tiempo con tu rey.",
+            "task": {
+              "prompt": "Triangula: juega Ke5, Kd4 y vuelve con Kd5.",
+              "hint": "Recorre con el rey el triángulo e5–d4–d5. El rey negro no puede imitarte.",
+              "success": "La misma posición, ¡pero ahora las negras deben mover y pierden! Tras ...Kc8, Ke6–d6–e7–d7 gana."
+            }
+          }
+        ]
+      },
+      "outside-passed-pawn": {
+        "title": "El peón pasado alejado",
+        "summary": "Un señuelo que arrastra lejos al rey rival.",
+        "steps": [
+          {
+            "text": "Un **peón pasado alejado** es un peón pasado situado lejos de los demás peones. Actúa como **señuelo**: el rey rival debe correr a detenerlo, y entonces tu rey se da un festín con los peones que quedan atrás."
+          },
+          {
+            "text": "Aprovecha tu peón pasado alejado.",
+            "task": {
+              "prompt": "Avanza el peón pasado alejado para atraer lejos al rey negro.",
+              "hint": "Avanza el peón a. El rey negro debe perseguirlo.",
+              "success": "El rey negro tiene que ir al flanco de dama, y el rey blanco ganará los peones del flanco de rey."
+            }
+          },
+          {
+            "text": "**Mayorías de peones**: si tienes más peones en un flanco, normalmente puedes crear allí un peón pasado. Una **mayoría sana en el flanco de dama** suele ser una baza ganadora en el final, porque el peón pasado que genera queda lejos de ambos reyes."
+          }
+        ]
+      },
+      "rook-endgame-basics": {
+        "title": "Fundamentos de los finales de torre",
+        "summary": "Torres activas, reyes cortados y torres detrás de los peones pasados.",
+        "steps": [
+          {
+            "text": "Los finales de torre son los **más frecuentes** del ajedrez. Las reglas de oro:\n\n1. **Activa tu torre**: una torre activa vale un peón.\n2. **Corta al rey rival** con tu torre a lo largo de una fila o columna.\n3. **Las torres van detrás de los peones pasados**, tanto de los tuyos como de los del rival (regla de Tarrasch)."
+          },
+          {
+            "text": "Tu peón pasado a necesita apoyo. La torre negra está delante de él.",
+            "task": {
+              "prompt": "Coloca tu torre detrás de tu peón pasado.",
+              "hint": "Desliza la torre por la primera fila hasta a1.",
+              "success": "Detrás del peón, tu torre gana fuerza con cada avance, mientras que la torre negra se vuelve más pasiva."
+            }
+          },
+          {
+            "text": "**Cortar al rey**: una torre en una columna puede mantener al rey rival lejos de tu peón. Cada columna de distancia a la que cortas al rey defensor vale muchísimo."
+          }
+        ]
+      },
+      "lucena-position": {
+        "title": "La posición de Lucena",
+        "summary": "Construir el puente: cómo ganar torre y peón contra torre.",
+        "steps": [
+          {
+            "text": "La **posición de Lucena**: tu peón está en la 7.ª fila, tu rey delante de él y el rey rival **cortado** por tu torre. La torre negra impide que tu rey salga de la esquina.\n\nLa técnica ganadora se llama **construir el puente**."
+          },
+          {
+            "text": "Paso 1: lleva tu torre a la **4.ª fila**. Más adelante bloqueará los jaques de la torre rival.",
+            "task": {
+              "prompt": "Construye el puente: lleva tu torre a d4.",
+              "hint": "Torre a la 4.ª fila (d4).",
+              "success": "Exacto. Ahora el rey puede salir y, cuando se acaben los jaques, la torre los tapará."
+            }
+          },
+          {
+            "text": "Tras 1.Rd4 Rc1 2.Ka7 Ra1+ 3.Kb6 Rb1+ 4.Kc6 Rc1+ 5.Kb5 Rb1+ el rey ha salido. Ahora el puente está completo.",
+            "task": {
+              "prompt": "Tapa el jaque y termina el puente.",
+              "hint": "Interpón tu torre en b4. Se acabaron los jaques.",
+              "success": "¡Puente construido! El peón coronará. Esta es la técnica de Lucena."
+            }
+          }
+        ]
+      },
+      "philidor-position": {
+        "title": "La posición de Philidor",
+        "summary": "Cómo hacer tablas en un final de torre con un peón menos.",
+        "steps": [
+          {
+            "text": "La **posición de Philidor** es el esquema defensivo clave cuando tienes un peón menos en un final de torre y tu rey está delante del peón.\n\n**Paso 1**: mantén tu torre en tu **3.ª fila** (la 6.ª fila para las negras) para que el rey blanco no pueda avanzar."
+          },
+          {
+            "text": "**Paso 2**: en cuanto las blancas avanzan el peón a la 6.ª fila, el rey blanco pierde su refugio. Baja tu torre a la **primera fila** y da jaques **desde atrás**. El rey nunca podrá escapar de ellos."
+          },
+          {
+            "text": "Las blancas acaban de jugar e5–e6. Es el momento del paso 2.",
+            "task": {
+              "prompt": "Retrocede tu torre hasta b1.",
+              "hint": "Ve al otro extremo del tablero para poder dar jaque al rey desde atrás.",
+              "success": "Defensa Philidor perfecta. Darás jaque al rey desde atrás para siempre: son tablas."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "calculation-and-thinking": {
+    "title": "Cálculo y forma de pensar",
+    "description": "Piensa como un maestro. Crea una rutina de pensamiento fiable: revisa jaques, capturas y amenazas, elige jugadas candidatas, calcula líneas forzadas y comprueba que no cometes un error grave antes de cada jugada.",
+    "lessons": {
+      "checks-captures-threats": {
+        "title": "Jaques, capturas y amenazas",
+        "summary": "El repaso JCA que encuentra la táctica.",
+        "steps": [
+          {
+            "text": "Los jugadores fuertes miran primero las **jugadas forzadas**, en este orden:\n\n1. **Jaques**: el rival debe responder.\n2. **Capturas**: cambian el material y a menudo obligan a recapturar.\n3. **Amenazas**: ataques a los que el rival debe responder.\n\nRevísalas para **ambos bandos** en cada jugada. La mayoría de las tácticas se esconden entre las jugadas forzadas."
+          },
+          {
+            "text": "Este es el final de la famosa **Partida de la Ópera** de Paul Morphy (París, 1858). Revisa primero los jaques, incluso los más «locos».",
+            "task": {
+              "prompt": "Mate en 2: ¡revisa todos los jaques!",
+              "hint": "Mira todos los jaques de dama. Si el caballo de d7 se ve obligado a capturar, ¿quién queda vigilando d8?",
+              "success": "¡El inmortal final de Morphy! Un sacrificio de dama que solo encuentra un repaso JCA."
+            }
+          },
+          {
+            "text": "**No te quedes con la primera jugada buena.** Un jaque forzado puede ser aún más fuerte que una gran captura. Pregúntate siempre: *tras mi jaque, ¿qué puede hacer el rival?* Si la respuesta es «casi nada», calcúlalo hasta el final."
+          },
+          {
+            "text": "Réti contra Tartakower, Viena 1910: una de las partidas brillantes más cortas de la historia.",
+            "task": {
+              "prompt": "Mate en 3: empieza con un sacrificio de dama.",
+              "hint": "Sacrifica la dama en d8 con jaque. ¡Después, jaque doble con el alfil!",
+              "success": "¡Brillante! Sacrificio de dama, jaque doble y mate."
+            }
+          }
+        ]
+      },
+      "candidate-moves": {
+        "title": "Jugadas candidatas",
+        "summary": "Enumera tus opciones antes de calcular.",
+        "steps": [
+          {
+            "text": "Antes de calcular, haz una lista corta de **jugadas candidatas** (2–4 opciones serias). Luego calcula cada una y compáralas. Así evitas enamorarte de la primera idea.\n\nBuenas candidatas: jugadas forzadas, jugadas que usan tus piezas más activas y jugadas que frenan el plan del rival."
+          },
+          {
+            "text": "Morphy, Partida de la Ópera, jugada 13. Candidatas: Rxd7, Bxf6, Rhe1... ¿Cuál es la más fuerte?",
+            "task": {
+              "prompt": "Encuentra la candidata más forzada.",
+              "hint": "Una captura que mantiene viva la clavada en d7.",
+              "success": "Morphy eligió la jugada más forzada: ¡Rxd7! Las piezas negras están clavadas y atadas."
+            }
+          },
+          {
+            "text": "Tras 13.Rxd7 Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7, Morphy lo había calculado todo hasta el final: el sacrificio de dama que encontraste en la lección anterior."
+          }
+        ]
+      },
+      "blunder-check": {
+        "title": "La comprobación de errores graves",
+        "summary": "Antes de tocar una pieza, mira el tablero desde el lado de tu rival.",
+        "steps": [
+          {
+            "text": "La mayoría de las partidas entre principiantes se deciden por **errores graves**, no por combinaciones brillantes. Antes de cada jugada, haz una **comprobación de errores graves**:\n\n1. ¿Qué **amenaza** la última jugada de mi rival?\n2. Tras la jugada que pienso hacer, ¿cuáles son **sus** jaques, capturas y amenazas?\n3. ¿Hay alguna de mis piezas **indefensa**?"
+          },
+          {
+            "text": "**Contar no lo es todo.** Aquí 1.Nxe5? Nxe5 2.Rxe5?? parece ganar un peón (dos atacantes contra un defensor), pero cuando la torre se va, **...Bxf2+** gana la torre. ¡La casilla f2 solo estaba defendida por el rey!"
+          },
+          {
+            "text": "**El Gambito Blackburne Shilling**: las blancas capturaron con codicia el peón de e5 y no vieron la amenaza de las negras. ¡Castígalas!"
+          },
+          {
+            "text": "Encuentra las jugadas que castigan la codicia de las blancas.",
+            "task": {
+              "prompt": "Ataca dos cosas a la vez con tu dama y sigue atacando.",
+              "hint": "La dama a g5 ataca g2 y e5. Tras Nxf7, captura en g2, luego da jaque en e4 y remata con un caballo.",
+              "success": "¡Mate de la coz! La famosa trampa Blackburne Shilling. Las blancas olvidaron comprobar sus errores."
+            }
+          }
+        ]
+      },
+      "forcing-sequences": {
+        "title": "Calcular líneas forzadas",
+        "summary": "Los jaques, capturas y amenazas limitan las opciones del rival, así que puedes calcular en profundidad.",
+        "steps": [
+          {
+            "text": "Cuanto más **forzadas** sean tus jugadas, **menos respuestas** tendrás que calcular. Una secuencia de jaques se puede calcular a 5–10 jugadas vista porque el rival solo tiene una o dos respuestas cada vez.\n\nConsejo: **visualiza** la posición final. ¿Dónde están las piezas tras la secuencia?"
+          },
+          {
+            "text": "Calcula toda la secuencia forzada antes de mover. (¡La viste en el curso de Patrones de jaque mate!)",
+            "task": {
+              "prompt": "Mate en 4 solo con jaques.",
+              "hint": "Jaque de caballo, jaque doble, sacrificio de dama, mate de la coz.",
+              "success": "Todas las jugadas fueron jaque: por eso pudiste calcularlo hasta el final."
+            }
+          },
+          {
+            "text": "**Lista de comprobación para calcular:**\n\n- Empieza por la candidata más forzada.\n- En cada jugada, busca la **mejor** respuesta del rival, no la que esperas.\n- Cuenta el material al final de la línea.\n- Antes de jugar, revisa de nuevo la **primera jugada** por si hay un error grave sencillo."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -6,8 +6,9 @@ import { h, icon, pageHeader, disposables, emptyState, skeleton, escapeHtml } fr
 import { api, isAbort } from '../api.js';
 import { getSettings, pieceUrl } from '../settings.js';
 import { Chess } from '/vendor/chess.js';
+import { t } from '../i18n.js';
 
-export const title = (params) => (params && params.courseId ? 'Course' : 'Learn');
+export const title = (params) => (params && params.courseId ? t('learn.courseTitle') : t('learn.title'));
 
 // ===========================================================================
 // Shared helpers (exported)
@@ -98,10 +99,10 @@ export function sanLineToUci(san, startFen = START_FEN) {
   const ucis = [];
   if (!chess) return ucis;
   for (const tok of String(san || '').split(/\s+/)) {
-    const t = tok.replace(/^\d+\.(\.\.)?/, '').trim();
-    if (!t) continue;
+    const tk = tok.replace(/^\d+\.(\.\.)?/, '').trim();
+    if (!tk) continue;
     try {
-      const m = chess.move(t);
+      const m = chess.move(tk);
       ucis.push(moveUci(m));
     } catch { break; }
   }
@@ -142,21 +143,21 @@ export function miniBoardSvg(fen, orientation = 'white') {
       f++;
     }
   }
-  return `<svg class="lrn-mini-board" viewBox="0 0 8 8" role="img" aria-label="Chess position" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges"><rect class="l" width="8" height="8"/>${squares}${pieces}</svg>`;
+  return `<svg class="lrn-mini-board" viewBox="0 0 8 8" role="img" aria-label="${escapeHtml(t('learn.boardAria'))}" preserveAspectRatio="xMidYMid meet" shape-rendering="crispEdges"><rect class="l" width="8" height="8"/>${squares}${pieces}</svg>`;
 }
 
 /** Progress ring node with a centred label. */
 export function progressRing(pct, { size = 52, label } = {}) {
   const v = Math.max(0, Math.min(100, Math.round(pct || 0)));
   const done = v >= 100;
-  return h('div', { class: ['lrn-ring', done && 'done'], style: { '--value': v, '--size': size + 'px' }, role: 'img', 'aria-label': `${v}% complete` },
+  return h('div', { class: ['lrn-ring', done && 'done'], style: { '--value': v, '--size': size + 'px' }, role: 'img', 'aria-label': t('learn.ringAria', { pct: v }) },
     h('div', { class: 'lrn-ring-label', html: done ? icon('check') : escapeHtml(label ?? `${v}%`) }));
 }
 
 export function levelPill(level) {
   const l = String(level || 'beginner').toLowerCase();
   const cls = ['beginner', 'intermediate', 'advanced', 'master'].includes(l) ? l : 'beginner';
-  return h('span', { class: `badge level-${cls}` }, l.charAt(0).toUpperCase() + l.slice(1));
+  return h('span', { class: `badge level-${cls}` }, cls === l ? t(`learn.levels.${cls}`) : l.charAt(0).toUpperCase() + l.slice(1));
 }
 
 /**
@@ -236,7 +237,7 @@ export function setFeedback(el, kind, html) {
 
 /** Breadcrumb trail: [{label, href?}]. */
 export function breadcrumbs(items) {
-  return h('nav', { class: 'breadcrumbs', 'aria-label': 'Breadcrumb' },
+  return h('nav', { class: 'breadcrumbs', 'aria-label': t('learn.breadcrumbAria') },
     items.flatMap((b, i) => [
       i > 0 ? h('span', { html: icon('chevron-right'), style: 'display:contents' }) : null,
       b.href ? h('a', { href: b.href }, b.label) : h('span', null, b.label),
@@ -246,8 +247,8 @@ export function breadcrumbs(items) {
 /** A page-level loading / error block. */
 export function errorBlock(message, retry) {
   return emptyState({
-    icon: 'alert', title: 'Could not load this page', text: message || 'Something went wrong.',
-    action: retry ? { label: 'Try again', icon: 'refresh', onClick: retry } : { label: 'Back to Learn', href: '#/learn' },
+    icon: 'alert', title: t('learn.error.title'), text: message || t('learn.error.text'),
+    action: retry ? { label: t('learn.error.tryAgain'), icon: 'refresh', onClick: retry } : { label: t('learn.error.backToLearn'), href: '#/learn' },
   });
 }
 
@@ -255,13 +256,19 @@ export function errorBlock(message, retry) {
 // Learn data
 // ===========================================================================
 
+// `label` / `blurb` are getters so they are translated at render time (never at import time).
+const category = (key, emoji) => ({
+  key, emoji,
+  get label() { return t(`learn.categories.${key}.label`); },
+  get blurb() { return t(`learn.categories.${key}.blurb`); },
+});
 export const CATEGORIES = [
-  { key: 'basics', label: 'Basics', emoji: '♟️', blurb: 'How the pieces move and the first principles.' },
-  { key: 'openings', label: 'Openings', emoji: '📖', blurb: 'Start the game with a plan.' },
-  { key: 'middlegame', label: 'Middlegame', emoji: '⚔️', blurb: 'Plans, attacks and piece play.' },
-  { key: 'tactics', label: 'Tactics', emoji: '⚡', blurb: 'Forks, pins, skewers and combinations.' },
-  { key: 'strategy', label: 'Strategy', emoji: '🧠', blurb: 'Pawn structure, weak squares and long-term edges.' },
-  { key: 'endgame', label: 'Endgames', emoji: '🏁', blurb: 'Convert your advantage and save hard positions.' },
+  category('basics', '♟️'),
+  category('openings', '📖'),
+  category('middlegame', '⚔️'),
+  category('tactics', '⚡'),
+  category('strategy', '🧠'),
+  category('endgame', '🏁'),
 ];
 const LEVEL_ORDER = { beginner: 0, intermediate: 1, advanced: 2, master: 3 };
 const LAST_KEY = 'gm.learn.last.v1';
@@ -370,16 +377,16 @@ async function renderHub(page, signal, bag) {
   const done = completedSet(progress);
 
   const header = pageHeader({
-    title: 'Learn', icon: 'learn',
-    subtitle: 'Bite-sized interactive lessons — from your very first move to master-level endgames.',
+    title: t('learn.title'), icon: 'learn',
+    subtitle: t('learn.subtitle'),
     actions: [
-      h('a', { class: 'btn btn-secondary', href: '#/openings', html: icon('openings') + '<span>Openings</span>' }),
-      h('a', { class: 'btn btn-secondary', href: '#/endgames', html: icon('endgames') + '<span>Endgame drills</span>' }),
+      h('a', { class: 'btn btn-secondary', href: '#/openings', html: icon('openings') + `<span>${escapeHtml(t('learn.openings'))}</span>` }),
+      h('a', { class: 'btn btn-secondary', href: '#/endgames', html: icon('endgames') + `<span>${escapeHtml(t('learn.endgameDrills'))}</span>` }),
     ],
   });
 
   if (!courses.length) {
-    page.replaceChildren(header, emptyState({ emoji: '📚', title: 'No courses yet', text: 'Courses will appear here once they are added to data/courses.json.' }));
+    page.replaceChildren(header, emptyState({ emoji: '📚', title: t('learn.noCourses.title'), text: t('learn.noCourses.text') }));
     return;
   }
 
@@ -396,44 +403,44 @@ async function renderHub(page, signal, bag) {
   let hero;
   if (cont) {
     const st = courseStats(cont.course, done);
-    const kicker = cont.kind === 'start' ? 'Start here' : 'Continue where you left off';
+    const kicker = cont.kind === 'start' ? t('learn.hero.start') : t('learn.hero.resume');
     hero = h('section', { class: 'lrn-hero mt-4' },
       h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, cont.course.icon || '♟️'),
       h('div', { style: 'min-width:0' },
         h('div', { class: 'lrn-hero-kicker' }, kicker),
         h('div', { class: 'lrn-hero-title' }, cont.lesson.title),
-        h('p', { class: 'lrn-hero-sub' }, `${cont.course.title} · ${cont.lesson.summary || 'Next lesson'}`),
+        h('p', { class: 'lrn-hero-sub' }, `${cont.course.title} · ${cont.lesson.summary || t('learn.hero.nextLesson')}`),
         h('div', { class: 'progress progress-sm' }, h('div', { class: 'progress-bar', style: `width:${st.pct.toFixed(0)}%` }))),
       h('a', {
         class: 'btn btn-primary btn-lg',
         href: `#/learn/${encodeURIComponent(cont.course.id)}/${encodeURIComponent(cont.lesson.id)}`,
-        html: icon('play') + `<span>${cont.kind === 'resume' ? 'Resume' : cont.kind === 'start' ? 'Start learning' : 'Continue'}</span>`,
+        html: icon('play') + `<span>${escapeHtml(cont.kind === 'resume' ? t('learn.hero.btnResume') : cont.kind === 'start' ? t('learn.hero.btnStart') : t('learn.hero.btnContinue'))}</span>`,
       }));
   } else {
     hero = h('section', { class: 'lrn-hero mt-4' },
       h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, '🏆'),
       h('div', null,
-        h('div', { class: 'lrn-hero-kicker' }, 'All done!'),
-        h('div', { class: 'lrn-hero-title' }, 'You completed every lesson'),
-        h('p', { class: 'lrn-hero-sub' }, 'Keep sharp with puzzles and endgame drills.')),
-      h('a', { class: 'btn btn-primary btn-lg', href: '#/puzzles', html: icon('puzzle') + '<span>Solve puzzles</span>' }));
+        h('div', { class: 'lrn-hero-kicker' }, t('learn.hero.allDone')),
+        h('div', { class: 'lrn-hero-title' }, t('learn.hero.allDoneTitle')),
+        h('p', { class: 'lrn-hero-sub' }, t('learn.hero.allDoneSub'))),
+      h('a', { class: 'btn btn-primary btn-lg', href: '#/puzzles', html: icon('puzzle') + `<span>${escapeHtml(t('learn.hero.solvePuzzles'))}</span>` }));
   }
 
   const stats = h('div', { class: 'lrn-stats' },
-    statTile('Lessons completed', `${totalDone}/${totalLessons}`),
-    statTile('Courses finished', `${coursesDone}/${courses.length}`),
-    statTile('Overall progress', `${totalLessons ? Math.round((totalDone / totalLessons) * 100) : 0}%`));
+    statTile(t('learn.stats.lessonsCompleted'), `${totalDone}/${totalLessons}`),
+    statTile(t('learn.stats.coursesFinished'), `${coursesDone}/${courses.length}`),
+    statTile(t('learn.stats.overall'), `${totalLessons ? Math.round((totalDone / totalLessons) * 100) : 0}%`));
 
   // Category filter chips
   const present = CATEGORIES.filter((cat) => courses.some((c) => c.category === cat.key));
   const others = courses.filter((c) => !CATEGORIES.some((cat) => cat.key === c.category));
   let active = 'all';
-  const chips = h('div', { class: 'chip-row mt-6', role: 'toolbar', 'aria-label': 'Filter by category' });
+  const chips = h('div', { class: 'chip-row mt-6', role: 'toolbar', 'aria-label': t('learn.filterAria') });
   const sections = h('div');
 
   const renderChips = () => {
     chips.replaceChildren(
-      chip('All', 'all'),
+      chip(t('learn.all'), 'all'),
       ...present.map((cat) => chip(`${cat.emoji} ${cat.label}`, cat.key)));
   };
   const chip = (label, key) => h('button', {
@@ -443,14 +450,14 @@ async function renderHub(page, signal, bag) {
 
   const renderSections = () => {
     const groups = [...present.map((cat) => ({ cat, list: courses.filter((c) => c.category === cat.key) }))];
-    if (others.length) groups.push({ cat: { key: 'other', label: 'More courses', emoji: '✨', blurb: '' }, list: others });
+    if (others.length) groups.push({ cat: { key: 'other', label: t('learn.moreCourses'), emoji: '✨', blurb: '' }, list: others });
     sections.replaceChildren(...groups
       .filter((g) => active === 'all' || g.cat.key === active)
       .map(({ cat, list }) => h('section', { class: 'lrn-section' },
         h('div', { class: 'lrn-section-head' },
           h('span', { class: 'lrn-section-emoji', 'aria-hidden': 'true' }, cat.emoji),
           h('div', null,
-            h('h2', null, cat.label, ' ', h('span', { class: 'lrn-count' }, `· ${list.length} course${list.length === 1 ? '' : 's'}`)),
+            h('h2', null, cat.label, ' ', h('span', { class: 'lrn-count' }, `· ${t('learn.courseCount', { count: list.length })}`)),
             cat.blurb ? h('div', { class: 'muted text-sm' }, cat.blurb) : null)),
         h('div', { class: 'lrn-course-grid' }, list.map((c) => courseCard(c, done))))));
   };
@@ -467,10 +474,10 @@ function statTile(label, value) {
 
 function courseCard(c, done) {
   const st = courseStats(c, done);
-  const lessonsLabel = `${st.total} lesson${st.total === 1 ? '' : 's'}`;
+  const lessonsLabel = t('learn.lessonCount', { count: st.total });
   const status = st.completed >= st.total && st.total
-    ? h('span', { class: 'text-primary semibold' }, 'Completed')
-    : st.completed ? h('span', null, `${st.completed} of ${st.total} done`) : h('span', null, 'Not started');
+    ? h('span', { class: 'text-primary semibold' }, t('learn.completed'))
+    : st.completed ? h('span', null, t('learn.doneOf', { done: st.completed, total: st.total })) : h('span', null, t('learn.notStarted'));
   return h('a', { class: `card card-link lrn-course-card lrn-cat-${escapeHtml(c.category || 'basics')}`, href: `#/learn/${encodeURIComponent(c.id)}` },
     h('div', { class: 'lrn-course-top' },
       h('div', { class: 'lrn-course-icon', 'aria-hidden': 'true' }, c.icon || '♟️'),
@@ -492,7 +499,7 @@ async function renderCourse(page, courseId, signal) {
   } catch (e) {
     if (isAbort(e)) throw e;
     if (e && e.status === 404) {
-      page.replaceChildren(emptyState({ emoji: '🔍', title: 'Course not found', text: 'This course does not exist (anymore).', action: { label: 'Back to Learn', href: '#/learn', icon: 'learn' } }));
+      page.replaceChildren(emptyState({ emoji: '🔍', title: t('learn.course.notFound'), text: t('learn.course.notFoundText'), action: { label: t('learn.error.backToLearn'), href: '#/learn', icon: 'learn' } }));
       return;
     }
     throw e;
@@ -504,13 +511,13 @@ async function renderCourse(page, courseId, signal) {
   const cat = CATEGORIES.find((x) => x.key === course.category);
   const lessonHref = (l) => `#/learn/${encodeURIComponent(course.id)}/${encodeURIComponent(l.id)}`;
 
-  const crumbs = breadcrumbs([{ label: 'Learn', href: '#/learn' }, { label: cat ? cat.label : 'Course', href: '#/learn' }, { label: course.title }]);
+  const crumbs = breadcrumbs([{ label: t('learn.title'), href: '#/learn' }, { label: cat ? cat.label : t('learn.courseTitle'), href: '#/learn' }, { label: course.title }]);
   crumbs.classList.add('mb-4');
 
   const allDone = st.total > 0 && st.completed >= st.total;
   const cta = st.next
-    ? h('a', { class: 'btn btn-primary btn-lg', href: lessonHref(st.next), html: icon('play') + `<span>${st.completed ? 'Continue' : 'Start course'}</span>` })
-    : lessons.length ? h('a', { class: 'btn btn-secondary btn-lg', href: lessonHref(lessons[0]), html: icon('refresh') + '<span>Review from the start</span>' }) : null;
+    ? h('a', { class: 'btn btn-primary btn-lg', href: lessonHref(st.next), html: icon('play') + `<span>${escapeHtml(st.completed ? t('learn.course.continue') : t('learn.course.startCourse'))}</span>` })
+    : lessons.length ? h('a', { class: 'btn btn-secondary btn-lg', href: lessonHref(lessons[0]), html: icon('refresh') + `<span>${escapeHtml(t('learn.course.reviewFromStart'))}</span>` }) : null;
 
   const hero = h('section', { class: 'card lrn-course-hero' },
     h('div', { class: 'lrn-hero-emoji', 'aria-hidden': 'true' }, course.icon || '♟️'),
@@ -520,12 +527,12 @@ async function renderCourse(page, courseId, signal) {
       h('div', { class: 'lrn-course-meta' },
         levelPill(course.level),
         cat ? h('span', { class: 'badge' }, `${cat.emoji} ${cat.label}`) : null,
-        h('span', { class: 'muted text-sm' }, `${st.total} lesson${st.total === 1 ? '' : 's'}`),
-        allDone ? h('span', { class: 'badge badge-primary', html: icon('check') + '<span>Completed</span>' }) : null),
+        h('span', { class: 'muted text-sm' }, t('learn.lessonCount', { count: st.total })),
+        allDone ? h('span', { class: 'badge badge-primary', html: icon('check') + `<span>${escapeHtml(t('learn.completed'))}</span>` }) : null),
       h('div', { class: 'lrn-course-actions' },
         cta,
         h('div', { class: 'stack-sm', style: 'flex:1 1 200px;max-width:360px' },
-          h('div', { class: 'between row text-sm muted' }, h('span', null, 'Progress'), h('span', { class: 'tabular' }, `${st.completed}/${st.total}`)),
+          h('div', { class: 'between row text-sm muted' }, h('span', null, t('learn.course.progress')), h('span', { class: 'tabular' }, `${st.completed}/${st.total}`)),
           h('div', { class: 'progress' }, h('div', { class: 'progress-bar', style: `width:${st.pct.toFixed(0)}%` }))))));
 
   const list = lessons.length
@@ -533,15 +540,15 @@ async function renderCourse(page, courseId, signal) {
       const isDone = done.has(`${course.id}/${l.id}`);
       const isNext = st.next && st.next.id === l.id;
       return h('a', { class: ['lrn-lesson-row', isNext && 'next'], href: lessonHref(l) },
-        isDone ? h('span', { class: 'lrn-check', html: icon('check'), 'aria-label': 'Completed' }) : h('span', { class: 'lrn-lesson-num' }, String(i + 1)),
+        isDone ? h('span', { class: 'lrn-check', html: icon('check'), 'aria-label': t('learn.completed') }) : h('span', { class: 'lrn-lesson-num' }, String(i + 1)),
         h('div', { class: 'lrn-lesson-main' },
           h('div', { class: 'lrn-lesson-title' }, l.title),
           l.summary ? h('div', { class: 'lrn-lesson-sub' }, l.summary) : null),
-        isNext ? h('span', { class: 'btn btn-primary btn-sm' }, st.completed ? 'Continue' : 'Start')
-          : isDone ? h('span', { class: 'btn btn-ghost btn-sm' }, 'Review') : null,
+        isNext ? h('span', { class: 'btn btn-primary btn-sm' }, st.completed ? t('learn.course.continue') : t('learn.course.start'))
+          : isDone ? h('span', { class: 'btn btn-ghost btn-sm' }, t('learn.course.review')) : null,
         h('span', { html: icon('chevron-right'), style: 'display:contents' }));
     }))
-    : emptyState({ emoji: '🛠️', title: 'No lessons yet', text: 'This course has no lessons yet.' });
+    : emptyState({ emoji: '🛠️', title: t('learn.course.noLessons'), text: t('learn.course.noLessonsText') });
 
-  page.replaceChildren(crumbs, hero, h('h2', { class: 'section-title mt-6' }, 'Lessons'), list);
+  page.replaceChildren(crumbs, hero, h('h2', { class: 'section-title mt-6' }, t('learn.course.lessons')), list);
 }

@@ -9,27 +9,27 @@
 
 import { api, isAbort } from '../api.js';
 import { h, icon, mdLite } from '../ui.js';
+import { t } from '../i18n.js';
 import { ensureAnalysisCss } from './evalgraph.js';
 
 const MAX_MESSAGES = 80;
 const MAX_HISTORY = 12;
 const MAX_QUESTION = 600;
 
-const DEFAULT_SUGGESTIONS = [
-  'What is the plan here?',
-  'What is the best move and why?',
-  'What should I watch out for?',
-  'Explain this position like I am a beginner',
-];
+// Resolved at construction time so the panel follows the active language.
+const defaultSuggestions = () => {
+  const s = t('ui.mentor.suggestions');
+  return Array.isArray(s) ? s : [];
+};
 
 export class MentorPanel {
   constructor(el, {
     getContext,
-    name = 'Coach Ada',
+    name = t('ui.mentor.name'),
     avatar = '🎓',
-    greeting = "Hi! I'm your coach. Ask me anything about this position — plans, threats, or why a move is good or bad.",
-    suggestions = DEFAULT_SUGGESTIONS,
-    placeholder = 'Ask the mentor about this position…',
+    greeting = t('ui.mentor.greeting'),
+    suggestions = defaultSuggestions(),
+    placeholder = t('ui.mentor.placeholder'),
     compact = false,
   } = {}) {
     ensureAnalysisCss();
@@ -48,7 +48,7 @@ export class MentorPanel {
       class: 'textarea mentor-input', rows: 1, maxlength: MAX_QUESTION, placeholder,
       'aria-label': placeholder,
     });
-    this.sendBtn = h('button', { class: 'btn btn-primary btn-icon mentor-send', type: 'button', 'aria-label': 'Send', html: icon('send') });
+    this.sendBtn = h('button', { class: 'btn btn-primary btn-icon mentor-send', type: 'button', 'aria-label': t('ui.mentor.send'), html: icon('send') });
     this.form = h('form', { class: 'mentor-form' }, this.input, this.sendBtn);
     this.root = h('div', { class: 'mentor-panel' + (compact ? ' compact' : '') }, this.log, this.chips, this.form);
     el.appendChild(this.root);
@@ -87,11 +87,11 @@ export class MentorPanel {
     const bubble = h('div', { class: `bubble bubble-mentor mentor-msg kind-${kind}` });
     if (title) bubble.appendChild(h('div', { class: 'mentor-msg-title' }, title));
     if (Array.isArray(text)) {
-      bubble.appendChild(h('ul', { class: 'mentor-ideas' }, text.map((t) => h('li', { html: mdLite(String(t)) }))));
+      bubble.appendChild(h('ul', { class: 'mentor-ideas' }, text.map((item) => h('li', { html: mdLite(String(item)) }))));
     } else {
       bubble.appendChild(h('div', { class: 'md', html: mdLite(String(text)) }));
     }
-    if (source === 'llm') bubble.appendChild(h('div', { class: 'mentor-source' }, 'AI coach'));
+    if (source === 'llm') bubble.appendChild(h('div', { class: 'mentor-source' }, t('ui.mentor.aiCoach')));
     const row = h('div', { class: 'mentor-row pop-in' }, h('div', { class: 'avatar avatar-sm mentor-avatar' }, this.avatar), bubble);
     this._append(row);
     return row;
@@ -110,7 +110,7 @@ export class MentorPanel {
     this._append(h('div', { class: 'mentor-row mentor-row-user' }, h('div', { class: 'bubble bubble-user' }, question)));
     const typing = h('div', { class: 'mentor-row' },
       h('div', { class: 'avatar avatar-sm mentor-avatar' }, this.avatar),
-      h('div', { class: 'bubble bubble-mentor mentor-typing', 'aria-label': `${this.name} is thinking` }, h('span'), h('span'), h('span')));
+      h('div', { class: 'bubble bubble-mentor mentor-typing', 'aria-label': t('ui.mentor.thinking', { name: this.name }) }, h('span'), h('span'), h('span')));
     this._append(typing);
     this._setBusy(true);
 
@@ -130,14 +130,14 @@ export class MentorPanel {
       const res = await api.post('/api/mentor/chat', body, { signal: ctrl.signal, timeout: 90000 });
       if (this._destroyed) return;
       typing.remove();
-      const answer = (res && res.answer) ? String(res.answer) : "Hmm, I don't have a good answer for that one. Try asking about plans or threats!";
+      const answer = (res && res.answer) ? String(res.answer) : t('ui.mentor.noAnswer');
       this.say(answer, { source: res?.source });
       this.history.push({ role: 'user', text: question }, { role: 'mentor', text: answer });
       if (this.history.length > MAX_HISTORY * 2) this.history.splice(0, this.history.length - MAX_HISTORY * 2);
     } catch (e) {
       if (this._destroyed || isAbort(e)) return;
       typing.remove();
-      this.say(e?.message ? `Sorry, I couldn't answer: ${e.message}` : "Sorry, I couldn't reach the coach right now.", { kind: 'error' });
+      this.say(e?.message ? t('ui.mentor.errorWithMessage', { message: e.message }) : t('ui.mentor.unreachable'), { kind: 'error' });
     } finally {
       if (this._ctrl === ctrl) this._ctrl = null;
       if (!this._destroyed) this._setBusy(false);

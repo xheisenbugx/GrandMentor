@@ -6,6 +6,7 @@
 // don't start with white to move at move 1 (e.g. puzzles / imported FENs).
 
 import { classificationMeta, formatSan } from '../ui.js';
+import { t } from '../i18n.js';
 import { getSetting, onSettingsChange } from '../settings.js';
 
 let cssInjected = false;
@@ -30,7 +31,7 @@ export class MoveList {
    * @param {HTMLElement} el
    * @param {{onSelect?: (ply:number)=>void, emptyText?: string, showClassifications?: boolean}} [opts]
    */
-  constructor(el, { onSelect = null, emptyText = 'No moves yet — make your first move!', showClassifications = true } = {}) {
+  constructor(el, { onSelect = null, emptyText = t('ui.movelist.empty'), showClassifications = true } = {}) {
     if (!el) throw new Error('MoveList: container element required');
     ensureCss();
     this.el = el;
@@ -49,7 +50,7 @@ export class MoveList {
     const root = document.createElement('div');
     root.className = 'gm-movelist';
     root.setAttribute('role', 'list');
-    root.setAttribute('aria-label', 'Moves');
+    root.setAttribute('aria-label', t('ui.movelist.label'));
     el.appendChild(root);
     this.root = root;
 

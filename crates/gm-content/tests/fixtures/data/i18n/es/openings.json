@@ -1,0 +1,6 @@
+{
+  "italian-game": { "name": "Apertura italiana", "family": "Apertura italiana", "ideas": ["Enroca pronto", "Juega c3 y d4"], "moves": "e4 e5 Qh5" },
+  "giuoco-piano": { "name": "Giuoco piano" },
+  "not-an-opening": { "name": "Fantasma" },
+  "sicilian": "this entry is malformed"
+}

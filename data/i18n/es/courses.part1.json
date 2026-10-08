@@ -1,0 +1,797 @@
+{
+  "chess-basics": {
+    "title": "Fundamentos del ajedrez",
+    "description": "¿Nunca has jugado? Empieza aquí. Aprende el tablero, cómo se mueve cada pieza, el jaque y el jaque mate, el enroque, la captura al paso, la coronación y las formas en que una partida termina en tablas.",
+    "lessons": {
+      "the-board": {
+        "title": "El tablero y las piezas",
+        "summary": "Conoce las 64 casillas y las 32 piezas.",
+        "steps": [
+          { "text": "¡Bienvenido al ajedrez! Se juega en un tablero de **64 casillas**, alternando claras y oscuras. Cada jugador empieza con **16 piezas**: un rey, una dama, dos torres, dos alfiles, dos caballos y ocho peones.\n\n**Las blancas siempre mueven primero** y después los jugadores se turnan." },
+          { "text": "Las verticales se llaman **columnas** y se nombran con letras de la *a* a la *h*. Las horizontales se llaman **filas** y se numeran del *1* al *8*.\n\nCada casilla tiene un nombre formado por su columna y su fila. La casilla resaltada es **e4**: columna *e*, fila 4." },
+          { "text": "Truco para colocar el tablero: siempre hay una **casilla clara en la esquina inferior derecha** (h1 para las blancas).\n\nLas damas empiezan en una casilla de su propio color: la dama blanca en la casilla clara d1 y la dama negra en la casilla oscura d8. Los reyes se colocan justo a su lado." },
+          { "text": "Cada pieza tiene un valor que te ayuda a decidir qué cambios te convienen:\n\n**Peón = 1**, **Caballo = 3**, **Alfil = 3**, **Torre = 5**, **Dama = 9**.\n\nEl rey no tiene valor: nunca puede ser capturado. Si tu rey queda atrapado, ¡pierdes!" },
+          {
+            "text": "¡Es hora de tu primera jugada! Los peones avanzan en línea recta. En su primer movimiento, un peón puede avanzar **dos casillas**.",
+            "task": {
+              "prompt": "Avanza el peón de e dos casillas hasta e4.",
+              "hint": "Arrastra el peón que está delante de tu rey de e2 a e4.",
+              "success": "¡Gran comienzo! 1.e4 es la primera jugada más popular de la historia del ajedrez."
+            }
+          }
+        ]
+      },
+      "rook-bishop-queen": {
+        "title": "Torre, alfil y dama",
+        "summary": "Las piezas de largo alcance que se deslizan por el tablero.",
+        "steps": [
+          { "text": "La **torre** se mueve cualquier número de casillas en línea recta: hacia arriba, hacia abajo, a la izquierda o a la derecha. No puede saltar sobre otras piezas.\n\nUna torre vale **5 puntos**." },
+          {
+            "text": "Te toca. El caballo negro de a7 está desprotegido.",
+            "task": {
+              "prompt": "Captura el caballo con tu torre.",
+              "hint": "La torre sube en línea recta por la columna a.",
+              "success": "¡Buena captura! Acabas de ganar 3 puntos de material."
+            }
+          },
+          { "text": "El **alfil** se mueve cualquier número de casillas en diagonal. Por eso, un alfil siempre se queda en casillas del **mismo color** en el que empezó.\n\nUn alfil vale **3 puntos**." },
+          {
+            "text": "A los alfiles les encantan las diagonales largas y abiertas.",
+            "task": {
+              "prompt": "Captura la torre de h6 con tu alfil.",
+              "hint": "Sigue la diagonal desde c1 hasta h6.",
+              "success": "¡Bien hecho! Los alfiles barren las diagonales así durante toda la partida."
+            }
+          },
+          { "text": "La **dama** combina la torre y el alfil: se mueve cualquier número de casillas en línea recta o en diagonal. Es la pieza más poderosa y vale **9 puntos**." },
+          {
+            "text": "Busca una captura que **además ataque al rey**.",
+            "task": {
+              "prompt": "Gana la torre con tu dama.",
+              "hint": "La dama puede moverse en diagonal de d1 a a4.",
+              "success": "¡Excelente! Capturaste la torre y diste **jaque** al mismo tiempo."
+            }
+          }
+        ]
+      },
+      "knight-king-pawn": {
+        "title": "Caballo, rey y peón",
+        "summary": "El caballo saltarín, el valioso rey y el humilde peón.",
+        "steps": [
+          { "text": "El **caballo** se mueve en forma de **L**: dos casillas en una dirección y luego una hacia un lado. Es la única pieza que puede **saltar por encima** de otras piezas.\n\nUn caballo vale **3 puntos**. ¡Desde el centro alcanza 8 casillas!" },
+          {
+            "text": "Los caballos son traicioneros: atacan casillas siguiendo un patrón que los principiantes suelen pasar por alto.",
+            "task": {
+              "prompt": "Captura la dama negra con tu caballo.",
+              "hint": "Desde d3, dos casillas hacia arriba y una a la izquierda llegas a c5.",
+              "success": "¡Fantástico! Ganar un caballo gratis está bien, pero ¡una dama gratis es un regalo!"
+            }
+          },
+          { "text": "El **rey** se mueve solo **una casilla** en cualquier dirección. Nunca puede ir a una casilla atacada por una pieza enemiga.\n\nProtege a tu rey: si queda atrapado, la partida termina." },
+          { "text": "Los **peones** avanzan en línea recta una casilla (o dos desde su casilla inicial), pero **capturan en diagonal**, una casilla hacia delante.\n\nLos peones nunca pueden retroceder." },
+          {
+            "text": "El peón de e4 ataca al peón negro de d5.",
+            "task": {
+              "prompt": "Captura el peón de d5.",
+              "hint": "Los peones capturan en diagonal hacia delante.",
+              "success": "¡Correcto! Los peones capturan en diagonal, aunque avanzan en línea recta."
+            }
+          }
+        ]
+      },
+      "check-and-checkmate": {
+        "title": "Jaque y jaque mate",
+        "summary": "Ataca al rey, sal del jaque y gana la partida.",
+        "steps": [
+          { "text": "Cuando un rey está atacado, está en **jaque**. Aquí la torre blanca ataca al rey negro por la columna e.\n\nEl jugador que está en jaque **debe** salir de él en su siguiente jugada." },
+          { "text": "Hay tres formas de salir del jaque:\n\n1. **Mover** el rey a una casilla segura.\n2. **Tapar** el jaque interponiendo una pieza.\n3. **Capturar** la pieza que da jaque.\n\n¡Revisa siempre las tres!" },
+          {
+            "text": "Estás en jaque por la torre de e5. La mejor salida gana material.",
+            "task": {
+              "prompt": "Sal del jaque capturando a la pieza atacante.",
+              "hint": "Tu alfil de c3 puede llegar a e5 en diagonal.",
+              "success": "¡Perfecto! Capturar al atacante suele ser la mejor salida."
+            }
+          },
+          {
+            "text": "Ahora la torre da jaque por tu primera fila y tu rey está encerrado por sus propios peones.",
+            "task": {
+              "prompt": "Tapa el jaque con tu alfil.",
+              "hint": "Tu rey no puede moverse y nada puede capturar la torre. Interpón el alfil en f1: tu rey protege esa casilla.",
+              "success": "¡Gran defensa! El alfil de f1 está protegido por tu rey."
+            }
+          },
+          { "text": "**Jaque mate** significa que el rey está en jaque y **no tiene escapatoria**. El jaque mate termina la partida de inmediato: ¡gana quien lo da!\n\nAquí el rey negro está en jaque mate: la torre lo ataca y sus propios peones le bloquean todas las salidas." },
+          {
+            "text": "Ahora te toca a ti dar jaque mate.",
+            "task": {
+              "prompt": "Jaque mate en una jugada.",
+              "hint": "El rey negro está atrapado detrás de sus propios peones. Atácalo por la octava fila.",
+              "success": "¡Jaque mate! Esto se llama **mate del pasillo**."
+            }
+          },
+          {
+            "text": "Una dama y un rey trabajando juntos son letales.",
+            "task": {
+              "prompt": "Jaque mate en una jugada.",
+              "hint": "Tu rey ya controla f7, g7 y h7. Usa la dama para atacar por la última fila.",
+              "success": "¡Jaque mate! La dama controla la octava fila y el rey cubre el resto."
+            }
+          }
+        ]
+      },
+      "castling": {
+        "title": "El enroque",
+        "summary": "La jugada especial que pone a salvo a tu rey.",
+        "steps": [
+          { "text": "El **enroque** es una jugada especial que hace dos cosas a la vez: pone a tu rey a salvo y mete una torre en juego.\n\nMueve el rey **dos casillas** hacia una torre, y la torre salta a la casilla del otro lado del rey." },
+          {
+            "text": "El enroque en el flanco de rey se llama **enroque corto** (se escribe **O-O**).",
+            "task": {
+              "prompt": "Enroca en corto: mueve tu rey de e1 a g1.",
+              "hint": "Arrastra el rey dos casillas a la derecha. La torre saltará por encima automáticamente.",
+              "success": "¡Enrocaste! Tu rey está a salvo detrás de sus peones y tu torre está lista para entrar en la lucha."
+            }
+          },
+          { "text": "Solo puedes enrocar si:\n\n- ni el rey ni esa torre se han movido todavía,\n- las casillas entre ellos están vacías,\n- tu rey **no está en jaque** y no **pasa por** ni termina en una casilla atacada." },
+          {
+            "text": "El alfil negro ataca f1, así que ahora mismo no puedes enrocar en corto.",
+            "task": {
+              "prompt": "Enroca hacia el otro lado: enroque largo (O-O-O).",
+              "hint": "Mueve el rey dos casillas a la izquierda, de e1 a c1.",
+              "success": "¡Bien hecho! El enroque largo ha llevado tu torre directamente a la columna d."
+            }
+          }
+        ]
+      },
+      "en-passant-promotion": {
+        "title": "Captura al paso y coronación",
+        "summary": "Dos jugadas especiales de peón que todo jugador debe conocer.",
+        "steps": [
+          { "text": "**Captura al paso** (en francés, *en passant*): si un peón enemigo avanza dos casillas y queda justo **al lado** de tu peón, puedes capturarlo como si solo hubiera avanzado una casilla.\n\nDebes hacerlo **de inmediato**; si no, pierdes la oportunidad." },
+          {
+            "text": "Las negras acaban de jugar ...d7-d5 y su peón ha quedado al lado de tu peón de e5.",
+            "task": {
+              "prompt": "Captura al paso el peón de d5.",
+              "hint": "Mueve tu peón de e5 en diagonal a d6: el peón de d5 desaparece.",
+              "success": "¡Eso es la captura al paso! Parece extraña, pero es una captura totalmente legal."
+            }
+          },
+          { "text": "**Coronación**: cuando un peón llega a la última fila se convierte en dama, torre, alfil o caballo; casi siempre en **dama**.\n\n¡Por eso los peones pasados son tan peligrosos!" },
+          {
+            "text": "A tu peón le falta un paso para convertirse en dama.",
+            "task": {
+              "prompt": "Corona tu peón en dama.",
+              "hint": "Avanza el peón a b8 y elige la dama.",
+              "success": "¡Una dama nuevecita, y además da jaque!"
+            }
+          },
+          {
+            "text": "Los peones también pueden coronar capturando en la última fila.",
+            "task": {
+              "prompt": "Captura la torre y corona en dama.",
+              "hint": "Los peones capturan en diagonal, también al coronar.",
+              "success": "Doble premio: eliminaste la torre y conseguiste una dama nueva ¡con jaque!"
+            }
+          }
+        ]
+      },
+      "draws": {
+        "title": "Ahogado y tablas",
+        "summary": "No todas las partidas tienen un ganador. Aprende las formas de hacer tablas.",
+        "steps": [
+          { "text": "**Ahogado**: el jugador al que le toca mover **no** está en jaque, pero **no tiene ninguna jugada legal**. ¡La partida termina de inmediato en **tablas**!\n\nAquí juegan las negras: el rey de h8 no está atacado, pero todas las casillas a su alrededor sí. Ahogado." },
+          {
+            "text": "Cuando vas ganando, **¡cuidado con el ahogado!** Deja una casilla libre al rey enemigo o da jaque mate.\n\nAquí **Qf7??** sería ahogado.",
+            "task": {
+              "prompt": "Encuentra el jaque mate (¡y evita el ahogado!).",
+              "hint": "Da jaque al rey por la octava fila. Tu rey controla g7 y h7.",
+              "success": "¡Jaque mate! Evitaste la trampa del ahogado."
+            }
+          },
+          { "text": "Otras formas de hacer tablas:\n\n- **Material insuficiente**: por ejemplo, rey y alfil contra rey nunca pueden dar mate.\n- **Triple repetición**: la misma posición se repite tres veces.\n- **Regla de las 50 jugadas**: 50 jugadas de cada bando sin capturas ni movimientos de peón.\n- **Acuerdo**: ambos jugadores acuerdan las tablas." },
+          { "text": "Cuando vas **perdiendo**, ¡el ahogado puede salvarte! Aquí a las negras solo les queda el rey, y aun así son tablas: juegan las negras, el rey no está en jaque y g8, g7 y h7 están controladas. **Ahogado.**\n\nLos finales de peón de torre suelen terminar así; recuérdalo cuando defiendas." }
+        ]
+      },
+      "piece-values": {
+        "title": "Valor de las piezas y buenos cambios",
+        "summary": "Usa los valores de las piezas para elegir la mejor captura.",
+        "steps": [
+          { "text": "Recuerda los valores: **peón 1, caballo 3, alfil 3, torre 5, dama 9**.\n\nCuando puedas elegir entre varias capturas, toma la pieza **más valiosa**, ¡siempre que sea seguro!" },
+          {
+            "text": "Tu alfil ataca a un caballo y a una torre a la vez.",
+            "task": {
+              "prompt": "Haz la captura más valiosa.",
+              "hint": "Una torre vale 5; un caballo, solo 3.",
+              "success": "¡Así es! La torre vale más que el caballo."
+            }
+          },
+          { "text": "Una captura solo es buena si no pierdes tu pieza enseguida. Aquí el caballo de d5 está **protegido** por el peón de e6, pero el alfil de a5 no tiene ninguna protección, y además está atacando a tu dama." },
+          {
+            "text": "¿Qué pieza puedes capturar gratis?",
+            "task": {
+              "prompt": "Gana material sin riesgos.",
+              "hint": "Con Qxd5 pierdes la dama a manos del peón de e6. Busca una pieza desprotegida.",
+              "success": "¡Muy listo! Comprueba siempre si la pieza que capturas está protegida."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "checkmate-patterns": {
+    "title": "Patrones de jaque mate",
+    "description": "Reconoce las redes de mate clásicas (mate del pasillo, mate de la coz, mate de Anastasia, mate árabe y la escalera) y aprende a dar mate con rey y dama o con rey y torre.",
+    "lessons": {
+      "back-rank-mate": {
+        "title": "Mate del pasillo",
+        "summary": "El rey atrapado detrás de sus propios peones.",
+        "steps": [
+          { "text": "Un rey enrocado suele quedarse detrás de tres peones. Si ninguna pieza protege la **última fila**, una sola torre o dama puede dar jaque mate por ella.\n\nEs el jaque mate más frecuente en las partidas de principiantes y de club." },
+          {
+            "text": "El rey negro no tiene casillas de escape.",
+            "task": {
+              "prompt": "Da mate del pasillo.",
+              "hint": "Sube la torre hasta el final de la columna d.",
+              "success": "¡Jaque mate! Los peones de f7, g7 y h7 se convirtieron en una prisión."
+            }
+          },
+          { "text": "Las negras defienden e8 con la torre y la dama. Pero tú tienes **dos** atacantes: una batería de torres en la columna e." },
+          {
+            "text": "Cuenta atacantes y defensores, y luego golpea.",
+            "task": {
+              "prompt": "Mate en 2: rompe por la última fila.",
+              "hint": "Captura en e8 con jaque. Después de que las negras recapturen, tu segunda torre remata el trabajo.",
+              "success": "¡Jaque mate! Dos atacantes vencen a dos defensores cuando capturas con jaque."
+            }
+          },
+          { "text": "**Cómo defenderte**: dale a tu rey una casilla de escape («luft») con una jugada como **h3** o **g3**, o mantén una torre en la primera fila.\n\nAquí las negras jugaron antes ...h6, así que Rd8+ ya no es mate: el rey escapa a h7." }
+        ]
+      },
+      "smothered-mate": {
+        "title": "Mate de la coz",
+        "summary": "Cuando el rey queda asfixiado por sus propias piezas.",
+        "steps": [
+          { "text": "El **mate de la coz** (o mate asfixiado) se produce cuando el rey está completamente rodeado por sus propias piezas y un caballo le da jaque. ¡El jaque de un caballo no se puede tapar!" },
+          {
+            "text": "El rey de h8 está encerrado por su propia torre y sus peones.",
+            "task": {
+              "prompt": "Da el mate de la coz.",
+              "hint": "¿Qué salto de caballo ataca h8?",
+              "success": "¡Mate de la coz! Las piezas negras asfixiaron a su propio rey."
+            }
+          },
+          { "text": "El **mate de Philidor** es el mate de la coz más famoso. Usa un sacrificio de dama para obligar a una pieza negra a ir a g8:\n\n1. **Nf7+** Kg8 2. **Nh6+** (jaque doble) Kh8 3. **Qg8+!!** Rxg8 4. **Nf7#**" },
+          {
+            "text": "Tu alfil de a3 impide que el rey escape a f8. ¡Juega la combinación completa!",
+            "task": {
+              "prompt": "Mate en 4 con el mate de Philidor.",
+              "hint": "Empieza con un jaque de caballo en f7 y luego da jaque doble desde h6.",
+              "success": "¡El mate de Philidor! Uno de los patrones más bellos del ajedrez."
+            }
+          }
+        ]
+      },
+      "anastasia-arabian": {
+        "title": "Mate de Anastasia y mate árabe",
+        "summary": "Caballo y torre trabajando juntos cerca del borde.",
+        "steps": [
+          { "text": "**Mate de Anastasia**: un caballo en e7 controla g8 y g6, el propio peón de g7 bloquea al rey, y una torre o dama da mate por la **columna h**." },
+          { "text": "Aquí primero entra el caballo con jaque y luego se sacrifica la dama para abrir la columna h." },
+          {
+            "text": "Encuentra la combinación completa.",
+            "task": {
+              "prompt": "Mate en 3 (mate de Anastasia).",
+              "hint": "Primero da jaque con el caballo. Luego sacrifica la dama en h7 para que tu torre dé mate por la columna h.",
+              "success": "¡Mate de Anastasia! El caballo de e7 y la torre hicieron todo el trabajo."
+            }
+          },
+          { "text": "**Mate árabe**: una torre y un caballo atrapan al rey en la esquina. El caballo protege a la torre y controla la casilla de escape.\n\nEs uno de los patrones de mate más antiguos que se conocen." },
+          {
+            "text": "El caballo de f6 controla h7 y g8.",
+            "task": {
+              "prompt": "Da el mate árabe.",
+              "hint": "Coloca la torre justo al lado del rey, protegida por el caballo.",
+              "success": "¡Mate árabe! Un patrón conocido desde hace más de mil años."
+            }
+          }
+        ]
+      },
+      "ladder-mate": {
+        "title": "La escalera (dos torres)",
+        "summary": "Dos piezas pesadas empujan al rey hasta el borde.",
+        "steps": [
+          { "text": "Con dos torres (o una torre y una dama) puedes dar jaque mate **sin ayuda de tu rey**. Una torre corta al rey a lo largo de una fila, la otra da jaque en la fila siguiente, y se van turnando como los peldaños de una **escalera**." },
+          {
+            "text": "La torre de a7 controla la séptima fila. El rey está en el borde.",
+            "task": {
+              "prompt": "Completa la escalera: jaque mate en una.",
+              "hint": "Da jaque por la octava fila con la otra torre.",
+              "success": "¡Jaque mate! Las dos torres cubrieron ambas filas."
+            }
+          },
+          {
+            "text": "A veces la escalera necesita primero una **jugada tranquila**: coloca una torre para cortar al rey y luego da mate.",
+            "task": {
+              "prompt": "Mate en 2 con tus dos torres.",
+              "hint": "Primero quítale la séptima fila con la torre de h. Luego la otra torre da mate en la última fila.",
+              "success": "¡Excelente! Cortar y luego dar mate: así funciona la escalera."
+            }
+          },
+          { "text": "**Consejo**: mantén tus torres **lejos** del rey enemigo, o podría atacarlas. Si el rey se acerca a una torre, llévala al otro extremo del tablero a lo largo de su fila." }
+        ]
+      },
+      "king-queen-mate": {
+        "title": "Rey y dama contra rey",
+        "summary": "El mate básico más importante.",
+        "steps": [
+          { "text": "Con rey y dama contra rey solo, siempre puedes ganar. El plan:\n\n1. Usa la dama para **reducir la caja** en la que vive el rey enemigo (colocarla a un salto de caballo es un truco muy útil).\n2. Empuja al rey hasta el **borde**.\n3. Acerca **tu rey** y da mate." },
+          { "text": "La dama está a un salto de caballo del rey y lo imita como un espejo. Fíjate en que el rey negro está confinado en la caja superior derecha." },
+          {
+            "text": "El rey negro está en el borde. Tu rey controla g7.",
+            "task": {
+              "prompt": "Jaque mate en una.",
+              "hint": "Coloca la dama justo al lado del rey negro, donde tu rey la proteja.",
+              "success": "¡Jaque mate! La dama está protegida por tu rey."
+            }
+          },
+          {
+            "text": "A veces necesitas **una jugada tranquila de rey** antes del mate. ¡Cuidado, nada de ahogado!",
+            "task": {
+              "prompt": "Mate en 2.",
+              "hint": "La dama ya mantiene al rey en la última fila. Acerca tu rey para que pueda proteger a la dama en g7.",
+              "success": "Técnica perfecta: la dama restringe, el rey se acerca y luego, mate."
+            }
+          },
+          { "text": "**¡Cuidado con el ahogado!** Cuando el rey enemigo tenga muy pocas casillas, comprueba siempre que todavía tenga una jugada legal después de la tuya (salvo que tu jugada sea jaque mate)." }
+        ]
+      },
+      "king-rook-mate": {
+        "title": "Rey y torre contra rey",
+        "summary": "Encierra al rey y usa la oposición.",
+        "steps": [
+          { "text": "Rey y torre contra rey es una victoria forzada, pero el rey tiene que ayudar. El plan:\n\n1. **Corta** al rey con la torre a lo largo de una fila o columna.\n2. Acerca tu rey hasta que los dos reyes queden **frente a frente** (la oposición).\n3. Da jaque por el borde cuando los reyes estén enfrentados." },
+          {
+            "text": "El jaque mate llega cuando los reyes están enfrentados y la torre da jaque por el borde.",
+            "task": {
+              "prompt": "Jaque mate en una.",
+              "hint": "Tu rey controla f7, g7 y h7. La torre da jaque por la octava fila.",
+              "success": "¡Jaque mate! Rey y torre en perfecta armonía."
+            }
+          },
+          {
+            "text": "Una **jugada de espera** puede obligar al rey a ir a la casilla adecuada.",
+            "task": {
+              "prompt": "Mate en 2.",
+              "hint": "Corta al rey de la columna d. Su única jugada lo lleva directo a la oposición.",
+              "success": "Muy bien hecho. ¡Cortar, esperar y dar mate!"
+            }
+          },
+          {
+            "text": "Aquí el rey negro solo puede ir y venir entre g8 y h8. Usa tu rey para quitarle una casilla.",
+            "task": {
+              "prompt": "Mate en 2.",
+              "hint": "Sube tu rey a g6 para que los reyes queden enfrentados.",
+              "success": "¡Esa es la técnica! La oposición hizo posible el mate."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tactics-fundamentals": {
+    "title": "Fundamentos de táctica",
+    "description": "«El ajedrez es 99 % táctica». Domina los ataques dobles, las clavadas, las enfiladas, los ataques a la descubierta, las desviaciones, las atracciones y las jugadas intermedias que ganan partidas.",
+    "lessons": {
+      "forks": {
+        "title": "Ataques dobles",
+        "summary": "Una pieza ataca dos objetivos a la vez.",
+        "steps": [
+          { "text": "Un **ataque doble** es una sola jugada que ataca **dos o más** piezas enemigas al mismo tiempo. Normalmente tu rival solo puede salvar una.\n\nLos caballos son los reyes del ataque doble, porque su ataque en forma de L es difícil de ver." },
+          {
+            "text": "Un ataque doble que incluye **jaque** es el más fuerte: el rey tiene que moverse y la otra pieza cae.",
+            "task": {
+              "prompt": "Ataca a la vez al rey y a la torre.",
+              "hint": "Busca un salto de caballo que ataque e8 y a8 al mismo tiempo.",
+              "success": "¡Un ataque doble con jaque! Ganaste la torre."
+            }
+          },
+          { "text": "**¡Los peones también hacen ataques dobles!** Aquí las negras tienen un truco famoso, el *truco del ataque doble*: ...Nxe4!, Nxe4 y ahora un avance de peón ataca al alfil y al caballo a la vez." },
+          {
+            "text": "Las blancas acaban de capturar en e4. Contraataca con el ataque doble de peón.",
+            "task": {
+              "prompt": "Haz el ataque doble con el peón.",
+              "hint": "Avanza un peón dos casillas para que ataque c4 y e4 a la vez.",
+              "success": "¡Excelente! El peón ataca dos piezas y las negras recuperan la pieza."
+            }
+          },
+          { "text": "La **dama** puede atacar en ocho direcciones. Un jaque combinado con un ataque a una pieza desprotegida es una forma clásica de ganar material." },
+          {
+            "text": "La torre de a8 está indefensa.",
+            "task": {
+              "prompt": "Ataca a la vez al rey y a la torre con tu dama.",
+              "hint": "Mira las diagonales: hay una casilla central que ve tanto g8 como a8.",
+              "success": "¡Gran ataque doble! Busca siempre piezas sueltas: **las piezas sueltas se pierden**."
+            }
+          }
+        ]
+      },
+      "pins": {
+        "title": "Clavadas",
+        "summary": "Inmoviliza una pieza enemiga delante de otra más valiosa.",
+        "steps": [
+          { "text": "Una **clavada** ataca a una pieza que no puede moverse sin dejar expuesta a otra más valiosa que está detrás.\n\n- **Clavada absoluta**: la pieza de detrás es el **rey**; la pieza clavada no puede moverse legalmente.\n- **Clavada relativa**: la pieza de detrás es valiosa (como la dama), así que moverse saldría caro." },
+          {
+            "text": "El caballo de c6 está clavado contra el rey. **¡Ataca a la pieza clavada!** No puede escapar.",
+            "task": {
+              "prompt": "Gana el caballo clavado.",
+              "hint": "El ataque de un peón es el más barato. Avanza tu peón de d.",
+              "success": "El caballo no puede huir del peón. ¡Carga contra las piezas clavadas!"
+            }
+          },
+          { "text": "Las clavadas en diagonal pueden atrapar incluso a una dama. La dama de e6 está en la misma diagonal que el rey negro de g8." },
+          {
+            "text": "Encuentra la clavada que gana la dama.",
+            "task": {
+              "prompt": "Clava la dama contra el rey.",
+              "hint": "Coloca el alfil en la diagonal a2–g8, protegido por un peón.",
+              "success": "La dama está clavada y perdida: solo puede capturar el alfil, y el peón de b recaptura."
+            }
+          },
+          { "text": "**Cómo defenderte de las clavadas**: rompe la clavada moviendo la pieza de detrás (a menudo el rey), interponiendo otra pieza o atacando a la pieza que clava con un peón (jugadas como «...a6, ...h6» son típicas)." }
+        ]
+      },
+      "skewers": {
+        "title": "Enfiladas",
+        "summary": "Una clavada al revés: la pieza grande está delante.",
+        "steps": [
+          { "text": "Una **enfilada** ataca a una pieza valiosa; cuando esta se aparta, se captura la pieza que estaba **detrás**. Es como una clavada, pero la pieza más valiosa está delante.\n\nLas enfiladas con **jaque** son las más comunes." },
+          {
+            "text": "El rey y la dama negros están en la misma columna.",
+            "task": {
+              "prompt": "Haz una enfilada al rey y la dama.",
+              "hint": "Da jaque al rey por la columna e. Cuando se aparte, la dama queda expuesta.",
+              "success": "Una enfilada gana la dama a cambio de la torre... ¡y aquí incluso gratis!"
+            }
+          },
+          {
+            "text": "Las enfiladas en diagonal son la especialidad de los alfiles.",
+            "task": {
+              "prompt": "Haz una enfilada al rey y a la torre de h8.",
+              "hint": "Da jaque por la gran diagonal para que la torre de h8 quede detrás del rey.",
+              "success": "¡Enfilada! La torre de h8 estaba detrás del rey."
+            }
+          },
+          { "text": "**Evita las enfiladas**: no alinees tu rey y tu dama (o tu rey y una torre) en la misma línea cuando haya piezas enemigas de largo alcance cerca." }
+        ]
+      },
+      "discovered-attacks": {
+        "title": "Ataques a la descubierta y jaque doble",
+        "summary": "Libera a un atacante oculto moviendo la pieza que tiene delante.",
+        "steps": [
+          { "text": "Un **ataque a la descubierta** ocurre cuando apartas una pieza y **destapas** el ataque de otra pieza que estaba detrás. Ahora pasan dos cosas a la vez: la pieza que se mueve crea su propia amenaza y la pieza oculta también ataca." },
+          {
+            "text": "Si el ataque destapado es un jaque, se llama **jaque a la descubierta**: la pieza que se mueve puede ir a cualquier sitio y llevarse algo.",
+            "task": {
+              "prompt": "Gana la dama con un jaque a la descubierta.",
+              "hint": "Mueve el caballo a una casilla que ataque a la dama. ¡La torre da el jaque!",
+              "success": "¡Jaque a la descubierta! La torre dio jaque y el caballo capturó la dama."
+            }
+          },
+          { "text": "Una famosa trampa de apertura. Tras 1.e4 e5 2.Nf3 Nf6 3.Nxe5 Nxe4? 4.Qe2 Nf6??, la dama y el rey comparten la columna e con solo tu caballo en medio." },
+          {
+            "text": "Destapa el ataque de la dama sobre el rey.",
+            "task": {
+              "prompt": "Gana la dama negra.",
+              "hint": "Mueve el caballo dando jaque a la descubierta a una casilla que ataque d8.",
+              "success": "¡Ay! Esta trampa ha atrapado a miles de jugadores en la Defensa Petrov."
+            }
+          },
+          { "text": "Un **jaque doble** es un jaque a la descubierta en el que la pieza que se mueve **también** da jaque. La única defensa es mover el rey: ni tapar ni capturar pueden detener dos jaques a la vez." },
+          {
+            "text": "El rey negro está rodeado por sus propias piezas.",
+            "task": {
+              "prompt": "Da jaque mate con un jaque doble.",
+              "hint": "Mueve el alfil para que dé jaque él mismo mientras destapa la torre.",
+              "success": "¡Jaque doble y mate! Ninguno de los dos jaques se podía tapar."
+            }
+          }
+        ]
+      },
+      "deflection-decoy": {
+        "title": "Desviación y atracción",
+        "summary": "Lleva las piezas enemigas a las casillas equivocadas.",
+        "steps": [
+          { "text": "Una **atracción** obliga a una pieza enemiga (a menudo el rey) a ir **a** una casilla donde sufre un golpe táctico.\n\nUna **desviación** obliga a una pieza defensora a **abandonar** su función.\n\nAmbas suelen empezar con un sacrificio." },
+          {
+            "text": "Si el rey negro estuviera en f8, el caballo podría hacerle un ataque doble junto con la dama desde d7. ¿Puedes obligar al rey a ir allí?",
+            "task": {
+              "prompt": "Atrae al rey y luego haz el ataque doble.",
+              "hint": "Sacrifica la torre en f8 para que el rey tenga que recapturar allí.",
+              "success": "¡Atracción + ataque doble! Entregaste una torre para ganar la dama."
+            }
+          },
+          { "text": "Una pieza **sobrecargada** tiene demasiadas tareas. Aquí la dama negra es la única pieza que protege la torre de e8, y toda la última fila. Oblígala a ir a e8 y la última fila queda indefensa." },
+          {
+            "text": "Fíjate en la casilla e8: dos atacantes blancos y dos defensores negros.",
+            "task": {
+              "prompt": "Desvía la dama y da mate.",
+              "hint": "Captura con jaque. La dama está obligada a recapturar y deja la última fila a merced de tu segunda torre.",
+              "success": "El defensor fue desviado y la última fila cayó."
+            }
+          }
+        ]
+      },
+      "removing-the-defender": {
+        "title": "Eliminación del defensor",
+        "summary": "Captura o expulsa la pieza que lo sostiene todo.",
+        "steps": [
+          { "text": "Si una casilla clave está protegida por **una sola** pieza enemiga, elimina a ese defensor y la casilla cae.\n\nAquí el caballo de f6 es la única pieza que protege h7 frente a tu batería de dama y alfil." },
+          {
+            "text": "Elimina al defensor y luego golpea.",
+            "task": {
+              "prompt": "Elimina al defensor de h7 y da mate.",
+              "hint": "Primero captura el caballo de f6. Así h7 se queda sin defensor.",
+              "success": "¡Jaque mate! (Si las negras no recapturan, simplemente ganas la dama con Bxd8)."
+            }
+          },
+          { "text": "Los defensores también pueden ser **expulsados** ganando un tiempo, por ejemplo con el ataque de un peón, o **atraídos** fuera de su puesto con una captura." }
+        ]
+      },
+      "zwischenzug": {
+        "title": "Jugada intermedia (zwischenzug)",
+        "summary": "¡No recaptures en piloto automático!",
+        "steps": [
+          { "text": "Una **jugada intermedia** (en alemán, *zwischenzug*) es una jugada forzante, normalmente un jaque o una gran amenaza, que se juega **antes** de la recaptura esperada.\n\nPregúntate siempre: *¿Tengo algo mejor que recapturar?*" },
+          { "text": "La **Trampa del Elefante** en el Gambito de Dama: las blancas acaban de jugar 6.Nxd5?? para ganar un peón. Parece que ...Nxd5 pierde la dama por Bxd8, ¡pero las negras tienen un jaque intermedio!" },
+          {
+            "text": "Haz saltar la Trampa del Elefante.",
+            "task": {
+              "prompt": "Gana una pieza con una jugada intermedia.",
+              "hint": "Primero captura en d5. Después de Bxd8, da jaque con tu alfil antes de recapturar el alfil.",
+              "success": "¡Brillante! Las blancas deben tapar con Qd2; luego ...Kxd8 (o antes ...Bxd2+) y tienes una pieza entera de ventaja."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "opening-principles": {
+    "title": "Principios de la apertura",
+    "description": "No necesitas memorizar miles de jugadas. Aprende las reglas de oro (controla el centro, desarrolla rápido, enroca pronto, no saques la dama demasiado pronto) y evita las trampas clásicas de principiante.",
+    "lessons": {
+      "control-the-center": {
+        "title": "Controla el centro",
+        "summary": "Por qué d4, e4, d5 y e5 son las casillas más importantes.",
+        "steps": [
+          { "text": "Las cuatro casillas centrales (**d4, e4, d5, e5**) son el corazón del tablero. Las piezas situadas en el centro o apuntando hacia él controlan más casillas y pueden pasar rápidamente de un flanco a otro." },
+          { "text": "Un peón en e4 controla d5 y f5, y abre líneas para la dama y el alfil de casillas claras." },
+          {
+            "text": "¡Te toca! Ocupa el centro y luego desarrolla un caballo que ataque el peón central de las negras.",
+            "task": {
+              "prompt": "Juega 1.e4 y luego 2.Nf3 cuando respondan las negras.",
+              "hint": "Primero avanza dos casillas el peón de rey. Luego salta con el caballo de g1 a f3.",
+              "success": "¡Perfecto! El caballo de f3 se desarrolla **y** ataca el peón de e5."
+            }
+          },
+          { "text": "Las negras también deben luchar por el centro. Contra 1.d4, la respuesta clásica es colocar un peón en d5 para que las blancas no se queden con todo el centro." },
+          {
+            "text": "Lucha por el centro con las negras.",
+            "task": {
+              "prompt": "Responde a 1.d4 con ...d5 y, tras 2.c4, desarrolla tu caballo de rey.",
+              "hint": "Avanza dos casillas tu peón de d. Luego el caballo de g8 va a f6.",
+              "success": "Bien jugado: un peón central sólido y un caballo desarrollado."
+            }
+          }
+        ]
+      },
+      "develop-your-pieces": {
+        "title": "Desarrolla tus piezas",
+        "summary": "Mete todas tus piezas en juego rápidamente.",
+        "steps": [
+          { "text": "**Desarrollar** significa sacar tus piezas de la primera fila a casillas activas. Las reglas de oro:\n\n- **Caballos antes que alfiles** (normalmente sabemos antes dónde van los caballos).\n- Mueve **cada pieza una sola vez** en la apertura.\n- Apunta tus piezas hacia el **centro**.\n- Conecta tus torres." },
+          {
+            "text": "Desarrolla con un propósito.",
+            "task": {
+              "prompt": "Desarrolla: primero Nf3, luego Bc4 y después enroca.",
+              "hint": "Caballo a f3, alfil a c4 y luego enroca moviendo el rey dos casillas a la derecha.",
+              "success": "¡De manual! En solo tres jugadas desarrollaste dos piezas y pusiste a salvo a tu rey."
+            }
+          },
+          { "text": "**No pierdas tiempo.** Aquí las blancas han avanzado los peones de torre y han sacado pronto la torre. Las negras tienen dos piezas desarrolladas y el centro, y ya están claramente mejor." },
+          {
+            "text": "Desarrolla **y** defiende a la vez. El caballo blanco ataca e5.",
+            "task": {
+              "prompt": "Defiende el peón de e5 con una jugada de desarrollo.",
+              "hint": "¿Qué caballo puede proteger e5 mientras entra en juego?",
+              "success": "¡Genial! Nc6 desarrolla una pieza y defiende el peón en una sola jugada."
+            }
+          }
+        ]
+      },
+      "king-safety": {
+        "title": "Seguridad del rey y enroque",
+        "summary": "Saca a tu rey del centro antes de que empiece la lucha.",
+        "steps": [
+          { "text": "En la apertura, el centro suele abrirse rápidamente. Un rey que se queda en e1/e8 puede recibir jaques por la columna e y por las diagonales.\n\n**Enroca pronto**, normalmente dentro de las primeras 10 jugadas, y preferiblemente en el flanco donde no hayas avanzado tus peones." },
+          {
+            "text": "Ambos bandos se han desarrollado. Es hora de poner a salvo al rey.",
+            "task": {
+              "prompt": "Enroca en corto.",
+              "hint": "Arrastra el rey de e1 a g1.",
+              "success": "Rey seguro y torre activa. Ya estás listo para el medio juego."
+            }
+          },
+          { "text": "**La casilla f7** es el punto más débil de las negras al principio: solo la defiende el rey. El alfil y el caballo blancos ya apuntan hacia ella con Ng5." },
+          {
+            "text": "Defiéndete del doble ataque sobre f7.",
+            "task": {
+              "prompt": "Bloquea la diagonal del alfil con tu peón de d.",
+              "hint": "Un peón en d5 corta la conexión del alfil de c4 con f7.",
+              "success": "¡Correcto! ...d5 es la línea principal de la Defensa de los Dos Caballos."
+            }
+          },
+          { "text": "**Después de enrocar, conserva tu escudo de peones.** Avanzar los peones que están delante de tu rey enrocado (g4, h4...) crea huecos que las piezas enemigas pueden aprovechar. ¡Hazlo solo cuando estés atacando!" }
+        ]
+      },
+      "early-queen": {
+        "title": "No saques la dama demasiado pronto",
+        "summary": "La dama es poderosa, pero también un blanco fácil.",
+        "steps": [
+          { "text": "Si sacas la dama pronto, tu rival puede **atacarla con jugadas de desarrollo** y ganar **tiempos** mientras tu dama no deja de huir.\n\nAquí, tras 1.e4 d5 2.exd5 Qxd5, las blancas juegan **Nc3**, desarrollando con ataque a la dama." },
+          {
+            "text": "Gana un tiempo contra la dama que salió pronto.",
+            "task": {
+              "prompt": "Desarrolla con ataque a la dama.",
+              "hint": "¿Qué jugada de caballo ataca d5?",
+              "success": "Así se castiga una dama que sale pronto: desarrolla y ataca a la vez."
+            }
+          },
+          { "text": "El **Mate del Pastor**: las blancas apuntan la dama y el alfil a f7. Si las negras no se dan cuenta, ¡Qxf7 es jaque mate en solo cuatro jugadas!" },
+          {
+            "text": "Ahora llevas las negras y las blancas intentan el Mate del Pastor. Defiéndete con calma, ¡y desarrolla!",
+            "task": {
+              "prompt": "Bloquea la dama con ...g6 y luego desarrolla con ...Nf6 cuando las blancas renueven el ataque sobre f7.",
+              "hint": "Primero ...g6 bloquea la diagonal h5–f7. Tras Qf3, el caballo en f6 bloquea la columna f.",
+              "success": "¡Bien defendido! La dama blanca ha perdido tiempo y tú estás bien desarrollado."
+            }
+          },
+          { "text": "Las piezas negras pronto volverán a perseguir a la dama blanca con ...Nd4 o con ...d6 y ...Bg4. Cada jugada de dama es una jugada que no se dedica al desarrollo." }
+        ]
+      },
+      "opening-traps": {
+        "title": "Trampas clásicas de apertura",
+        "summary": "Aprende las trampas para no caer nunca en ellas y saber castigarlas.",
+        "steps": [
+          { "text": "El **Mate del Loco** es el jaque mate más rápido posible. Las blancas debilitaron la diagonal de su rey con f3 y g4." },
+          {
+            "text": "Castiga los avances de peón debilitantes de las blancas.",
+            "task": {
+              "prompt": "Jaque mate en una.",
+              "hint": "La diagonal e1–h4 está completamente abierta.",
+              "success": "¡Mate del Loco! Nunca debilites pronto la diagonal e1–h4 (ni la e8–h5)."
+            }
+          },
+          { "text": "**Mate de Légal**: las negras clavaron el caballo con ...Bg4 y creen que no puede moverse. ¡Pero una clavada contra la dama es solo una clavada *relativa*!" },
+          {
+            "text": "Rompe la clavada con un sacrificio de dama.",
+            "task": {
+              "prompt": "Haz saltar la trampa de Légal.",
+              "hint": "Ignora la clavada: captura en e5 con el caballo. Si las negras toman tu dama, da jaque en f7.",
+              "success": "¡Mate de Légal! Tres piezas menores dieron mate al rey."
+            }
+          },
+          { "text": "**Las reglas de oro de la apertura**\n\n1. Controla el centro con peones y piezas.\n2. Desarrolla rápido caballos y alfiles.\n3. Enroca pronto.\n4. No muevas la misma pieza dos veces sin motivo.\n5. No saques la dama demasiado pronto.\n6. Conecta tus torres.\n7. En cada jugada, ¡revisa qué amenaza tu rival!" }
+        ]
+      }
+    }
+  },
+  "openings-for-white": {
+    "title": "Aperturas populares con blancas",
+    "description": "Un repertorio completo con blancas, de principiante a nivel de club: la Apertura Italiana y la Ruy López tras 1.e4, además del Gambito de Dama y el Sistema Londres, fácil de aprender, tras 1.d4. Con las ideas clave, los planes y las trampas.",
+    "lessons": {
+      "italian-game": {
+        "title": "La Apertura Italiana",
+        "summary": "Apunta a f7 y construye el centro ideal.",
+        "steps": [
+          { "text": "La **Apertura Italiana** (1.e4 e5 2.Nf3 Nc6 3.Bc4) es una de las aperturas más antiguas. Las blancas se desarrollan rápido y apuntan el alfil a la casilla más débil de las negras, **f7**." },
+          {
+            "text": "Juega las primeras jugadas de la apertura.",
+            "task": {
+              "prompt": "Juega la Apertura Italiana: 1.e4, 2.Nf3 y 3.Bc4.",
+              "hint": "Peón a e4, caballo a f3 y luego el alfil de casillas claras a c4.",
+              "success": "¡Esa es la Apertura Italiana! Tu alfil apunta a f7 y estás listo para enrocar."
+            }
+          },
+          { "text": "**Plan 1: Giuoco Piano**: tras 3...Bc5, juega **c3** y **d4** para levantar un gran centro de peones y hacer retroceder las piezas negras." },
+          {
+            "text": "Construye el centro ideal.",
+            "task": {
+              "prompt": "Prepara d4 con c3 y luego avanza d4 cuando las negras se desarrollen.",
+              "hint": "Primero el peón de c una casilla y luego el peón de d dos casillas.",
+              "success": "Dos peones uno al lado del otro en el centro: ¡la formación soñada!"
+            }
+          },
+          { "text": "**Plan 2: Giuoco Pianissimo** («juego muy tranquilo»): c3, d3, O-O, Re1 y luego Nbd2–f1–g3. Una construcción lenta que encanta a los grandes maestros modernos." },
+          { "text": "**El ataque Fegatello (Fried Liver).** Si las negras responden 3...Nf6 4.Ng5 d5 5.exd5 con la natural 5...Nxd5?, las blancas pueden sacrificar en f7 y arrastrar al rey al descubierto." },
+          {
+            "text": "Lanza el ataque Fegatello.",
+            "task": {
+              "prompt": "Sacrifica en f7 y continúa con un jaque de dama.",
+              "hint": "¡Caballo captura en f7! Tras Kxf7, la dama da jaque en f3 y ataca también al caballo de d5.",
+              "success": "El rey está expuesto y el caballo de d5 está clavado. El ataque blanco es muy fuerte."
+            }
+          }
+        ]
+      },
+      "ruy-lopez": {
+        "title": "La Ruy López",
+        "summary": "La «tortura española»: presión duradera sobre e5.",
+        "steps": [
+          { "text": "La **Ruy López** (o Apertura Española) 1.e4 e5 2.Nf3 Nc6 3.Bb5 ataca al caballo que defiende e5. Es una de las favoritas de los campeones del mundo porque la presión se mantiene hasta bien entrado el medio juego." },
+          {
+            "text": "Juega la línea principal.",
+            "task": {
+              "prompt": "Juega la Ruy López: 1.e4, 2.Nf3, 3.Bb5 y, tras ...a6, retira con 4.Ba4.",
+              "hint": "Tras ...a6, mantén el alfil en la diagonal retirándolo a a4.",
+              "success": "¡Bien hecho! El alfil mantiene sobre c6 una presión parecida a una clavada."
+            }
+          },
+          { "text": "Tras 4...Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 llegamos a la **Ruy López Cerrada**. Las blancas preparan d4, y el caballo suele viajar **Nbd2–f1–g3** hacia el flanco de rey." },
+          { "text": "**Atención, trampa: el Arca de Noé.** Si las blancas capturan un peón central sin cuidado, las negras pueden atrapar el alfil de b3 con ...c5–c4. Deja siempre una casilla de escape a tu alfil (por eso c3 es tan útil: Bc2)." },
+          { "text": "**La Variante del Cambio** (4.Bxc6 dxc6) da a las negras la pareja de alfiles, pero daña su estructura de peones. El plan de las blancas es d4 y buscar un final de rey y peones ganador gracias a su **mayoría sana en el flanco de rey**." }
+        ]
+      },
+      "queens-gambit": {
+        "title": "El Gambito de Dama",
+        "summary": "Ofrece un peón para ganar el centro.",
+        "steps": [
+          { "text": "El **Gambito de Dama** 1.d4 d5 2.c4 ofrece el peón de c para desviar del centro el peón negro de d5. No es un gambito de verdad: las blancas casi siempre pueden recuperar el peón." },
+          {
+            "text": "Juega la línea principal del Gambito de Dama Rehusado.",
+            "task": {
+              "prompt": "Juega 1.d4, 2.c4, 3.Nc3 y 4.Bg5.",
+              "hint": "Peón de dama, luego el peón de c, después caballo a c3 y clava el caballo de f6 con Bg5.",
+              "success": "Desarrollo clásico: el caballo de f6 está clavado y d5 está bajo presión."
+            }
+          },
+          { "text": "**Gambito de Dama Aceptado:** tras 2...dxc4, las blancas suelen jugar **e3** y **Bxc4**, logrando un centro precioso. Intentar mantener el peón con ...b5 es un error." },
+          {
+            "text": "Castiga la codicia de las negras.",
+            "task": {
+              "prompt": "Socava los peones con a4 y luego ataca la torre de a8 con tu dama.",
+              "hint": "Ataca b5 con el peón de a. Tras el cambio, se abre la gran diagonal f3–a8.",
+              "success": "La torre de a8 y el caballo de b8 están colgados: las blancas ganan material."
+            }
+          },
+          { "text": "**El ataque de minorías** es el plan clásico de las blancas en la Variante del Cambio: avanzar el peón de b hasta b5 para crear un peón débil en c6." }
+        ]
+      },
+      "london-system": {
+        "title": "El Sistema Londres",
+        "summary": "Un mismo esquema contra todo.",
+        "steps": [
+          { "text": "El **Sistema Londres** es perfecto si tienes poco tiempo para estudiar: las blancas juegan el mismo esquema contra casi todo (**d4, Bf4, e3, Nf3, c3, Bd3, Nbd2**) y forman una sólida pirámide de peones." },
+          {
+            "text": "Monta el Londres.",
+            "task": {
+              "prompt": "Juega 1.d4 y 2.Bf4, y luego 3.e3.",
+              "hint": "Desarrolla el alfil de casillas oscuras a f4 **antes** de jugar e3, para que no quede encerrado.",
+              "success": "¡Buen hábito! El alfil está fuera de la cadena de peones."
+            }
+          },
+          { "text": "Planes típicos: un salto de caballo a **e5** apoyado por f4, un ataque en el flanco de rey con **Qf3–h3** o **g4**, y la diagonal **Bd3–h7** apuntando al rey enrocado." },
+          { "text": "**Cómo castigar ...Bf5:** si las negras imitan con ...Bf5, el peón de b7 suele quedar débil. **Qb3** ataca b7 y d5 a la vez." },
+          {
+            "text": "Aprovecha el punto débil de b7.",
+            "task": {
+              "prompt": "Ataca b7 con tu dama.",
+              "hint": "La dama va a b3 y ataca b7.",
+              "success": "Las negras tienen que gastar una jugada en ...Qb6 o ...Qc8. Las blancas han ganado tiempo."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

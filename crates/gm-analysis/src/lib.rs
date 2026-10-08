@@ -9,6 +9,10 @@
 //! 3. Classify every move chess.com style (book, forced, best, brilliant, great, excellent,
 //!    good, inaccuracy, mistake, miss, blunder) from the mover's expected-points (win%) loss.
 //! 4. Lichess accuracy per side, an Elo estimate, key moments and a friendly summary.
+//!
+//! All human text (per-move explanations, the summary, opening names) is written in the
+//! requested [`Lang`]. [`relocalize`] rewrites only that text for another language from the
+//! stored evaluations, without touching the engine.
 
 mod accuracy;
 mod see;
@@ -20,7 +24,8 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use shakmaty::{Chess, Color, Move, Position};
 
-use gm_content::OpeningRef;
+use gm_content::words::{capitalize, decimal1, fill, kv, side_name};
+use gm_content::{Lang, OpeningRef};
 use gm_engine::{
     fen_key, move_to_san, parse_fen, to_fen, uci_line_to_san, uci_to_move, EnginePool, PvLine, Score, SearchInfo,
     SearchLimits,
@@ -179,13 +184,6 @@ fn color_name(c: Color) -> &'static str {
     match c {
         Color::White => "white",
         Color::Black => "black",
-    }
-}
-
-fn capitalized(c: Color) -> &'static str {
-    match c {
-        Color::White => "White",
-        Color::Black => "Black",
     }
 }
 
@@ -401,14 +399,32 @@ fn move_label(m: &MoveReview, start_fullmove: u32, white_first: bool) -> String 
     }
 }
 
+fn t<'a>(lang: Lang, en: &'a str, es: &'a str) -> &'a str {
+    match lang {
+        Lang::En => en,
+        Lang::Es => es,
+    }
+}
+
+fn mover_side(m: &MoveReview) -> Color {
+    if m.color == "white" {
+        Color::White
+    } else {
+        Color::Black
+    }
+}
+
 fn build_summary(
     review: &GameReview,
     final_pos: &Chess,
     start_fullmove: u32,
     white_first: bool,
+    lang: Lang,
 ) -> String {
     let mut sentences: Vec<String> = Vec::with_capacity(3);
     let label = |m: &MoveReview| move_label(m, start_fullmove, white_first);
+    // Side as a sentence subject: "White" / "las blancas" (capitalized where it starts a sentence).
+    let who = |c: Color| side_name(c, lang).to_string();
 
     // 1. Opening + turning point.
     let opening = review.opening.as_ref().map(|o| o.name.clone());
@@ -418,66 +434,83 @@ fn build_summary(
         .filter(|m| m.classification.is_error() && m.win_chance_loss >= 10.0)
         .max_by(|a, b| a.win_chance_loss.total_cmp(&b.win_chance_loss));
     let opener = match &opening {
-        Some(name) => format!("After a {name} opening, "),
+        Some(name) => fill(t(lang, "After a {o} opening, ", "Tras la apertura ({o}), "), &kv(&[("o", name)])),
         None => String::new(),
     };
     match worst {
         Some(m) => {
-            let who = if m.color == "white" { "White" } else { "Black" };
-            let verb = if m.classification == Classification::Miss { "let a big chance slip with" } else { "went wrong with" };
-            let better = if m.best_move_san.is_empty() {
-                String::new()
-            } else {
-                format!(" — {} was the move", m.best_move_san)
+            let tpl = match (m.classification == Classification::Miss, m.best_move_san.is_empty()) {
+                (true, true) => t(lang, "{op}the game turned when {w} let a big chance slip with {l}.", "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l}."),
+                (true, false) => t(
+                    lang,
+                    "{op}the game turned when {w} let a big chance slip with {l} — {b} was the move.",
+                    "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l} (la jugada era {b}).",
+                ),
+                (false, true) => t(lang, "{op}the game turned when {w} went wrong with {l}.", "{op}la partida cambió cuando {w} fallaron con {l}."),
+                (false, false) => t(
+                    lang,
+                    "{op}the game turned when {w} went wrong with {l} — {b} was the move.",
+                    "{op}la partida cambió cuando {w} fallaron con {l} (la jugada era {b}).",
+                ),
             };
-            let s = format!("{opener}the game turned when {who} {verb} {}{better}.", label(m));
-            sentences.push(capitalize_first(&s));
+            let s = fill(tpl, &kv(&[("op", &opener), ("w", &who(mover_side(m))), ("l", &label(m)), ("b", &m.best_move_san)]));
+            sentences.push(capitalize(&s));
         }
         None if !review.moves.is_empty() => {
-            sentences.push(capitalize_first(&format!(
-                "{opener}both sides played a clean game without any serious mistakes."
-            )));
+            let tpl = t(
+                lang,
+                "{op}both sides played a clean game without any serious mistakes.",
+                "{op}ambos bandos jugaron una partida limpia, sin errores graves.",
+            );
+            sentences.push(capitalize(&fill(tpl, &kv(&[("op", &opener)]))));
         }
-        None => sentences.push("No moves were played yet — make some moves and review again!".to_string()),
+        None => sentences.push(
+            t(lang, "No moves were played yet — make some moves and review again!", "Todavía no se ha jugado nada: ¡haz algunas jugadas y vuelve a revisar!").to_string(),
+        ),
     }
 
     // 2. Highlight (brilliant/great) or the ending.
     if let Some(m) = review.moves.iter().find(|m| m.classification == Classification::Brilliant) {
-        let who = if m.color == "white" { "White" } else { "Black" };
-        sentences.push(format!("Don't miss {who}'s brilliant {} — a real sacrifice that works!", label(m)));
+        let tpl = match (lang, mover_side(m)) {
+            (Lang::En, _) => "Don't miss {W}'s brilliant {l} — a real sacrifice that works!",
+            (Lang::Es, Color::White) => "¡No te pierdas la jugada brillante de las blancas, {l}: un sacrificio de verdad que funciona!",
+            (Lang::Es, Color::Black) => "¡No te pierdas la jugada brillante de las negras, {l}: un sacrificio de verdad que funciona!",
+        };
+        sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(mover_side(m)))), ("l", &label(m))])));
     } else if final_pos.is_checkmate() {
-        let winner = capitalized(final_pos.turn().other());
+        let winner = final_pos.turn().other();
         if let Some(last) = review.moves.last() {
-            sentences.push(format!("{winner} finished it in style with checkmate on {}.", label(last)));
+            let tpl = t(lang, "{W} finished it in style with checkmate on {l}.", "{W} remataron con estilo: jaque mate con {l}.");
+            sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(winner))), ("l", &label(last))])));
         }
     } else if final_pos.is_stalemate() {
-        sentences.push("The game ended in stalemate — always check your opponent has a move!".to_string());
+        sentences.push(
+            t(
+                lang,
+                "The game ended in stalemate — always check your opponent has a move!",
+                "La partida terminó en ahogado: ¡comprueba siempre que tu rival tenga alguna jugada!",
+            )
+            .to_string(),
+        );
     } else if let Some(m) = review.moves.iter().find(|m| m.classification == Classification::Great) {
-        let who = if m.color == "white" { "White" } else { "Black" };
-        sentences.push(format!("{who} found a great move with {}.", label(m)));
+        let tpl = t(lang, "{W} found a great move with {l}.", "{W} encontraron una gran jugada: {l}.");
+        sentences.push(fill(tpl, &kv(&[("W", &capitalize(&who(mover_side(m)))), ("l", &label(m))])));
     }
 
     // 3. Accuracy comparison.
     if !review.moves.is_empty() {
         let (w, b) = (review.white.accuracy, review.black.accuracy);
         let verdict = if (w - b).abs() < 3.0 {
-            "an evenly matched performance".to_string()
+            t(lang, "an evenly matched performance", "una actuación muy pareja")
         } else if w > b {
-            "White was the more precise side".to_string()
+            t(lang, "White was the more precise side", "las blancas fueron el bando más preciso")
         } else {
-            "Black was the more precise side".to_string()
+            t(lang, "Black was the more precise side", "las negras fueron el bando más preciso")
         };
-        sentences.push(format!("Accuracy: White {w:.1}%, Black {b:.1}% — {verdict}."));
+        let tpl = t(lang, "Accuracy: White {w}%, Black {b}% — {v}.", "Precisión: blancas {w} %, negras {b} %: {v}.");
+        sentences.push(fill(tpl, &kv(&[("w", &decimal1(w, lang)), ("b", &decimal1(b, lang)), ("v", verdict)])));
     }
     sentences.join(" ")
-}
-
-fn capitalize_first(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-        None => String::new(),
-    }
 }
 
 /// Pick the most instructive plies: big swings, blunders, misses and brilliancies.
@@ -509,7 +542,8 @@ fn key_moments(moves: &[MoveReview], white_wins: &[f32]) -> Vec<usize> {
     plies
 }
 
-/// Full game review. See module docs.
+/// Full game review with text in `lang`. See module docs. `content` may be the source content
+/// or any language view of it (opening names come from `content.localized(lang)`).
 pub async fn review_game(
     pool: &EnginePool,
     content: Arc<gm_content::Content>,
@@ -517,7 +551,9 @@ pub async fn review_game(
     moves: &[String],
     depth: u8,
     progress: Option<tokio::sync::mpsc::UnboundedSender<f32>>,
+    lang: Lang,
 ) -> Result<GameReview, String> {
+    let content = content.localized(lang);
     if moves.len() > MAX_PLIES {
         return Err(format!("game too long to review ({} plies, max {MAX_PLIES})", moves.len()));
     }
@@ -634,17 +670,20 @@ pub async fn review_game(
         let best = before.lines.first();
         let best_move_san = best.and_then(|l| l.san.first()).cloned().unwrap_or_default();
         let best_line_san: Vec<String> = best.map(|l| l.san.iter().take(10).cloned().collect()).unwrap_or_default();
-        let explanation = gm_mentor::explain_move(&gm_mentor::MoveContext {
-            fen_before: before.fen.clone(),
-            played_uci: uci.to_string(),
-            played_san: san.clone(),
-            best_uci: best_uci.clone(),
-            best_san: best_move_san.clone(),
-            best_line_san: best_line_san.clone(),
-            eval_before: before.score,
-            eval_after: after.score,
-            classification: classification.as_str().to_string(),
-        });
+        let explanation = gm_mentor::explain_move(
+            &gm_mentor::MoveContext {
+                fen_before: before.fen.clone(),
+                played_uci: uci.to_string(),
+                played_san: san.clone(),
+                best_uci: best_uci.clone(),
+                best_san: best_move_san.clone(),
+                best_line_san: best_line_san.clone(),
+                eval_before: before.score,
+                eval_after: after.score,
+                classification: classification.as_str().to_string(),
+            },
+            lang,
+        );
         reviews.push(MoveReview {
             ply: i + 1,
             san,
@@ -692,11 +731,79 @@ pub async fn review_game(
         key_moments: key,
         summary: String::new(),
     };
-    review.summary = build_summary(&review, &final_pos, start_fullmove, white_first);
+    review.summary = build_summary(&review, &final_pos, start_fullmove, white_first, lang);
     if let Some(tx) = &progress {
         let _ = tx.send(1.0);
     }
     Ok(review)
+}
+
+/// The explanation context for a reviewed move, rebuilt from its stored fields.
+fn move_context(m: &MoveReview) -> gm_mentor::MoveContext {
+    gm_mentor::MoveContext {
+        fen_before: m.fen_before.clone(),
+        played_uci: m.uci.clone(),
+        played_san: m.san.clone(),
+        best_uci: m.best_move_uci.clone(),
+        best_san: m.best_move_san.clone(),
+        best_line_san: m.best_line_san.clone(),
+        eval_before: m.eval_before,
+        eval_after: m.eval_after,
+        classification: m.classification.as_str().to_string(),
+    }
+}
+
+/// Rewrite only the human text of `review` in `lang` — per-move explanations, opening names
+/// and the summary — from the stored evaluations and classifications. Never runs the engine
+/// (it has no access to one): evaluations, best moves, classifications, accuracy, key moments
+/// and everything else are copied unchanged. Cheap: rule-based text only.
+pub fn relocalize(review: &GameReview, content: &gm_content::Content, lang: Lang) -> GameReview {
+    let content = content.localized(lang);
+    let mut out = review.clone();
+    for m in &mut out.moves {
+        m.explanation = gm_mentor::explain_move(&move_context(m), lang);
+        if m.opening_name.is_some() {
+            if let Some(om) = content.lookup_opening(&m.fen_after) {
+                m.opening_name = Some(om.opening.name);
+            }
+        }
+    }
+    if let Some(o) = &mut out.opening {
+        if let Some(r) = content.opening_ref(&o.id) {
+            o.name = r.name;
+        }
+    }
+    let start = parse_fen(&out.start_fen).unwrap_or_default();
+    let white_first = start.turn() == Color::White;
+    let start_fullmove = start.fullmoves().get();
+    let final_pos = out
+        .moves
+        .last()
+        .and_then(|m| parse_fen(&m.fen_after).ok())
+        .unwrap_or(start);
+    out.summary = build_summary(&out, &final_pos, start_fullmove, white_first, lang);
+    out
+}
+
+/// Serialize a review for `games.review_json`, tagged with the language its text is in
+/// (an extra `"lang"` key; the review's own shape is unchanged).
+pub fn to_stored_json(review: &GameReview, lang: Lang) -> Option<String> {
+    let mut v = serde_json::to_value(review).ok()?;
+    if let Some(obj) = v.as_object_mut() {
+        obj.insert("lang".into(), serde_json::to_value(lang).ok()?);
+    }
+    serde_json::to_string(&v).ok()
+}
+
+/// Parse a stored review and the language its text is in (`en` for untagged legacy rows).
+pub fn from_stored_json(json: &str) -> Option<(GameReview, Lang)> {
+    let v: serde_json::Value = serde_json::from_str(json).ok()?;
+    let lang = v
+        .get("lang")
+        .and_then(|l| serde_json::from_value::<Lang>(l.clone()).ok())
+        .unwrap_or_default();
+    let review = serde_json::from_value::<GameReview>(v).ok()?;
+    Some((review, lang))
 }
 
 #[cfg(test)]

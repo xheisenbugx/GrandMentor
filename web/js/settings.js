@@ -1,21 +1,24 @@
 // GrandMentor user settings — persisted in localStorage, applied to <html>.
 // Contract: docs/CONTRACT.md §5.
 
+import { DEFAULT_LANGUAGE, isLanguage } from './languages.js';
+
 const STORAGE_KEY = 'grandmentor.settings.v1';
 
-/** Board color themes. Exported so the Settings page can render previews. */
+/** Board color themes. Exported so the Settings page can render previews.
+ *  `labelKey` is an i18n key resolved at render time (this module must not import i18n.js). */
 export const BOARD_THEMES = Object.freeze({
-  green: { label: 'Green', light: '#ebecd0', dark: '#739552' },
-  brown: { label: 'Brown', light: '#f0d9b5', dark: '#b58863' },
-  blue: { label: 'Blue', light: '#dee3e6', dark: '#8ca2ad' },
-  purple: { label: 'Purple', light: '#efeaf6', dark: '#8877b7' },
-  gray: { label: 'Gray', light: '#e2e2e0', dark: '#9a9c9e' },
+  green: { labelKey: 'settings.boardThemes.green', light: '#ebecd0', dark: '#739552' },
+  brown: { labelKey: 'settings.boardThemes.brown', light: '#f0d9b5', dark: '#b58863' },
+  blue: { labelKey: 'settings.boardThemes.blue', light: '#dee3e6', dark: '#8ca2ad' },
+  purple: { labelKey: 'settings.boardThemes.purple', light: '#efeaf6', dark: '#8877b7' },
+  gray: { labelKey: 'settings.boardThemes.gray', light: '#e2e2e0', dark: '#9a9c9e' },
 });
 
 export const PIECE_SETS = Object.freeze({
-  cburnett: { label: 'Classic' },
-  merida: { label: 'Merida' },
-  alpha: { label: 'Alpha' },
+  cburnett: { labelKey: 'settings.pieceSets.cburnett' },
+  merida: { labelKey: 'settings.pieceSets.merida' },
+  alpha: { labelKey: 'settings.pieceSets.alpha' },
 });
 
 export const DEFAULTS = Object.freeze({
@@ -30,6 +33,7 @@ export const DEFAULTS = Object.freeze({
   theme: 'dark',
   moveNotation: 'san',
   sidebarCollapsed: false,
+  language: DEFAULT_LANGUAGE,
 });
 
 // Validators keep corrupted storage from breaking the app.
@@ -45,6 +49,7 @@ const VALIDATE = {
   theme: (v) => v === 'dark' || v === 'light',
   moveNotation: (v) => v === 'san' || v === 'figurine',
   sidebarCollapsed: (v) => typeof v === 'boolean',
+  language: (v) => isLanguage(v),
 };
 
 const listeners = new Set();

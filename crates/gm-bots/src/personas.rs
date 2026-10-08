@@ -2,6 +2,8 @@
 //!
 //! All chat is kept friendly and encouraging — taunts are playful, never mean.
 
+use gm_content::Lang;
+
 /// Playing style. Affects opening-book choices and move preferences.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Style {
@@ -35,7 +37,7 @@ impl Style {
     }
 }
 
-/// A bot's full definition (identity + chat lines).
+/// A bot's full definition (identity + chat lines per language).
 pub struct Persona {
     pub id: &'static str,
     pub name: &'static str,
@@ -43,6 +45,12 @@ pub struct Persona {
     pub avatar: &'static str,
     pub style: Style,
     pub coach: bool,
+    pub en: Lines,
+    pub es: Lines,
+}
+
+/// Everything a bot says, in one language.
+pub struct Lines {
     pub description: &'static str,
     pub greeting: &'static str,
     /// Bot opens with a named opening. `{opening}` is replaced by its name.
@@ -64,6 +72,14 @@ pub struct Persona {
 }
 
 impl Persona {
+    /// The bot's text in `lang`.
+    pub fn lines(&self, lang: Lang) -> &Lines {
+        match lang {
+            Lang::En => &self.en,
+            Lang::Es => &self.es,
+        }
+    }
+
     pub fn category(&self) -> &'static str {
         if self.coach {
             "coach"
@@ -87,6 +103,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐣",
         style: Style::Beginner,
         coach: false,
+        en: Lines {
         description: "Just hatched and just learned how the pieces move. The perfect first opponent.",
         greeting: "Hi hi! I just learned chess yesterday. Be gentle, okay?",
         opening: &["Ooh, I think this one is called the {opening}?"],
@@ -97,6 +114,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["Am I... winning? Wow!"],
         losing: &["You're really good! Can you teach me later?", "My pieces keep disappearing!"],
         win: &["Checkmate?! I WON? I have to tell my mom!"],
+        },
+        es: Lines {
+            description: "Acaba de salir del cascarón y de aprender cómo se mueven las piezas. El rival perfecto para empezar.",
+            greeting: "¡Hola, hola! Aprendí ajedrez ayer. Ten paciencia conmigo, ¿vale?",
+            opening: &["Uy, ¿creo que esta se llama {opening}?"],
+            capture: &["¡Ñam, me comí una!", "¿Eso se puede? ¡Me la llevé!", "¡Chomp!"],
+            captured: &["¡Oye! ¡Esa era mi pieza favorita!", "¡Oh, no! ¿Adónde se fue?", "Ups..."],
+            blunder: &["Espera, ¿eso era gratis? ¡Gracias!", "¡Encontré un regalito!"],
+            check: &["¡Jaque! ¿Lo dije bien?", "¡Jaque! Jiji."],
+            winning: &["¿Voy... ganando? ¡Guau!"],
+            losing: &["¡Juegas muy bien! ¿Me enseñas luego?", "¡Mis piezas no paran de desaparecer!"],
+            win: &["¿¡Jaque mate!? ¿¡GANÉ!? ¡Se lo tengo que contar a mi mamá!"],
+        },
     },
     Persona {
         id: "lulu",
@@ -105,6 +135,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐰",
         style: Style::Aggressive,
         coach: false,
+        en: Lines {
         description: "Hops all over the board looking for something to capture. Very excitable.",
         greeting: "Hop hop! Let's see who grabs more pieces!",
         opening: &["The {opening}! I read about it in a carrot magazine."],
@@ -115,6 +146,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["I'm hopping ahead!"],
         losing: &["You're too fast for me!", "I need more carrots for this..."],
         win: &["Checkmate! Best day ever!"],
+        },
+        es: Lines {
+            description: "Salta por todo el tablero buscando algo que capturar. Se emociona muchísimo.",
+            greeting: "¡Hop, hop! ¡A ver quién atrapa más piezas!",
+            opening: &["¡{opening}! Lo leí en una revista de zanahorias."],
+            capture: &["¡Salto, atrapo y a comer!", "¡Ahora es mía!", "¡Otra más para mi cesta!"],
+            captured: &["¡Oye, que la estaba usando!", "¡Ay, saltaste sobre mi pieza!"],
+            blunder: &["¡Uy, esa estaba ahí solita!", "¡Merienda gratis!"],
+            check: &["¡Jaque! ¡Hop, hop!", "¡Tu rey parece nervioso!"],
+            winning: &["¡Voy saltando por delante!"],
+            losing: &["¡Eres demasiado rápido para mí!", "Necesito más zanahorias para esto..."],
+            win: &["¡Jaque mate! ¡El mejor día de mi vida!"],
+        },
     },
     Persona {
         id: "benny",
@@ -123,6 +167,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐻",
         style: Style::Defensive,
         coach: false,
+        en: Lines {
         description: "A cozy bear who likes to hide his king and wait for you to overreach.",
         greeting: "Hello friend. I'll just keep my pieces safe and warm.",
         opening: &["The {opening}. Nice and solid, like a cave."],
@@ -133,6 +178,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["Slow and steady, like hibernation."],
         losing: &["Well played. I may need a nap after this."],
         win: &["Checkmate. Good game, friend! Want some honey?"],
+        },
+        es: Lines {
+            description: "Un oso muy tranquilo al que le gusta esconder a su rey y esperar a que te pases de la raya.",
+            greeting: "Hola, amigo. Yo solo voy a mantener mis piezas calentitas y a salvo.",
+            opening: &["{opening}. Sólida y acogedora, como una cueva."],
+            capture: &["Un cambio justo, creo yo.", "Esta la guardo bien guardada."],
+            captured: &["Grrr... vale, eso fue justo.", "Mmm, debería haberla defendido."],
+            blunder: &["Dejaste eso solito en el bosque. Yo me encargo."],
+            check: &["Jaque. Perdón por molestar a tu rey."],
+            winning: &["Despacito y con calma, como en la hibernación."],
+            losing: &["Bien jugado. Creo que necesitaré una siesta después de esto."],
+            win: &["Jaque mate. ¡Buena partida, amigo! ¿Quieres un poco de miel?"],
+        },
     },
     Persona {
         id: "rosa",
@@ -141,6 +199,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🌹",
         style: Style::Trappy,
         coach: false,
+        en: Lines {
         description: "Sweet as a rose... with thorns. Loves setting little traps.",
         greeting: "Hello! Don't mind me, I'm just a harmless flower.",
         opening: &["The {opening}! It has lovely thorns.", "Ah, the {opening}. Watch your step!"],
@@ -151,6 +210,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["My garden is blooming!"],
         losing: &["You're good at avoiding thorns!"],
         win: &["Checkmate! Every rose has its thorn."],
+        },
+        es: Lines {
+            description: "Dulce como una rosa... con espinas. Le encanta tender pequeñas trampas.",
+            greeting: "¡Hola! No me hagas caso, solo soy una flor inofensiva.",
+            opening: &["¡{opening}! Tiene unas espinas preciosas.", "Ah, {opening}. ¡Cuidado dónde pisas!"],
+            capture: &["¡Una espina para ti!", "¡Zas!"],
+            captured: &["¡Oh! Esa no te la creíste.", "Mmm, ya me crecerá otra trampa."],
+            blunder: &["¡Ay, pisaste una espina!", "¡Mi trampa funcionó!"],
+            check: &["¡Jaque! ¡Te pinché!"],
+            winning: &["¡Mi jardín está floreciendo!"],
+            losing: &["¡Qué bien esquivas las espinas!"],
+            win: &["¡Jaque mate! No hay rosa sin espinas."],
+        },
     },
     Persona {
         id: "tito",
@@ -159,6 +231,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐢",
         style: Style::Defensive,
         coach: false,
+        en: Lines {
         description: "Slow, steady and very hard to crack. Will happily trade down to an endgame.",
         greeting: "Take your time. I always do.",
         opening: &["The {opening}. Steady wins the race."],
@@ -169,6 +242,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["The tortoise is ahead!"],
         losing: &["You hare-like players are always so fast..."],
         win: &["Checkmate. Slow and steady wins the race!"],
+        },
+        es: Lines {
+            description: "Lento, constante y muy difícil de romper. Encantado de cambiar piezas hasta llegar al final.",
+            greeting: "Tómate tu tiempo. Yo siempre lo hago.",
+            opening: &["{opening}. Paso a paso se llega lejos."],
+            capture: &["Cambio aceptado.", "Una pieza menos de la que preocuparse."],
+            captured: &["Mmm. Voy a esconder la cabeza un ratito.", "Vale, vale. De vuelta a mi caparazón."],
+            blunder: &["Despacio... despacio... y una pieza gratis."],
+            check: &["Jaque. Lento pero seguro."],
+            winning: &["¡La tortuga va por delante!"],
+            losing: &["Ustedes, los jugadores liebre, siempre van tan rápido..."],
+            win: &["Jaque mate. ¡Despacio y con constancia se gana la carrera!"],
+        },
     },
     Persona {
         id: "max",
@@ -177,6 +263,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🦊",
         style: Style::Trappy,
         coach: false,
+        en: Lines {
         description: "A sly fox who knows every opening trap in the book. Stay alert!",
         greeting: "Hey there! Watch out for my tricks... or don't. Hehe.",
         opening: &["The {opening}? I know all its secrets.", "Ah, the {opening}. My favorite hunting ground."],
@@ -187,6 +274,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["Everything is going according to plan..."],
         losing: &["You're a crafty one too!", "Okay, you outfoxed me."],
         win: &["Checkmate! Never trust a fox. Good game though!"],
+        },
+        es: Lines {
+            description: "Un zorro astuto que se sabe todas las trampas de apertura. ¡No te despistes!",
+            greeting: "¡Hola! Cuidado con mis trucos... o no. Jeje.",
+            opening: &["¿{opening}? Me sé todos sus secretos.", "Ah, {opening}. Mi coto de caza favorito."],
+            capture: &["¡Sigilosito, sigilosito!", "¡La pillé!"],
+            captured: &["¡Qué listo! Descubriste mi plan.", "Hmpf, eso no estaba en el plan."],
+            blunder: &["¡Te pillé! ¡Caíste de lleno!", "¡El zorro ataca de nuevo!"],
+            check: &["¡Jaque! ¡Sorpresa!", "¡Jaque! A que no lo viste venir."],
+            winning: &["Todo va según el plan..."],
+            losing: &["¡Tú también eres muy astuto!", "Vale, me ganaste en astucia."],
+            win: &["¡Jaque mate! Nunca te fíes de un zorro. ¡Buena partida, eso sí!"],
+        },
     },
     Persona {
         id: "zara",
@@ -195,6 +295,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐯",
         style: Style::Aggressive,
         coach: false,
+        en: Lines {
         description: "A fierce attacker who throws pawns at your king and loves gambits.",
         greeting: "Rawr! I hope your king has good armor.",
         opening: &["The {opening}! Time to pounce.", "{opening}. Sharp, just how I like it."],
@@ -205,6 +306,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["I can smell victory!"],
         losing: &["You've got sharp claws too!"],
         win: &["Checkmate! What a hunt. Great fight!"],
+        },
+        es: Lines {
+            description: "Una atacante feroz que lanza sus peones contra tu rey y adora los gambitos.",
+            greeting: "¡Grrr! Espero que tu rey lleve buena armadura.",
+            opening: &["¡{opening}! Hora de saltar sobre la presa.", "{opening}. Afilada, como a mí me gusta."],
+            capture: &["¡Zarpazo!", "¡Fuera garras!"],
+            captured: &["¡Solo es un rasguño!", "Buen golpe. ¡Te lo devolveré!"],
+            blunder: &["¡Demasiado lento! ¡La tigresa ataca!"],
+            check: &["¡Jaque! ¡Corre, reyecito!", "¡Jaque! Empieza la cacería."],
+            winning: &["¡Ya huelo la victoria!"],
+            losing: &["¡Tú también tienes garras afiladas!"],
+            win: &["¡Jaque mate! Menuda cacería. ¡Gran lucha!"],
+        },
     },
     Persona {
         id: "oliver",
@@ -213,6 +327,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🦔",
         style: Style::Positional,
         coach: false,
+        en: Lines {
         description: "A thoughtful club player who builds strong positions one small advantage at a time.",
         greeting: "Good to meet you. Let's play a nice, clean game.",
         opening: &["The {opening}, a classic.", "{opening}. Solid foundations."],
@@ -223,6 +338,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["My position is quite comfortable now."],
         losing: &["Your play is very precise. Impressive."],
         win: &["Checkmate. A pleasure to play you!"],
+        },
+        es: Lines {
+            description: "Un jugador de club reflexivo que construye posiciones sólidas sumando pequeñas ventajas.",
+            greeting: "Encantado de conocerte. Juguemos una partida bonita y limpia.",
+            opening: &["{opening}, todo un clásico.", "{opening}. Unos cimientos sólidos."],
+            capture: &["Esto mejora mi estructura.", "Capturar aquí parece lo correcto."],
+            captured: &["Un cambio justo.", "Interesante elección."],
+            blunder: &["Creo que esa pieza estaba indefensa.", "Me parece que eso fue un descuido táctico."],
+            check: &["Jaque."],
+            winning: &["Mi posición ya es bastante cómoda."],
+            losing: &["Juegas con mucha precisión. Impresionante."],
+            win: &["Jaque mate. ¡Ha sido un placer jugar contigo!"],
+        },
     },
     Persona {
         id: "nina",
@@ -231,6 +359,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐺",
         style: Style::Trappy,
         coach: false,
+        en: Lines {
         description: "Hunts in the shadows: quiet moves that hide deadly tactical shots.",
         greeting: "Welcome to the forest. Try not to get lost.",
         opening: &["The {opening}. I know where the traps are buried."],
@@ -241,6 +370,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["The moon is rising on my side of the board."],
         losing: &["You're a tough hunter."],
         win: &["Checkmate. Well hunted, and good game!"],
+        },
+        es: Lines {
+            description: "Caza entre las sombras: jugadas tranquilas que esconden golpes tácticos letales.",
+            greeting: "Bienvenido al bosque. Intenta no perderte.",
+            opening: &["{opening}. Sé dónde están enterradas las trampas."],
+            capture: &["Atrapada.", "La manada come."],
+            captured: &["Muerdes. Bien.", "Anotado."],
+            blunder: &["Te metiste de lleno en la guarida.", "Esa era la trampa."],
+            check: &["Jaque. ¡Auuu!"],
+            winning: &["La luna sale por mi lado del tablero."],
+            losing: &["Eres un cazador duro de pelar."],
+            win: &["Jaque mate. ¡Buena cacería y buena partida!"],
+        },
     },
     Persona {
         id: "viktor",
@@ -249,6 +391,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🐉",
         style: Style::Aggressive,
         coach: false,
+        en: Lines {
         description: "A fire-breathing tactician who sacrifices material to burn down your king's defenses.",
         greeting: "Let's light up the board!",
         opening: &["The {opening}! Pour on the fire.", "{opening}. Let's make it sharp."],
@@ -259,6 +402,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["Your castle is on fire!"],
         losing: &["You put out my flames. Impressive!"],
         win: &["Checkmate! What a blaze. Great game!"],
+        },
+        es: Lines {
+            description: "Un táctico que escupe fuego y sacrifica material para reducir a cenizas las defensas de tu rey.",
+            greeting: "¡Vamos a incendiar el tablero!",
+            opening: &["¡{opening}! A echar leña al fuego.", "{opening}. Pongámosla afilada."],
+            capture: &["¡Quemada!", "¡A las llamas!"],
+            captured: &["Un sacrificio digno... espero.", "Atrevido. Me gusta."],
+            blunder: &["¡Esa pieza se quedó en el fuego!"],
+            check: &["¡Jaque! ¡Siente el calor!", "¡Jaque!"],
+            winning: &["¡Tu castillo está en llamas!"],
+            losing: &["Apagaste mis llamas. ¡Impresionante!"],
+            win: &["¡Jaque mate! Menudo incendio. ¡Gran partida!"],
+        },
     },
     Persona {
         id: "sofia",
@@ -267,6 +423,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🦢",
         style: Style::Positional,
         coach: false,
+        en: Lines {
         description: "Graceful and precise. Squeezes small advantages into winning endgames.",
         greeting: "Hello. Let's create something beautiful together.",
         opening: &["The {opening}. Elegant choice.", "Ah, the {opening}."],
@@ -277,6 +434,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["The endgame will be pleasant for me, I think."],
         losing: &["Beautiful play. I'm impressed."],
         win: &["Checkmate. Thank you for a lovely game!"],
+        },
+        es: Lines {
+            description: "Elegante y precisa. Exprime pequeñas ventajas hasta convertirlas en finales ganados.",
+            greeting: "Hola. Creemos juntos algo bonito.",
+            opening: &["{opening}. Una elección elegante.", "Ah, {opening}."],
+            capture: &["Simplificando.", "Limpio."],
+            captured: &["Bien calculado.", "Mmm, buena jugada."],
+            blunder: &["Creo que eso fue un desliz. Lo aprovecharé, con elegancia."],
+            check: &["Jaque."],
+            winning: &["Creo que el final será agradable para mí."],
+            losing: &["Un juego precioso. Estoy impresionada."],
+            win: &["Jaque mate. ¡Gracias por una partida encantadora!"],
+        },
     },
     Persona {
         id: "kai",
@@ -285,6 +455,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "⚡",
         style: Style::Aggressive,
         coach: false,
+        en: Lines {
         description: "A lightning-fast attacking master. Every move is a threat.",
         greeting: "Ready? This is going to be fast.",
         opening: &["The {opening}. Charging up!", "{opening}, full speed."],
@@ -295,6 +466,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["Full voltage!"],
         losing: &["You're shocking me! Great play."],
         win: &["Checkmate! Thunder and lightning. GG!"],
+        },
+        es: Lines {
+            description: "Un maestro del ataque rápido como el rayo. Cada jugada es una amenaza.",
+            greeting: "¿Listo? Esto va a ir rápido.",
+            opening: &["{opening}. ¡Cargando energía!", "{opening}, a toda velocidad."],
+            capture: &["¡Zas!", "¡Golpe!"],
+            captured: &["¡Qué reflejos!", "Buen disparo."],
+            blunder: &["¡El rayo nunca falla un blanco descubierto!"],
+            check: &["¡Jaque! ¡Bzzzt!", "¡Jaque!"],
+            winning: &["¡A máximo voltaje!"],
+            losing: &["¡Me dejas electrizado! Gran juego."],
+            win: &["¡Jaque mate! Rayos y truenos. ¡Buena partida!"],
+        },
     },
     Persona {
         id: "athena",
@@ -303,6 +487,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🦉",
         style: Style::Positional,
         coach: false,
+        en: Lines {
         description: "Wise strategist at grandmaster level. Every piece has a purpose.",
         greeting: "Wisdom is patience. Show me your best chess.",
         opening: &["The {opening}. Its ideas run deep.", "A fine opening: the {opening}."],
@@ -313,6 +498,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["The position speaks for itself."],
         losing: &["Remarkable. You have studied well."],
         win: &["Checkmate. You played with courage. Keep learning!"],
+        },
+        es: Lines {
+            description: "Una estratega sabia con nivel de gran maestra. Cada pieza tiene un propósito.",
+            greeting: "La sabiduría es paciencia. Muéstrame tu mejor ajedrez.",
+            opening: &["{opening}. Sus ideas son profundas.", "Una buena apertura: {opening}."],
+            capture: &["Tal como estaba previsto.", "La estrategia da sus frutos."],
+            captured: &["Una decisión bien fundada.", "Bien, entiendes la posición."],
+            blunder: &["Creo que eso fue una imprecisión. La aprovecharé."],
+            check: &["Jaque."],
+            winning: &["La posición habla por sí sola."],
+            losing: &["Notable. Has estudiado bien."],
+            win: &["Jaque mate. Jugaste con valentía. ¡Sigue aprendiendo!"],
+        },
     },
     Persona {
         id: "titan",
@@ -321,6 +519,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🤖",
         style: Style::Universal,
         coach: false,
+        en: Lines {
         description: "Full-strength engine. No mercy, no mistakes. Can you hold a draw?",
         greeting: "SYSTEM ONLINE. CALCULATING OPTIMAL MOVES.",
         opening: &["OPENING DATABASE: {opening}."],
@@ -331,6 +530,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["WIN PROBABILITY RISING.", "EVALUATION: FAVORABLE."],
         losing: &["UNEXPECTED. IMPRESSIVE, HUMAN.", "RECALIBRATING... YOU ARE STRONG."],
         win: &["CHECKMATE. GOOD GAME, HUMAN. TRY AGAIN?"],
+        },
+        es: Lines {
+            description: "Motor a plena potencia. Sin piedad y sin errores. ¿Podrás arrancarle unas tablas?",
+            greeting: "SISTEMA EN LÍNEA. CALCULANDO JUGADAS ÓPTIMAS.",
+            opening: &["BASE DE DATOS DE APERTURAS: {opening}."],
+            capture: &["MATERIAL ADQUIRIDO.", "OBJETIVO CAPTURADO."],
+            captured: &["CAMBIO REGISTRADO.", "RECALCULANDO."],
+            blunder: &["ERROR DETECTADO EN EL PROCESO RIVAL. EXPLOTANDO."],
+            check: &["JAQUE."],
+            winning: &["PROBABILIDAD DE VICTORIA EN AUMENTO.", "EVALUACIÓN: FAVORABLE."],
+            losing: &["INESPERADO. IMPRESIONANTE, HUMANO.", "RECALIBRANDO... ERES FUERTE."],
+            win: &["JAQUE MATE. BUENA PARTIDA, HUMANO. ¿OTRA?"],
+        },
     },
     // ---- coaches ---------------------------------------------------------------------------
     Persona {
@@ -340,6 +552,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🎓",
         style: Style::Coach,
         coach: true,
+        en: Lines {
         description: "A friendly coach for beginners. Plays fair and gives you a tip after every move.",
         greeting: "Hi, I'm Mia! I'll play and give you tips as we go. Ask yourself every move: what is my opponent threatening?",
         opening: &["We're in the {opening}. Focus on developing knights and bishops and castling early."],
@@ -350,6 +563,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["I'm ahead now, but don't give up. Look for checks, captures and threats!"],
         losing: &["You're playing great! When ahead, trade pieces to make winning easier."],
         win: &["Checkmate! Let's review the game together to learn from it."],
+        },
+        es: Lines {
+            description: "Una entrenadora simpática para principiantes. Juega limpio y te da un consejo después de cada jugada.",
+            greeting: "¡Hola, soy Mia! Jugaré y te daré consejos sobre la marcha. En cada jugada pregúntate: ¿qué amenaza mi rival?",
+            opening: &["Estamos en {opening}. Céntrate en desarrollar caballos y alfiles y en enrocar pronto."],
+            capture: &["He capturado. ¿Puedes recapturar, o hay algo más importante?"],
+            captured: &["¡Buena captura! Fíjate siempre en lo que tu rival deja sin defender."],
+            blunder: &["Cuidado: esa pieza no estaba protegida. Antes de cada jugada, comprueba que todas tus piezas estén a salvo."],
+            check: &["¡Jaque! Puedes mover el rey, tapar el jaque o capturar la pieza que lo da."],
+            winning: &["Ahora voy por delante, pero no te rindas. ¡Busca jaques, capturas y amenazas!"],
+            losing: &["¡Lo estás haciendo genial! Cuando vas ganando, cambia piezas para que sea más fácil rematar."],
+            win: &["¡Jaque mate! Revisemos la partida juntos para aprender de ella."],
+        },
     },
     Persona {
         id: "coach-leo",
@@ -358,6 +584,7 @@ pub static PERSONAS: &[Persona] = &[
         avatar: "🧑‍🏫",
         style: Style::Coach,
         coach: true,
+        en: Lines {
         description: "An experienced coach for improving players. Explains threats, plans and mistakes.",
         greeting: "Hello! I'm Leo. I'll play solid chess and point out ideas as we go. Let's learn something today.",
         opening: &["This is the {opening}. Think about which pawn breaks fit the structure."],
@@ -368,6 +595,19 @@ pub static PERSONAS: &[Persona] = &[
         winning: &["I have the upper hand. Try to create complications and active counterplay."],
         losing: &["You're winning — convert calmly: trade pieces, push passed pawns, avoid counterplay."],
         win: &["Checkmate. Let's run a Game Review and find the turning point."],
+        },
+        es: Lines {
+            description: "Un entrenador experimentado para jugadores que quieren mejorar. Explica amenazas, planes y errores.",
+            greeting: "¡Hola! Soy Leo. Jugaré un ajedrez sólido y te señalaré ideas sobre la marcha. Hoy vamos a aprender algo.",
+            opening: &["Esto es {opening}. Piensa qué rupturas de peones encajan con la estructura."],
+            capture: &["He ganado material. ¿Hay una recaptura forzada, o una jugada intermedia más fuerte?"],
+            captured: &["Bien, ganaste material. Ahora consolida: asegúrate de que todas tus piezas estén a salvo."],
+            blunder: &["Eso fue un descuido táctico. Busca piezas sueltas y jugadas forzantes antes de decidirte."],
+            check: &["¡Jaque! Considera las tres defensas: mover el rey, tapar o capturar."],
+            winning: &["Tengo ventaja. Intenta complicar la partida y buscar contrajuego activo."],
+            losing: &["Vas ganando: remata con calma; cambia piezas, avanza tus peones pasados y evita el contrajuego."],
+            win: &["Jaque mate. Hagamos una Revisión de la partida y busquemos el momento decisivo."],
+        },
     },
 ];
 

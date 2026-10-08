@@ -2,45 +2,47 @@
 // recent games, tip of the day and a mini daily-puzzle preview.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, skeleton, emptyState, formatRelative } from '../ui.js';
+import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName } from '../ui.js';
+import { t, hasKey, formatDateIntl } from '../i18n.js';
 import {
   ensureHubCss, fenBoardSvg, playUci, resultMarker, outcomeLabel, userAccuracy, accuracyPill,
   gameTitle, fullMoves,
 } from './library.js';
 
-export const title = 'Home';
+export const title = () => t('nav.routes.home');
 
-const TIPS = [
-  ['Control the center', 'Pawns and pieces on e4, d4, e5 and d5 control the most squares. Fight for the center early.'],
-  ['Develop before you attack', 'Bring out your knights and bishops before moving the same piece twice or launching an attack.'],
-  ['Castle early', 'Castling tucks your king away and connects your rooks. Most strong players castle in the first 10 moves.'],
-  ['Check, captures, threats', 'Before every move, look for checks, captures and threats — for both you and your opponent.'],
-  ['Don’t bring the queen out too early', 'An early queen gets chased around by enemy pieces, which lets your opponent develop with tempo.'],
-  ['Knights on the rim are dim', 'A knight on the edge of the board controls only half as many squares as one in the center.'],
-  ['Rooks love open files', 'Put your rooks on files with no pawns. From there they can invade your opponent’s position.'],
-  ['Count before you capture', 'Count attackers and defenders on a square before you trade. Make sure you come out ahead.'],
-  ['Every move has a reason', 'Ask “why did my opponent play that?” after each move. Most blunders come from skipping this question.'],
-  ['Activate your king in the endgame', 'When the queens are off, the king becomes a strong piece. March it to the center!'],
-  ['Passed pawns must be pushed', 'A pawn with no enemy pawns in front of it can become a queen. Support it and push it.'],
-  ['Rooks belong behind passed pawns', 'Whether it is your passed pawn or your opponent’s, a rook behind it is usually best placed.'],
-  ['Trade when you are ahead', 'If you are up material, trading pieces (not pawns) makes your extra material count even more.'],
-  ['Look for forks', 'A fork attacks two things at once. Knights are especially good at forking king and queen.'],
-  ['Pins paralyze pieces', 'A pinned piece can’t move without exposing something more valuable behind it. Pile up on it!'],
-  ['Watch the back rank', 'If your king is stuck behind its own pawns, a rook or queen check on the back rank can be mate. Make some luft.'],
-  ['Bishop pair is a small advantage', 'Two bishops work beautifully together in open positions. Avoid trading one cheaply.'],
-  ['Improve your worst piece', 'When you don’t know what to do, find your least active piece and give it a better square.'],
-  ['Don’t resign too early', 'Beginners and bots blunder too. Keep fighting and set problems for your opponent.'],
-  ['Review every game', 'The fastest way to improve is to review your games and understand your mistakes. Try Game Review!'],
-  ['Solve puzzles daily', 'Ten minutes of tactics a day trains your pattern recognition faster than anything else.'],
-  ['Use your time', 'In longer games, take a moment on critical moves — captures, checks and big pawn moves.'],
-  ['Opposition wins pawn endings', 'Kings facing each other with one square between: the side NOT to move has the opposition.'],
-  ['Learn checkmate patterns', 'Back-rank mate, smothered mate, Anastasia’s mate… knowing patterns helps you spot them in games.'],
-  ['Play the board, not the rating', 'Strong opponents make mistakes too. Focus on the position in front of you.'],
-  ['Don’t grab every pawn', 'Pawn grabbing with your queen can cost you development time or even get the queen trapped.'],
-  ['Doubled pawns aren’t always bad', 'They can open files for your rooks. Judge the position, not just the pawn shape.'],
-  ['Make a plan', 'Look at pawn structure to choose a plan: attack where you have more space.'],
-  ['Defend with pawns carefully', 'Pawns can’t move backwards. Every pawn move leaves weak squares behind.'],
-  ['Have fun!', 'Chess is a game. Play openings you enjoy and celebrate your brilliant moves!'],
+// Tip of the day: ids of home.tips.<id>.{title,body} (resolved at render time).
+const TIP_IDS = [
+  'center',
+  'develop',
+  'castle',
+  'cct',
+  'queenEarly',
+  'knightRim',
+  'openFiles',
+  'count',
+  'reason',
+  'kingActive',
+  'passedPush',
+  'rookBehind',
+  'tradeAhead',
+  'forks',
+  'pins',
+  'backRank',
+  'bishopPair',
+  'worstPiece',
+  'resign',
+  'review',
+  'dailyPuzzles',
+  'useTime',
+  'opposition',
+  'matePatterns',
+  'playBoard',
+  'pawnGrab',
+  'doubled',
+  'plan',
+  'pawnDefense',
+  'fun',
 ];
 
 function dayOfYear(d = new Date()) {
@@ -48,12 +50,20 @@ function dayOfYear(d = new Date()) {
   return Math.floor((d - start) / 86400000);
 }
 
-function greeting() {
+/** i18n key of the greeting sentence for the current hour (each contains a {name} placeholder). */
+function greetingKey() {
   const hr = new Date().getHours();
-  if (hr < 5) return 'Up late';
-  if (hr < 12) return 'Good morning';
-  if (hr < 18) return 'Good afternoon';
-  return 'Good evening';
+  if (hr < 5) return 'home.greeting.late';
+  if (hr < 12) return 'home.greeting.morning';
+  if (hr < 18) return 'home.greeting.afternoon';
+  return 'home.greeting.evening';
+}
+
+/** Render a translated sentence, wrapping the {name} placeholder in <em> (keeps each language's word order). */
+function greetingNodes(key, name) {
+  const MARK = '\u0000';
+  const [before, after = ''] = t(key, { name: MARK }).split(MARK);
+  return [before, h('em', null, name), after];
 }
 
 export async function mount(root) {
@@ -66,7 +76,7 @@ export async function mount(root) {
 
   // Sections, filled independently as data arrives.
   const heroEl = h('section', { class: 'hub-hero card' }, h('div', { class: 'skeleton skeleton-title', style: 'width:40%' }), h('div', { class: 'skeleton skeleton-text', style: 'width:60%' }));
-  const ctaEl = h('section', { class: 'hub-cta-grid', 'aria-label': 'Quick actions' }, skeletonCards(4));
+  const ctaEl = h('section', { class: 'hub-cta-grid', 'aria-label': t('home.quickActions') }, skeletonCards(4));
   const botsEl = h('div', { class: 'hub-bot-row', role: 'list' }, Array.from({ length: 6 }, () => h('div', { class: 'skeleton hub-bot-skel' })));
   const recentEl = h('div', null, skeleton('list', 4));
   const puzzleEl = h('div', { class: 'card hub-daily' }, h('div', { class: 'skeleton skeleton-board' }));
@@ -77,30 +87,30 @@ export async function mount(root) {
     heroEl,
     ctaEl,
     h('section', { class: 'hub-section' },
-      h('h2', { class: 'section-title' }, 'Play a bot', h('a', { href: '#/play' }, 'See all')),
+      h('h2', { class: 'section-title' }, t('home.playABot'), h('a', { href: '#/play' }, t('common.seeAll'))),
       botsEl),
     h('div', { class: 'hub-home-split' },
       h('div', { class: 'stack-lg' },
         h('section', null,
-          h('h2', { class: 'section-title' }, 'Recent games', h('a', { href: '#/library' }, 'Library')),
+          h('h2', { class: 'section-title' }, t('home.recentGames'), h('a', { href: '#/library' }, t('nav.library'))),
           recentEl),
         tipEl),
       h('aside', { class: 'stack-lg' },
-        h('section', null, h('h2', { class: 'section-title' }, 'Daily puzzle', h('a', { href: '#/puzzles' }, 'More puzzles')), puzzleEl),
+        h('section', null, h('h2', { class: 'section-title' }, t('home.dailyPuzzle'), h('a', { href: '#/puzzles' }, t('home.morePuzzles'))), puzzleEl),
         ratingEl)));
   root.appendChild(page);
 
   // ---- Tip of the day (local, instant) -------------------------------------
-  let tipIndex = dayOfYear() % TIPS.length;
+  let tipIndex = dayOfYear() % TIP_IDS.length;
   const renderTip = () => {
-    const [t, body] = TIPS[tipIndex];
+    const id = TIP_IDS[tipIndex];
     tipEl.replaceChildren(
       h('div', { class: 'hub-tip-icon', 'aria-hidden': 'true', html: icon('hint') }),
       h('div', { class: 'hub-tip-body' },
-        h('div', { class: 'hub-eyebrow' }, 'Tip of the day'),
-        h('div', { class: 'hub-tip-title' }, t),
-        h('p', { class: 'muted' }, body)),
-      h('button', { type: 'button', class: 'btn btn-ghost btn-sm hub-tip-next', 'aria-label': 'Next tip', html: icon('refresh', { size: 16 }) + '<span>Another</span>', onClick: () => { tipIndex = (tipIndex + 1) % TIPS.length; renderTip(); } }));
+        h('div', { class: 'hub-eyebrow' }, t('home.tipOfTheDay')),
+        h('div', { class: 'hub-tip-title' }, t(`home.tips.${id}.title`)),
+        h('p', { class: 'muted' }, t(`home.tips.${id}.body`))),
+      h('button', { type: 'button', class: 'btn btn-ghost btn-sm hub-tip-next', 'aria-label': t('home.nextTip'), html: icon('refresh', { size: 16 }) + `<span>${t('home.anotherTip')}</span>`, onClick: () => { tipIndex = (tipIndex + 1) % TIP_IDS.length; renderTip(); } }));
   };
   renderTip();
 
@@ -141,29 +151,29 @@ export async function mount(root) {
 
   // ---------------------------------------------------------------------------
   function renderHero() {
-    const name = profile?.name?.trim() || 'friend';
+    const name = displayName(profile?.name) || t('home.friend');
     const streak = Number(profile?.streak_days) || 0;
     const played = games.length;
     heroEl.replaceChildren(
       h('div', { class: 'hub-hero-main' },
         h('div', { class: 'avatar avatar-lg avatar-round hub-hero-avatar', 'aria-hidden': 'true' }, profile?.avatar || '♟️'),
         h('div', { class: 'stack-sm', style: 'min-width:0' },
-          h('div', { class: 'hub-eyebrow' }, new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })),
-          h('h1', { class: 'hub-hero-title' }, `${greeting()}, `, h('em', null, name), '!'),
+          h('div', { class: 'hub-eyebrow' }, formatDateIntl(new Date(), { weekday: 'long', month: 'long', day: 'numeric' })),
+          h('h1', { class: 'hub-hero-title' }, greetingNodes(greetingKey(), name)),
           h('p', { class: 'muted hub-hero-sub' }, offline
-            ? 'We can’t reach the GrandMentor server right now. Start it and refresh to load your progress.'
-            : played ? 'Ready for another game? Every game makes you a little stronger.' : 'Welcome to GrandMentor! Play a friendly bot, solve a puzzle or start a lesson.'))),
+            ? t('home.hero.offline')
+            : played ? t('home.hero.returning') : t('home.hero.welcome')))),
       h('div', { class: 'hub-hero-stats' },
-        h('div', { class: ['hub-streak', streak > 0 && 'on'], title: 'Days in a row you have practiced' },
+        h('div', { class: ['hub-streak', streak > 0 && 'on'], title: t('home.streakTitle') },
           h('span', { class: 'hub-streak-flame', html: icon('fire') }),
           h('div', null,
             h('div', { class: 'hub-streak-num tabular' }, String(streak)),
-            h('div', { class: 'subtle text-xs' }, 'day streak'))),
-        profile ? h('div', { class: 'hub-streak', title: 'Your puzzle rating' },
+            h('div', { class: 'subtle text-xs' }, t('home.dayStreak', { count: streak })))),
+        profile ? h('div', { class: 'hub-streak', title: t('home.yourPuzzleRating') },
           h('span', { class: 'hub-streak-flame hub-blue', html: icon('puzzle') }),
           h('div', null,
             h('div', { class: 'hub-streak-num tabular' }, String(Math.round(profile.puzzle_rating || 0))),
-            h('div', { class: 'subtle text-xs' }, 'puzzle rating'))) : null));
+            h('div', { class: 'subtle text-xs' }, t('home.puzzleRatingLower')))) : null));
   }
 
   function nextLesson() {
@@ -201,58 +211,58 @@ export async function mount(root) {
     const last = games[0];
     const nl = nextLesson();
     const cards = [
-      ctaCard({ href: '#/play', iconName: 'play', accent: 'var(--primary)', eyebrow: 'Play', titleText: 'Play a bot', text: 'From total beginner to grandmaster — pick an opponent your size.', cls: 'hub-cta-main' }),
+      ctaCard({ href: '#/play', iconName: 'play', accent: 'var(--primary)', eyebrow: t('nav.play'), titleText: t('home.playABot'), text: t('home.cta.playText'), cls: 'hub-cta-main' }),
       ctaCard({
-        href: '#/puzzles/daily', iconName: 'calendar', accent: 'var(--info)', eyebrow: 'Daily puzzle',
-        titleText: daily ? `Puzzle of the day` : 'Solve a puzzle',
-        text: daily ? `Rated ${daily.rating}${Array.isArray(daily.themes) && daily.themes.length ? ' · ' + prettyTheme(daily.themes[0]) : ''}` : 'Sharpen your tactics with today’s puzzle.',
+        href: '#/puzzles/daily', iconName: 'calendar', accent: 'var(--info)', eyebrow: t('home.dailyPuzzle'),
+        titleText: daily ? t('home.cta.puzzleOfTheDay') : t('home.cta.solveAPuzzle'),
+        text: daily ? `${t('common.rated', { rating: daily.rating })}${Array.isArray(daily.themes) && daily.themes.length ? ' · ' + prettyTheme(daily.themes[0]) : ''}` : t('home.cta.puzzleText'),
       }),
       nl
         ? ctaCard({
           href: `#/learn/${encodeURIComponent(nl.course.id)}/${encodeURIComponent(nl.lesson.id)}`, iconName: 'learn', accent: 'var(--gold)',
-          eyebrow: nl.started ? 'Continue lesson' : 'Start learning', titleText: nl.lesson.title,
+          eyebrow: nl.started ? t('home.cta.continueLesson') : t('home.cta.startLearning'), titleText: nl.lesson.title,
           text: `${nl.course.icon || '📘'} ${nl.course.title}`,
           extra: nl.total ? h('div', { class: 'progress progress-sm hub-cta-progress', role: 'progressbar', 'aria-valuenow': String(nl.completed), 'aria-valuemax': String(nl.total) },
             h('div', { class: 'progress-bar', style: { width: `${Math.round((nl.completed / nl.total) * 100)}%` } })) : null,
         })
-        : ctaCard({ href: '#/learn', iconName: 'learn', accent: 'var(--gold)', eyebrow: 'Learn', titleText: 'Lessons', text: 'Openings, tactics, strategy and endgames — step by step.' }),
+        : ctaCard({ href: '#/learn', iconName: 'learn', accent: 'var(--gold)', eyebrow: t('nav.learn'), titleText: t('home.cta.lessons'), text: t('home.cta.lessonsText') }),
       last
         ? ctaCard({
-          href: `#/review/${last.id}`, iconName: 'sparkles', accent: 'var(--cls-brilliant)', eyebrow: 'Game review',
-          titleText: 'Review last game', text: `${gameTitle(last, botsById)} · ${outcomeLabel(last)}`,
+          href: `#/review/${last.id}`, iconName: 'sparkles', accent: 'var(--cls-brilliant)', eyebrow: t('nav.routes.review'),
+          titleText: t('home.cta.reviewLast'), text: `${gameTitle(last, botsById)} · ${outcomeLabel(last)}`,
         })
-        : ctaCard({ href: '#/analysis', iconName: 'analysis', accent: 'var(--cls-brilliant)', eyebrow: 'Analysis', titleText: 'Analysis board', text: 'Explore any position with the engine and your mentor.' }),
+        : ctaCard({ href: '#/analysis', iconName: 'analysis', accent: 'var(--cls-brilliant)', eyebrow: t('nav.analysis'), titleText: t('home.cta.analysisBoard'), text: t('home.cta.analysisText') }),
     ];
     ctaEl.replaceChildren(...cards);
   }
 
   function renderBots() {
     if (!bots.length) {
-      botsEl.replaceChildren(h('a', { class: 'card card-sm card-link hub-bot-empty', href: '#/play' }, 'Choose an opponent →'));
+      botsEl.replaceChildren(h('a', { class: 'card card-sm card-link hub-bot-empty', href: '#/play' }, t('home.chooseOpponent')));
       return;
     }
     const sorted = [...bots].sort((a, b) => (a.elo || 0) - (b.elo || 0));
     botsEl.replaceChildren(...sorted.map((b) => h('a', {
       class: 'hub-bot', href: `#/play/${encodeURIComponent(b.id)}`, role: 'listitem',
-      title: b.description || b.name, 'aria-label': `Play ${b.name}, rated ${b.elo}`,
+      title: b.description || b.name, 'aria-label': t('home.playBotAria', { name: b.name, elo: b.elo }),
     },
     h('div', { class: 'hub-bot-avatar', dataset: { cat: b.category || '' } }, b.avatar || '🤖'),
     h('div', { class: 'hub-bot-name truncate' }, b.name),
-    h('div', { class: 'hub-bot-elo tabular' }, b.category === 'coach' ? 'Coach' : String(b.elo)))));
+    h('div', { class: 'hub-bot-elo tabular' }, b.category === 'coach' ? t('home.coach') : String(b.elo)))));
   }
 
   function renderRecent() {
     if (!gamesR.ok) {
-      recentEl.replaceChildren(h('div', { class: 'card' }, emptyState({ icon: 'wifi-off', title: 'Games unavailable', text: 'We couldn’t load your recent games.' })));
+      recentEl.replaceChildren(h('div', { class: 'card' }, emptyState({ icon: 'wifi-off', title: t('home.recent.unavailableTitle'), text: t('home.recent.unavailableText') })));
       return;
     }
     if (!games.length) {
-      recentEl.replaceChildren(h('div', { class: 'card' }, emptyState({ emoji: '♞', title: 'No games yet', text: 'Your games are saved automatically, so you can review them with your mentor afterwards.', action: { label: 'Play your first game', href: '#/play', icon: 'play' } })));
+      recentEl.replaceChildren(h('div', { class: 'card' }, emptyState({ emoji: '♞', title: t('home.recent.emptyTitle'), text: t('home.recent.emptyText'), action: { label: t('home.recent.emptyAction'), href: '#/play', icon: 'play' } })));
       return;
     }
     recentEl.replaceChildren(h('div', { class: 'card card-flush list' }, games.slice(0, 5).map((g) => {
       const bot = g.bot_id ? botsById.get(g.bot_id) : null;
-      const meta = [g.opening_name, `${fullMoves(g)} moves`].filter(Boolean).join(' · ');
+      const meta = [g.opening_name, t('common.moves', { count: fullMoves(g) })].filter(Boolean).join(' · ');
       return h('a', { class: 'list-row', href: `#/review/${g.id}` },
         resultMarker(g),
         bot ? h('span', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, bot.avatar || '🤖') : null,
@@ -267,7 +277,7 @@ export async function mount(root) {
 
   function renderRating() {
     if (!profile) {
-      ratingEl.replaceChildren(h('div', { class: 'card-title' }, 'Puzzle rating'), h('p', { class: 'muted' }, 'Solve puzzles to get a rating.'));
+      ratingEl.replaceChildren(h('div', { class: 'card-title' }, t('home.puzzleRating')), h('p', { class: 'muted' }, t('home.rating.noRating')));
       return;
     }
     const rating = Math.round(profile.puzzle_rating || 0);
@@ -275,21 +285,21 @@ export async function mount(root) {
     const failed = Number(profile.puzzles_failed) || 0;
     const rate = solved + failed ? Math.round((solved / (solved + failed)) * 100) : 0;
     ratingEl.replaceChildren(
-      h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('puzzle') + '<span>Puzzles</span>' }),
-        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles/rush', html: icon('bolt', { size: 16 }) + '<span>Rush</span>' })),
+      h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('puzzle') + `<span>${t('nav.puzzles')}</span>` }),
+        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles/rush', html: icon('bolt', { size: 16 }) + `<span>${t('home.rating.rush')}</span>` })),
       h('div', { class: 'hub-rating-row' },
         h('div', null,
           h('div', { class: 'hub-rating-num tabular' }, String(rating)),
-          h('div', { class: 'subtle text-xs' }, profile.puzzle_rd ? `± ${Math.round(profile.puzzle_rd)} confidence` : 'Puzzle rating')),
-        h('div', { class: 'progress-ring', style: { '--value': rate }, title: 'Success rate' }, `${rate}%`)),
+          h('div', { class: 'subtle text-xs' }, profile.puzzle_rd ? t('home.rating.confidence', { rd: Math.round(profile.puzzle_rd) }) : t('home.puzzleRating'))),
+        h('div', { class: 'progress-ring', style: { '--value': rate }, title: t('home.rating.successRate') }, `${rate}%`)),
       h('div', { class: 'hub-mini-stats' },
-        miniStat('Solved', solved), miniStat('Missed', failed), miniStat('Rush best', Number(profile.rush_best) || 0)),
-      h('a', { class: 'btn btn-secondary btn-block', href: '#/puzzles', html: icon('target') + '<span>Train tactics</span>' }));
+        miniStat(t('home.rating.solved'), solved), miniStat(t('home.rating.missed'), failed), miniStat(t('home.rating.rushBest'), Number(profile.rush_best) || 0)),
+      h('a', { class: 'btn btn-secondary btn-block', href: '#/puzzles', html: icon('target') + `<span>${t('home.rating.train')}</span>` }));
   }
 
   async function renderDaily() {
     if (!daily || !daily.fen) {
-      puzzleEl.replaceChildren(emptyState({ icon: 'puzzle', title: 'Daily puzzle', text: 'Today’s puzzle isn’t available right now.', action: { label: 'Try puzzles', href: '#/puzzles', kind: 'secondary' } }));
+      puzzleEl.replaceChildren(emptyState({ icon: 'puzzle', title: t('home.dailyPuzzle'), text: t('home.daily.unavailable'), action: { label: t('home.daily.tryPuzzles'), href: '#/puzzles', kind: 'secondary' } }));
       return;
     }
     let pos = { fen: daily.fen, lastMove: null, turn: 'white' };
@@ -298,20 +308,19 @@ export async function mount(root) {
       pos = await playUci(daily.fen, pre);
     } catch { /* fallback to raw fen */ }
     if (signal.aborted) return;
-    const slot = h('a', { class: 'hub-daily-board', href: '#/puzzles/daily', 'aria-label': 'Open the daily puzzle' });
-    const toMove = pos.turn === 'white' ? 'White' : 'Black';
+    const slot = h('a', { class: 'hub-daily-board', href: '#/puzzles/daily', 'aria-label': t('home.daily.open') });
     puzzleEl.replaceChildren(
       slot,
       h('div', { class: 'hub-daily-info' },
         h('div', { class: 'row-sm' },
           h('span', { class: ['hub-turn', pos.turn === 'black' && 'black'] }),
-          h('span', { class: 'semibold' }, `${toMove} to move`),
+          h('span', { class: 'semibold' }, pos.turn === 'black' ? t('common.blackToMove') : t('common.whiteToMove')),
           h('span', { class: 'spacer' }),
-          h('span', { class: 'badge badge-info' }, `Rated ${daily.rating ?? '?'}`)),
+          h('span', { class: 'badge badge-info' }, t('common.rated', { rating: daily.rating ?? '?' }))),
         Array.isArray(daily.themes) && daily.themes.length
-          ? h('div', { class: 'chip-row hub-themes' }, daily.themes.slice(0, 3).map((t) => h('span', { class: 'badge' }, prettyTheme(t))))
+          ? h('div', { class: 'chip-row hub-themes' }, daily.themes.slice(0, 3).map((th) => h('span', { class: 'badge' }, prettyTheme(th))))
           : null,
-        h('a', { class: 'btn btn-primary btn-block', href: '#/puzzles/daily', html: icon('play') + '<span>Solve it</span>' })));
+        h('a', { class: 'btn btn-primary btn-block', href: '#/puzzles/daily', html: icon('play') + `<span>${t('home.daily.solve')}</span>` })));
     // Prefer the real (non-interactive) Board; fall back to the static SVG thumbnail.
     const lastMove = pos.lastMove ? [pos.lastMove.slice(0, 2), pos.lastMove.slice(2, 4)] : null;
     try {
@@ -325,7 +334,7 @@ export async function mount(root) {
     } catch {
       if (signal.aborted) return;
       slot.replaceChildren();
-      slot.innerHTML = fenBoardSvg(pos.fen, { orientation: pos.turn, lastMove, label: 'Daily puzzle position' });
+      slot.innerHTML = fenBoardSvg(pos.fen, { orientation: pos.turn, lastMove, label: t('home.daily.positionLabel') });
     }
   }
 }
@@ -338,8 +347,11 @@ function skeletonCards(n) {
   return Array.from({ length: n }, () => h('div', { class: 'skeleton skeleton-card' }));
 }
 
-export function prettyTheme(t) {
-  const s = String(t || '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').trim();
+/** Display name of a puzzle theme id: translated via themes.<id> when known, else prettified. */
+export function prettyTheme(theme) {
+  const id = String(theme || '');
+  if (id && hasKey(`themes.${id}`)) return t(`themes.${id}`);
+  const s = id.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').trim();
   return s ? s[0].toUpperCase() + s.slice(1) : '';
 }
 

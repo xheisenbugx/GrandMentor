@@ -11,7 +11,10 @@ use gm_store::Store;
 use crate::cache::{BoundedCache, RecentSet};
 use crate::puzzles::PuzzleIndex;
 
-/// Max cached ad-hoc reviews (keyed by start fen + moves + depth).
+/// A cached ad-hoc review and the language its text is in.
+pub type CachedReview = Arc<(gm_content::Lang, GameReview)>;
+
+/// Max cached ad-hoc reviews (keyed by start fen + moves + depth; latest language only).
 const REVIEW_CACHE: usize = 16;
 /// Max cached `/api/mentor/position` results.
 const POSITION_CACHE: usize = 512;
@@ -20,9 +23,11 @@ const RECENT_PUZZLES: usize = 300;
 /// Max cached opening lookups.
 const OPENING_CACHE: usize = 2048;
 
-/// Cached `/api/mentor/position` answer.
+/// Cached `/api/mentor/position` answer (ideas in the language of the request that computed
+/// it; other languages recompute only the cheap, rule-based ideas).
 #[derive(Clone, Debug)]
 pub struct PositionInsight {
+    pub lang: gm_content::Lang,
     pub ideas: Vec<String>,
     pub eval: gm_engine::Score,
     pub best_line_san: Vec<String>,
@@ -31,14 +36,16 @@ pub struct PositionInsight {
 /// Cheap to clone: every field is `Arc`-backed.
 #[derive(Clone)]
 pub struct AppState {
+    /// The English source content; use `content.localized(lang)` for user-facing text.
     pub content: Arc<Content>,
     pub pool: EnginePool,
     pub store: Store,
     pub mentor: Arc<Mentor>,
     pub puzzles: Arc<PuzzleIndex>,
     pub recent_puzzles: Arc<RecentSet<String>>,
-    pub review_cache: Arc<BoundedCache<String, Arc<GameReview>>>,
+    pub review_cache: Arc<BoundedCache<String, CachedReview>>,
     pub position_cache: Arc<BoundedCache<String, PositionInsight>>,
+    /// Keyed by `<lang>|<fen key>`.
     pub opening_cache: Arc<BoundedCache<String, Option<gm_content::OpeningMatch>>>,
     /// Flipped to `true` on Ctrl-C so long-lived websockets close and shutdown completes.
     pub shutdown: Arc<tokio::sync::watch::Sender<bool>>,

@@ -17,8 +17,9 @@ import { Board } from '../components/board.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MoveList } from '../components/movelist.js';
 import { ChessClock } from '../components/clock.js';
+import { t, hasKey } from '../i18n.js';
 
-export const title = 'Play vs Bots';
+export const title = () => t('play.title');
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -30,56 +31,61 @@ const MAX_THINK_MS = 6000;
 const BOT_CHAT_MS = 4500;
 const DRAW_OFFER_COOLDOWN_PLIES = 10;
 
+// Labels are resolved at render time with t() (see tcLabel / tcSpeed / docs/I18N.md).
 const TIME_CONTROLS = [
-  { id: 'none', label: 'No clock', sub: 'Relaxed', initial: 0, inc: 0 },
-  { id: '1+0', label: '1 min', sub: 'Bullet', initial: 60e3, inc: 0 },
-  { id: '3+2', label: '3 | 2', sub: 'Blitz', initial: 180e3, inc: 2e3 },
-  { id: '5+0', label: '5 min', sub: 'Blitz', initial: 300e3, inc: 0 },
-  { id: '10+0', label: '10 min', sub: 'Rapid', initial: 600e3, inc: 0 },
-  { id: '15+10', label: '15 | 10', sub: 'Rapid', initial: 900e3, inc: 10e3 },
-  { id: '30+0', label: '30 min', sub: 'Classical', initial: 1800e3, inc: 0 },
+  { id: 'none', speed: 'relaxed', initial: 0, inc: 0 },
+  { id: '1+0', speed: 'bullet', initial: 60e3, inc: 0 },
+  { id: '3+2', speed: 'blitz', initial: 180e3, inc: 2e3 },
+  { id: '5+0', speed: 'blitz', initial: 300e3, inc: 0 },
+  { id: '10+0', speed: 'rapid', initial: 600e3, inc: 0 },
+  { id: '15+10', speed: 'rapid', initial: 900e3, inc: 10e3 },
+  { id: '30+0', speed: 'classical', initial: 1800e3, inc: 0 },
 ];
-const TC_BY_ID = Object.fromEntries(TIME_CONTROLS.map((t) => [t.id, t]));
+const TC_BY_ID = Object.fromEntries(TIME_CONTROLS.map((tc) => [tc.id, tc]));
 
-const CATEGORIES = [
-  { id: 'coach', label: 'Coach', blurb: 'Friendly teachers who explain their ideas.' },
-  { id: 'beginner', label: 'Beginner', blurb: 'Just learning the moves? Start here.' },
-  { id: 'intermediate', label: 'Intermediate', blurb: 'Solid club players who punish loose pieces.' },
-  { id: 'advanced', label: 'Advanced', blurb: 'Strong and sharp. Bring your best tactics.' },
-  { id: 'master', label: 'Master', blurb: 'Master-level strength. Good luck!' },
-];
+/** "No clock", "5 min" or "3 | 2". */
+function tcLabel(tc) {
+  if (tc.id === 'none') return t('play.tc.none');
+  const minutes = Math.round(tc.initial / 60e3);
+  return tc.inc ? `${minutes} | ${Math.round(tc.inc / 1e3)}` : t('play.tc.minutes', { count: minutes });
+}
+const tcSpeed = (tc) => t(`play.tc.speed.${tc.speed}`);
+
+const CATEGORIES = ['coach', 'beginner', 'intermediate', 'advanced', 'master'];
+const categoryLabel = (id) => (hasKey(`play.categories.${id}.label`) ? t(`play.categories.${id}.label`) : String(id || ''));
+const styleLabel = (id) => (hasKey(`play.styles.${id}`) ? t(`play.styles.${id}`) : String(id || ''));
 
 const MODES = {
-  challenge: { label: 'Challenge', desc: 'No help at all, just you and the bot.', opts: { hints: false, takebacks: false, evalBar: false, coach: false } },
-  friendly: { label: 'Friendly', desc: 'Hints, takebacks, the eval bar and a coach who comments on your moves.', opts: { hints: true, takebacks: true, evalBar: true, coach: true } },
-  custom: { label: 'Custom', desc: 'Pick exactly the help you want.', opts: null },
+  challenge: { opts: { hints: false, takebacks: false, evalBar: false, coach: false } },
+  friendly: { opts: { hints: true, takebacks: true, evalBar: true, coach: true } },
+  custom: { opts: null },
 };
 
 const OPTION_DEFS = [
-  { key: 'hints', title: 'Hints', desc: 'A light bulb that shows a good move when you are stuck.', ic: 'hint' },
-  { key: 'takebacks', title: 'Takebacks', desc: 'Undo your last move if you slip.', ic: 'undo' },
-  { key: 'evalBar', title: 'Evaluation bar', desc: 'A bar beside the board that shows who is winning.', ic: 'chart' },
-  { key: 'coach', title: 'Coach mode', desc: 'The mentor rates each of your moves and explains why.', ic: 'mentor' },
+  { key: 'hints', ic: 'hint' },
+  { key: 'takebacks', ic: 'undo' },
+  { key: 'evalBar', ic: 'chart' },
+  { key: 'coach', ic: 'mentor' },
 ];
-
-const PIECE_NAMES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
 const PIECE_VALUES = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
 const START_COUNTS = { p: 8, n: 2, b: 2, r: 2, q: 1 };
 const GLYPHS = { w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕' }, b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛' } };
 const NOTABLE_CLS = new Set(['brilliant', 'great', 'best', 'excellent', 'good', 'book', 'inaccuracy', 'mistake', 'miss', 'blunder', 'forced']);
 const GOOD_CLS = new Set(['brilliant', 'great', 'best', 'excellent', 'book', 'forced']);
-const TERMINATION_TEXT = {
-  checkmate: 'by checkmate',
-  resignation: 'by resignation',
-  timeout: 'on time',
-  stalemate: 'by stalemate',
-  'threefold repetition': 'by threefold repetition',
-  'insufficient material': 'by insufficient material',
-  'timeout vs insufficient material': 'timeout vs insufficient material',
-  '50-move rule': 'by the 50-move rule',
-  agreement: 'by agreement',
-  abandoned: 'game abandoned',
+// Termination ids (sent to the server untranslated) -> message keys under play.termination.
+const TERMINATION_KEYS = {
+  checkmate: 'checkmate',
+  resignation: 'resignation',
+  timeout: 'timeout',
+  stalemate: 'stalemate',
+  'threefold repetition': 'threefold',
+  'insufficient material': 'insufficientMaterial',
+  'timeout vs insufficient material': 'timeoutVsInsufficient',
+  '50-move rule': 'fiftyMove',
+  agreement: 'agreement',
+  abandoned: 'abandoned',
 };
+const terminationText = (term) => (TERMINATION_KEYS[term] ? t(`play.termination.${TERMINATION_KEYS[term]}`) : String(term || ''));
 
 const colorName = (c) => (c === 'w' ? 'white' : 'black');
 const other = (c) => (c === 'w' ? 'b' : 'w');
@@ -177,9 +183,9 @@ export async function mount(root, { params = {} } = {}) {
       console.error('[play] view failed', e);
       host.replaceChildren(h('div', { class: 'page' }, emptyState({
         icon: 'alert',
-        title: 'Something went wrong',
-        text: e && e.message ? e.message : 'The game screen could not be opened.',
-        action: { label: 'Back to bots', icon: 'robot', onClick: () => showSetup(null) },
+        title: t('play.error.title'),
+        text: e && e.message ? e.message : t('play.error.gameScreen'),
+        action: { label: t('play.error.backToBots'), icon: 'robot', onClick: () => showSetup(null) },
       })));
     }
   };
@@ -189,7 +195,7 @@ export async function mount(root, { params = {} } = {}) {
 
   await ensureCss();
   if (bag.disposed) return bag.dispose;
-  host.appendChild(loadingBlock('Waking up the bots…'));
+  host.appendChild(loadingBlock(t('play.loading')));
 
   // Non-critical data (name for saved games, recommended bot).
   api.get('/api/profile', { signal: ac.signal }).then((p) => { ctx.profile = p; }).catch(() => {});
@@ -210,16 +216,16 @@ export async function mount(root, { params = {} } = {}) {
       const bots = await api.get('/api/bots', { signal: ac.signal });
       if (bag.disposed) return;
       ctx.bots = Array.isArray(bots) ? bots.filter((b) => b && typeof b.id === 'string') : [];
-      if (!ctx.bots.length) throw new Error('No bots are available right now.');
+      if (!ctx.bots.length) throw new Error(t('play.error.noBots'));
       showSetup(params.botId || null);
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
       setView(() => {
         host.appendChild(h('div', { class: 'page' }, emptyState({
           icon: 'robot',
-          title: 'The bots are not answering',
-          text: `${e.message || 'Something went wrong.'} Make sure the GrandMentor server is running, then try again.`,
-          action: { label: 'Try again', icon: 'refresh', onClick: () => { setView(() => { host.appendChild(loadingBlock('Waking up the bots…')); return null; }); load(); } },
+          title: t('play.error.botsDown'),
+          text: t('play.error.botsDownText', { message: e.message || t('play.error.generic') }),
+          action: { label: t('play.error.tryAgain'), icon: 'refresh', onClick: () => { setView(() => { host.appendChild(loadingBlock(t('play.loading'))); return null; }); load(); } },
         })));
         return null;
       });
@@ -253,7 +259,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     opts: { ...prefs.opts },
     tc: prefs.tc,
   };
-  if (preselectId && !byId.has(preselectId)) toast('That bot was not found, so we picked one for you.', 'warning');
+  if (preselectId && !byId.has(preselectId)) toast(t('play.setup.botNotFound'), 'warning');
 
   // ---- Left: board preview with the selected bot -------------------------
   const previewBubble = h('div', { class: 'bubble bubble-bot pop-in' });
@@ -277,11 +283,17 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   const groups = h('div', { class: 'bot-groups' });
   const tileById = new Map();
 
-  for (const cat of [...CATEGORIES, { id: '__other', label: 'More bots', blurb: '' }]) {
-    const list = bots.filter((b) => (cat.id === '__other' ? !CATEGORIES.some((c) => c.id === b.category) : b.category === cat.id))
+  for (const catId of [...CATEGORIES, '__other']) {
+    const isOther = catId === '__other';
+    const cat = {
+      id: catId,
+      label: isOther ? t('play.categories.more') : categoryLabel(catId),
+      blurb: isOther ? '' : t(`play.categories.${catId}.blurb`),
+    };
+    const list = bots.filter((b) => (isOther ? !CATEGORIES.includes(b.category) : b.category === cat.id))
       .sort((a, b) => (a.elo || 0) - (b.elo || 0));
     if (!list.length) continue;
-    const grid = h('div', { class: 'bot-grid', role: 'listbox', 'aria-label': `${cat.label} bots` });
+    const grid = h('div', { class: 'bot-grid', role: 'listbox', 'aria-label': t('play.categories.groupAria', { category: cat.label }) });
     for (const b of list) {
       const tile = h('button', {
         type: 'button', class: 'bot-tile', role: 'option', 'aria-selected': 'false', dataset: { botId: b.id },
@@ -297,14 +309,14 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
 
   // Colour chooser
   const colorBtns = {};
-  const colorRow = h('div', { class: 'color-choice', role: 'radiogroup', 'aria-label': 'Play as' },
-    ...[['white', 'White', h('span', { class: 'color-swatch white' }, '♚')], ['random', 'Random', h('span', { class: 'color-swatch random' }, '?')], ['black', 'Black', h('span', { class: 'color-swatch black' }, '♚')]]
+  const colorRow = h('div', { class: 'color-choice', role: 'radiogroup', 'aria-label': t('play.setup.playAsAria') },
+    ...[['white', t('play.color.white'), h('span', { class: 'color-swatch white' }, '♚')], ['random', t('play.color.random'), h('span', { class: 'color-swatch random' }, '?')], ['black', t('play.color.black'), h('span', { class: 'color-swatch black' }, '♚')]]
       .map(([id, label, sw]) => (colorBtns[id] = h('button', { type: 'button', class: 'color-btn', role: 'radio', 'aria-checked': 'false', onClick: () => { state.color = id; refreshOptions(); } }, sw, h('span', null, label)))));
 
   // Mode + toggles
   const modeBtns = {};
-  const modeSeg = h('div', { class: 'segmented block', role: 'radiogroup', 'aria-label': 'Help level' },
-    ...Object.entries(MODES).map(([id, m]) => (modeBtns[id] = h('button', { type: 'button', role: 'radio', onClick: () => setMode(id) }, m.label))));
+  const modeSeg = h('div', { class: 'segmented block', role: 'radiogroup', 'aria-label': t('play.setup.helpLevelAria') },
+    ...Object.keys(MODES).map((id) => (modeBtns[id] = h('button', { type: 'button', role: 'radio', onClick: () => setMode(id) }, t(`play.modes.${id}.label`)))));
   const modeDesc = h('p', { class: 'muted text-sm' });
   const optInputs = {};
   const optionList = h('div', { class: 'play-options' }, ...OPTION_DEFS.map((d) => {
@@ -312,31 +324,31 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     optInputs[d.key] = input;
     return h('label', { class: 'play-option' },
       h('span', { class: 'play-option-icon', html: icon(d.ic) }),
-      h('span', { class: 'play-option-text' }, h('span', { class: 'semibold' }, d.title), h('span', { class: 'subtle text-xs' }, d.desc)),
+      h('span', { class: 'play-option-text' }, h('span', { class: 'semibold' }, t(`play.options.${d.key}.title`)), h('span', { class: 'subtle text-xs' }, t(`play.options.${d.key}.desc`))),
       h('span', { class: 'switch' }, input, h('span', { class: 'switch-track' })));
   }));
 
   // Time control
   const tcBtns = {};
-  const tcRow = h('div', { class: 'tc-grid', role: 'radiogroup', 'aria-label': 'Time control' },
-    ...TIME_CONTROLS.map((t) => (tcBtns[t.id] = h('button', { type: 'button', class: 'tc-btn', role: 'radio', onClick: () => { state.tc = t.id; refreshOptions(); } },
-      h('span', { class: 'tc-label' }, t.label), h('span', { class: 'tc-sub' }, t.sub)))));
+  const tcRow = h('div', { class: 'tc-grid', role: 'radiogroup', 'aria-label': t('play.setup.timeControlAria') },
+    ...TIME_CONTROLS.map((tc) => (tcBtns[tc.id] = h('button', { type: 'button', class: 'tc-btn', role: 'radio', onClick: () => { state.tc = tc.id; refreshOptions(); } },
+      h('span', { class: 'tc-label' }, tcLabel(tc)), h('span', { class: 'tc-sub' }, tcSpeed(tc))))));
 
   const playBtn = h('button', { type: 'button', class: 'btn btn-primary btn-xl btn-block play-cta', onClick: () => play() });
 
   const panel = h('aside', { class: 'play-setup-panel card card-flush' },
     h('div', { class: 'play-setup-head' }, h('div', { class: 'page-header-icon', html: icon('robot') }),
-      h('div', null, h('h1', { class: 'page-title' }, 'Play vs Bots'), h('p', { class: 'page-subtitle' }, 'Pick an opponent, choose your help, and have fun.'))),
+      h('div', null, h('h1', { class: 'page-title' }, t('play.title')), h('p', { class: 'page-subtitle' }, t('play.setup.subtitle')))),
     h('div', { class: 'play-setup-scroll' },
       resumeSlot,
       heroSlot,
-      h('h2', { class: 'play-section-title' }, 'Choose your opponent'),
+      h('h2', { class: 'play-section-title' }, t('play.setup.chooseOpponent')),
       groups,
-      h('h2', { class: 'play-section-title' }, 'I play as'),
+      h('h2', { class: 'play-section-title' }, t('play.setup.playAs')),
       colorRow,
-      h('h2', { class: 'play-section-title' }, 'Help'),
+      h('h2', { class: 'play-section-title' }, t('play.setup.help')),
       modeSeg, modeDesc, optionList,
-      h('h2', { class: 'play-section-title' }, 'Time'),
+      h('h2', { class: 'play-section-title' }, t('play.setup.time')),
       tcRow),
     h('div', { class: 'play-setup-foot' }, playBtn));
 
@@ -359,15 +371,16 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     resumeSlot.replaceChildren();
     if (!saved) return;
     const b = saved.bot;
+    const moveCount = Math.ceil(saved.moves.length / 2);
     resumeSlot.appendChild(h('div', { class: 'resume-card' },
       botAvatar(b, 'avatar-sm'),
-      h('div', { class: 'resume-text' }, h('div', { class: 'semibold' }, `Game in progress vs ${b.name}`),
-        h('div', { class: 'subtle text-xs' }, `${Math.ceil(saved.moves.length / 2)} move${Math.ceil(saved.moves.length / 2) === 1 ? '' : 's'} played · you are ${colorName(saved.userColor)}`)),
-      h('button', { type: 'button', class: 'btn btn-primary btn-sm', html: icon('play') + '<span>Resume</span>', onClick: () => onResume(saved) }),
+      h('div', { class: 'resume-text' }, h('div', { class: 'semibold' }, t('play.resume.title', { name: b.name })),
+        h('div', { class: 'subtle text-xs' }, t(saved.userColor === 'w' ? 'play.resume.detailWhite' : 'play.resume.detailBlack', { count: moveCount }))),
+      h('button', { type: 'button', class: 'btn btn-primary btn-sm', html: icon('play') + `<span>${escapeHtml(t('play.resume.resume'))}</span>`, onClick: () => onResume(saved) }),
       h('button', {
-        type: 'button', class: 'btn btn-ghost btn-icon btn-sm', 'aria-label': 'Discard saved game', 'data-tooltip': 'Discard', html: icon('trash'),
+        type: 'button', class: 'btn btn-ghost btn-icon btn-sm', 'aria-label': t('play.resume.discardAria'), 'data-tooltip': t('play.resume.discard'), html: icon('trash'),
         onClick: async () => {
-          const ok = await confirmDialog({ title: 'Discard this game?', message: 'The unfinished game will be deleted and not saved to your library.', confirmLabel: 'Discard', danger: true });
+          const ok = await confirmDialog({ title: t('play.resume.discardTitle'), message: t('play.resume.discardMessage'), confirmLabel: t('play.resume.discard'), danger: true });
           if (!ok || bag.disposed) return;
           removeKey(SAVE_KEY);
           saved = null;
@@ -385,18 +398,18 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       h('div', { class: 'play-hero-main' },
         h('div', { class: 'play-hero-name' }, b.name, h('span', { class: 'play-hero-elo' }, `${b.elo ?? ''}`)),
         h('div', { class: 'row-sm row-wrap' },
-          b.style && String(b.style).toLowerCase() !== String(b.category || '').toLowerCase() ? h('span', { class: 'badge badge-info' }, b.style) : null,
-          b.category ? h('span', { class: `badge level-${b.category === 'coach' ? 'beginner' : b.category}` }, b.category) : null,
-          rec ? h('span', { class: 'badge badge-gold', html: icon('star-filled', { size: 12 }) + ' Recommended' }) : null),
+          b.style && String(b.style).toLowerCase() !== String(b.category || '').toLowerCase() ? h('span', { class: 'badge badge-info' }, styleLabel(b.style)) : null,
+          b.category ? h('span', { class: `badge level-${b.category === 'coach' ? 'beginner' : b.category}` }, categoryLabel(b.category)) : null,
+          rec ? h('span', { class: 'badge badge-gold', html: icon('star-filled', { size: 12 }) + ' ' + escapeHtml(t('play.setup.recommended')) }) : null),
         b.description ? h('p', { class: 'muted text-sm play-hero-desc' }, b.description) : null,
         b.greeting ? h('div', { class: 'bubble bubble-bot play-mobile-only text-sm' }, b.greeting) : null));
     previewAvatarSlot.replaceChildren(botAvatar(b, 'avatar-xl'));
     previewName.replaceChildren(h('span', { class: 'semibold' }, b.name), ' ', h('span', { class: 'subtle' }, `(${b.elo ?? '?'})`));
-    previewBubble.textContent = b.greeting || `Hi! I'm ${b.name}. Ready when you are.`;
+    previewBubble.textContent = b.greeting || t('play.setup.defaultGreeting', { name: b.name });
     previewBubble.classList.remove('pop-in');
     void previewBubble.offsetWidth; // restart the pop animation
     previewBubble.classList.add('pop-in');
-    playBtn.innerHTML = icon('play') + `<span>Play ${escapeHtml(b.name)}</span>`;
+    playBtn.innerHTML = icon('play') + `<span>${escapeHtml(t('play.setup.playBot', { name: b.name }))}</span>`;
   }
 
   function refreshTiles() {
@@ -418,7 +431,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       btn.classList.toggle('active', state.mode === id);
       btn.setAttribute('aria-checked', state.mode === id ? 'true' : 'false');
     }
-    modeDesc.textContent = MODES[state.mode].desc;
+    modeDesc.textContent = t(`play.modes.${state.mode}.desc`);
     for (const d of OPTION_DEFS) optInputs[d.key].checked = !!state.opts[d.key];
     for (const [id, btn] of Object.entries(tcBtns)) {
       btn.classList.toggle('active', state.tc === id);
@@ -445,7 +458,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       onPlay({ bot, userColor, colorChoice: state.color, opts: { ...state.opts }, tcId: state.tc });
     };
     if (saved) {
-      confirmDialog({ title: 'Start a new game?', message: `You have an unfinished game vs ${saved.bot.name}. Starting a new game will discard it.`, confirmLabel: 'Start new game' })
+      confirmDialog({ title: t('play.newGame.title'), message: t('play.newGame.discardUnfinished', { name: saved.bot.name }), confirmLabel: t('play.newGame.start') })
         .then((ok) => { if (ok && !bag.disposed) { removeKey(SAVE_KEY); proceed(); } });
       return;
     }
@@ -552,10 +565,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   const mkBar = (c) => {
     const isBot = c === botC;
     const captures = h('div', { class: 'player-captures' });
-    const thinking = isBot ? h('span', { class: 'thinking-dots', 'aria-label': `${bot.name} is thinking`, hidden: true }, h('i'), h('i'), h('i')) : null;
+    const thinking = isBot ? h('span', { class: 'thinking-dots', 'aria-label': t('play.status.botThinkingAria', { name: bot.name }), hidden: true }, h('i'), h('i'), h('i')) : null;
     const chat = isBot ? h('div', { class: 'bot-chat bubble', role: 'status', 'aria-live': 'polite', hidden: true }) : null;
     const clockSlot = h('div', { class: 'clock-slot' });
-    const name = isBot ? bot.name : ((ctx.profile && ctx.profile.name) || 'You');
+    const name = isBot ? bot.name : ((ctx.profile && ctx.profile.name) || t('play.you'));
     const rating = isBot ? `(${bot.elo ?? '?'})` : null;
     const el = h('div', { class: `player-bar play-bar ${isBot ? 'is-bot' : 'is-user'}` },
       isBot ? botAvatar(bot) : avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-round user-avatar'),
@@ -574,9 +587,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   const openingEl = h('div', { class: 'play-opening truncate' });
   const modeBadges = h('div', { class: 'row-sm' },
-    g.opts.coach ? h('span', { class: 'badge badge-primary', title: 'Coach mode is on' }, '🎓 Coach') : null,
-    g.tc.id !== 'none' ? h('span', { class: 'badge', html: icon('clock', { size: 12 }) + ' ' + g.tc.label }) : null,
-    !g.opts.hints && !g.opts.takebacks && !g.opts.evalBar && !g.opts.coach ? h('span', { class: 'badge badge-danger' }, 'Challenge') : null);
+    g.opts.coach ? h('span', { class: 'badge badge-primary', title: t('play.game.coachOnTitle') }, '🎓 ' + t('play.game.coachBadge')) : null,
+    g.tc.id !== 'none' ? h('span', { class: 'badge', html: icon('clock', { size: 12 }) + ' ' + escapeHtml(tcLabel(g.tc)) }) : null,
+    !g.opts.hints && !g.opts.takebacks && !g.opts.evalBar && !g.opts.coach ? h('span', { class: 'badge badge-danger' }, t('play.modes.challenge.label')) : null);
   const statusEl = h('div', { class: 'play-status', role: 'status', 'aria-live': 'polite' });
   const coachText = h('div', { class: 'bubble bubble-mentor coach-text md' });
   const coachBox = h('div', { class: 'coach-box mentor-row', hidden: true },
@@ -584,24 +597,26 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   const moveListEl = h('div', { class: 'panel-body play-moves' });
   const navBtn = (ic, label, fn) => h('button', { type: 'button', class: 'btn btn-ghost btn-icon', 'aria-label': label, 'data-tooltip': label, html: icon(ic), onClick: fn });
   const nav = {
-    first: navBtn('first', 'First move', () => goto(0)),
-    prev: navBtn('chevron-left', 'Previous move (←)', () => goto(currentPly() - 1)),
-    next: navBtn('chevron-right', 'Next move (→)', () => goto(currentPly() + 1)),
-    last: navBtn('last', 'Back to the game', () => goto(plies())),
+    first: navBtn('first', t('play.nav.first'), () => goto(0)),
+    prev: navBtn('chevron-left', t('play.nav.prev'), () => goto(currentPly() - 1)),
+    next: navBtn('chevron-right', t('play.nav.next'), () => goto(currentPly() + 1)),
+    last: navBtn('last', t('play.nav.last'), () => goto(plies())),
   };
-  const liveChip = h('button', { type: 'button', class: 'btn btn-sm btn-secondary live-chip', hidden: true, onClick: () => goto(plies()), html: icon('play', { size: 14 }) + '<span>Back to game</span>' });
+  const liveChip = h('button', { type: 'button', class: 'btn btn-sm btn-secondary live-chip', hidden: true, onClick: () => goto(plies()), html: icon('play', { size: 14 }) + `<span>${escapeHtml(t('play.nav.backToGame'))}</span>` });
   const navBar = h('div', { class: 'toolbar play-nav' }, nav.first, nav.prev, liveChip, h('div', { class: 'spacer' }), nav.next, nav.last);
 
-  const actionBtn = (ic, label, fn, extra = '') => h('button', { type: 'button', class: `btn btn-secondary play-action ${extra}`.trim(), onClick: fn, html: icon(ic) + `<span>${label}</span>` });
+  const actionBtn = (ic, label, fn, extra = '') => h('button', { type: 'button', class: `btn btn-secondary play-action ${extra}`.trim(), onClick: fn, html: icon(ic) + `<span>${escapeHtml(label)}</span>` });
   const acts = {
-    hint: actionBtn('hint', 'Hint', () => onHint(), 'act-hint'),
-    takeback: actionBtn('undo', 'Takeback', () => onTakeback()),
-    flip: actionBtn('flip', 'Flip', () => onFlip()),
-    draw: actionBtn('handshake', 'Draw', () => onOfferDraw()),
-    resign: actionBtn('flag', 'Resign', () => onResign(), 'act-resign'),
-    newGame: actionBtn('plus', 'New', () => onNewGame()),
+    hint: actionBtn('hint', t('play.actions.hint'), () => onHint(), 'act-hint'),
+    takeback: actionBtn('undo', t('play.actions.takeback'), () => onTakeback()),
+    flip: actionBtn('flip', t('play.actions.flip'), () => onFlip()),
+    draw: actionBtn('handshake', t('play.actions.draw'), () => onOfferDraw()),
+    resign: actionBtn('flag', t('play.actions.resign'), () => onResign(), 'act-resign'),
+    newGame: actionBtn('plus', t('play.actions.newGame'), () => onNewGame()),
   };
-  acts.hint.setAttribute('aria-label', 'Hint: show a good move');
+  acts.hint.setAttribute('aria-label', t('play.actions.hintAria'));
+  acts.draw.setAttribute('aria-label', t('play.actions.drawAria'));
+  acts.newGame.setAttribute('aria-label', t('play.actions.newGameAria'));
   if (!g.opts.hints) acts.hint.hidden = true;
   if (!g.opts.takebacks) acts.takeback.hidden = true;
   const actionsEl = h('div', { class: 'play-actions' }, ...Object.values(acts));
@@ -729,7 +744,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   function renderOpening() {
-    openingEl.textContent = g.openingName || (plies() ? 'Game in progress' : 'Starting position');
+    openingEl.textContent = g.openingName || (plies() ? t('play.game.inProgress') : t('play.game.startingPosition'));
     openingEl.title = openingEl.textContent;
   }
 
@@ -738,26 +753,26 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     statusEl.replaceChildren();
     if (g.result) {
       statusEl.classList.add('done');
-      statusEl.append(h('span', { html: icon('trophy', { size: 16 }) }), h('span', null, resultHeadline() + ' ' + (TERMINATION_TEXT[g.termination] || '')));
+      statusEl.append(h('span', { html: icon('trophy', { size: 16 }) }), h('span', null, t('play.status.result', { result: resultHeadline(), reason: terminationText(g.termination) })));
       return;
     }
     if (!isLive()) {
       statusEl.classList.add('browsing');
-      statusEl.append(h('span', { html: icon('eye', { size: 16 }) }), h('span', null, `Viewing move ${Math.ceil(viewPly / 2) || 0}. Press → or "Back to game" to continue.`));
+      statusEl.append(h('span', { html: icon('eye', { size: 16 }) }), h('span', null, t('play.status.viewing', { move: Math.ceil(viewPly / 2) || 0, back: t('play.nav.backToGame') })));
       return;
     }
     if (botPending) {
       statusEl.classList.add('thinking');
-      statusEl.append(h('span', { class: 'thinking-dots' }, h('i'), h('i'), h('i')), h('span', null, `${bot.name} is thinking…`));
+      statusEl.append(h('span', { class: 'thinking-dots' }, h('i'), h('i'), h('i')), h('span', null, t('play.status.botThinking', { name: bot.name })));
       return;
     }
     if (userToMove()) {
       statusEl.classList.add('your-turn');
       const inCheck = chess.inCheck();
       statusEl.append(h('span', { class: `turn-dot ${colorName(userC)}` }),
-        h('span', null, inCheck ? 'Your king is in check! Get it to safety.' : `Your move. You play ${colorName(userC)}.`));
+        h('span', null, inCheck ? t('play.status.inCheck') : t(userC === 'w' ? 'play.status.yourMoveWhite' : 'play.status.yourMoveBlack')));
     } else {
-      statusEl.append(h('span', { class: `turn-dot ${colorName(botC)}` }), h('span', null, `${bot.name} to move.`));
+      statusEl.append(h('span', { class: `turn-dot ${colorName(botC)}` }), h('span', null, t('play.status.botToMove', { name: bot.name })));
     }
   }
 
@@ -765,8 +780,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     statusEl.className = 'play-status error';
     statusEl.replaceChildren(
       h('span', { html: icon('alert', { size: 16 }) }),
-      h('span', { class: 'grow' }, `${bot.name} could not move: ${message}`),
-      h('button', { type: 'button', class: 'btn btn-sm btn-primary', onClick: () => requestBotMove() }, 'Retry'));
+      h('span', { class: 'grow' }, t('play.status.botError', { name: bot.name, message })),
+      h('button', { type: 'button', class: 'btn btn-sm btn-primary', onClick: () => requestBotMove() }, t('play.status.retry')));
   }
 
   function renderActions() {
@@ -872,7 +887,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     if (analysis.fen === fen && analysis.best && analysis.depth >= 8) return { uci: analysis.best, score: analysis.score };
     const info = await api.post('/api/engine/analyze', { fen, movetime_ms: 900, multipv: 1 }, { signal: gac.signal, timeout: 15000 });
     const line = info && info.lines && info.lines[0];
-    if (!line || !line.moves || !line.moves[0]) throw new Error('No move found');
+    if (!line || !line.moves || !line.moves[0]) throw new Error(t('play.hint.noMove'));
     if (fen === chess.fen() && (!analysis.fen || analysis.fen !== fen || (info.depth || 0) >= analysis.depth)) {
       analysis = { fen, best: line.moves[0], score: line.score, depth: info.depth || 0 };
     }
@@ -968,7 +983,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       botPending = false;
       setThinking(false);
       renderActions();
-      setBotError(e.message || 'network error');
+      setBotError(e.message || t('play.status.networkError'));
     } finally {
       if (botAc === myAc) botAc = null;
     }
@@ -983,7 +998,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     setThinking(false);
     if (!mv) {
       renderActions();
-      setBotError('it suggested an illegal move');
+      setBotError(t('play.status.illegalMove'));
       return;
     }
     recordMove(mv);
@@ -1003,9 +1018,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       renderMoveList();
       renderBadge();
       const san = g.sans[ply - 1];
-      let text = r.explanation ? String(r.explanation) : `**${san}** is ${cls ? classificationMeta(cls).label.toLowerCase() : 'played'}.`;
+      let text = r.explanation ? String(r.explanation)
+        : (cls ? t('play.coach.classified', { san, label: classificationMeta(cls).label }) : t('play.coach.played', { san }));
       if (cls && !GOOD_CLS.has(cls) && r.best_move_san && r.best_move_san !== san && !text.includes(r.best_move_san)) {
-        text += `\n\nBetter was **${r.best_move_san}**.`;
+        text += '\n\n' + t('play.coach.betterWas', { san: r.best_move_san });
       }
       coachSay(text, cls);
       if (evalbar && r.eval_after && plies() === ply && !g.result) evalbar.set(r.eval_after);
@@ -1046,11 +1062,11 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
         const p = parseUci(best.uci);
         const probe = new Chess(fen);
         const mv = p ? probe.move(p) : null;
-        if (!mv) throw new Error('No hint available');
+        if (!mv) throw new Error(t('play.hint.none'));
         hint.move = { from: mv.from, to: mv.to, san: mv.san, piece: mv.piece };
       } catch (e) {
         if (isAbort(e) || bag.disposed) return;
-        toast('The coach could not find a hint right now. Try again in a moment.', 'warning');
+        toast(t('play.hint.failed'), 'warning');
         return;
       } finally {
         if (!bag.disposed) {
@@ -1064,9 +1080,13 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     hint.stage++;
     if (hint.stage === 1) {
       g.hintsUsed++;
-      coachSay(`Look at your **${PIECE_NAMES[hint.move.piece] || 'piece'}** on **${hint.move.from}**. Can you find a strong move with it? Press *Hint* again to see the move.`);
+      coachSay(t('play.hint.stage1', {
+        piece: t(hasKey(`play.pieces.${hint.move.piece}`) ? `play.pieces.${hint.move.piece}` : 'play.pieces.generic'),
+        square: hint.move.from,
+        hint: t('play.actions.hint'),
+      }));
     } else {
-      coachSay(`Try **${hint.move.san}**: move from ${hint.move.from} to ${hint.move.to}.`);
+      coachSay(t('play.hint.stage2', { san: hint.move.san, from: hint.move.from, to: hint.move.to }));
     }
     applyHintVisual();
     renderActions();
@@ -1089,7 +1109,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   function onTakeback() {
-    if (!canTakeback()) { toast('Nothing to take back yet.', 'info'); return; }
+    if (!canTakeback()) { toast(t('play.takeback.nothing'), 'info'); return; }
     const n = takebackCount();
     botToken++;
     if (botAc) { botAc.abort(); botAc = null; }
@@ -1107,7 +1127,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     clearHint();
     if (clock && clock.running && !g.result) clock.start(colorName(chess.turn()));
     refreshAll(true);
-    if (!coachBox.hidden) coachSay('Move taken back. Take your time and look for checks, captures and threats.');
+    if (!coachBox.hidden) coachSay(t('play.takeback.coach'));
     if (!userToMove()) requestBotMove(); else analyzeLive();
     persist();
   }
@@ -1144,7 +1164,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   async function onResign() {
     if (g.result) return;
-    const ok = await confirmDialog({ title: 'Resign this game?', message: `${bot.name} will win. You can still review the game afterwards.`, confirmLabel: 'Resign', danger: true });
+    const ok = await confirmDialog({ title: t('play.resign.title'), message: t('play.resign.message', { name: bot.name }), confirmLabel: t('play.resign.confirm'), danger: true });
     if (!ok || bag.disposed || g.result) return;
     endGame(userC === 'w' ? '0-1' : '1-0', 'resignation');
   }
@@ -1152,7 +1172,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   async function onOfferDraw() {
     if (g.result || plies() < 2) return;
     if (plies() - g.drawOfferPly < DRAW_OFFER_COOLDOWN_PLIES) {
-      toast(`${bot.name} already said no. Try again in a few moves.`, 'info');
+      toast(t('play.draw.cooldown', { name: bot.name }), 'info');
       return;
     }
     g.drawOfferPly = plies();
@@ -1170,18 +1190,18 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const nearZero = score && typeof score.cp === 'number' && Math.abs(score.cp) <= 50;
     const moveNo = Number(g.fens[plies()].split(' ')[5]) || Math.ceil(plies() / 2);
     if (nearZero && moveNo > 30) {
-      botSay('A draw sounds fair. Well played!');
+      botSay(t('play.draw.accept'));
       endGame('1/2-1/2', 'agreement');
     } else {
-      botSay(moveNo <= 30 ? "It's too early for a draw. Let's play on!" : "No thanks, I think there's still something to play for.");
-      toast(`${bot.name} declined your draw offer.`, 'info');
+      botSay(moveNo <= 30 ? t('play.draw.tooEarly') : t('play.draw.decline'));
+      toast(t('play.draw.declined', { name: bot.name }), 'info');
       persist();
     }
   }
 
   async function onNewGame() {
     if (!g.result && plies() >= 2) {
-      const ok = await confirmDialog({ title: 'Start a new game?', message: 'This game will be counted as a loss (resignation) and saved to your library.', confirmLabel: 'Resign & start new', danger: true });
+      const ok = await confirmDialog({ title: t('play.newGame.title'), message: t('play.newGame.resignMessage'), confirmLabel: t('play.newGame.resignAndStart'), danger: true });
       if (!ok || bag.disposed) return;
       if (!g.result) endGame(userC === 'w' ? '0-1' : '1-0', 'resignation', { silent: true });
     } else if (!g.result) {
@@ -1223,7 +1243,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   function resultHeadline() {
     const o = userOutcome();
-    return o === 'win' ? 'You won!' : o === 'loss' ? `${bot.name} won` : 'Draw';
+    return o === 'win' ? t('play.result.youWon') : o === 'loss' ? t('play.result.botWon', { name: bot.name }) : t('play.result.draw');
   }
 
   function endGame(result, termination, { silent = false } = {}) {
@@ -1246,7 +1266,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const o = userOutcome();
     if (!silent) {
       playSoundSafe('gameEnd');
-      botSay(o === 'win' ? 'Well played! You got me this time.' : o === 'loss' ? 'Good game! Want to see where it turned?' : 'A hard-fought draw. Good game!');
+      botSay(o === 'win' ? t('play.botChat.userWon') : o === 'loss' ? t('play.botChat.userLost') : t('play.botChat.draw'));
     }
     g.savePromise = saveGame();
     renderAfter();
@@ -1256,13 +1276,13 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   async function saveGame() {
     if (g.savedId) return g.savedId;
     if (plies() < 2) return null; // aborted games are not saved (like chess.com)
-    const userName = (ctx.profile && ctx.profile.name) || 'You';
+    const userName = (ctx.profile && ctx.profile.name) || t('play.you');
     const tags = ['vs-bot'];
     if (g.hintsUsed || g.takebacksUsed) tags.push('assisted');
     if (g.opts.coach) tags.push('coach');
     const notesParts = [];
-    if (g.hintsUsed) notesParts.push(`Hints used: ${g.hintsUsed}`);
-    if (g.takebacksUsed) notesParts.push(`Takebacks: ${g.takebacksUsed}`);
+    if (g.hintsUsed) notesParts.push(t('play.notes.hints', { count: g.hintsUsed }));
+    if (g.takebacksUsed) notesParts.push(t('play.notes.takebacks', { count: g.takebacksUsed }));
     const body = {
       white: userC === 'w' ? userName : bot.name,
       black: userC === 'b' ? userName : bot.name,
@@ -1281,12 +1301,12 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       const rec = await api.post('/api/games', body, { timeout: 20000 });
       if (rec && rec.id != null) {
         g.savedId = rec.id;
-        if (!bag.disposed) toast('Game saved to your library', 'success', { duration: 2200 });
+        if (!bag.disposed) toast(t('play.save.saved'), 'success', { duration: 2200 });
         return rec.id;
       }
       return null;
     } catch (e) {
-      if (!bag.disposed) toast(`Could not save the game: ${e.message || 'server error'}`, 'error');
+      if (!bag.disposed) toast(t('play.save.failed', { message: e.message || t('play.save.serverError') }), 'error');
       return null;
     }
   }
@@ -1295,7 +1315,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     let id = await g.savePromise;
     if (!id && plies() >= 2) { g.savePromise = saveGame(); id = await g.savePromise; }
     if (!id) {
-      if (plies() < 2) toast('This game was too short to review.', 'info');
+      if (plies() < 2) toast(t('play.save.tooShort'), 'info');
       return false;
     }
     location.hash = `#/review/${id}`;
@@ -1309,43 +1329,43 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   function renderAfter() {
     afterEl.replaceChildren(
-      h('button', { type: 'button', class: 'btn btn-primary btn-lg btn-block', html: icon('sparkles') + '<span>Game Review</span>', onClick: async (e) => { const b = e.currentTarget; b.classList.add('loading'); try { await goReview(); } finally { b.classList.remove('loading'); } } }),
+      h('button', { type: 'button', class: 'btn btn-primary btn-lg btn-block', html: icon('sparkles') + `<span>${escapeHtml(t('play.after.review'))}</span>`, onClick: async (e) => { const b = e.currentTarget; b.classList.add('loading'); try { await goReview(); } finally { b.classList.remove('loading'); } } }),
       h('div', { class: 'row-sm' },
-        h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('refresh') + '<span>Rematch</span>', onClick: () => rematch() }),
-        h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('robot') + '<span>New bot</span>', onClick: () => onNewBot(bot.id) })),
+        h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('refresh') + `<span>${escapeHtml(t('play.after.rematch'))}</span>`, onClick: () => rematch() }),
+        h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('robot') + `<span>${escapeHtml(t('play.after.newBot'))}</span>`, onClick: () => onNewBot(bot.id) })),
       h('div', { class: 'row-sm' },
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('analysis') + '<span>Analyze</span>', onClick: () => { location.hash = `#/analysis?fen=${encodeURIComponent(chess.fen())}`; } }),
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + '<span>Flip</span>', onClick: () => onFlip() })));
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('analysis') + `<span>${escapeHtml(t('play.after.analyze'))}</span>`, onClick: () => { location.hash = `#/analysis?fen=${encodeURIComponent(chess.fen())}`; } }),
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + `<span>${escapeHtml(t('play.actions.flip'))}</span>`, onClick: () => onFlip() })));
   }
 
   function showGameOver() {
     if (gameOverModal || bag.disposed) return;
     const o = userOutcome();
-    const you = h('div', { class: 'go-player' }, avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-lg avatar-round'), h('div', { class: 'semibold' }, (ctx.profile && ctx.profile.name) || 'You'));
+    const you = h('div', { class: 'go-player' }, avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-lg avatar-round'), h('div', { class: 'semibold' }, (ctx.profile && ctx.profile.name) || t('play.you')));
     const them = h('div', { class: 'go-player' }, botAvatar(bot, 'avatar-lg'), h('div', { class: 'semibold' }, bot.name), h('div', { class: 'subtle text-xs' }, String(bot.elo ?? '')));
     const scoreText = g.result === '1/2-1/2' ? '½ – ½' : (userOutcome() === 'win' ? '1 – 0' : '0 – 1');
     const chips = h('div', { class: 'row-sm row-wrap go-chips' },
-      h('span', { class: 'badge' }, `${Math.ceil(plies() / 2)} move${Math.ceil(plies() / 2) === 1 ? '' : 's'}`),
+      h('span', { class: 'badge' }, t('play.gameOver.moves', { count: Math.ceil(plies() / 2) })),
       g.openingName ? h('span', { class: 'badge badge-info' }, g.openingName) : null,
-      g.hintsUsed ? h('span', { class: 'badge badge-warning' }, `${g.hintsUsed} hint${g.hintsUsed > 1 ? 's' : ''}`) : null,
-      g.takebacksUsed ? h('span', { class: 'badge badge-warning' }, `${g.takebacksUsed} takeback${g.takebacksUsed > 1 ? 's' : ''}`) : null);
+      g.hintsUsed ? h('span', { class: 'badge badge-warning' }, t('play.gameOver.hints', { count: g.hintsUsed })) : null,
+      g.takebacksUsed ? h('span', { class: 'badge badge-warning' }, t('play.gameOver.takebacks', { count: g.takebacksUsed })) : null);
     const body = h('div', { class: `go-body go-${o}` },
       o === 'win' ? confetti() : null,
       h('div', { class: 'result-hero' },
         h('div', { class: 'go-icon', html: icon(o === 'win' ? 'trophy' : o === 'loss' ? 'flag' : 'handshake') }),
         h('div', { class: 'result-hero-title' }, resultHeadline()),
-        h('div', { class: 'result-hero-sub' }, TERMINATION_TEXT[g.termination] || g.termination)),
+        h('div', { class: 'result-hero-sub' }, terminationText(g.termination))),
       h('div', { class: 'go-players' }, you, h('div', { class: 'go-score' }, scoreText), them),
       chips,
       h('p', { class: 'muted text-sm text-center go-tip' }, plies() >= 2
-        ? (o === 'win' ? 'Great job! Review the game to see your best moves.' : 'Every game is a lesson. Game Review shows where things turned.')
-        : 'The game ended before it really started, so it was not saved.'));
+        ? (o === 'win' ? t('play.gameOver.tipWin') : t('play.gameOver.tipOther'))
+        : t('play.gameOver.tooShort')));
     const actions = [
-      { label: 'New bot', kind: 'ghost', icon: 'robot', onClick: () => { onNewBot(bot.id); } },
-      { label: 'Rematch', kind: 'secondary', icon: 'refresh', onClick: () => { rematch(); } },
+      { label: t('play.after.newBot'), kind: 'ghost', icon: 'robot', onClick: () => { onNewBot(bot.id); } },
+      { label: t('play.after.rematch'), kind: 'secondary', icon: 'refresh', onClick: () => { rematch(); } },
     ];
-    if (plies() >= 2) actions.push({ label: 'Game Review', kind: 'primary', icon: 'sparkles', autofocus: true, onClick: () => goReview() });
-    gameOverModal = modal({ title: 'Game over', body, actions, onClose: () => { gameOverModal = null; } });
+    if (plies() >= 2) actions.push({ label: t('play.after.review'), kind: 'primary', icon: 'sparkles', autofocus: true, onClick: () => goReview() });
+    gameOverModal = modal({ title: t('play.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; } });
   }
 
   function confetti() {
@@ -1378,19 +1398,19 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   renderOpening();
   if (resume) {
     lookupOpening();
-    toast(`Welcome back! Your game vs ${bot.name} is restored.`, 'info', { duration: 2500 });
+    toast(t('play.resume.restored', { name: bot.name }), 'info', { duration: 2500 });
   }
 
   if (!checkEnd()) {
     if (!userToMove()) {
-      if (!resume) botSay(bot.greeting || `Hi! I'm ${bot.name}. Good luck!`);
+      if (!resume) botSay(bot.greeting || t('play.botChat.greetingBotFirst', { name: bot.name }));
       if (clock && plies() > 0) clock.start(colorName(botC));
       requestBotMove();
     } else {
-      if (!resume) botSay(bot.greeting || `Hi! I'm ${bot.name}. Your move!`);
+      if (!resume) botSay(bot.greeting || t('play.botChat.greetingUserFirst', { name: bot.name }));
       if (clock && plies() > 0) clock.start(colorName(userC));
       analyzeLive();
-      if (g.opts.coach && !plies()) coachSay(`Hi! I'm your coach. I'll rate every move you make vs **${bot.name}**. Have fun, and remember: develop your pieces and castle early!`);
+      if (g.opts.coach && !plies()) coachSay(t('play.coach.intro', { name: bot.name }));
     }
   }
 }

@@ -127,9 +127,14 @@ pub struct Task { pub kind: String /* "moves" */, pub prompt: String,
 pub struct EndgameDrill { pub id: String, pub title: String, pub category: String /* basic|pawn|rook|minor|queen */,
   pub level: String, pub fen: String, pub goal: String /* "win"|"draw" */,
   pub description: String, pub hint: String, pub technique: Vec<String> }
-pub struct Content { pub openings: Vec<Opening>, pub puzzles: Vec<Puzzle>, pub courses: Vec<Course>, pub endgames: Vec<EndgameDrill> }
+pub struct Content { pub openings: Vec<Opening>, pub puzzles: Vec<Puzzle>, pub courses: Vec<Course>, pub endgames: Vec<EndgameDrill>,
+  pub lang: Lang /* language of this instance's text */ }
 impl Content {
-  pub fn load(dir: &std::path::Path) -> anyhow::Result<Content>; // validates + fills derived fields; skips (and logs) invalid entries
+  pub fn load(dir: &std::path::Path) -> anyhow::Result<Content>; // validates + fills derived fields; skips (and logs) invalid entries;
+                                                                 // also loads dir/i18n/<lang>/ overlays and precomputes every language view
+  /// Text in `lang` (overlays applied, English fallback); its opening book reports localized names.
+  pub fn localized(&self, lang: Lang) -> std::sync::Arc<Content>;
+  pub fn opening_ref(&self, id: &str) -> Option<OpeningRef>;   // name in this instance's language (knows "starting-position")
   /// Deepest named opening matching the position (key = first 4 FEN fields) + book continuations.
   pub fn lookup_opening(&self, fen: &str) -> Option<OpeningMatch>;
   pub fn is_book_position(&self, fen: &str) -> bool;
@@ -137,7 +142,23 @@ impl Content {
 pub struct OpeningMatch { pub opening: OpeningRef, pub continuations: Vec<BookMove> }
 pub struct OpeningRef { pub id: String, pub eco: String, pub name: String }
 pub struct BookMove { pub uci: String, pub san: String, pub name: Option<String> /* opening it leads to */, pub weight: u32 }
+
+/// User-facing language, shared by every crate (serde: "en" | "es"; default En).
+pub enum Lang { En, Es }
+impl Lang {
+  pub const ALL: [Lang; 2];
+  pub fn code(self) -> &'static str;                            // "en" | "es"
+  pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; unsupported -> None
+  pub fn from_accept_language(h: &str) -> Option<Lang>;         // first supported range by q: "es-MX,es;q=0.9,en;q=0.8" -> Es
+  pub fn negotiate(query: Option<&str>, accept_language: Option<&str>) -> Lang; // ?lang= > Accept-Language > En
+}
+pub mod words { /* per-language chess vocabulary + gender-aware template variables (PieceRef::vars, fill) */ }
 ```
+Translation overlays: `data/i18n/<lang>/{courses,openings,endgames}*.json` (schema in `docs/I18N.md`),
+deep-merged across files in name order. They replace text only (titles, descriptions, step text,
+task prompt/hint/success, opening name/family/description/ideas/traps, endgame title/description/
+hint/technique); moves, FENs, arrows, highlights and solutions always come from the English source;
+missing ids/fields/steps fall back to English; unknown ids are ignored and counted in the load log.
 Data files: `data/openings.json` = `[Opening]` (loader fills uci/fen), `data/puzzles.json` = `[Puzzle]`,
 `data/courses.json` = `[Course]`, `data/endgames.json` = `[EndgameDrill]`. Serde: missing
 `Vec`/`Option` fields default (`#[serde(default)]`). `cargo test -p gm-content` validates that
@@ -149,9 +170,10 @@ pub struct BotProfile { pub id: String, pub name: String, pub elo: u16, pub avat
   pub style: String /* e.g. "aggressive", "positional", "beginner", "trappy" */, pub description: String,
   pub greeting: String, pub category: String /* beginner|intermediate|advanced|master|coach */ }
 pub struct BotMove { pub uci: String, pub san: String, pub chat: Option<String>, pub think_ms: u64 }
-pub fn list() -> Vec<BotProfile>;
-pub fn choose_move(engine: &mut gm_engine::Engine, content: &gm_content::Content, bot_id: &str,
-                   start_fen: &str, moves: &[String]) -> Result<BotMove, String>;
+pub fn list(lang: Lang) -> Vec<BotProfile>;              // description/greeting in `lang`; id/name/style/category never change
+pub fn get(bot_id: &str, lang: Lang) -> Option<BotProfile>;
+pub fn choose_move(engine: &mut gm_engine::Engine, content: &gm_content::Content /* English source */, bot_id: &str,
+                   start_fen: &str, moves: &[String], lang: Lang) -> Result<BotMove, String>; // chat in `lang`
 ```
 ~14 bots from ~250 to ~3000 Elo plus a "coach" bot. Weak bots blunder plausibly (not randomly):
 limited depth/nodes, softmax over multipv with Elo-dependent temperature, occasional missed captures,
@@ -173,7 +195,11 @@ pub struct GameReview { pub start_fen: String, pub moves: Vec<MoveReview>,
   pub key_moments: Vec<usize> /* plies */, pub summary: String }
 pub async fn review_game(pool: &gm_engine::EnginePool, content: std::sync::Arc<gm_content::Content>,
    start_fen: &str, moves: &[String], depth: u8,
-   progress: Option<tokio::sync::mpsc::UnboundedSender<f32> /* 0..1 */>) -> Result<GameReview, String>;
+   progress: Option<tokio::sync::mpsc::UnboundedSender<f32> /* 0..1 */>, lang: Lang) -> Result<GameReview, String>;
+/// Rewrite only explanations, opening names and the summary in `lang` from the stored fields. No engine.
+pub fn relocalize(review: &GameReview, content: &gm_content::Content, lang: Lang) -> GameReview;
+pub fn to_stored_json(review: &GameReview, lang: Lang) -> Option<String>;   // review JSON + "lang" key (games.review_json)
+pub fn from_stored_json(json: &str) -> Option<(GameReview, Lang)>;          // untagged legacy rows = En
 pub fn win_percent(score: Score) -> f32; // lichess formula, white POV
 ```
 Accuracy: lichess-style (win% → per-move accuracy, harmonic+volatility weighted mean).
@@ -184,15 +210,16 @@ Analyze positions in parallel across the pool. `explanation` filled via `gm_ment
 pub struct MoveContext { pub fen_before: String, pub played_uci: String, pub played_san: String,
   pub best_uci: String, pub best_san: String, pub best_line_san: Vec<String>,
   pub eval_before: Score, pub eval_after: Score, pub classification: String }
-pub fn explain_move(ctx: &MoveContext) -> String;          // rule-based, instant, friendly, 1-3 sentences
-pub fn describe_position(fen: &str) -> Vec<String>;        // plans / features: material, king safety, open files, hanging pieces...
+pub fn explain_move(ctx: &MoveContext, lang: Lang) -> String;     // rule-based, instant, friendly, 1-3 sentences
+pub fn describe_position(fen: &str, lang: Lang) -> Vec<String>;   // plans / features: material, king safety, open files, hanging pieces...
+pub fn coach_answer(req: &ChatRequest, lang: Lang) -> ChatResponse; // rule-based; routes English and Spanish questions
 pub struct ChatRequest { pub question: String, pub fen: String, pub moves_san: Vec<String>,
   pub engine_lines: Vec<String> /* e.g. "+0.45: Nf3 Nc6 Bb5" */, pub history: Vec<ChatTurn> }
 pub struct ChatTurn { pub role: String /* user|mentor */, pub text: String }
 pub struct ChatResponse { pub answer: String, pub source: String /* "llm" | "coach" */ }
 pub struct Mentor;  // holds reqwest client + optional API key
 impl Mentor { pub fn from_env() -> Self; pub fn llm_enabled(&self) -> bool;
-  pub async fn chat(&self, req: ChatRequest) -> ChatResponse; } // falls back to rule-based coach
+  pub async fn chat(&self, req: ChatRequest, lang: Lang) -> ChatResponse; } // falls back to rule-based coach; LLM told to answer in `lang`
 ```
 
 ### gm-store
@@ -262,7 +289,23 @@ pub mod pgn { pub fn to_pgn(...) -> String; pub fn parse_pgn(text: &str) -> Resu
 | GET/PUT `/api/profile` | PUT `ProfilePatch` | `Profile` |
 | GET `/api/stats` | – | `Stats` |
 
-Errors: HTTP 4xx/5xx with `{error: "message"}`.
+Errors: HTTP 4xx/5xx with `{error: "message"}` (message in the request language, see below).
+
+**Language.** Every endpoint accepts `?lang=en|es`; otherwise the `Accept-Language` header picks the
+first supported language by q-weight (`es-MX,es;q=0.9,en;q=0.8` → `es`); otherwise English. Only
+human text changes; JSON shapes, ids, enum values (`classification`, bot `style`/`category`,
+puzzle themes), SAN/UCI/FEN and numbers never do. Localized: bot `description`/`greeting` and
+move `chat`; mentor `explanation`, position `ideas` and rule-based chat (the LLM is told to answer in
+the language; questions are understood in English or Spanish); review `summary`, per-move
+`explanation`, `opening.name` and `opening_name`; course/lesson/step/task text, opening
+`name`/`family`/`description`/`ideas`/`traps`, `BookMove.name` and the start position name in
+`/openings/lookup`, endgame text (all from `data/i18n/<lang>/` overlays with English fallback;
+`/openings?q=` matches both English and localized names); the opening name auto-detected by
+`POST /games` / `/games/import`; and `{error}` messages of common failures (unknown messages pass
+through in English). Reviews cached in `games.review_json` carry an extra `"lang"` key; `POST
+/api/review {game_id}` in another language rewrites only the text from the stored evaluations
+(the engine is not re-run) and caches that latest language; ad-hoc reviews do the same in memory.
+The `/engine/ws` socket is language-neutral.
 
 **WebSocket `/api/engine/ws`** (live eval bar / analysis lines). Client → server:
 `{"type":"analyze","id":7,"fen":"...","multipv":3,"movetime_ms":4000,"depth":null}` (new analyze

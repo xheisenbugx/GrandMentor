@@ -10,6 +10,7 @@ workspace = true
 
 [dependencies]
 gm-engine.workspace = true
+gm-content.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 shakmaty.workspace = true

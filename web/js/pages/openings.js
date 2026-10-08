@@ -12,8 +12,9 @@ import {
   miniBoardSvg, levelPill, timerSet, confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
   readStore, writeStore,
 } from './learn.js';
+import { t } from '../i18n.js';
 
-export const title = (params) => (params && params.id ? 'Opening' : 'Openings');
+export const title = (params) => (params && params.id ? t('openings.detailTitle') : t('openings.title'));
 
 // ---------------------------------------------------------------------------
 // Training memory (spaced repetition lite)
@@ -46,9 +47,9 @@ function isLearned(rec) { return !!rec && (rec.streak || 0) >= LEARNED_STREAK; }
 function dueLabel(rec) {
   if (!rec || typeof rec.due !== 'number') return '';
   const ms = rec.due - Date.now();
-  if (ms <= 0) return 'Due now';
+  if (ms <= 0) return t('openings.due.now');
   const d = Math.ceil(ms / DAY);
-  return d <= 1 ? 'Review tomorrow' : `Review in ${d} days`;
+  return d <= 1 ? t('openings.due.tomorrow') : t('openings.due.inDays', { count: d });
 }
 
 // ---------------------------------------------------------------------------
@@ -77,13 +78,13 @@ function openingLine(o) {
 
 function popularityDots(p) {
   const n = Math.max(1, Math.min(5, Math.round((Number(p) || 0) / 2)));
-  return h('span', { class: 'lrn-dots', title: `Popularity ${p}/10`, 'aria-label': `Popularity ${n} of 5` },
+  return h('span', { class: 'lrn-dots', title: t('openings.popularityTitle', { p }), 'aria-label': t('openings.popularityAria', { n }) },
     [1, 2, 3, 4, 5].map((i) => h('i', { class: i <= n ? 'on' : '' })));
 }
 
 function sidePill(side) {
   const s = side === 'black' ? 'black' : 'white';
-  return h('span', { class: `lrn-side-pill ${s}` }, s === 'white' ? 'White' : 'Black');
+  return h('span', { class: `lrn-side-pill ${s}` }, s === 'white' ? t('openings.white') : t('openings.black'));
 }
 
 // ===========================================================================
@@ -114,9 +115,9 @@ async function mountLibrary(root, bag, signal) {
   const page = h('div', { class: 'page' });
   root.appendChild(page);
   const header = pageHeader({
-    title: 'Openings', icon: 'openings',
-    subtitle: 'Learn the most popular openings, explore book moves and train your repertoire from memory.',
-    actions: [h('a', { class: 'btn btn-secondary', href: '#/analysis', html: icon('analysis') + '<span>Analysis board</span>' })],
+    title: t('openings.title'), icon: 'openings',
+    subtitle: t('openings.subtitle'),
+    actions: [h('a', { class: 'btn btn-secondary', href: '#/analysis', html: icon('analysis') + `<span>${escapeHtml(t('openings.analysisBoard'))}</span>` })],
   });
   page.replaceChildren(header, h('div', { class: 'op-grid mt-6' }, skeleton('card', 8)));
 
@@ -125,7 +126,7 @@ async function mountLibrary(root, bag, signal) {
   const all = (Array.isArray(raw) ? raw : []).filter((o) => o && o.id && o.name);
   const validIds = new Set(all.map((o) => o.id));
   if (!all.length) {
-    page.replaceChildren(header, emptyState({ emoji: '📖', title: 'No openings yet', text: 'Openings appear here once data/openings.json has entries.' }));
+    page.replaceChildren(header, emptyState({ emoji: '📖', title: t('openings.noOpenings.title'), text: t('openings.noOpenings.text') }));
     return;
   }
   // Precompute search text + final position once.
@@ -139,22 +140,22 @@ async function mountLibrary(root, bag, signal) {
   const state = { q: '', side: 'all', level: 'all', family: 'all', sort: 'popular', limit: PAGE_SIZE, dueOnly: false };
 
   // --- Controls
-  const search = h('input', { class: 'input', type: 'search', placeholder: 'Search by name, ECO or moves (e.g. Sicilian, C50, Nf3)…', 'aria-label': 'Search openings' });
+  const search = h('input', { class: 'input', type: 'search', placeholder: t('openings.searchPlaceholder'), 'aria-label': t('openings.searchAria') });
   const runSearch = debounce(() => { state.q = search.value.trim().toLowerCase(); state.limit = PAGE_SIZE; render(); }, 150);
   bag.add(() => runSearch.cancel());
   search.addEventListener('input', runSearch);
 
-  const sideSeg = h('div', { class: 'segmented', role: 'group', 'aria-label': 'Repertoire side' });
-  const renderSide = () => sideSeg.replaceChildren(...[['all', 'All'], ['white', 'White'], ['black', 'Black']].map(([k, label]) =>
+  const sideSeg = h('div', { class: 'segmented', role: 'group', 'aria-label': t('openings.sideAria') });
+  const renderSide = () => sideSeg.replaceChildren(...[['all', t('openings.all')], ['white', t('openings.white')], ['black', t('openings.black')]].map(([k, label]) =>
     h('button', { type: 'button', class: state.side === k ? 'active' : '', 'aria-pressed': state.side === k ? 'true' : 'false', onClick: () => { state.side = k; state.limit = PAGE_SIZE; renderSide(); render(); } }, label)));
   renderSide();
 
-  const levelSel = h('select', { class: 'select', 'aria-label': 'Level', onChange: (e) => { state.level = e.target.value; state.limit = PAGE_SIZE; render(); } },
-    h('option', { value: 'all' }, 'All levels'), h('option', { value: 'beginner' }, 'Beginner'), h('option', { value: 'intermediate' }, 'Intermediate'), h('option', { value: 'advanced' }, 'Advanced'));
-  const familySel = h('select', { class: 'select', 'aria-label': 'Opening family', onChange: (e) => { state.family = e.target.value; state.limit = PAGE_SIZE; render(); } },
-    h('option', { value: 'all' }, 'All families'), families.map((f) => h('option', { value: f }, f)));
-  const sortSel = h('select', { class: 'select', 'aria-label': 'Sort', onChange: (e) => { state.sort = e.target.value; render(); } },
-    h('option', { value: 'popular' }, 'Most popular'), h('option', { value: 'family' }, 'Group by family'), h('option', { value: 'name' }, 'Name A–Z'), h('option', { value: 'eco' }, 'ECO code'));
+  const levelSel = h('select', { class: 'select', 'aria-label': t('openings.levelAria'), onChange: (e) => { state.level = e.target.value; state.limit = PAGE_SIZE; render(); } },
+    h('option', { value: 'all' }, t('openings.allLevels')), ['beginner', 'intermediate', 'advanced'].map((lv) => h('option', { value: lv }, t(`learn.levels.${lv}`))));
+  const familySel = h('select', { class: 'select', 'aria-label': t('openings.familyAria'), onChange: (e) => { state.family = e.target.value; state.limit = PAGE_SIZE; render(); } },
+    h('option', { value: 'all' }, t('openings.allFamilies')), families.map((f) => h('option', { value: f }, f)));
+  const sortSel = h('select', { class: 'select', 'aria-label': t('openings.sortAria'), onChange: (e) => { state.sort = e.target.value; render(); } },
+    ['popular', 'family', 'name', 'eco'].map((k) => h('option', { value: k }, t(`openings.sort.${k}`))));
 
   const toolbar = h('div', { class: 'lrn-toolbar' },
     h('div', { class: 'input-group', html: icon('search') }, search),
@@ -166,7 +167,7 @@ async function mountLibrary(root, bag, signal) {
     const db = trainDb();
     const trained = items.filter((it) => db[it.o.id]);
     if (!trained.length) {
-      trainingBox.replaceChildren(h('div', { class: 'callout mt-6', html: icon('info') + '<div><strong>Tip:</strong> open any opening and press <strong>Train</strong> to practise it from memory. We will remind you when it is time to review.</div>' }));
+      trainingBox.replaceChildren(h('div', { class: 'callout mt-6', html: icon('info') + `<div>${t('openings.tip')}</div>` }));
       return;
     }
     const due = trained.filter((it) => isDue(db[it.o.id]));
@@ -174,13 +175,13 @@ async function mountLibrary(root, bag, signal) {
     trainingBox.replaceChildren(h('section', { class: 'lrn-section' },
       h('div', { class: 'lrn-section-head' },
         h('span', { class: 'lrn-section-emoji', 'aria-hidden': 'true' }, '🧠'),
-        h('div', null, h('h2', null, 'Your repertoire training ', h('span', { class: 'lrn-count' }, `· ${learned.length} learned · ${due.length} due`)),
-          h('div', { class: 'muted text-sm' }, 'Perfect runs grow your streak; reviews space out as you remember more.'))),
+        h('div', null, h('h2', null, t('openings.training.title'), ' ', h('span', { class: 'lrn-count' }, t('openings.training.counts', { learned: learned.length, due: due.length }))),
+          h('div', { class: 'muted text-sm' }, t('openings.training.sub')))),
       due.length
         ? h('div', { class: 'op-due-strip' }, due.slice(0, 20).map((it) => h('a', { class: 'op-due-item', href: `#/openings/${encodeURIComponent(it.o.id)}?mode=train` },
           h('span', { html: icon('clock'), style: 'display:contents' }),
-          h('div', null, h('div', { class: 'semibold' }, it.o.name), h('div', { class: 'text-xs subtle' }, `Streak ${db[it.o.id].streak || 0} · Train now`)))))
-        : h('div', { class: 'callout callout-success', html: icon('check-circle') + '<div>All caught up! No openings are due for review right now.</div>' })));
+          h('div', null, h('div', { class: 'semibold' }, it.o.name), h('div', { class: 'text-xs subtle' }, t('openings.training.dueItem', { streak: db[it.o.id].streak || 0 }))))))
+        : h('div', { class: 'callout callout-success', html: icon('check-circle') + `<div>${escapeHtml(t('openings.training.caughtUp'))}</div>` })));
   };
   renderTraining();
 
@@ -192,7 +193,7 @@ async function mountLibrary(root, bag, signal) {
       (state.side === 'all' || o.side === state.side)
       && (state.level === 'all' || o.level === state.level)
       && (state.family === 'all' || o.family === state.family)
-      && (!state.q || state.q.split(/\s+/).every((t) => text.includes(t))));
+      && (!state.q || state.q.split(/\s+/).every((w) => text.includes(w))));
     const byPop = (a, b) => (b.o.popularity || 0) - (a.o.popularity || 0) || a.o.name.localeCompare(b.o.name);
     if (state.sort === 'name') list.sort((a, b) => a.o.name.localeCompare(b.o.name));
     else if (state.sort === 'eco') list.sort((a, b) => String(a.o.eco).localeCompare(String(b.o.eco)) || a.o.name.localeCompare(b.o.name));
@@ -203,20 +204,20 @@ async function mountLibrary(root, bag, signal) {
   function render() {
     const list = filtered();
     const db = trainDb();
-    countEl.textContent = `${list.length} opening${list.length === 1 ? '' : 's'}`;
+    countEl.textContent = t('openings.count', { count: list.length });
     if (!list.length) {
-      results.replaceChildren(emptyState({ icon: 'search', title: 'No openings match', text: 'Try a different search or clear the filters.',
-        action: { label: 'Clear filters', kind: 'secondary', onClick: () => { search.value = ''; state.q = ''; state.side = 'all'; state.level = 'all'; state.family = 'all'; levelSel.value = 'all'; familySel.value = 'all'; renderSide(); render(); } } }));
+      results.replaceChildren(emptyState({ icon: 'search', title: t('openings.noMatch.title'), text: t('openings.noMatch.text'),
+        action: { label: t('openings.clearFilters'), kind: 'secondary', onClick: () => { search.value = ''; state.q = ''; state.side = 'all'; state.level = 'all'; state.family = 'all'; levelSel.value = 'all'; familySel.value = 'all'; renderSide(); render(); } } }));
       return;
     }
     const shown = list.slice(0, state.limit);
     const more = list.length > shown.length
-      ? h('div', { class: 'center mt-6' }, h('button', { class: 'btn btn-secondary', type: 'button', onClick: () => { state.limit += PAGE_SIZE; render(); } }, `Show more (${list.length - shown.length} left)`))
+      ? h('div', { class: 'center mt-6' }, h('button', { class: 'btn btn-secondary', type: 'button', onClick: () => { state.limit += PAGE_SIZE; render(); } }, t('openings.showMore', { count: list.length - shown.length })))
       : null;
     if (state.sort === 'family') {
       const groups = new Map();
       for (const it of shown) {
-        const f = it.o.family || 'Other';
+        const f = it.o.family || t('openings.otherFamily');
         if (!groups.has(f)) groups.set(f, []);
         groups.get(f).push(it);
       }
@@ -236,8 +237,8 @@ async function mountLibrary(root, bag, signal) {
 function openingCard({ o, fen }, db) {
   const rec = db[o.id];
   const flag = isLearned(rec)
-    ? h('span', { class: 'badge badge-gold op-card-flag', html: icon('star-filled') + '<span>Learned</span>' })
-    : isDue(rec) ? h('span', { class: 'badge badge-warning op-card-flag', html: icon('clock') + '<span>Review</span>' }) : null;
+    ? h('span', { class: 'badge badge-gold op-card-flag', html: icon('star-filled') + `<span>${escapeHtml(t('openings.learned'))}</span>` })
+    : isDue(rec) ? h('span', { class: 'badge badge-warning op-card-flag', html: icon('clock') + `<span>${escapeHtml(t('openings.review'))}</span>` }) : null;
   let sans = [];
   try { sans = String(o.moves || '').split(/\s+/).filter(Boolean); } catch { /* ignore */ }
   return h('a', { class: 'card card-link op-card', href: `#/openings/${encodeURIComponent(o.id)}`, title: o.name },
@@ -314,14 +315,14 @@ async function lookupWithFallback(fen, serverRes) {
 }
 
 async function mountDetail(root, id, query, bag, signal) {
-  root.appendChild(loadingBlock('Loading opening…'));
+  root.appendChild(loadingBlock(t('openings.loading')));
   let o;
   try {
     o = await api.get(`/api/openings/${encodeURIComponent(id)}`, { signal });
   } catch (e) {
     if (isAbort(e)) throw e;
     if (e && e.status === 404) {
-      root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: 'Opening not found', text: 'We could not find this opening.', action: { label: 'All openings', href: '#/openings' } })));
+      root.replaceChildren(h('div', { class: 'page' }, emptyState({ emoji: '🔍', title: t('openings.notFound.title'), text: t('openings.notFound.text'), action: { label: t('openings.allOpenings'), href: '#/openings' } })));
       return;
     }
     throw e;
@@ -349,22 +350,22 @@ async function mountDetail(root, id, query, bag, signal) {
   const boardWrap = h('div', { class: 'board-row lrn-board-wrap' }, boardSlot);
   const nameLine = h('div', { class: 'op-opening-name', 'aria-live': 'polite' });
 
-  const btnFirst = toolBtn('first', 'Start (Home)', () => { stopPlay(); setPly(0); });
-  const btnPrev = toolBtn('chevron-left', 'Previous (←)', () => { stopPlay(); setPly(ply - 1); });
-  const btnPlay = toolBtn('play-circle', 'Play through (Space)', () => togglePlay());
-  const btnNext = toolBtn('chevron-right', 'Next (→)', () => { stopPlay(); setPly(ply + 1); });
-  const btnLast = toolBtn('last', 'End (End)', () => { stopPlay(); setPly(line.ucis.length); });
-  const btnFlip = toolBtn('flip', 'Flip board (F)', () => board.flip());
+  const btnFirst = toolBtn('first', t('openings.nav.first'), () => { stopPlay(); setPly(0); });
+  const btnPrev = toolBtn('chevron-left', t('openings.nav.prev'), () => { stopPlay(); setPly(ply - 1); });
+  const btnPlay = toolBtn('play-circle', t('openings.nav.play'), () => togglePlay());
+  const btnNext = toolBtn('chevron-right', t('openings.nav.next'), () => { stopPlay(); setPly(ply + 1); });
+  const btnLast = toolBtn('last', t('openings.nav.last'), () => { stopPlay(); setPly(line.ucis.length); });
+  const btnFlip = toolBtn('flip', t('openings.nav.flip'), () => board.flip());
   const toolbar = h('div', { class: 'toolbar' }, btnFirst, btnPrev, btnPlay, btnNext, btnLast, btnFlip);
 
   const tabs = h('div', { class: 'tabs', role: 'tablist', style: 'padding:0 var(--sp-3)' });
   const body = h('div', { class: 'panel-body' });
-  const analysisLink = h('a', { class: 'btn btn-secondary btn-block', html: icon('analysis') + '<span>Analyze this position</span>' });
+  const analysisLink = h('a', { class: 'btn btn-secondary btn-block', html: icon('analysis') + `<span>${escapeHtml(t('openings.analyze'))}</span>` });
   const footer = h('div', { class: 'panel-footer' }, analysisLink);
   const panel = h('div', { class: 'panel grow' }, tabs, body, footer);
 
   const head = h('div', { class: 'stack-sm' },
-    breadcrumbs([{ label: 'Openings', href: '#/openings' }, ...(o.family && o.family !== o.name ? [{ label: o.family }] : []), { label: o.name }]),
+    breadcrumbs([{ label: t('openings.title'), href: '#/openings' }, ...(o.family && o.family !== o.name ? [{ label: o.family }] : []), { label: o.name }]),
     h('div', { class: 'op-head' },
       h('h1', null, o.name),
       o.eco ? h('span', { class: 'op-eco' }, o.eco) : null,
@@ -389,11 +390,11 @@ async function mountDetail(root, id, query, bag, signal) {
   }
 
   // ------------------------------------------------------------------ tabs
-  const TABS = [['learn', 'Learn', 'book'], ['explore', 'Explore', 'search'], ['train', 'Train', 'target']];
+  const TABS = [['learn', 'book'], ['explore', 'search'], ['train', 'target']];
   function renderTabs() {
-    tabs.replaceChildren(...TABS.map(([k, label, ic]) => h('button', {
+    tabs.replaceChildren(...TABS.map(([k, ic]) => h('button', {
       class: ['tab', mode === k && 'active'], role: 'tab', type: 'button', 'aria-selected': mode === k ? 'true' : 'false',
-      html: icon(ic) + `<span>${label}</span>`, onClick: () => setMode(k),
+      html: icon(ic) + `<span>${escapeHtml(t(`openings.tabs.${k}`))}</span>`, onClick: () => setMode(k),
     })));
   }
 
@@ -443,7 +444,7 @@ async function mountDetail(root, id, query, bag, signal) {
     btnLast.disabled = inTrain || ply >= line.ucis.length;
     btnPlay.disabled = inTrain || mode !== 'learn';
     btnPlay.innerHTML = icon(playing ? 'pause' : 'play-circle');
-    btnPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play through (Space)');
+    btnPlay.setAttribute('aria-label', playing ? t('openings.nav.pause') : t('openings.nav.play'));
     analysisLink.href = `#/analysis?fen=${encodeURIComponent(currentFen())}`;
   }
 
@@ -541,11 +542,11 @@ async function mountDetail(root, id, query, bag, signal) {
   function renderLookupBits() {
     // Name line above the board
     const nm = lookup && lookup.opening ? lookup.opening : null;
-    if (ply === 0 && mode !== 'train' && !nm) nameLine.innerHTML = icon('book') + '<span>Starting position</span>';
+    if (ply === 0 && mode !== 'train' && !nm) nameLine.innerHTML = icon('book') + `<span>${escapeHtml(t('openings.startingPosition'))}</span>`;
     else if (nm) nameLine.innerHTML = icon('book') + `<span>${nm.eco ? `<span class="op-eco">${escapeHtml(nm.eco)}</span> ` : ''}${escapeHtml(nm.name)}</span>`;
     else if (lookup === undefined) nameLine.innerHTML = '<span class="subtle">…</span>';
-    else if (lookup && lookup.continuations && lookup.continuations.length) nameLine.innerHTML = icon('book') + '<span class="subtle">Book position</span>';
-    else nameLine.innerHTML = '<span class="subtle">Out of book</span>';
+    else if (lookup && lookup.continuations && lookup.continuations.length) nameLine.innerHTML = icon('book') + `<span class="subtle">${escapeHtml(t('openings.bookPosition'))}</span>`;
+    else nameLine.innerHTML = `<span class="subtle">${escapeHtml(t('openings.outOfBook'))}</span>`;
     if (mode === 'explore') renderExplorerList();
   }
 
@@ -575,31 +576,31 @@ async function mountDetail(root, id, query, bag, signal) {
     const rec = trainRecord(o.id);
     body.replaceChildren(
       h('div', { class: 'stack-sm' },
-        h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, 'Main line'),
+        h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, t('openings.mainLine')),
         moves,
-        h('div', { class: 'text-xs subtle' }, 'Tip: press ▶ to watch the line, or make your own move on the board to explore.')),
+        h('div', { class: 'text-xs subtle' }, t('openings.learnTip'))),
       o.description ? h('div', { class: 'lrn-text md mt-4', html: mdLite(o.description) }) : null,
       ideas.length ? h('div', null,
-        h('div', { class: 'op-block-title', html: icon('hint') + '<span>Key ideas</span>' }),
-        h('ul', { class: 'op-ideas' }, ideas.map((t) => h('li', { html: `<span>${mdLite(t).replace(/^<p>|<\/p>$/g, '')}</span>` })))) : null,
+        h('div', { class: 'op-block-title', html: icon('hint') + `<span>${escapeHtml(t('openings.keyIdeas'))}</span>` }),
+        h('ul', { class: 'op-ideas' }, ideas.map((idea) => h('li', { html: `<span>${mdLite(idea).replace(/^<p>|<\/p>$/g, '')}</span>` })))) : null,
       traps.length ? h('div', null,
-        h('div', { class: 'op-block-title', html: icon('alert') + '<span>Traps to know</span>' }),
-        traps.map((t) => h('div', { class: 'op-trap', html: icon('alert') + `<div>${mdLite(t).replace(/^<p>|<\/p>$/g, '')}</div>` }))) : null,
-      h('div', { class: 'callout mt-6', html: icon('target') + `<div><strong>Ready to test yourself?</strong> Train mode asks you to play the ${userSide} moves from memory.${rec ? ` Current streak: <strong>${rec.streak || 0}</strong> · ${escapeHtml(dueLabel(rec))}.` : ''}</div>` }),
-      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + '<span>Train this opening</span>', onClick: () => setMode('train') }));
+        h('div', { class: 'op-block-title', html: icon('alert') + `<span>${escapeHtml(t('openings.traps'))}</span>` }),
+        traps.map((trap) => h('div', { class: 'op-trap', html: icon('alert') + `<div>${mdLite(trap).replace(/^<p>|<\/p>$/g, '')}</div>` }))) : null,
+      h('div', { class: 'callout mt-6', html: icon('target') + `<div>${t(userSide === 'white' ? 'openings.readyWhite' : 'openings.readyBlack')}${rec ? ' ' + t('openings.currentStreak', { streak: rec.streak || 0, due: escapeHtml(dueLabel(rec)) }) : ''}</div>` }),
+      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + `<span>${escapeHtml(t('openings.trainThis'))}</span>`, onClick: () => setMode('train') }));
   }
 
   function renderExploreBody() {
     const lineBox = h('div', { class: 'op-explorer-line' });
     if (line.sans.length) moveButtons(lineBox, line.sans, ply, (p) => setPly(p));
-    else lineBox.appendChild(h('span', { class: 'subtle' }, 'Starting position — pick a move below or play one on the board.'));
+    else lineBox.appendChild(h('span', { class: 'subtle' }, t('openings.explore.start')));
     explorerList = h('div', { class: 'stack-sm', role: 'list' });
     body.replaceChildren(
       h('div', { class: 'between row mb-2' },
-        h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, 'Your line'),
-        h('button', { class: 'btn btn-ghost btn-sm', type: 'button', html: icon('refresh') + '<span>Back to main line</span>', onClick: () => { line = { ...main }; setPly(main.ucis.length, { force: true }); } })),
+        h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, t('openings.explore.yourLine')),
+        h('button', { class: 'btn btn-ghost btn-sm', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('openings.explore.backToMain'))}</span>`, onClick: () => { line = { ...main }; setPly(main.ucis.length, { force: true }); } })),
       lineBox,
-      h('div', { class: 'text-xs subtle semibold mb-2', style: 'text-transform:uppercase;letter-spacing:.06em' }, 'Book moves'),
+      h('div', { class: 'text-xs subtle semibold mb-2', style: 'text-transform:uppercase;letter-spacing:.06em' }, t('openings.explore.bookMoves')),
       explorerList);
     renderExplorerList();
   }
@@ -609,7 +610,7 @@ async function mountDetail(root, id, query, bag, signal) {
     if (lookup === undefined) { explorerList.replaceChildren(h('div', { class: 'loading-center', style: 'padding:var(--sp-6)' }, h('div', { class: 'spinner' }))); return; }
     const conts = lookup && Array.isArray(lookup.continuations) ? lookup.continuations.filter((c) => c && c.uci) : [];
     if (!conts.length) {
-      explorerList.replaceChildren(h('div', { class: 'callout callout-warning', html: icon('info') + '<div><strong>Out of book.</strong> No known opening moves from here. Use the analysis board to let the engine guide you.</div>' }));
+      explorerList.replaceChildren(h('div', { class: 'callout callout-warning', html: icon('info') + `<div>${t('openings.explore.outOfBook')}</div>` }));
       return;
     }
     const total = conts.reduce((s, c) => s + Math.max(0, Number(c.weight) || 0), 0) || conts.length;
@@ -647,7 +648,7 @@ async function mountDetail(root, id, query, bag, signal) {
     renderTrainBody();
     refreshLookup();
     if (!userPlies.length) {
-      setFeedback(trainFeedback, 'info', 'This line has no moves for your side to train.');
+      setFeedback(trainFeedback, 'info', escapeHtml(t('openings.train.noMoves')));
       return;
     }
     trainAdvance();
@@ -662,17 +663,17 @@ async function mountDetail(root, id, query, bag, signal) {
     trainProgress = h('div', { class: 'op-train-progress', 'aria-hidden': 'true' });
     body.replaceChildren(
       h('div', { class: 'op-score' },
-        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, 'Streak'), h('div', { class: 'stat-value' }, String(rec ? rec.streak || 0 : 0))),
-        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, 'Best'), h('div', { class: 'stat-value' }, rec ? `${rec.best || 0}%` : '–')),
-        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, 'Next review'), h('div', { class: 'text-sm semibold' }, rec ? dueLabel(rec) : 'Not trained yet'))),
+        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, t('openings.train.streak')), h('div', { class: 'stat-value' }, String(rec ? rec.streak || 0 : 0))),
+        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, t('openings.train.best')), h('div', { class: 'stat-value' }, rec ? `${rec.best || 0}%` : '–')),
+        h('div', { class: 'stat' }, h('div', { class: 'stat-label' }, t('openings.train.nextReview')), h('div', { class: 'text-sm semibold' }, rec ? dueLabel(rec) : t('openings.train.notTrained')))),
       h('div', { class: 'lrn-task' },
-        h('div', { class: 'lrn-task-label', html: icon('target') + `<span>Play the ${userSide} moves</span><span class="lrn-turn ${userSide}"></span>` }),
-        h('div', { class: 'lrn-task-prompt' }, `Play the ${o.name} from memory. Your opponent replies with the book moves.`),
+        h('div', { class: 'lrn-task-label', html: icon('target') + `<span>${escapeHtml(t(userSide === 'white' ? 'openings.train.playWhite' : 'openings.train.playBlack'))}</span><span class="lrn-turn ${userSide}"></span>` }),
+        h('div', { class: 'lrn-task-prompt' }, t('openings.train.prompt', { name: o.name })),
         trainProgress),
       trainFeedback,
       h('div', { class: 'row mt-4', style: 'gap:var(--sp-2)' },
-        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + '<span>Show move</span>', onClick: () => trainHint() }),
-        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + '<span>Restart</span>', onClick: () => startTrain() })));
+        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('hint') + `<span>${escapeHtml(t('openings.train.showMove'))}</span>`, onClick: () => trainHint() }),
+        h('button', { class: 'btn btn-ghost', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('openings.train.restart'))}</span>`, onClick: () => startTrain() })));
     renderTrainProgress();
   }
 
@@ -691,7 +692,7 @@ async function mountDetail(root, id, query, bag, signal) {
     if (sideToMove(train.fen) === userSide) {
       train.busy = false;
       board.setInteractive(true, userSide);
-      if (!train.results.length && train.ply === 0) setFeedback(trainFeedback, 'info', 'Your move!');
+      if (!train.results.length && train.ply === 0) setFeedback(trainFeedback, 'info', escapeHtml(t('openings.train.yourMove')));
       return;
     }
     train.busy = true;
@@ -707,7 +708,7 @@ async function mountDetail(root, id, query, bag, signal) {
       board.setHighlights([]); board.clearBadges();
       syncNav();
       refreshLookup();
-      if (train.ply < main.ucis.length) setFeedback(trainFeedback, 'info', `Opponent played <strong>${escapeHtml(sanOf(m.san))}</strong>. Your move!`);
+      if (train.ply < main.ucis.length) setFeedback(trainFeedback, 'info', t('openings.train.opponentPlayed', { san: escapeHtml(sanOf(m.san)) }));
       trainAdvance();
     }, train.ply === 0 ? 600 : 450);
   }
@@ -724,7 +725,7 @@ async function mountDetail(root, id, query, bag, signal) {
       board.setHighlights([{ square: mv.to, kind: 'good' }]);
       board.clearBadges(); board.setBadge(mv.to, 'book');
       sfx('correct');
-      setFeedback(trainFeedback, 'good', `<strong>${escapeHtml(sanOf(mv.san))}</strong> — that's the book move!`);
+      setFeedback(trainFeedback, 'good', t('openings.train.correct', { san: escapeHtml(sanOf(mv.san)) }));
       renderTrainProgress();
       syncNav();
       refreshLookup();
@@ -739,9 +740,9 @@ async function mountDetail(root, id, query, bag, signal) {
     const bookSan = main.sans[train.ply];
     if (train.misses >= 2) {
       board.setArrows([{ from: expected.slice(0, 2), to: expected.slice(2, 4), color: 'green' }]);
-      setFeedback(trainFeedback, 'bad', `That's not the main line. The book move is <strong>${escapeHtml(sanOf(bookSan))}</strong> — play it to continue.`);
+      setFeedback(trainFeedback, 'bad', t('openings.train.wrongShow', { san: escapeHtml(sanOf(bookSan)) }));
     } else {
-      setFeedback(trainFeedback, 'bad', "That's not the main line. <strong>Try again</strong> — or press <strong>Show move</strong>.");
+      setFeedback(trainFeedback, 'bad', t('openings.train.wrong'));
     }
     return false;
   }
@@ -752,7 +753,7 @@ async function mountDetail(root, id, query, bag, signal) {
     if (!expected) return;
     train.misses = Math.max(train.misses, 1);
     board.setArrows([{ from: expected.slice(0, 2), to: expected.slice(2, 4), color: 'green' }]);
-    setFeedback(trainFeedback, 'warn', `The book move is <strong>${escapeHtml(sanOf(main.sans[train.ply]))}</strong>. (This move won't count as perfect.)`);
+    setFeedback(trainFeedback, 'warn', t('openings.train.hint', { san: escapeHtml(sanOf(main.sans[train.ply])) }));
   }
 
   function trainFinish() {
@@ -768,21 +769,21 @@ async function mountDetail(root, id, query, bag, signal) {
     if (perfect) { confetti(boardSlot, timers); sfx('gameEnd'); }
     body.replaceChildren(h('div', { class: 'lrn-complete' },
       h('div', { class: ['lrn-complete-badge', perfect ? '' : 'gold'], html: icon(perfect ? 'trophy' : 'target') }),
-      h('h2', null, perfect ? 'Perfect run!' : `${pct}% correct`),
+      h('h2', null, perfect ? t('openings.train.perfect') : t('openings.train.pctCorrect', { pct })),
       h('p', null, perfect
-        ? (isLearned(rec) ? `Opening learned! Streak ${rec.streak}. ${dueLabel(rec)}.` : `Streak ${rec.streak} — ${LEARNED_STREAK - rec.streak} more perfect run${LEARNED_STREAK - rec.streak === 1 ? '' : 's'} to mark it learned. ${dueLabel(rec)}.`)
-        : `You found ${ok} of ${total} moves on the first try. Practise again to build your streak.`),
+        ? (isLearned(rec) ? t('openings.train.learnedMsg', { streak: rec.streak, due: dueLabel(rec) }) : t('openings.train.moreRuns', { streak: rec.streak, count: LEARNED_STREAK - rec.streak, due: dueLabel(rec) }))
+        : t('openings.train.found', { ok, total })),
       h('div', { class: 'lrn-nav' },
-        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + '<span>Train again</span>', onClick: () => startTrain() }),
-        h('button', { class: 'btn btn-secondary', type: 'button', html: icon('search') + '<span>Explore from here</span>', onClick: () => { line = { ...main }; ply = main.ucis.length; setMode('explore'); } }))));
+        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('openings.train.again'))}</span>`, onClick: () => startTrain() }),
+        h('button', { class: 'btn btn-secondary', type: 'button', html: icon('search') + `<span>${escapeHtml(t('openings.train.exploreFromHere'))}</span>`, onClick: () => { line = { ...main }; ply = main.ucis.length; setMode('explore'); } }))));
   }
 
   // ------------------------------------------------------------------ keyboard
   bag.on(window, 'keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const t = e.target;
-    if (e.key === ' ' && t && t.tagName === 'BUTTON') return; // let buttons handle Space
-    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const tgt = e.target;
+    if (e.key === ' ' && tgt && tgt.tagName === 'BUTTON') return; // let buttons handle Space
+    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
     if (document.querySelector('.modal-backdrop')) return;
     if (e.key === 'f' || e.key === 'F') { board.flip(); return; }
     if (mode === 'train') return;

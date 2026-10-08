@@ -3,10 +3,12 @@
 // per-bot record table and client-side achievements.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, formatDate, formatRelative } from '../ui.js';
-import { ensureHubCss, gameOutcome, userAccuracy } from './library.js';
+import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml, displayName } from '../ui.js';
+import { ensureHubCss, gameOutcome, userAccuracy, formatGameDate, formatRelativeIntl } from './library.js';
+import { t, getLocale, formatNumber, formatDateIntl } from '../i18n.js';
 
-export const title = 'Profile';
+export const title = () => t('profile.title');
+const span = (key, params) => `<span>${escapeHtml(t(key, params))}</span>`;
 
 const AVATARS = ['♟️', '♞', '👑', '🦁', '🐯', '🦊', '🐼', '🐨', '🐸', '🐙', '🦄', '🐲', '🤖', '🧙', '🦸', '🥷', '🧑‍🎓', '🧑‍🚀', '🎩', '🌟', '🔥', '⚡', '🍀', '🎯'];
 const NAME_MAX = 40;
@@ -20,8 +22,8 @@ export async function mount(root) {
 
   const content = h('div', { class: 'stack-lg' }, skeleton('card', 4), skeleton('text', 6));
   const page = h('div', { class: 'page hub-page hub-profile' },
-    pageHeader({ title: 'Profile', subtitle: 'Your progress, stats and achievements', icon: 'profile',
-      actions: [h('a', { class: 'btn btn-ghost', href: '#/settings', html: icon('settings') + '<span>Settings</span>' })] }),
+    pageHeader({ title: t('profile.title'), subtitle: t('profile.subtitle'), icon: 'profile',
+      actions: [h('a', { class: 'btn btn-ghost', href: '#/settings', html: icon('settings') + span('profile.settings') })] }),
     content);
   root.appendChild(page);
 
@@ -41,7 +43,7 @@ export async function mount(root) {
     ]);
     if (signal.aborted) return;
     if (!pR.ok && !sR.ok) {
-      content.replaceChildren(h('div', { class: 'card' }, emptyState({ icon: 'wifi-off', title: 'We couldn’t load your profile', text: pR.e?.message || 'Is the GrandMentor server running?', action: { label: 'Try again', icon: 'refresh', onClick: load } })));
+      content.replaceChildren(h('div', { class: 'card' }, emptyState({ icon: 'wifi-off', title: t('profile.errors.loadTitle'), text: pR.e?.message || t('profile.errors.server'), action: { label: t('profile.errors.retry'), icon: 'refresh', onClick: load } })));
       return;
     }
     const profile = pR.ok && pR.v ? pR.v : { name: '', avatar: '♟️', puzzle_rating: 0, puzzles_solved: 0, puzzles_failed: 0, rush_best: 0, streak_days: 0 };
@@ -67,13 +69,13 @@ export async function mount(root) {
       .filter((g) => userAccuracy(g) != null)
       .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)))
       .slice(-30)
-      .map((g) => ({ label: formatDate(g.created_at), y: userAccuracy(g) }));
+      .map((g) => ({ label: formatGameDate(g.created_at), y: userAccuracy(g) }));
     const avgAcc = typeof stats.avg_accuracy === 'number' ? stats.avg_accuracy
       : accPoints.length ? accPoints.reduce((s, p) => s + p.y, 0) / accPoints.length : null;
     const ratingPoints = (Array.isArray(stats.rating_history) ? stats.rating_history : [])
       .filter((p) => p && Number.isFinite(Number(p.rating)))
       .slice(-120)
-      .map((p) => ({ label: formatDate(p.at), y: Number(p.rating) }));
+      .map((p) => ({ label: formatGameDate(p.at), y: Number(p.rating) }));
 
     const ctx = {
       played, won, drawn, solved, lessonsDone,
@@ -89,30 +91,30 @@ export async function mount(root) {
     content.replaceChildren(
       renderIdentity(profile, ctx),
       h('div', { class: 'grid-auto grid-auto-sm hub-stat-grid' },
-        statTile('Games played', played, 'board'),
-        statTile('Win rate', played ? `${Math.round((won / played) * 100)}%` : '—', 'trophy'),
-        statTile('Avg. accuracy', avgAcc != null ? avgAcc.toFixed(1) : '—', 'target'),
-        statTile('Puzzle rating', Math.round(ctx.rating), 'puzzle'),
-        statTile('Puzzles solved', solved, 'check-circle', solved + failed ? `${Math.round((solved / (solved + failed)) * 100)}% success` : null),
-        statTile('Rush best', ctx.rush, 'bolt'),
-        statTile('Lessons done', totalLessons ? `${lessonsDone}/${totalLessons}` : lessonsDone, 'learn'),
-        statTile('Day streak', ctx.streak, 'fire')),
+        statTile(t('profile.stats.played'), formatNumber(played), 'board'),
+        statTile(t('profile.stats.winRate'), played ? pct(won / played) : '—', 'trophy'),
+        statTile(t('profile.stats.avgAccuracy'), avgAcc != null ? fmt1(avgAcc) : '—', 'target'),
+        statTile(t('profile.stats.puzzleRating'), formatNumber(Math.round(ctx.rating)), 'puzzle'),
+        statTile(t('profile.stats.puzzlesSolved'), formatNumber(solved), 'check-circle', solved + failed ? t('profile.stats.success', { pct: pct(solved / (solved + failed)) }) : null),
+        statTile(t('profile.stats.rushBest'), formatNumber(ctx.rush), 'bolt'),
+        statTile(t('profile.stats.lessonsDone'), totalLessons ? `${lessonsDone}/${totalLessons}` : lessonsDone, 'learn'),
+        statTile(t('profile.stats.streak'), formatNumber(ctx.streak), 'fire')),
       h('div', { class: 'hub-profile-charts' },
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('chart') + '<span>Results</span>' })),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('chart') + span('profile.results.title') })),
           donut({ won, drawn, lost })),
         h('section', { class: 'card hub-chart-card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('puzzle') + '<span>Puzzle rating</span>' }),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('puzzle') + span('profile.rating.title') }),
             ratingPoints.length ? h('span', { class: 'badge badge-info' }, String(Math.round(ratingPoints[ratingPoints.length - 1].y))) : null),
           ratingPoints.length >= 2
-            ? lineChart(ratingPoints, { name: 'Puzzle rating', format: (v) => String(Math.round(v)), table: true })
-            : emptyState({ icon: 'puzzle', title: 'No rating history yet', text: 'Solve a few puzzles and your rating graph will appear here.', action: { label: 'Solve puzzles', href: '#/puzzles', kind: 'secondary' } }))),
+            ? lineChart(ratingPoints, { name: t('profile.rating.title'), format: (v) => String(Math.round(v)), table: true })
+            : emptyState({ icon: 'puzzle', title: t('profile.rating.emptyTitle'), text: t('profile.rating.emptyText'), action: { label: t('profile.rating.emptyAction'), href: '#/puzzles', kind: 'secondary' } }))),
       h('section', { class: 'card hub-chart-card' },
-        h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('target') + '<span>Accuracy trend</span>' }),
-          avgAcc != null ? h('span', { class: 'muted text-sm' }, `Average ${avgAcc.toFixed(1)}%`) : null),
+        h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('target') + span('profile.accuracy.title') }),
+          avgAcc != null ? h('span', { class: 'muted text-sm' }, t('profile.accuracy.average', { value: pctOf(avgAcc, 1) })) : null),
         accPoints.length >= 2
-          ? lineChart(accPoints, { name: 'Accuracy', yMin: 0, yMax: 100, format: (v) => `${v.toFixed(1)}%`, avg: avgAcc })
-          : emptyState({ icon: 'sparkles', title: 'Review games to track accuracy', text: 'Run Game Review on two or more games to see how your accuracy changes over time.', action: { label: 'Open library', href: '#/library', kind: 'secondary' } })),
+          ? lineChart(accPoints, { name: t('profile.accuracy.name'), yMin: 0, yMax: 100, format: (v) => pctOf(v, 1), axis: (v) => pctOf(v, 0), avg: avgAcc })
+          : emptyState({ icon: 'sparkles', title: t('profile.accuracy.emptyTitle'), text: t('profile.accuracy.emptyText'), action: { label: t('profile.accuracy.emptyAction'), href: '#/library', kind: 'secondary' } })),
       renderBotTable(stats, botsById),
       renderAchievements(ctx));
   }
@@ -126,17 +128,17 @@ export async function mount(root) {
       card.replaceChildren(
         h('div', { class: 'avatar avatar-xl avatar-round hub-identity-avatar', 'aria-hidden': 'true' }, profile.avatar || '♟️'),
         h('div', { class: 'stack-sm hub-identity-main' },
-          h('h2', { class: 'hub-identity-name' }, profile.name?.trim() || 'Chess friend'),
+          h('h2', { class: 'hub-identity-name' }, displayName(profile.name) || t('profile.identity.defaultName')),
           h('div', { class: 'row-sm row-wrap muted text-sm' },
-            h('span', { class: 'badge badge-gold', html: icon('trophy', { size: 14 }) + `<span>${Math.round(ctx.rating)} puzzles</span>` }),
-            ctx.streak ? h('span', { class: 'badge badge-warning', html: icon('fire', { size: 14 }) + `<span>${ctx.streak}-day streak</span>` }) : null,
-            profile.last_active ? h('span', null, `Last active ${formatActiveDay(profile.last_active)}`) : null)),
-        h('button', { type: 'button', class: 'btn btn-secondary', html: icon('edit') + '<span>Edit profile</span>', onClick: () => { editing = true; draftAvatar = profile.avatar || '♟️'; edit(); } }));
+            h('span', { class: 'badge badge-gold', html: icon('trophy', { size: 14 }) + span('profile.identity.puzzleRating', { rating: Math.round(ctx.rating) }) }),
+            ctx.streak ? h('span', { class: 'badge badge-warning', html: icon('fire', { size: 14 }) + span('profile.identity.streak', { count: ctx.streak }) }) : null,
+            profile.last_active ? h('span', null, t('profile.identity.lastActive', { when: formatActiveDay(profile.last_active) })) : null)),
+        h('button', { type: 'button', class: 'btn btn-secondary', html: icon('edit') + span('profile.identity.edit'), onClick: () => { editing = true; draftAvatar = profile.avatar || '♟️'; edit(); } }));
     };
     const edit = () => {
-      const nameInput = h('input', { class: 'input', value: profile.name || '', maxlength: String(NAME_MAX), placeholder: 'Your name', 'aria-label': 'Display name' });
+      const nameInput = h('input', { class: 'input', value: displayName(profile.name), maxlength: String(NAME_MAX), placeholder: t('profile.edit.namePlaceholder'), 'aria-label': t('profile.edit.name') });
       const preview = h('div', { class: 'avatar avatar-xl avatar-round hub-identity-avatar', 'aria-hidden': 'true' }, draftAvatar);
-      const grid = h('div', { class: 'hub-avatar-grid', role: 'radiogroup', 'aria-label': 'Choose an avatar' },
+      const grid = h('div', { class: 'hub-avatar-grid', role: 'radiogroup', 'aria-label': t('profile.edit.chooseAvatar') },
         AVATARS.map((a) => h('button', { type: 'button', class: ['hub-avatar-opt', a === draftAvatar && 'active'], role: 'radio', 'aria-checked': String(a === draftAvatar), dataset: { a } }, a)));
       grid.addEventListener('click', (e) => {
         const b = e.target.closest('button[data-a]');
@@ -145,12 +147,12 @@ export async function mount(root) {
         preview.textContent = draftAvatar;
         for (const x of grid.children) { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-checked', String(on)); }
       });
-      const saveBtn = h('button', { type: 'submit', class: 'btn btn-primary', html: icon('check') + '<span>Save</span>' });
+      const saveBtn = h('button', { type: 'submit', class: 'btn btn-primary', html: icon('check') + span('profile.edit.save') });
       const form = h('form', { class: 'hub-identity-form stack' },
-        h('div', { class: 'field' }, h('label', { class: 'label' }, 'Display name'), nameInput),
-        h('div', { class: 'field' }, h('div', { class: 'label' }, 'Avatar'), grid),
+        h('div', { class: 'field' }, h('label', { class: 'label' }, t('profile.edit.name')), nameInput),
+        h('div', { class: 'field' }, h('div', { class: 'label' }, t('profile.edit.avatar')), grid),
         h('div', { class: 'row-sm' }, saveBtn,
-          h('button', { type: 'button', class: 'btn btn-ghost', onClick: () => { editing = false; show(); } }, 'Cancel')));
+          h('button', { type: 'button', class: 'btn btn-ghost', onClick: () => { editing = false; show(); } }, t('profile.edit.cancel'))));
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = nameInput.value.trim().slice(0, NAME_MAX);
@@ -160,11 +162,11 @@ export async function mount(root) {
           Object.assign(profile, updated && typeof updated === 'object' ? updated : { name, avatar: draftAvatar });
           editing = false;
           show();
-          toast('Profile updated', 'success');
+          toast(t('profile.edit.saved'), 'success');
         } catch (err) {
           if (isAbort(err)) return;
           saveBtn.classList.remove('loading');
-          toast(err?.message || 'Could not save your profile', 'error');
+          toast(err?.message || t('profile.edit.error'), 'error');
         }
       });
       card.replaceChildren(preview, form);
@@ -175,7 +177,7 @@ export async function mount(root) {
   }
 
   // ---- Line chart (SVG) with crosshair tooltip -------------------------------------
-  function lineChart(points, { name, yMin, yMax, format = String, avg = null, table = false }) {
+  function lineChart(points, { name, yMin, yMax, format = String, axis = null, avg = null, table = false }) {
     const W = 640; const H = 220; const P = { l: 44, r: 12, t: 14, b: 26 };
     const ys = points.map((p) => p.y);
     let lo = yMin ?? Math.min(...ys); let hi = yMax ?? Math.max(...ys);
@@ -189,13 +191,13 @@ export async function mount(root) {
     for (let i = 0; i <= ticks; i++) {
       const v = lo + ((hi - lo) * i) / ticks;
       grid.push(h('line', { class: 'hub-grid', x1: P.l, x2: W - P.r, y1: y(v), y2: y(v) }));
-      grid.push(h('text', { class: 'hub-axis', x: P.l - 8, y: y(v) + 4, 'text-anchor': 'end' }, format(v).replace(/\.0%$/, '%')));
+      grid.push(h('text', { class: 'hub-axis', x: P.l - 8, y: y(v) + 4, 'text-anchor': 'end' }, (axis || format)(v)));
     }
     const d = points.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.y).toFixed(1)}`).join('');
     const area = `${d}L${x(n - 1).toFixed(1)} ${H - P.b}L${x(0).toFixed(1)} ${H - P.b}Z`;
     const cross = h('line', { class: 'hub-cross', x1: 0, x2: 0, y1: P.t, y2: H - P.b, visibility: 'hidden' });
     const dot = h('circle', { class: 'hub-dotmark', r: 5, cx: 0, cy: 0, visibility: 'hidden' });
-    const svg = h('svg', { class: 'hub-line-svg', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `${name}: ${points.length} points, from ${format(points[0].y)} to ${format(points[n - 1].y)}` },
+    const svg = h('svg', { class: 'hub-line-svg', viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': t('profile.chart.aria', { name, count: points.length, from: format(points[0].y), to: format(points[n - 1].y) }) },
       grid,
       h('path', { class: 'hub-area', d: area }),
       avg != null ? h('line', { class: 'hub-avg', x1: P.l, x2: W - P.r, y1: y(avg), y2: y(avg) }) : null,
@@ -236,9 +238,9 @@ export async function mount(root) {
     if (!table) return wrap;
     const rows = points.slice(-15).reverse();
     return h('div', null, wrap,
-      h('details', { class: 'hub-table-toggle' }, h('summary', { class: 'muted text-sm' }, 'Show as table'),
+      h('details', { class: 'hub-table-toggle' }, h('summary', { class: 'muted text-sm' }, t('profile.chart.showTable')),
         h('table', { class: 'hub-table' },
-          h('thead', null, h('tr', null, h('th', null, 'Date'), h('th', { class: 'num' }, name))),
+          h('thead', null, h('tr', null, h('th', null, t('profile.chart.date')), h('th', { class: 'num' }, name))),
           h('tbody', null, rows.map((p) => h('tr', null, h('td', null, p.label), h('td', { class: 'num tabular' }, format(p.y))))))));
   }
 
@@ -246,89 +248,100 @@ export async function mount(root) {
     const rows = (Array.isArray(stats.per_bot) ? stats.per_bot : []).filter((r) => r && num(r.played) > 0)
       .sort((a, b) => num(botsById.get(a.bot_id)?.elo) - num(botsById.get(b.bot_id)?.elo));
     const card = h('section', { class: 'card card-flush hub-bot-table' },
-      h('div', { class: 'card-header p-4' }, h('div', { class: 'card-title', html: icon('robot') + '<span>Record vs bots</span>' })));
+      h('div', { class: 'card-header p-4' }, h('div', { class: 'card-title', html: icon('robot') + span('profile.bots.title') })));
     if (!rows.length) {
-      card.appendChild(emptyState({ icon: 'robot', title: 'No bot games yet', text: 'Challenge a bot and track your record against each one.', action: { label: 'Play a bot', href: '#/play', icon: 'play' } }));
+      card.appendChild(emptyState({ icon: 'robot', title: t('profile.bots.emptyTitle'), text: t('profile.bots.emptyText'), action: { label: t('profile.bots.emptyAction'), href: '#/play', icon: 'play' } }));
       return card;
     }
     card.appendChild(h('div', { class: 'hub-table-scroll' }, h('table', { class: 'hub-table' },
-      h('thead', null, h('tr', null, h('th', null, 'Opponent'), h('th', { class: 'num' }, 'Games'), h('th', { class: 'num' }, 'W'), h('th', { class: 'num' }, 'D'), h('th', { class: 'num' }, 'L'), h('th', { class: 'hide-mobile' }, 'Score'), h('th', null, ''))),
+      h('thead', null, h('tr', null, h('th', null, t('profile.bots.opponent')), h('th', { class: 'num' }, t('profile.bots.games')),
+        h('th', { class: 'num', title: t('profile.results.won') }, t('profile.bots.w')), h('th', { class: 'num', title: t('profile.results.drawn') }, t('profile.bots.d')), h('th', { class: 'num', title: t('profile.results.lost') }, t('profile.bots.l')),
+        h('th', { class: 'hide-mobile' }, t('profile.bots.score')), h('th', null, ''))),
       h('tbody', null, rows.map((r) => {
         const b = botsById.get(r.bot_id);
         const played = num(r.played) || 1;
-        const pct = (k) => `${(num(r[k]) / played) * 100}%`;
+        const share = (k) => `${(num(r[k]) / played) * 100}%`;
         return h('tr', null,
           h('td', null, h('div', { class: 'row-sm' }, h('span', { class: 'avatar avatar-sm', 'aria-hidden': 'true' }, b?.avatar || '🤖'),
-            h('div', null, h('div', { class: 'semibold' }, b?.name || r.bot_id), b ? h('div', { class: 'subtle text-xs' }, `Rated ${b.elo}`) : null))),
+            h('div', null, h('div', { class: 'semibold' }, b?.name || r.bot_id), b ? h('div', { class: 'subtle text-xs' }, t('profile.bots.rated', { elo: b.elo })) : null))),
           h('td', { class: 'num tabular' }, String(num(r.played))),
           h('td', { class: 'num tabular text-primary' }, String(num(r.won))),
           h('td', { class: 'num tabular muted' }, String(num(r.drawn))),
           h('td', { class: 'num tabular text-danger' }, String(num(r.lost))),
-          h('td', { class: 'hide-mobile' }, h('div', { class: 'hub-wdl', title: `${r.won} won, ${r.drawn} drawn, ${r.lost} lost` },
-            h('span', { class: 'w', style: { width: pct('won') } }), h('span', { class: 'd', style: { width: pct('drawn') } }), h('span', { class: 'l', style: { width: pct('lost') } }))),
-          h('td', { class: 'num' }, h('a', { class: 'btn btn-ghost btn-sm', href: `#/play/${encodeURIComponent(r.bot_id)}` }, 'Rematch')));
+          h('td', { class: 'hide-mobile' }, h('div', { class: 'hub-wdl', title: t('profile.results.summary', { won: num(r.won), drawn: num(r.drawn), lost: num(r.lost) }) },
+            h('span', { class: 'w', style: { width: share('won') } }), h('span', { class: 'd', style: { width: share('drawn') } }), h('span', { class: 'l', style: { width: share('lost') } }))),
+          h('td', { class: 'num' }, h('a', { class: 'btn btn-ghost btn-sm', href: `#/play/${encodeURIComponent(r.bot_id)}` }, t('profile.bots.rematch'))));
       })))));
     return card;
   }
 }
 
 // ---- Achievements --------------------------------------------------------------
+// Names and descriptions resolve at render time: t('profile.achievements.items.<id>.title|desc').
 const ACHIEVEMENTS = [
-  { id: 'first-game', emoji: '♟️', title: 'First Move', desc: 'Play your first game', get: (c) => [c.played, 1] },
-  { id: 'first-win', emoji: '🏆', title: 'First Victory', desc: 'Win a game', get: (c) => [c.won, 1] },
-  { id: 'games-10', emoji: '🎲', title: 'Regular', desc: 'Play 10 games', get: (c) => [c.played, 10] },
-  { id: 'games-50', emoji: '🏟️', title: 'Seasoned', desc: 'Play 50 games', get: (c) => [c.played, 50] },
-  { id: 'wins-25', emoji: '🥇', title: 'Winner', desc: 'Win 25 games', get: (c) => [c.won, 25] },
-  { id: 'black-win', emoji: '🌑', title: 'Dark Side', desc: 'Win a game with Black', get: (c) => [c.wonAsBlack, 1] },
-  { id: 'draw', emoji: '🤝', title: 'Peacemaker', desc: 'Draw a game', get: (c) => [c.drawn, 1] },
-  { id: 'beat-1000', emoji: '🥉', title: 'Club Player', desc: 'Beat a bot rated 1000+', get: (c) => [c.maxBeatElo >= 1000 ? 1 : 0, 1] },
-  { id: 'beat-1500', emoji: '🥈', title: 'Tournament Ready', desc: 'Beat a bot rated 1500+', get: (c) => [c.maxBeatElo >= 1500 ? 1 : 0, 1] },
-  { id: 'beat-2000', emoji: '👑', title: 'Expert Slayer', desc: 'Beat a bot rated 2000+', get: (c) => [c.maxBeatElo >= 2000 ? 1 : 0, 1] },
-  { id: 'bots-5', emoji: '🤖', title: 'Bot Collector', desc: 'Beat 5 different bots', get: (c) => [c.botsBeaten, 5] },
-  { id: 'acc-80', emoji: '🎯', title: 'Sharp', desc: 'Play a game with 80%+ accuracy', get: (c) => [Math.min(c.bestAcc, 80), 80] },
-  { id: 'acc-90', emoji: '💎', title: 'Precision', desc: 'Play a game with 90%+ accuracy', get: (c) => [Math.min(c.bestAcc, 90), 90] },
-  { id: 'puz-10', emoji: '🧩', title: 'Puzzler', desc: 'Solve 10 puzzles', get: (c) => [c.solved, 10] },
-  { id: 'puz-100', emoji: '🧠', title: 'Tactician', desc: 'Solve 100 puzzles', get: (c) => [c.solved, 100] },
-  { id: 'puz-500', emoji: '⚔️', title: 'Tactics Machine', desc: 'Solve 500 puzzles', get: (c) => [c.solved, 500] },
-  { id: 'rating-1500', emoji: '📈', title: 'Rising Star', desc: 'Reach a 1500 puzzle rating', get: (c) => [Math.min(c.rating, 1500), 1500] },
-  { id: 'rating-2000', emoji: '🚀', title: 'Puzzle Master', desc: 'Reach a 2000 puzzle rating', get: (c) => [Math.min(c.rating, 2000), 2000] },
-  { id: 'rush-15', emoji: '⚡', title: 'Speedy', desc: 'Score 15 in Puzzle Rush', get: (c) => [c.rush, 15] },
-  { id: 'rush-30', emoji: '🌪️', title: 'Lightning', desc: 'Score 30 in Puzzle Rush', get: (c) => [c.rush, 30] },
-  { id: 'streak-3', emoji: '🔥', title: 'On Fire', desc: 'Practice 3 days in a row', get: (c) => [c.streak, 3] },
-  { id: 'streak-7', emoji: '📅', title: 'Weekly Habit', desc: 'Practice 7 days in a row', get: (c) => [c.streak, 7] },
-  { id: 'streak-30', emoji: '🗓️', title: 'Dedicated', desc: 'Practice 30 days in a row', get: (c) => [c.streak, 30] },
-  { id: 'lesson-1', emoji: '📘', title: 'Student', desc: 'Complete a lesson', get: (c) => [c.lessonsDone, 1] },
-  { id: 'lesson-10', emoji: '🎓', title: 'Scholar', desc: 'Complete 10 lessons', get: (c) => [c.lessonsDone, 10] },
-  { id: 'course-1', emoji: '🏅', title: 'Graduate', desc: 'Finish a whole course', get: (c) => [c.coursesDone, 1] },
-  { id: 'fav', emoji: '⭐', title: 'Curator', desc: 'Star a game in your library', get: (c) => [c.favorites, 1] },
+  { id: 'first-game', emoji: '♟️', get: (c) => [c.played, 1] },
+  { id: 'first-win', emoji: '🏆', get: (c) => [c.won, 1] },
+  { id: 'games-10', emoji: '🎲', get: (c) => [c.played, 10] },
+  { id: 'games-50', emoji: '🏟️', get: (c) => [c.played, 50] },
+  { id: 'wins-25', emoji: '🥇', get: (c) => [c.won, 25] },
+  { id: 'black-win', emoji: '🌑', get: (c) => [c.wonAsBlack, 1] },
+  { id: 'draw', emoji: '🤝', get: (c) => [c.drawn, 1] },
+  { id: 'beat-1000', emoji: '🥉', get: (c) => [c.maxBeatElo >= 1000 ? 1 : 0, 1] },
+  { id: 'beat-1500', emoji: '🥈', get: (c) => [c.maxBeatElo >= 1500 ? 1 : 0, 1] },
+  { id: 'beat-2000', emoji: '👑', get: (c) => [c.maxBeatElo >= 2000 ? 1 : 0, 1] },
+  { id: 'bots-5', emoji: '🤖', get: (c) => [c.botsBeaten, 5] },
+  { id: 'acc-80', emoji: '🎯', get: (c) => [Math.min(c.bestAcc, 80), 80] },
+  { id: 'acc-90', emoji: '💎', get: (c) => [Math.min(c.bestAcc, 90), 90] },
+  { id: 'puz-10', emoji: '🧩', get: (c) => [c.solved, 10] },
+  { id: 'puz-100', emoji: '🧠', get: (c) => [c.solved, 100] },
+  { id: 'puz-500', emoji: '⚔️', get: (c) => [c.solved, 500] },
+  { id: 'rating-1500', emoji: '📈', get: (c) => [Math.min(c.rating, 1500), 1500] },
+  { id: 'rating-2000', emoji: '🚀', get: (c) => [Math.min(c.rating, 2000), 2000] },
+  { id: 'rush-15', emoji: '⚡', get: (c) => [c.rush, 15] },
+  { id: 'rush-30', emoji: '🌪️', get: (c) => [c.rush, 30] },
+  { id: 'streak-3', emoji: '🔥', get: (c) => [c.streak, 3] },
+  { id: 'streak-7', emoji: '📅', get: (c) => [c.streak, 7] },
+  { id: 'streak-30', emoji: '🗓️', get: (c) => [c.streak, 30] },
+  { id: 'lesson-1', emoji: '📘', get: (c) => [c.lessonsDone, 1] },
+  { id: 'lesson-10', emoji: '🎓', get: (c) => [c.lessonsDone, 10] },
+  { id: 'course-1', emoji: '🏅', get: (c) => [c.coursesDone, 1] },
+  { id: 'fav', emoji: '⭐', get: (c) => [c.favorites, 1] },
 ];
 
 function renderAchievements(ctx) {
   const items = ACHIEVEMENTS.map((a) => {
     const [cur, target] = a.get(ctx);
     const value = Math.max(0, Number(cur) || 0);
-    return { ...a, value, target, earned: value >= target };
+    const title = t(`profile.achievements.items.${a.id}.title`);
+    const desc = t(`profile.achievements.items.${a.id}.desc`);
+    return { ...a, title, desc, value, target, earned: value >= target };
   }).sort((a, b) => Number(b.earned) - Number(a.earned) || (b.value / b.target) - (a.value / a.target));
   const earned = items.filter((i) => i.earned).length;
   return h('section', { class: 'card' },
     h('div', { class: 'card-header' },
-      h('div', { class: 'card-title', html: icon('medal') + '<span>Achievements</span>' }),
-      h('span', { class: 'badge badge-gold' }, `${earned} / ${items.length} unlocked`)),
+      h('div', { class: 'card-title', html: icon('medal') + span('profile.achievements.title') }),
+      h('span', { class: 'badge badge-gold' }, t('profile.achievements.unlockedCount', { earned, total: items.length }))),
     h('div', { class: 'hub-badges' }, items.map((a) => h('div', {
       class: ['hub-badge', a.earned ? 'earned' : 'locked'],
-      title: a.earned ? `${a.title} — unlocked!` : `${a.title}: ${a.desc}`,
+      title: a.earned ? t('profile.achievements.unlockedTip', { title: a.title }) : t('profile.achievements.lockedTip', { title: a.title, desc: a.desc }),
     },
     h('div', { class: 'hub-badge-icon', 'aria-hidden': 'true' }, a.emoji),
     h('div', { class: 'hub-badge-title' }, a.title),
     h('div', { class: 'hub-badge-desc' }, a.desc),
     a.earned
-      ? h('div', { class: 'hub-badge-done', html: icon('check', { size: 14 }) + '<span>Unlocked</span>' })
-      : h('div', { class: 'progress progress-sm', role: 'progressbar', 'aria-label': `${a.title} progress`, 'aria-valuenow': String(Math.round(a.value)), 'aria-valuemax': String(a.target) },
+      ? h('div', { class: 'hub-badge-done', html: icon('check', { size: 14 }) + span('profile.achievements.unlocked') })
+      : h('div', { class: 'progress progress-sm', role: 'progressbar', 'aria-label': t('profile.achievements.progress', { title: a.title }), 'aria-valuenow': String(Math.round(a.value)), 'aria-valuemax': String(a.target) },
         h('div', { class: 'progress-bar', style: { width: `${Math.min(100, (a.value / a.target) * 100)}%` } }))))));
 }
 
 // ---- Small pieces ------------------------------------------------------------------
 function num(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
+/** Locale-aware percentage from a 0..1 ratio ("63%" / "63 %"). */
+function pct(ratio) { return formatNumber(ratio, { style: 'percent', maximumFractionDigits: 0 }); }
+/** Locale-aware number with one decimal ("87.4" / "87,4"). */
+/** Locale-aware percentage from a 0..100 value with `digits` decimals. */
+function pctOf(v, digits) { return formatNumber(v / 100, { style: 'percent', minimumFractionDigits: digits, maximumFractionDigits: digits }); }
+function fmt1(v) { return formatNumber(v, { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
 
 function statTile(label, value, iconName, delta) {
   return h('div', { class: 'stat hub-stat' },
@@ -342,42 +355,42 @@ function statTile(label, value, iconName, delta) {
 function donut({ won, drawn, lost }) {
   const total = won + drawn + lost;
   if (!total) {
-    return emptyState({ icon: 'chart', title: 'No finished games yet', text: 'Your wins, draws and losses will be charted here.', action: { label: 'Play a game', href: '#/play', icon: 'play' } });
+    return emptyState({ icon: 'chart', title: t('profile.results.emptyTitle'), text: t('profile.results.emptyText'), action: { label: t('profile.results.emptyAction'), href: '#/play', icon: 'play' } });
   }
   const R = 42; const C = 2 * Math.PI * R; const GAP = total > 1 ? 1.2 : 0;
-  const segs = [['won', won, 'Won'], ['drawn', drawn, 'Drawn'], ['lost', lost, 'Lost']].filter((s) => s[1] > 0);
+  const all = [['won', won, t('profile.results.won')], ['drawn', drawn, t('profile.results.drawn')], ['lost', lost, t('profile.results.lost')]];
+  const segs = all.filter((s) => s[1] > 0);
   let offset = 0;
   const circles = segs.map(([k, v, l]) => {
     const len = (v / total) * C;
     const dash = Math.max(0.01, len - (segs.length > 1 ? GAP : 0));
     const c = h('circle', { class: `hub-donut-seg ${k}`, r: R, cx: 50, cy: 50, 'stroke-dasharray': `${dash} ${C - dash}`, 'stroke-dashoffset': String(-offset) },
-      h('title', null, `${l}: ${v} (${Math.round((v / total) * 100)}%)`));
+      h('title', null, `${l}: ${v} (${pct(v / total)})`));
     offset += len;
     return c;
   });
-  const winRate = Math.round((won / total) * 100);
   return h('div', { class: 'hub-donut' },
     h('div', { class: 'hub-donut-fig' },
-      h('svg', { viewBox: '0 0 100 100', role: 'img', 'aria-label': `${won} won, ${drawn} drawn, ${lost} lost` },
+      h('svg', { viewBox: '0 0 100 100', role: 'img', 'aria-label': t('profile.results.summary', { won, drawn, lost }) },
         h('circle', { class: 'hub-donut-track', r: R, cx: 50, cy: 50 }),
         h('g', { transform: 'rotate(-90 50 50)' }, circles)),
-      h('div', { class: 'hub-donut-center' }, h('div', { class: 'hub-donut-num tabular' }, `${winRate}%`), h('div', { class: 'subtle text-xs' }, 'win rate'))),
+      h('div', { class: 'hub-donut-center' }, h('div', { class: 'hub-donut-num tabular' }, pct(won / total)), h('div', { class: 'subtle text-xs' }, t('profile.results.winRate')))),
     h('ul', { class: 'hub-legend' },
-      [['won', won, 'Won'], ['drawn', drawn, 'Drawn'], ['lost', lost, 'Lost']].map(([k, v, l]) =>
+      all.map(([k, v, l]) =>
         h('li', null, h('span', { class: `hub-swatch ${k}` }), h('span', null, l), h('span', { class: 'spacer' }), h('span', { class: 'semibold tabular' }, String(v)),
-          h('span', { class: 'subtle tabular text-sm' }, `${Math.round((v / total) * 100)}%`)))));
+          h('span', { class: 'subtle tabular text-sm' }, pct(v / total))))));
 }
 
 /** `last_active` is a local calendar date ("YYYY-MM-DD"); compare by calendar day, not UTC instant. */
 function formatActiveDay(value) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
-  if (!m) return formatRelative(value);
+  if (!m) return formatRelativeIntl(value);
   const day = new Date(+m[1], +m[2] - 1, +m[3]);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const days = Math.round((today - day) / 86400000);
-  if (days <= 0) return 'today';
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  return day.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: day.getFullYear() === now.getFullYear() ? undefined : 'numeric' });
+  const days = Math.max(0, Math.round((today - day) / 86400000));
+  if (days < 7) {
+    try { return new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }).format(-days, 'day'); } catch { /* fall through */ }
+  }
+  return formatDateIntl(day, { month: 'short', day: 'numeric', year: day.getFullYear() === now.getFullYear() ? undefined : 'numeric' });
 }

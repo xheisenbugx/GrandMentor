@@ -30,6 +30,8 @@ use serde::{Deserialize, Serialize};
 use shakmaty::zobrist::{Zobrist64, ZobristHash};
 use shakmaty::{Chess, Color, EnPassantMode, Move, Position, Role, Square};
 
+use gm_content::words::{fill, kv, PieceRef};
+use gm_content::Lang;
 use gm_engine::{move_to_san, move_to_uci, parse_fen, uci_to_move, Engine, Score, SearchLimits};
 
 pub use personas::Style;
@@ -68,30 +70,39 @@ pub struct BotMove {
     pub think_ms: u64,
 }
 
-fn profile_of(p: &Persona) -> BotProfile {
+fn profile_of(p: &Persona, lang: Lang) -> BotProfile {
+    let text = p.lines(lang);
     BotProfile {
         id: p.id.into(),
         name: p.name.into(),
         elo: p.elo,
         avatar: p.avatar.into(),
+        // A machine key (the UI translates the label); never localized.
         style: p.style.as_str().into(),
-        description: p.description.into(),
-        greeting: p.greeting.into(),
+        description: text.description.into(),
+        greeting: text.greeting.into(),
         category: p.category().into(),
     }
 }
 
-/// All bots, weakest first; coach bots last.
-pub fn list() -> Vec<BotProfile> {
-    PERSONAS.iter().map(profile_of).collect()
+/// All bots, weakest first; coach bots last. Descriptions and greetings are in `lang`.
+pub fn list(lang: Lang) -> Vec<BotProfile> {
+    PERSONAS.iter().map(|p| profile_of(p, lang)).collect()
 }
 
 /// A single bot's profile.
-pub fn get(bot_id: &str) -> Option<BotProfile> {
-    personas::find(bot_id).map(profile_of)
+pub fn get(bot_id: &str, lang: Lang) -> Option<BotProfile> {
+    personas::find(bot_id).map(|p| profile_of(p, lang))
+}
+
+/// True if `bot_id` names a bot.
+pub fn exists(bot_id: &str) -> bool {
+    personas::find(bot_id).is_some()
 }
 
 /// Choose a move for `bot_id` in the position reached from `start_fen` after `moves` (UCI).
+/// `content` should be the English source content (style preferences match English opening
+/// names); opening names in chat come from `content.localized(lang)`. Chat is in `lang`.
 ///
 /// Errors: unknown bot, invalid FEN/move, or the game is already over.
 pub fn choose_move(
@@ -100,9 +111,10 @@ pub fn choose_move(
     bot_id: &str,
     start_fen: &str,
     moves: &[String],
+    lang: Lang,
 ) -> Result<BotMove, String> {
     let mut rng = StdRng::from_entropy();
-    choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None)
+    choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None, lang)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -169,17 +181,6 @@ fn value(role: Role) -> i32 {
         Role::Rook => 500,
         Role::Queen => 900,
         Role::King => 0,
-    }
-}
-
-fn role_name(role: Role) -> &'static str {
-    match role {
-        Role::Pawn => "pawn",
-        Role::Knight => "knight",
-        Role::Bishop => "bishop",
-        Role::Rook => "rook",
-        Role::Queen => "queen",
-        Role::King => "king",
     }
 }
 
@@ -402,6 +403,7 @@ fn naive_score<R: Rng>(rng: &mut R, pos: &Chess, m: &Move, ply: usize) -> f64 {
     s + rng.gen_range(-45.0..45.0)
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn choose_move_with<R: Rng>(
     engine: &mut Engine,
     content: &gm_content::Content,
@@ -410,6 +412,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     moves: &[String],
     rng: &mut R,
     movetime_cap_ms: Option<u64>,
+    lang: Lang,
 ) -> Result<BotMove, String> {
     let started = Instant::now();
     let persona = personas::find(bot_id).ok_or_else(|| format!("unknown bot: {bot_id}"))?;
@@ -429,7 +432,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     // Forced move: no need to think.
     if legal.len() == 1 {
         let m = legal[0].clone();
-        let chat = make_chat(rng, persona, &game, &m, None, None);
+        let chat = make_chat(rng, persona, &game, &m, None, None, lang);
         return Ok(finish(pos, &m, chat, rng.gen_range(300..=550)));
     }
 
@@ -443,12 +446,14 @@ pub(crate) fn choose_move_with<R: Rng>(
             let c = &cands[weighted_pick(rng, &w)];
             if let Ok(m) = uci_to_move(pos, &c.uci) {
                 let after_pos = after(pos, &m);
-                let name = c.name.clone().or_else(|| book::opening_name_at(content, &after_pos));
+                let id = c.opening_id.clone().or_else(|| book::opening_id_at(content, &after_pos));
+                let lines = persona.lines(lang);
+                let name = id.and_then(|id| content.localized(lang).opening(&id).map(|o| o.name.clone()));
                 let chat = match name {
-                    Some(n) if rng.gen::<f64>() < 0.55 && !persona.opening.is_empty() => {
-                        Some(pick_line(rng, persona.opening).replace("{opening}", &n))
+                    Some(n) if rng.gen::<f64>() < 0.55 && !lines.opening.is_empty() => {
+                        Some(pick_line(rng, lines.opening).replace("{opening}", &n))
                     }
-                    _ => make_chat(rng, persona, &game, &m, None, None),
+                    _ => make_chat(rng, persona, &game, &m, None, None, lang),
                 };
                 return Ok(finish(pos, &m, chat, rng.gen_range(300..=750)));
             }
@@ -518,7 +523,7 @@ pub(crate) fn choose_move_with<R: Rng>(
 
     // ---- 4. Chat + think time -----------------------------------------------------------------
     let best_score = cands.first().map(|c| c.score);
-    let chat = make_chat(rng, persona, &game, &chosen, chosen_score.or(best_score), best_score);
+    let chat = make_chat(rng, persona, &game, &chosen, chosen_score.or(best_score), best_score, lang);
     let think = think_time(rng, persona.elo, legal.len(), &cands, pos.is_check(), started);
     Ok(finish(pos, &chosen, chat, think))
 }
@@ -568,11 +573,13 @@ fn make_chat<R: Rng>(
     m: &Move,
     score: Option<i32>,
     best: Option<i32>,
+    lang: Lang,
 ) -> Option<String> {
     let pos = &game.pos;
     let a = after(pos, m);
+    let lines = persona.lines(lang);
     if a.is_checkmate() {
-        return Some(pick_line(rng, persona.win));
+        return Some(pick_line(rng, lines.win));
     }
     let opp_captured = game.last.as_ref().and_then(|(_, lm)| lm.capture().map(|r| (r, lm.to())));
     let our_cap = captured(m);
@@ -581,35 +588,84 @@ fn make_chat<R: Rng>(
     let best = best.unwrap_or(score);
 
     if persona.coach {
-        return Some(coach_tip(rng, persona, game, m, &a, score));
+        return Some(coach_tip(rng, persona, game, m, &a, score, lang));
     }
 
     if let Some(c) = our_cap {
         if value(c) >= 300 && best >= 250 && !recapture && chance(rng, 0.7) {
-            return Some(pick_line(rng, persona.blunder));
+            return Some(pick_line(rng, lines.blunder));
         }
     }
     if opp_captured.is_some() && !recapture && chance(rng, 0.5) {
-        return Some(pick_line(rng, persona.captured));
+        return Some(pick_line(rng, lines.captured));
     }
     if our_cap.is_some() && chance(rng, 0.3) {
-        return Some(pick_line(rng, persona.capture));
+        return Some(pick_line(rng, lines.capture));
     }
     if a.is_check() && chance(rng, 0.35) {
-        return Some(pick_line(rng, persona.check));
+        return Some(pick_line(rng, lines.check));
     }
     if score >= 600 && chance(rng, 0.12) {
-        return Some(pick_line(rng, persona.winning));
+        return Some(pick_line(rng, lines.winning));
     }
     if score <= -600 && chance(rng, 0.2) {
-        return Some(pick_line(rng, persona.losing));
+        return Some(pick_line(rng, lines.losing));
     }
     None
 }
 
+/// Coach-tip templates (see `gm_content::words` for the `{p_*}` placeholders).
+struct TipText {
+    took_loose: &'static str,
+    loose: &'static str,
+    attacks: &'static str,
+    uncastled: &'static str,
+    undeveloped: &'static str,
+    general: [&'static str; 6],
+}
+
+fn tip_text(lang: Lang) -> &'static TipText {
+    static EN: TipText = TipText {
+        took_loose: "Your {p_n} on {sq} was not protected, so I took it. Before every move, check that each of your pieces is safe!",
+        loose: "Heads up: your {p_n} on {sq} is under attack and not well defended.",
+        attacks: "My {m_n} now attacks your {t_n}. What will you do about it?",
+        uncastled: "Your king is still in the center. Castling soon will keep it safe and connect your rooks.",
+        undeveloped: "You still have {n} knights/bishops on their starting squares. Bring them out before starting an attack!",
+        general: [
+            "Before each move, look for checks, captures and threats — for both sides.",
+            "Try to put your pieces on squares where they control the center.",
+            "Rooks love open files. Is there a file without pawns for your rook?",
+            "Ask yourself: what is my worst-placed piece, and how can I improve it?",
+            "In the endgame, your king becomes a strong piece. Bring it toward the center!",
+            "Passed pawns must be pushed! A pawn with no enemy pawns in front is very dangerous.",
+        ],
+    };
+    static ES: TipText = TipText {
+        took_loose: "Tu {p_n} en {sq} no estaba protegid{p_o}, así que me {p_lo} llevé. Antes de cada jugada, ¡comprueba que todas tus piezas estén a salvo!",
+        loose: "Atención: tu {p_n} en {sq} está atacad{p_o} y mal defendid{p_o}.",
+        attacks: "Mi {m_n} ahora ataca a tu {t_n}. ¿Qué vas a hacer?",
+        uncastled: "Tu rey sigue en el centro. Enrocar pronto lo pondrá a salvo y conectará tus torres.",
+        undeveloped: "Todavía tienes {n} caballos o alfiles en sus casillas iniciales. ¡Sácalos antes de lanzarte al ataque!",
+        general: [
+            "Antes de cada jugada, busca jaques, capturas y amenazas, para ambos bandos.",
+            "Intenta colocar tus piezas en casillas desde donde controlen el centro.",
+            "A las torres les encantan las columnas abiertas. ¿Hay alguna columna sin peones para tu torre?",
+            "Pregúntate: ¿cuál es mi pieza peor colocada y cómo puedo mejorarla?",
+            "En el final, tu rey se convierte en una pieza fuerte. ¡Llévalo hacia el centro!",
+            "¡Los peones pasados hay que avanzarlos! Un peón sin peones rivales delante es muy peligroso.",
+        ],
+    };
+    match lang {
+        Lang::En => &EN,
+        Lang::Es => &ES,
+    }
+}
+
 /// A concrete, beginner-friendly tip from a coach bot after its move.
-fn coach_tip<R: Rng>(rng: &mut R, persona: &Persona, game: &Game, m: &Move, a: &Chess, score: i32) -> String {
+fn coach_tip<R: Rng>(rng: &mut R, persona: &Persona, game: &Game, m: &Move, a: &Chess, score: i32, lang: Lang) -> String {
     let pos = &game.pos;
+    let lines = persona.lines(lang);
+    let tt = tip_text(lang);
     let user = !pos.turn();
     let our_cap = captured(m);
     let opp_last = game.last.as_ref();
@@ -618,20 +674,20 @@ fn coach_tip<R: Rng>(rng: &mut R, persona: &Persona, game: &Game, m: &Move, a: &
     if let Some(c) = our_cap {
         let was_loose = loose_pieces(pos, user).iter().any(|(_, sq)| *sq == m.to());
         if was_loose && value(c) >= 300 {
-            return format!(
-                "Your {} on {} was not protected, so I took it. Before every move, check that each of your pieces is safe!",
-                role_name(c),
-                m.to()
-            );
+            let mut vars = PieceRef::new(c).vars("p", lang);
+            vars.extend(kv(&[("sq", &m.to().to_string())]));
+            return fill(tt.took_loose, &vars);
         }
     }
     // 2. Check.
     if a.is_check() {
-        return pick_line(rng, persona.check);
+        return pick_line(rng, lines.check);
     }
     // 3. User has a loose piece right now.
     if let Some((role, sq)) = loose_pieces(a, user).into_iter().find(|(r, _)| *r != Role::Pawn) {
-        return format!("Heads up: your {} on {} is under attack and not well defended.", role_name(role), sq);
+        let mut vars = PieceRef::new(role).vars("p", lang);
+        vars.extend(kv(&[("sq", &sq.to_string())]));
+        return fill(tt.loose, &vars);
     }
     // 4. My move creates a threat on a valuable piece.
     let attacked: Vec<Role> = (a.board().attacks_from(m.to()) & a.board().by_color(user))
@@ -640,43 +696,35 @@ fn coach_tip<R: Rng>(rng: &mut R, persona: &Persona, game: &Game, m: &Move, a: &
         .filter(|r| *r != Role::King && *r != Role::Pawn)
         .collect();
     if let Some(r) = attacked.iter().max_by_key(|r| value(**r)) {
-        return format!("My {} now attacks your {}. What will you do about it?", role_name(m.role()), role_name(*r));
+        let mut vars = PieceRef::new(m.role()).vars("m", lang);
+        vars.extend(PieceRef::new(*r).vars("t", lang));
+        return fill(tt.attacks, &vars);
     }
     // 5. User just won material.
     if let Some((_, lm)) = opp_last {
         if lm.capture().map(value).unwrap_or(0) >= 300 && m.to() != lm.to() {
-            return pick_line(rng, persona.captured);
+            return pick_line(rng, lines.captured);
         }
     }
     // 6. Big evaluation swings.
     if score >= 500 {
-        return pick_line(rng, persona.winning);
+        return pick_line(rng, lines.winning);
     }
     if score <= -500 {
-        return pick_line(rng, persona.losing);
+        return pick_line(rng, lines.losing);
     }
     // 7. Opening principles.
     let ply = game.history.len().saturating_sub(1);
     if (14..=30).contains(&ply) && user_king_uncastled(a, user) {
-        return "Your king is still in the center. Castling soon will keep it safe and connect your rooks.".into();
+        return tt.uncastled.to_string();
     }
     if ply < 16 {
         let undeveloped = undeveloped_minors(a, user);
         if undeveloped >= 2 && ply >= 6 {
-            return format!(
-                "You still have {undeveloped} knights/bishops on their starting squares. Bring them out before starting an attack!"
-            );
+            return fill(tt.undeveloped, &kv(&[("n", &undeveloped.to_string())]));
         }
     }
-    let general = [
-        "Before each move, look for checks, captures and threats — for both sides.",
-        "Try to put your pieces on squares where they control the center.",
-        "Rooks love open files. Is there a file without pawns for your rook?",
-        "Ask yourself: what is my worst-placed piece, and how can I improve it?",
-        "In the endgame, your king becomes a strong piece. Bring it toward the center!",
-        "Passed pawns must be pushed! A pawn with no enemy pawns in front is very dangerous.",
-    ];
-    general[rng.gen_range(0..general.len())].to_string()
+    tt.general[rng.gen_range(0..tt.general.len())].to_string()
 }
 
 fn user_king_uncastled(pos: &Chess, user: Color) -> bool {

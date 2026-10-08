@@ -18,6 +18,7 @@
 // No timers survive pause(), flag or destroy().
 
 import { formatClock } from '../ui.js';
+import { t } from '../i18n.js';
 
 const STYLE_ID = 'gm-clock-style';
 const CSS = `
@@ -86,7 +87,7 @@ export class ChessClock {
       const face = document.createElement('div');
       face.className = `gm-clock gm-clock-${c}`;
       face.setAttribute('role', 'timer');
-      face.setAttribute('aria-label', `${c === 'white' ? 'White' : 'Black'} clock`);
+      face.setAttribute('aria-label', c === 'white' ? t('ui.clock.white') : t('ui.clock.black'));
       face.innerHTML = HOURGLASS;
       const txt = document.createElement('span');
       face.appendChild(txt);
