@@ -218,6 +218,17 @@ Install GrandMentor like a native app on your phone or computer. Puzzles and les
 </tr>
 </table>
 
+### ♿ Accessible to everyone
+
+Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every move with a screen reader, and switch on high contrast, colour-blind-friendly move colours, reduced motion or larger text in Settings.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/a11y-keyboard.gif" alt="Playing with the keyboard, with square names and screen-reader announcements" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/a11y-high-contrast.png" alt="High-contrast mode with colour-blind-friendly move colours" /></td>
+</tr>
+</table>
+
 ### 🌍 Five languages
 
 <table>
