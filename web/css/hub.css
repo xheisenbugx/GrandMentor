@@ -353,3 +353,7 @@ a.card.hub-cta-main { background: linear-gradient(135deg, var(--primary-soft), t
 .bk-step { align-items: flex-start; }
 .bk-step-icon { margin-top: 2px; }
 .bk-step-text { display: flex; flex-direction: column; min-width: 0; }
+
+/* Language picker: wraps instead of overflowing when many languages are available. */
+.segmented.lang-picker { flex-wrap: wrap; max-width: 100%; }
+.segmented.lang-picker button { flex: 1 0 auto; }

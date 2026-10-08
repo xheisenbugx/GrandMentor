@@ -74,7 +74,7 @@ export async function mount(root) {
 
   // Animation speed: presets + fine slider.
   // Language: one button per supported language, labelled with its native name.
-  const langPicker = h('div', { class: 'segmented', role: 'radiogroup', 'aria-label': t('settings.language.title') },
+  const langPicker = h('div', { class: 'segmented lang-picker', role: 'radiogroup', 'aria-label': t('settings.language.title') },
     Object.entries(LANGUAGES).map(([code, l]) => h('button', { type: 'button', role: 'radio', lang: code, dataset: { v: code }, 'aria-checked': String(code === getLanguage()), class: code === getLanguage() ? 'active' : null }, l.nativeName)));
   bag.on(langPicker, 'click', (e) => {
     const b = e.target.closest('button[data-v]');
