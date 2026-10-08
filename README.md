@@ -33,6 +33,7 @@ Most chess sites are built for people who already play well. GrandMentor is buil
 - 🧸 **Gentle by default.** Bots greet you, chat with you and blunder like real humans at your level — not like a calculator that suddenly forgets how to play.
 - 🎓 **A mentor, not just an engine.** Every move gets a plain-language explanation: *"This hangs your bishop — Qxc4 wins it. Better was d4."*
 - ⚡ **Ridiculously fast.** A Rust engine searches ~2 million positions per second; a full game review takes about half a second.
+- 🌍 **Speaks your language.** English, Español, Português, Français and Deutsch: every screen, lesson, opening and coach comment.
 - 🔒 **Yours.** Runs locally, stores your games in a single SQLite file, no account, no ads, no tracking.
 
 ---
@@ -110,7 +111,7 @@ Your **puzzle rating** adapts as you solve. Race the clock in **Puzzle Rush** (3
 ### 📖 Openings & ♚ Endgames
 
 - **~280 named openings** — ideas, traps, popularity, an **explorer** of book moves, and a **trainer** that quizzes you on your repertoire from memory.
-- **36 endgame drills** — from the basic queen mate to Lucena and Philidor — played against the full-strength engine until you win (or hold the draw).
+- **41 endgame drills** — basic mates, opposition and key squares, the rule of the square, Lucena, Philidor, Vancura, queen vs pawn — each with a short lesson, then practised against the full-strength engine from several starting positions until you've **mastered** it (3 successes in a row). Every position is checked against tablebases.
 
 <table>
 <tr>
@@ -128,6 +129,102 @@ Your dashboard, every game you've ever played (search, favourites, notes, PGN im
 <td width="33%"><img src="docs/media/home.png" alt="Home dashboard" /></td>
 <td width="33%"><img src="docs/media/library.png" alt="Game library" /></td>
 <td width="33%"><img src="docs/media/profile.png" alt="Profile and stats" /></td>
+</tr>
+</table>
+
+### 📅 Today's plan, streaks & goals
+
+Home suggests a 10–15 minute session built from what you need today: the daily puzzle, mistakes that are due, a repertoire review, the next lesson, a quick drill or a game against a bot near your level. Pick a daily goal, keep your streak going, and watch your 12-week activity calendar fill up.
+
+<table>
+<tr>
+<td width="55%"><img src="docs/media/prs/feat-learning-platform/daily-plan.png" alt="Today's plan on the Home page with tasks, goal ring and streak" /></td>
+<td width="45%"><img src="docs/media/prs/feat-learning-platform/daily-goal-met.gif" alt="Completing the daily goal" /></td>
+</tr>
+</table>
+
+### 📈 Insights — your top 3 weaknesses
+
+GrandMentor reads all your reviewed games and tells you, in plain words, what costs you the most points: pieces you leave hanging, tactics you miss, endgames you let slip, winning positions you don't convert. Every weakness has a **one-click drill** to fix it.
+
+<img src="docs/media/prs/feat-learning-platform/insights-page.png" width="860" alt="Insights page with top weaknesses and charts" />
+
+### 🔁 Learn from your mistakes
+
+Every blunder and missed win from your own games becomes a "find the better move" puzzle. They come back on a **spaced-repetition** schedule until you get them right three times in a row.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/mistakes-solve.gif" alt="Solving a puzzle taken from your own game" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/mistakes-hub.png" alt="The mistakes deck on the Puzzles page" /></td>
+</tr>
+</table>
+
+### 📘 Your opening repertoire
+
+Build your own lines for White and Black (or start from a beginner-friendly starter set), then drill them from memory: the bot plays the sidelines, you answer. After each game GrandMentor tells you exactly where you left your preparation.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/repertoire-tree.png" alt="Repertoire tree for White" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/repertoire-drill.gif" alt="Repertoire drill with spaced repetition" /></td>
+</tr>
+</table>
+
+### ⚡ Quick drills & interactive lessons
+
+Thirty-second board-vision games with personal bests (find the square, spot the hanging piece, count the material, find all checks, knight routes), plus new lesson types: **guess the master's move**, count the material, spot the hanging piece and pick the best plan.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/drills-coordinates.gif" alt="Coordinates drill" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/lessons-tasks.gif" alt="Interactive lesson tasks" /></td>
+</tr>
+</table>
+
+### 🏛️ Classic games, narrated
+
+27 of the most famous games ever played, from Morphy's Opera Game to Kasparov's Immortal and Deep Blue, narrated move by move by the mentor, with "pause and think" moments where you guess the key move.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/classics-library.png" alt="Classic games library" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/classics-player.gif" alt="Narrated classic game" /></td>
+</tr>
+</table>
+
+### 🎮 More ways to play
+
+- **Sparky ⚡, the adaptive bot**, gets stronger when you win and gentler when you lose, and your **estimated rating** updates after every game.
+- **Premoves**, an optional **"confirm move"** step for beginners, **typed moves** (`Nf3`, `O-O`) and a **blindfold** mode.
+- **Play from any position**: take over a game from Game Review, the analysis board, an endgame or a classic game.
+- **Play a friend** on the same device, with clocks, takebacks, draw offers and an automatic Game Review afterwards.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/play-premove.gif" alt="Premoves against a bot" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learning-platform/local-pass-and-play.gif" alt="Two players on one device" /></td>
+</tr>
+</table>
+
+### 📲 Install it, use it offline, back it up
+
+Install GrandMentor like a native app on your phone or computer. Puzzles and lessons keep working **offline**, and your results sync when you're back. One click downloads a backup of everything; restore it on another machine, or sync two devices on your network with a pairing code.
+
+<table>
+<tr>
+<td width="25%"><img src="docs/media/prs/feat-learning-platform/pwa-offline-mobile.png" alt="A lesson working offline on a phone" /></td>
+<td width="75%"><img src="docs/media/prs/feat-learning-platform/backup-section.png" alt="Backup and sync settings" /></td>
+</tr>
+</table>
+
+### 🌍 Five languages
+
+<table>
+<tr>
+<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-pt-home.png" alt="Home in Portuguese" /></td>
+<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-fr-play.png" alt="Play setup in French" /></td>
+<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-de-review.png" alt="Game Review in German" /></td>
 </tr>
 </table>
 
@@ -183,6 +280,7 @@ Run from the repository root so `./data` and `./web` are found. Your games live 
 | `GM_WEB_DIR` | `./web` | Static frontend directory |
 | `GM_ENGINES` | cores − 1, clamped to 2–8 | Engines in the search pool, one thread each |
 | `GM_TT_MB` | `32` | Hash table per engine (MB). Memory ≈ `GM_ENGINES × GM_TT_MB`. |
+| `GM_SYNC_ALLOW_ORIGINS` | – | Extra origins allowed to sync with this device (pairing code still required) |
 | `ANTHROPIC_API_KEY` | – | Enables the Claude-powered mentor chat |
 | `GM_MENTOR_MODEL` | `claude-opus-5-5` | Claude model used by the mentor |
 | `RUST_LOG` | `info` | Log filter |
@@ -236,7 +334,7 @@ flowchart LR
 | [`gm-bots`](crates/gm-bots) | Bot personas and human-like move choice (depth/node limits, softmax over MultiPV, style bias, opening book) |
 | [`gm-analysis`](crates/gm-analysis) | Game review: parallel per-ply analysis, lichess-style win%/accuracy, chess.com-style classifications, key moments |
 | [`gm-mentor`](crates/gm-mentor) | Rule-based move explanations and position insights, plus optional Claude chat |
-| [`gm-store`](crates/gm-store) | SQLite: games, profile, puzzle rating, lesson progress, stats; PGN import/export |
+| [`gm-store`](crates/gm-store) | SQLite: games, profile, puzzle rating, lesson progress, stats, activity and streaks, spaced-repetition decks (mistakes, repertoire), drills, endgame mastery, adaptive rating, backup/merge; PGN import/export |
 | [`gm-content`](crates/gm-content) | Loads and validates every opening, puzzle, lesson and drill (every move is checked for legality) |
 | [`gm-server`](crates/gm-server) | The `grandmentor` binary: REST + WebSocket + compressed static files |
 
@@ -254,6 +352,14 @@ The full API and JSON contract lives in [`docs/CONTRACT.md`](docs/CONTRACT.md).
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [`AGENTS.md`](AGENTS.md) — it describes the branch flow (PRs go into **`dev`**), the PR template (including the **"In plain words"** section and visual evidence), and the project conventions. It applies to humans and AI agents alike.
+
+Before opening a PR, run the quality gate (it also runs in CI on every PR):
+
+```bash
+node tools/qa/check-i18n.mjs     # every language has every key
+node tools/qa/sweep.mjs          # every page × language × desktop/mobile in headless Chrome
+node tools/qa/bench-gate.mjs     # engine speed and tactics (for engine changes)
+```
 
 ---
 
