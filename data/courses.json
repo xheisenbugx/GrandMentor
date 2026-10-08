@@ -4608,5 +4608,869 @@
     ]
    }
   ]
+ },
+ {
+  "id": "board-vision",
+  "title": "Board Vision",
+  "category": "basics",
+  "level": "beginner",
+  "description": "Train your eyes: name any square in a flash, count material, spot loose pieces and compare candidate moves.",
+  "icon": "👁️",
+  "lessons": [
+   {
+    "id": "bv-coordinates",
+    "title": "Every square has a name",
+    "summary": "Learn files and ranks, then find squares fast.",
+    "steps": [
+     {
+      "text": "The board is a grid of **64 squares**. The columns are called **files** and are lettered **a** to **h**, from left to right as White sees it. The rows are called **ranks** and are numbered **1** to **8**, starting from White's side.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 w - - 0 1",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "a1",
+        "to": "h1",
+        "color": "blue"
+       },
+       {
+        "from": "a1",
+        "to": "a8",
+        "color": "yellow"
+       }
+      ]
+     },
+     {
+      "text": "To name a square, say its **file first, then its rank**. The highlighted square is **e4**: file *e*, rank *4*. Every chess move is written with these names, so knowing them by heart makes everything easier.",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "e2",
+        "to": "e4",
+        "color": "green"
+       }
+      ],
+      "highlights": [
+       "e4"
+      ]
+     },
+     {
+      "text": "Your turn! The letters and numbers on the edge of the board will help you.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "square",
+       "prompt": "Click each square as it is named.",
+       "solution": [],
+       "hint": "Find the file letter along the bottom, then count up to the rank.",
+       "success": "Great eyes! You found every square.",
+       "squares": [
+        "e4",
+        "d5",
+        "a1",
+        "h8",
+        "c3",
+        "f6"
+       ]
+      }
+     },
+     {
+      "text": "Now a little faster. Edge squares are tricky: **a** and **h** are the side files, **1** and **8** the back ranks.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "square",
+       "prompt": "Find these squares.",
+       "solution": [],
+       "success": "Perfect! You are reading the board like a map.",
+       "squares": [
+        "b7",
+        "g2",
+        "d1",
+        "e8",
+        "h4",
+        "a5"
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "id": "bv-black-side",
+    "title": "Seeing from Black's side",
+    "summary": "Flip the board and still find every square.",
+    "steps": [
+     {
+      "text": "When you play Black the board turns around. Your pieces sit on ranks **8** and **7** at the bottom, and the **h-file** is now on your left. The squares keep their names; only your view changes.",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "orientation": "black",
+      "highlights": [
+       "e8",
+       "h8",
+       "a1"
+      ]
+     },
+     {
+      "text": "Let's practise from Black's side.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 b - - 0 1",
+      "orientation": "black",
+      "task": {
+       "kind": "square",
+       "prompt": "Click each square as it is named.",
+       "solution": [],
+       "hint": "From this side, file **a** is on the right and rank **1** is at the top.",
+       "success": "Well done! The board looks different, but you found your way.",
+       "squares": [
+        "e5",
+        "d4",
+        "h1",
+        "a8",
+        "f3",
+        "c6"
+       ]
+      }
+     },
+     {
+      "text": "Two handy checks: the corner square on your **right** is always **light** (\"light on the right\"), and each queen starts on her own colour: the white queen on light **d1**, the black queen on dark **d8**.",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "orientation": "white",
+      "highlights": [
+       "h1",
+       "d1",
+       "d8"
+      ]
+     },
+     {
+      "text": "Time for a challenge: the labels are gone! Picture the letters and numbers in your head.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "square",
+       "prompt": "Find these squares without the coordinates.",
+       "solution": [],
+       "hint": "Use the kings as landmarks: they stand on **e1** and **e8**.",
+       "success": "Impressive! That's real board vision.",
+       "squares": [
+        "e4",
+        "g7",
+        "b2",
+        "d8",
+        "h5",
+        "c6"
+       ],
+       "blind": true
+      }
+     },
+     {
+      "text": "Last one: no labels, and you are playing Black.",
+      "fen": "4k3/8/8/8/8/8/8/4K3 b - - 0 1",
+      "orientation": "black",
+      "task": {
+       "kind": "square",
+       "prompt": "Find these squares from Black's side.",
+       "solution": [],
+       "hint": "The kings are on **e8** (bottom) and **e1** (top).",
+       "success": "Fantastic! You can find any square from either side.",
+       "squares": [
+        "d5",
+        "f2",
+        "a7",
+        "h3"
+       ],
+       "blind": true
+      }
+     }
+    ]
+   },
+   {
+    "id": "bv-counting",
+    "title": "Counting material",
+    "summary": "Add up piece values to see who is ahead.",
+    "steps": [
+     {
+      "text": "Pieces have rough point values: **pawn 1**, **knight 3**, **bishop 3**, **rook 5**, **queen 9**. The king is priceless, so we don't count it.\n\nAdd up each side's points and compare: that is the **material** balance.",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "orientation": "white"
+     },
+     {
+      "text": "Count the pieces on both sides.",
+      "fen": "r5k1/pp3ppp/2n5/8/8/2N2N2/PP3PPP/3R2K1 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "count",
+       "prompt": "Who is ahead, and by how much?",
+       "solution": [],
+       "hint": "The pawns are equal. Compare the knights.",
+       "success": "Right! White has an extra knight: **+3**.",
+       "answer": 3,
+       "choices": [
+        -3,
+        -1,
+        0,
+        1,
+        3
+       ]
+      }
+     },
+     {
+      "text": "Different pieces this time. Add carefully.",
+      "fen": "3rr1k1/pp4pp/8/8/8/4B3/PP4PP/3R2K1 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "count",
+       "prompt": "Who is ahead, and by how much?",
+       "solution": [],
+       "hint": "A rook is worth 5 and a bishop 3.",
+       "success": "Exactly: two rooks (10) against rook and bishop (8), so **Black is +2**. Winning a rook for a bishop or knight is called **winning the exchange**.",
+       "answer": -2,
+       "choices": [
+        -3,
+        -2,
+        0,
+        2,
+        3
+       ]
+      }
+     },
+     {
+      "text": "A queen against a team of smaller pieces. Who has more?",
+      "fen": "3r2k1/pp3ppp/2b1p3/8/8/8/PP2QPPP/6K1 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "count",
+       "prompt": "Who is ahead, and by how much?",
+       "solution": [],
+       "hint": "Count the pawns too: Black has one more.",
+       "success": "Equal! A queen (9) is worth about a rook, a bishop and a pawn (5 + 3 + 1). Different pieces, same total.",
+       "answer": 0,
+       "choices": [
+        -5,
+        -1,
+        0,
+        1,
+        5
+       ]
+      }
+     },
+     {
+      "text": "Counting after every capture keeps you from giving pieces away. But remember: material isn't everything. **Checkmate beats any amount of extra pieces!**",
+      "fen": "3r2k1/pp3ppp/2b1p3/8/8/8/PP2QPPP/6K1 w - - 0 1",
+      "orientation": "white"
+     }
+    ]
+   },
+   {
+    "id": "bv-hanging",
+    "title": "Spot the hanging piece",
+    "summary": "Find pieces that can be taken for free.",
+    "steps": [
+     {
+      "text": "A piece is **hanging** when an enemy piece attacks it and nothing defends it, or when a **cheaper** piece attacks it. Here the black knight on c6 is attacked by the bishop and has no defender.\n\nBefore every move, ask yourself: *which pieces are hanging?*",
+      "fen": "4k3/8/2n5/1B6/8/8/8/4K3 w - - 0 1",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "b5",
+        "to": "c6",
+        "color": "red"
+       }
+      ],
+      "highlights": [
+       "c6"
+      ]
+     },
+     {
+      "text": "Black's queen has just jumped to b6.",
+      "fen": "r1b1kb1r/pp2pppp/1qn2n2/2pp4/3P1B2/2P1PN2/PP3PPP/RN1QKB1R w KQkq - 1 6",
+      "orientation": "white",
+      "task": {
+       "kind": "hanging",
+       "prompt": "Click White's hanging piece.",
+       "solution": [],
+       "hint": "Follow the queen's lines from b6.",
+       "success": "Yes! The **b2 pawn** is attacked by the queen and nothing defends it. A move like **Qb3** or **Qc2** fixes that.",
+       "squares": [
+        "b2"
+       ]
+      }
+     },
+     {
+      "text": "White has just captured on d5 with the knight. You are Black.",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
+      "orientation": "black",
+      "task": {
+       "kind": "hanging",
+       "prompt": "Click White's hanging piece.",
+       "solution": [],
+       "hint": "Which white piece stands right next to your pieces?",
+       "success": "Correct! Nothing defends the **knight on d5**. Your f6 knight looks pinned, but **Nxd5!** works: if **Bxd8**, then **Bb4+** wins the queen back and you stay a piece up. This is the famous **Elephant Trap**.",
+       "squares": [
+        "d5"
+       ]
+      }
+     },
+     {
+      "text": "**Blunder check:** before you move, look at every piece, yours and your opponent's, and ask what it attacks and what defends it. It takes a few seconds and saves many games.",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
+      "orientation": "black",
+      "arrows": [
+       {
+        "from": "f6",
+        "to": "d5",
+        "color": "green"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "bv-many-hanging",
+    "title": "More than one loose piece",
+    "summary": "Find every hanging piece, on both sides.",
+    "steps": [
+     {
+      "text": "Sometimes **more than one** piece is hanging, and they can belong to either side. Click all of them, then press **Check**.",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "orientation": "white"
+     },
+     {
+      "text": "Black's knight has just jumped to f6.",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "orientation": "white",
+      "task": {
+       "kind": "hanging",
+       "prompt": "Find **both** of White's hanging pieces.",
+       "solution": [],
+       "hint": "What does the knight on f6 attack?",
+       "success": "Exactly: the **queen on h5** and the **pawn on e4** are both attacked. But before rescuing them, always look for checks: here **Qxf7#** is checkmate!",
+       "squares": [
+        "h5",
+        "e4"
+       ]
+      }
+     },
+     {
+      "text": "Pawns make great attackers because they are worth the least.",
+      "fen": "r1bqk2r/ppp2ppp/2n2n2/2bpP3/2Bp4/2P2N2/PP3PPP/RNBQK2R w KQkq d6 0 7",
+      "orientation": "white",
+      "task": {
+       "kind": "hanging",
+       "prompt": "Both sides have a piece attacked by a pawn. Click both.",
+       "solution": [],
+       "hint": "Look at the pawns on e5 and d5.",
+       "success": "Right! The e5 pawn hits the **knight on f6**, and the d5 pawn hits the **bishop on c4**. A pawn attacking a piece is a big threat.",
+       "squares": [
+        "f6",
+        "c4"
+       ]
+      }
+     },
+     {
+      "text": "White's knight has just landed on d5. You are Black.",
+      "fen": "rnb1k1nr/pppp1ppp/5q2/2bNp3/4P3/5N2/PPPP1PPP/R1BQKB1R b KQkq - 5 4",
+      "orientation": "black",
+      "task": {
+       "kind": "hanging",
+       "prompt": "Which of your pieces are hanging? There are two.",
+       "solution": [],
+       "hint": "A knight attacks in an L shape, up to eight squares.",
+       "success": "Well spotted! The knight attacks your **queen on f6** and the **pawn on c7**, and **Nxc7+** would also fork your king and rook.",
+       "squares": [
+        "f6",
+        "c7"
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "id": "bv-best-plan",
+    "title": "Pick the best plan",
+    "summary": "Compare candidate moves before you choose.",
+    "steps": [
+     {
+      "text": "Strong players compare a few **candidate moves** before choosing. Each option shows an arrow on the board: hover or tap an option to see it, then pick the best one.",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "orientation": "white"
+     },
+     {
+      "text": "Remember this position? It's White's move.",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "orientation": "white",
+      "task": {
+       "kind": "choice",
+       "prompt": "Which move is best?",
+       "solution": [],
+       "success": "Checkmate! Always look at **checks and captures** first.",
+       "options": [
+        {
+         "text": "Qh3: save the queen",
+         "arrows": [
+          {
+           "from": "h5",
+           "to": "h3",
+           "color": "blue"
+          }
+         ],
+         "correct": false,
+         "explain": "Safe, but you missed a checkmate in one!"
+        },
+        {
+         "text": "Qxf7#: take on f7",
+         "arrows": [
+          {
+           "from": "h5",
+           "to": "f7",
+           "color": "green"
+          }
+         ],
+         "correct": true,
+         "explain": "Checkmate! Only the king defended f7, and the bishop on c4 backs up the queen."
+        },
+        {
+         "text": "Qxe5+: grab a pawn with check",
+         "arrows": [
+          {
+           "from": "h5",
+           "to": "e5",
+           "color": "yellow"
+          }
+         ],
+         "correct": false,
+         "explain": "The knight on c6 defends e5: after **Nxe5** your queen is gone."
+        }
+       ]
+      }
+     },
+     {
+      "text": "Black's queen is attacking your b2 pawn.",
+      "fen": "r1b1kb1r/pp2pppp/1qn2n2/2pp4/3P1B2/2P1PN2/PP3PPP/RN1QKB1R w KQkq - 1 6",
+      "orientation": "white",
+      "task": {
+       "kind": "choice",
+       "prompt": "What is your plan?",
+       "solution": [],
+       "success": "Good plan! Defend first, then carry on developing.",
+       "options": [
+        {
+         "text": "Ne5: ignore it and attack",
+         "arrows": [
+          {
+           "from": "f3",
+           "to": "e5",
+           "color": "yellow"
+          }
+         ],
+         "correct": false,
+         "explain": "Black simply takes on b2, winning a pawn and attacking your rook."
+        },
+        {
+         "text": "Bc7: attack the queen",
+         "arrows": [
+          {
+           "from": "f4",
+           "to": "c7",
+           "color": "red"
+          }
+         ],
+         "correct": false,
+         "explain": "Nothing defends the bishop on c7, so the queen just takes it."
+        },
+        {
+         "text": "Qb3: defend b2 and offer a trade",
+         "arrows": [
+          {
+           "from": "d1",
+           "to": "b3",
+           "color": "green"
+          }
+         ],
+         "correct": true,
+         "explain": "Solid: b2 is protected, and a queen trade would leave you with a healthy position."
+        }
+       ]
+      }
+     },
+     {
+      "text": "The Elephant Trap again. You are Black.",
+      "fen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
+      "orientation": "black",
+      "task": {
+       "kind": "choice",
+       "prompt": "Your f6 knight is pinned. Can you still take on d5?",
+       "solution": [],
+       "success": "Yes! A pin is only dangerous if the piece behind can really be taken for free.",
+       "options": [
+        {
+         "text": "Nxd5: take the knight",
+         "arrows": [
+          {
+           "from": "f6",
+           "to": "d5",
+           "color": "green"
+          }
+         ],
+         "correct": true,
+         "explain": "If **Bxd8**, then **Bb4+** wins the queen back and you end up a piece ahead."
+        },
+        {
+         "text": "c6: chase the knight away",
+         "arrows": [
+          {
+           "from": "c7",
+           "to": "c6",
+           "color": "blue"
+          }
+         ],
+         "correct": false,
+         "explain": "Playable, but you miss winning a whole knight."
+        },
+        {
+         "text": "Be7: break the pin first",
+         "arrows": [
+          {
+           "from": "f8",
+           "to": "e7",
+           "color": "yellow"
+          }
+         ],
+         "correct": false,
+         "explain": "Safe, but the free knight gets away."
+        }
+       ]
+      }
+     },
+     {
+      "text": "Final check-up: count the material.",
+      "fen": "r4rk1/pp3ppp/8/8/8/8/PP3PP1/R4RK1 w - - 0 1",
+      "orientation": "white",
+      "task": {
+       "kind": "count",
+       "prompt": "Who is ahead, and by how much?",
+       "solution": [],
+       "success": "Correct: Black has one extra pawn. You now have real board vision!",
+       "answer": -1,
+       "choices": [
+        -3,
+        -1,
+        0,
+        1,
+        3
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "guess-the-move",
+  "title": "Guess the Move: Master Games",
+  "category": "middlegame",
+  "level": "intermediate",
+  "description": "Sit in a legend's chair. Guess the next move in famous games: exact guesses score 3 points, strong alternatives earn partial credit, and every move is explained.",
+  "icon": "🏛️",
+  "lessons": [
+   {
+    "id": "gtm-legal",
+    "title": "Légal's Mate (1750)",
+    "summary": "A queen sacrifice that has fooled players for centuries.",
+    "steps": [
+     {
+      "text": "**Légal vs Saint Brie, Paris 1750.** One of the oldest recorded traps. Black has pinned White's knight to the queen with **...Bg4**. The knight looks stuck... or is it?",
+      "fen": "rn1qkbnr/ppp2p1p/3p2p1/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 5",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "g4",
+        "to": "d1",
+        "color": "red"
+       }
+      ]
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "rn1qkbnr/ppp2p1p/3p2p1/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 5",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "f3e5",
+        "g4d1",
+        "c4f7",
+        "e8e7",
+        "c3d5"
+       ],
+       "hint": "Is the pinned knight really stuck?",
+       "success": "Légal's Mate! A pin only matters if moving the pinned piece really loses something.",
+       "game": "Légal vs Saint Brie, Paris 1750",
+       "notes": [
+        "**Nxe5!** ignores the pin and offers the queen.",
+        "**Bxf7+**: the bishop checks and drags the king forward.",
+        "**Nd5#**: three minor pieces deliver mate. Black's extra queen is useless!"
+       ]
+      }
+     },
+     {
+      "text": "Black was greedy. Taking the queen walked into mate; **5...dxe5**, giving back a pawn, was much better. Always check what your opponent threatens before grabbing material."
+     }
+    ]
+   },
+   {
+    "id": "gtm-opera",
+    "title": "Morphy's Opera Game (1858)",
+    "summary": "Fast development and open lines crush a king stuck in the centre.",
+    "steps": [
+     {
+      "text": "**Paul Morphy vs Duke Karl of Brunswick & Count Isouard, Paris 1858**, played in a box at the opera! After eight moves Morphy is far ahead in development, while Black's king is still in the centre.",
+      "fen": "rn2kb1r/pp2qppp/2p2n2/4p3/2B1P3/1QN5/PPP2PPP/R1B1K2R w KQkq - 0 9",
+      "orientation": "white"
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "rn2kb1r/pp2qppp/2p2n2/4p3/2B1P3/1QN5/PPP2PPP/R1B1K2R w KQkq - 0 9",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "c1g5",
+        "b7b5",
+        "c3b5",
+        "c6b5",
+        "c4b5",
+        "b8d7",
+        "e1c1",
+        "a8d8"
+       ],
+       "hint": "Develop a piece with a threat.",
+       "success": "Great attacking play! Black replied **12...Rd8**. Now finish the job.",
+       "game": "Paul Morphy vs Duke Karl & Count Isouard, Paris 1858",
+       "notes": [
+        "**Bg5** develops with a pin on the f6 knight.",
+        "**Nxb5!** gives up a knight to rip open the lines to Black's king.",
+        "**Bxb5+**: check, and now the d7 knight will be pinned.",
+        "**O-O-O** brings the rook straight to the d-file, aiming at the pinned knight."
+       ]
+      }
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "3rkb1r/p2nqppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/2KR3R w k - 3 13",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "d1d7",
+        "d8d7",
+        "h1d1",
+        "e7e6",
+        "b5d7",
+        "f6d7",
+        "b3b8",
+        "d7b8",
+        "d1d8"
+       ],
+       "hint": "The d7 knight is pinned. Pile up on it.",
+       "success": "Brilliant! A model of quick development and attacking the uncastled king.",
+       "game": "Paul Morphy vs Duke Karl & Count Isouard, Paris 1858",
+       "notes": [
+        "**Rxd7!** gives a rook to keep the attack rolling.",
+        "**Rd1**: the second rook joins the pin on d7.",
+        "**Bxd7+** removes another defender.",
+        "**Qb8+!!** A queen sacrifice that drags the knight away from d7.",
+        "**Rd8#**: checkmate with the last two pieces, bishop and rook."
+       ]
+      }
+     },
+     {
+      "text": "Morphy used every piece, and gave most of them away, to mate with just a bishop and a rook. **Develop fast, open lines, and attack the king that hasn't castled.**"
+     }
+    ]
+   },
+   {
+    "id": "gtm-reti",
+    "title": "Réti vs Tartakower (1910)",
+    "summary": "A queen sacrifice and a double check end the game in 11 moves.",
+    "steps": [
+     {
+      "text": "**Richard Réti vs Savielly Tartakower, Vienna 1910.** Black's queen has grabbed a pawn on e5, but Black's king is still in the middle and White's pieces are ready to pounce.",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/4q3/4N3/3Q4/PPPB1PPP/R3KBNR w KQkq - 0 8",
+      "orientation": "white"
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/4q3/4N3/3Q4/PPPB1PPP/R3KBNR w KQkq - 0 8",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "e1c1",
+        "f6e4",
+        "d3d8",
+        "e8d8",
+        "d2g5",
+        "d8c7",
+        "g5d8"
+       ],
+       "hint": "Get your king safe and your rook to the open file.",
+       "success": "Superb! Double checks are the most forcing moves in chess.",
+       "game": "Richard Réti vs Savielly Tartakower, Vienna 1910",
+       "notes": [
+        "**O-O-O!** castles and puts the rook on the open d-file. White doesn't mind losing the e4 knight.",
+        "**Qd8+!!** A queen sacrifice! The king must take.",
+        "**Bg5+** is a **double check**: bishop and rook both give check, so the king must move.",
+        "**Bd8#**: the bishop lands on d8 to mate."
+       ]
+      }
+     },
+     {
+      "text": "Only 11 moves! Tartakower took a pawn and left his king in the centre. **When your opponent's king is stuck in the middle, open the lines, even at the cost of your queen.**"
+     }
+    ]
+   },
+   {
+    "id": "gtm-immortal",
+    "title": "The Immortal Game (1851)",
+    "summary": "Anderssen gives away both rooks and his queen, and mates.",
+    "steps": [
+     {
+      "text": "**Adolf Anderssen vs Lionel Kieseritzky, London 1851.** Black's queen has just taken on b2 and now attacks the rook on a1. White has already given up a bishop. Can you find Anderssen's famous sacrifices?",
+      "fen": "rnb1k1nr/p2p1ppp/8/1pbN1N1P/4PBP1/3P1Q2/PqP5/R4KR1 w kq - 0 18",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "b2",
+        "to": "a1",
+        "color": "red"
+       }
+      ]
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "rnb1k1nr/p2p1ppp/8/1pbN1N1P/4PBP1/3P1Q2/PqP5/R4KR1 w kq - 0 18",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "f4d6",
+        "c5g1",
+        "e4e5",
+        "b2a1",
+        "f1e2",
+        "b8a6"
+       ],
+       "hint": "Which square would Black's king like to run to? Take it away.",
+       "success": "Bold play! Now comes the finish.",
+       "game": "Adolf Anderssen vs Lionel Kieseritzky, London 1851",
+       "notes": [
+        "**Bd6!** ignores both attacked rooks and takes the f8 square away from Black's king.",
+        "**e5!** blocks the long diagonal, so the black queen can no longer defend g7.",
+        "**Ke2** steps out of check. White is down two rooks, yet Black's pieces are far from home."
+       ]
+      }
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "r1b1k1nr/p2p1ppp/n2B4/1p1NPN1P/6P1/3P1Q2/P1P1K3/q5b1 w kq - 2 21",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "f5g7",
+        "e8d8",
+        "f3f6",
+        "g8f6",
+        "d6e7"
+       ],
+       "hint": "Start with a check.",
+       "success": "Immortal indeed! White gave a bishop, two rooks and the queen.",
+       "game": "Adolf Anderssen vs Lionel Kieseritzky, London 1851",
+       "notes": [
+        "**Nxg7+**: check, driving the king to d8.",
+        "**Qf6+!!** gives the queen too, pulling the knight away from guarding e7.",
+        "**Be7#**: the minor pieces mate a king surrounded by Black's extra material."
+       ]
+      }
+     },
+     {
+      "text": "**What counts is the pieces that take part in the attack, not the ones on the scoreboard.** Black had a huge material lead, but none of it could defend the king."
+     }
+    ]
+   },
+   {
+    "id": "gtm-evergreen",
+    "title": "The Evergreen Game (1852)",
+    "summary": "A quiet rook move, a queen sacrifice and a double check.",
+    "steps": [
+     {
+      "text": "**Adolf Anderssen vs Jean Dufresne, Berlin 1852.** White's pieces swarm around Black's king in the centre, but Black is threatening **...Qxf3** and **...Rxg2+**. It's White's move.",
+      "fen": "1r2k1r1/pbppnp1p/1bn2P2/7q/Q7/B1PB1N2/P4PPP/R3R1K1 w - - 1 19",
+      "orientation": "white",
+      "arrows": [
+       {
+        "from": "g8",
+        "to": "g2",
+        "color": "red"
+       },
+       {
+        "from": "h5",
+        "to": "f3",
+        "color": "red"
+       }
+      ]
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "1r2k1r1/pbppnp1p/1bn2P2/7q/Q7/B1PB1N2/P4PPP/R3R1K1 w - - 1 19",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "a1d1",
+        "h5f3",
+        "e1e7",
+        "c6e7"
+       ],
+       "hint": "Bring your last piece into the game.",
+       "success": "Fearless! Now the d-file is open for business.",
+       "game": "Adolf Anderssen vs Jean Dufresne, Berlin 1852",
+       "notes": [
+        "**Rad1!!** A quiet move that ignores Black's threats and brings the last piece into the attack.",
+        "**Rxe7+!** removes a defender with check."
+       ]
+      }
+     },
+     {
+      "text": "You are playing White. Look for forcing moves first: checks, captures and threats.",
+      "fen": "1r2k1r1/pbppnp1p/1b3P2/8/Q7/B1PB1q2/P4PPP/3R2K1 w - - 0 21",
+      "task": {
+       "kind": "guess",
+       "prompt": "Guess White's next move. An exact guess scores 3 points; a strong alternative earns partial credit.",
+       "solution": [
+        "a4d7",
+        "e8d7",
+        "d3f5",
+        "d7e8",
+        "f5d7",
+        "e8f8",
+        "a3e7"
+       ],
+       "hint": "Every move is a check. Start with the biggest sacrifice.",
+       "success": "Evergreen! A finish that is still admired more than 170 years later.",
+       "game": "Adolf Anderssen vs Jean Dufresne, Berlin 1852",
+       "notes": [
+        "**Qxd7+!!** The queen sacrifice opens the d-file.",
+        "**Bf5+**: a double check from the bishop and the rook on d1.",
+        "**Bd7+** keeps checking and leaves the king no escape.",
+        "**Bxe7#**: mate! One of the most beautiful finishes ever played."
+       ]
+      }
+     },
+     {
+      "text": "**Bring every piece into the attack before going for the kill.** The quiet **Rad1** made all the fireworks possible."
+     }
+    ]
+   }
+  ]
  }
 ]
