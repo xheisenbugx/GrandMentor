@@ -1,0 +1,627 @@
+{
+  "kq-vs-k": {
+    "title": "Mate de dama",
+    "description": "Dê xeque-mate no rei solitário com seu rei e sua dama. É o mate básico mais importante: você deve conseguir fazê-lo em menos de 10 lances.",
+    "hint": "Coloque a dama a um salto de cavalo do rei inimigo para fechá-lo numa caixa e depois aproxime seu rei.",
+    "technique": [
+      "Encolha a caixa do rei com a dama (a um salto de cavalo, ela o acompanha)",
+      "Empurre o rei para a borda",
+      "Aproxime seu rei: a dama não dá mate sozinha",
+      "Sempre deixe um lance legal ao rei até o mate (nada de afogamento!)"
+    ],
+    "pitfall": "Cuidado com o afogamento: até o xeque final, sempre deixe uma casa livre para o rei negro.",
+    "lesson": [
+      "A dama não consegue dar mate sozinha. Primeiro use-a para **encolher a caixa** onde vive o rei negro.",
+      "Depois traga seu rei. O mate acontece na borda, com a dama **protegida pelo seu rei**.",
+      "A grande armadilha é o **afogamento**: aqui as negras não têm nenhum lance legal e não estão em xeque. É empate!"
+    ]
+  },
+  "kq-vs-k-center": {
+    "title": "Mate de dama a partir do centro",
+    "description": "O rei negro começa no meio do tabuleiro. Leve-o até a borda e dê o mate.",
+    "hint": "Qf6! tira um bloco inteiro de casas de uma vez.",
+    "technique": [
+      "Primeiro restrinja o rei com a dama",
+      "Aproxime seu rei da borda",
+      "Dê mate com a dama protegida pelo rei"
+    ],
+    "pitfall": "Lento demais ou afogamento. Mantenha a dama a um salto de cavalo do rei e traga seu rei para ajudar.",
+    "lesson": [
+      "**Qf6!** controla a 6ª fileira e a coluna f ao mesmo tempo. O rei negro fica preso numa caixa menor.",
+      "Continue encolhendo a caixa com lances tranquilos de dama e depois leve seu rei para dar o mate na borda."
+    ]
+  },
+  "kr-vs-k": {
+    "title": "Mate de torre",
+    "description": "Dê xeque-mate no rei solitário com rei e torre. O rei precisa ajudar, e a oposição é a chave.",
+    "hint": "Corte o rei com a torre ao longo de uma fileira e depois aproxime seu rei até ficar de frente para o rei inimigo.",
+    "technique": [
+      "Corte o rei ao longo de uma fileira ou coluna",
+      "Coloque seu rei de frente para o rei inimigo (oposição)",
+      "Dê xeque pela borda quando os reis estiverem frente a frente",
+      "Use um lance de espera com a torre para ganhar a oposição"
+    ],
+    "pitfall": "A torre sozinha não dá mate. Corte o rei, coloque seu rei de frente para ele e só dê xeque quando os reis estiverem frente a frente.",
+    "lesson": [
+      "**Ra7!** corta o rei negro na última fileira. Ele nunca mais poderá voltar.",
+      "Agora avance seu rei até ficar de frente para o rei negro. Com os reis frente a frente, um xeque de torre na borda é **mate**."
+    ]
+  },
+  "kr-vs-k-center": {
+    "title": "Mate de torre a partir do centro",
+    "description": "Uma versão mais difícil: o rei inimigo está centralizado. Feche-o passo a passo.",
+    "hint": "Comece com Rh4 ou Rh5 para cortar o rei e depois aproxime seu rei.",
+    "technique": [
+      "Diminua a caixa a cada lance de torre",
+      "Proteja a torre com o rei quando ela for atacada",
+      "Oposição + xeque na borda = mate"
+    ],
+    "pitfall": "A caixa não diminuiu. Cada lance de torre deve tirar uma fileira ou coluna, e mantenha a torre longe do rei negro.",
+    "lesson": [
+      "Comece cortando o rei: **Rh4** o mantém acima da 4ª fileira.",
+      "Aproxime seu rei. Quando os reis ficarem frente a frente, dê xeque; caso contrário, diminua a caixa em uma fileira."
+    ]
+  },
+  "two-rooks-ladder": {
+    "title": "Duas torres: a escada",
+    "description": "Com duas torres você nem precisa do rei. Leve o rei inimigo até a borda como quem sobe uma escada.",
+    "hint": "Uma torre corta uma fileira e a outra dá xeque na fileira seguinte. Mantenha as torres longe do rei.",
+    "technique": [
+      "A torre 1 corta uma fileira",
+      "A torre 2 dá xeque na fileira seguinte",
+      "Vá alternando até o rei chegar à borda",
+      "Se o rei atacar uma torre, leve-a para o outro lado do tabuleiro"
+    ],
+    "pitfall": "Uma torre chegou perto demais do rei. Se o rei atacar uma torre, leve-a para o outro lado do tabuleiro.",
+    "lesson": [
+      "Uma torre vigia uma fileira e a outra dá xeque na seguinte: **Rh4** e depois **Ra5+**.",
+      "Continue subindo a escada até o rei chegar à borda: aí é mate."
+    ]
+  },
+  "two-bishops-mate": {
+    "title": "Mate com dois bispos",
+    "description": "Dois bispos lado a lado formam uma muralha que o rei não consegue atravessar. Leve-o até um canto e dê o mate.",
+    "hint": "Coloque os bispos lado a lado no centro e use seu rei para empurrar o rei inimigo para trás.",
+    "technique": [
+      "Bispos lado a lado formam uma muralha diagonal intransponível",
+      "O rei ajuda a tirar casas",
+      "Leve o rei até um canto",
+      "Cuidado com o afogamento no canto"
+    ],
+    "pitfall": "O rei escapou da região do canto ou houve afogamento. Mantenha os bispos lado a lado e use seu rei para empurrar.",
+    "lesson": [
+      "Bispos lado a lado formam uma **muralha diagonal** que o rei não consegue atravessar.",
+      "Use seu rei para levar o rei inimigo até um canto. A imagem final é esta."
+    ]
+  },
+  "bishop-knight-mate": {
+    "title": "Mate de bispo e cavalo",
+    "description": "O mate básico mais difícil: pode levar até 33 lances. Só dá para forçar o mate num canto da **cor do bispo** (aqui, a8 ou h1).",
+    "hint": "Primeiro empurre o rei para a borda e depois use a 'manobra W' do cavalo para levá-lo a um canto claro.",
+    "technique": [
+      "Centralize as três peças",
+      "Leve o rei até a borda",
+      "Se ele fugir para o canto errado (escuro), use a manobra W do cavalo",
+      "Dê mate no canto da cor do bispo (a8 ou h1)"
+    ],
+    "pitfall": "Só dá para forçar o mate num canto da cor do bispo. Leve o rei até lá com a manobra W do cavalo, e seja rápido: a regra dos 50 lances está de olho.",
+    "lesson": [
+      "Primeiro centralize as três peças e empurre o rei negro para a borda.",
+      "O mate só é possível num canto da **cor do bispo**: aqui, a8 ou h1 (casas claras).",
+      "Se o rei fugir para um canto errado (escuro), a **manobra W** do cavalo o persegue pela borda até o canto certo."
+    ]
+  },
+  "queen-vs-rook": {
+    "title": "Dama contra torre",
+    "description": "Dama contra torre é vitória, mas a técnica é exigente. Ganhe a torre com um garfo ou force o mate.",
+    "hint": "Busque a posição de Philidor: coloque o lado que defende em zugzwang para que a torre tenha de se separar do rei.",
+    "technique": [
+      "Mantenha seu rei perto do rei inimigo",
+      "Use o zugzwang: faça um lance de espera com a dama",
+      "Assim que a torre se afastar do rei, procure um garfo de dama (xeque + torre)"
+    ],
+    "pitfall": "A torre continuou dando xeques ou armou um truque de afogamento. Mantenha seu rei por perto e espere a torre se afastar do rei.",
+    "lesson": [
+      "A torre está grudada no seu rei. Use xeques e **lances de espera com a dama** até as negras serem obrigadas a jogar e a torre ter de se afastar.",
+      "Quando a torre se separar do rei, procure um **xeque que dê garfo** no rei e na torre."
+    ]
+  },
+  "kp-key-squares": {
+    "title": "Rei e peão: casas-chave",
+    "description": "Promova seu peão. Com o rei à frente do peão na 5ª fileira, você sempre consegue chegar a uma casa-chave.",
+    "hint": "Jogue Kd6 ou Kf6: o rei à frente do peão ganha.",
+    "technique": [
+      "Rei à frente do peão, não atrás dele",
+      "Chegue a uma casa-chave (d6, e6 ou f6)",
+      "Use a oposição quando os reis se encontrarem"
+    ],
+    "pitfall": "O rei negro se colocou à frente do seu peão com a oposição: isso é empate. Mantenha seu rei à frente do peão e chegue primeiro a uma casa-chave.",
+    "lesson": [
+      "**Casas-chave**: se seu rei chegar a d6, e6 ou f6, o peão promove, faça as negras o que fizerem.",
+      "Primeiro o rei, depois o peão: só avance o peão quando o rei tiver aberto o caminho."
+    ]
+  },
+  "kp-opposition": {
+    "title": "Tomar a oposição",
+    "description": "Só um lance ganha. Tome a oposição e escolte o peão.",
+    "hint": "Ke3!: fique de frente para o rei negro com uma casa entre os reis.",
+    "technique": [
+      "Reis na mesma coluna com uma casa entre eles = oposição",
+      "Quem NÃO tem de jogar tem a oposição",
+      "Contorne: quando o rei inimigo sair do caminho, avance pelo outro lado"
+    ],
+    "pitfall": "Você perdeu a oposição: o rei negro ficou na frente do seu sendo a sua vez de jogar, e bloqueou o peão.",
+    "lesson": [
+      "**Oposição**: reis frente a frente com uma casa entre eles. Quem *não* tem de jogar vence a disputa.",
+      "Depois de **Ke3**, as negras têm de ceder, e seu rei caminha até uma casa-chave: d4, e4 ou f4."
+    ]
+  },
+  "kp-king-sixth": {
+    "title": "Rei na sexta fileira",
+    "description": "Seu rei está ao lado do peão. Um lance ganha; os outros empatam.",
+    "hint": "Kb6: o rei à frente do peão na 6ª fileira sempre ganha.",
+    "technique": [
+      "Rei na 6ª fileira à frente do peão ganha, independentemente da oposição",
+      "Depois avance o peão com o apoio do rei"
+    ],
+    "pitfall": "Avançar o peão cedo demais permite que o rei negro o bloqueie. Primeiro o rei, depois o peão.",
+    "lesson": [
+      "Com seu rei na 6ª fileira **à frente** do peão, sempre se ganha, seja quem for a jogar.",
+      "De b6 seu rei controla as casas à frente do peão, então ele pode caminhar até b8."
+    ]
+  },
+  "kp-defend-opposition": {
+    "title": "Defesa: mantenha a oposição",
+    "description": "Você está defendendo. Mantenha seu rei à frente do peão e use a oposição para empatar.",
+    "hint": "Fique na coluna e, à frente do peão. Quando o rei branco chegar à 6ª fileira, tome a oposição.",
+    "technique": [
+      "Fique bem à frente do peão",
+      "Recue em linha reta (para e8), não para o lado",
+      "Quando o rei branco chegar à 6ª fileira, tome a oposição",
+      "Se o peão chegar à 7ª com xeque, vá para a casa do canto à frente"
+    ],
+    "pitfall": "O rei branco se colocou à frente do peão numa casa-chave. Mantenha seu rei de frente para ele e, quando ele avançar, tome a oposição.",
+    "lesson": [
+      "O lugar do seu rei é **bem à frente do peão**. Fique na coluna e e encare o rei branco.",
+      "Se o peão chegar a e7 com seu rei em e8, as brancas só conseguem dar afogamento: esta é a imagem do empate."
+    ]
+  },
+  "rook-pawn-draw": {
+    "title": "Peão de torre: corra para o canto",
+    "description": "O peão de torre é o peão mais fraco. Se o rei que defende chegar ao canto, nunca mais será expulso.",
+    "hint": "Mantenha seu rei em a8, b8 ou por perto; as brancas só conseguem dar afogamento.",
+    "technique": [
+      "Leve o rei ao canto à frente do peão",
+      "Vá e volte entre a8 e b8/b7",
+      "A única tentativa das brancas termina em afogamento"
+    ],
+    "pitfall": "Seu rei saiu da região do canto. Contra um peão de torre, fique em a8/b8 e nunca se afaste.",
+    "lesson": [
+      "O peão de torre é o peão mais fraco: quando seu rei chega ao **canto**, nunca mais pode ser expulso.",
+      "Basta ir e voltar entre a8 e b8. A melhor tentativa das brancas termina em afogamento."
+    ]
+  },
+  "square-of-the-pawn": {
+    "title": "O quadrado do peão",
+    "description": "O rei branco está longe. Seu rei consegue alcançar o peão passado?",
+    "hint": "Entre no quadrado do peão pela diagonal: Kg7!",
+    "technique": [
+      "Desenhe o quadrado do peão até sua casa de promoção",
+      "Se seu rei conseguir entrar no quadrado, ele alcança o peão",
+      "Lances na diagonal são tão rápidos quanto em linha reta"
+    ],
+    "pitfall": "Seu rei ficou fora do quadrado do peão e não conseguiu alcançá-lo.",
+    "lesson": [
+      "Desenhe um **quadrado** do peão até sua casa de promoção. Se seu rei conseguir entrar nele, alcança o peão.",
+      "**Kg7!** entra no quadrado. A partir daí, vá direto para o peão."
+    ]
+  },
+  "reti-manoeuvre": {
+    "title": "A manobra de Réti",
+    "description": "O famoso estudo de Réti (1921). O rei branco parece irremediavelmente longe dos dois peões e, mesmo assim, é empate!",
+    "hint": "Kg7! O rei persegue o peão h e se aproxima de c6 ao mesmo tempo, caminhando pela diagonal.",
+    "technique": [
+      "Um rei que anda na diagonal pode perseguir dois objetivos ao mesmo tempo",
+      "Ameace apoiar seu próprio peão",
+      "Obrigue as negras a gastar tempo e depois entre no quadrado do peão h"
+    ],
+    "pitfall": "Seu rei perseguiu um único objetivo. Caminhe pela diagonal para perseguir o peão h e apoiar seu peão c ao mesmo tempo.",
+    "lesson": [
+      "**Kg7!**: o rei desce pela diagonal, perseguindo o peão h **e** indo em direção ao seu peão c.",
+      "Andar na diagonal é tão rápido quanto em linha reta, então um só caminho cumpre duas tarefas. As negras precisam escolher, e de qualquer jeito é empate."
+    ]
+  },
+  "outside-passed-pawn": {
+    "title": "O peão passado afastado",
+    "description": "Seu peão a está longe dos outros peões. Use-o como isca para ganhar os peões da ala do rei.",
+    "hint": "Avance o peão a. Quando o rei negro correr atrás dele, leve seu rei até os peões da ala do rei.",
+    "technique": [
+      "O peão passado afastado arrasta o rei inimigo para longe",
+      "Seu rei ataca os peões que ficaram para trás",
+      "Não tenha pressa de promover se o rei já está no quadrado: use o peão como isca"
+    ],
+    "pitfall": "Seu rei não chegou a tempo aos peões da ala do rei. Use o peão a como isca e depois leve seu rei direto para a outra ala.",
+    "lesson": [
+      "Seu peão a está longe dos outros peões. Avance-o: o rei negro precisa correr para pará-lo.",
+      "Enquanto o rei negro está ocupado na coluna a, **seu rei faz a festa** com os peões da ala do rei."
+    ]
+  },
+  "pawn-breakthrough": {
+    "title": "A ruptura de peões",
+    "description": "Três peões contra três, com os dois reis longe. Existe uma forma brilhante de criar um peão passado.",
+    "hint": "b6!!: depois de axb6 c6! ou cxb6 a6!, um peão branco promove.",
+    "technique": [
+      "Sacrifique primeiro o peão do meio",
+      "Depois sacrifique o segundo peão para abrir caminho",
+      "O último peão passa direto"
+    ],
+    "pitfall": "A ruptura só funciona com seus peões na 5ª fileira e o rei inimigo longe. Comece com b6!",
+    "lesson": [
+      "**b6!!**: se ...axb6, então c6!, e se ...cxb6, então a6!",
+      "Um dos seus peões rompe a barreira, e o rei negro em h8 está longe demais para pará-lo."
+    ]
+  },
+  "wrong-bishop": {
+    "title": "O peão de torre errado",
+    "description": "As brancas têm um bispo e um peão a mais e, mesmo assim, é empate: o bispo não controla a casa de promoção h8.",
+    "hint": "Fique no canto. Vá e volte entre h8 e g8 (ou g7). As brancas não conseguem expulsar você sem dar afogamento.",
+    "technique": [
+      "Peão de torre + bispo da cor errada = empate se o rei que defende chegar ao canto",
+      "Mantenha seu rei em h8/g8/g7",
+      "Não saia do canto"
+    ],
+    "pitfall": "Seu rei saiu do canto. Contra o bispo errado, o canto h8 é uma fortaleza: fique lá.",
+    "lesson": [
+      "O bispo branco é de casas claras, mas h8 é uma casa **escura**. O bispo nunca vai conseguir tirar seu rei do canto.",
+      "Vá e volte entre h8 e g8 (ou g7). As brancas só conseguem dar afogamento."
+    ]
+  },
+  "lucena": {
+    "title": "A posição de Lucena",
+    "description": "O final de torres vencedor mais importante. Seu peão está na 7ª, seu rei à frente dele, e o rei inimigo está cortado.",
+    "hint": "Construa a ponte: Rd4! e depois tire o rei e bloqueie os xeques com a torre na 4ª fileira.",
+    "technique": [
+      "Leve sua torre à 4ª fileira (Rd4)",
+      "Tire seu rei da frente do peão",
+      "Quando vierem os xeques, interponha a torre na coluna b (Rb4)",
+      "Promova o peão"
+    ],
+    "pitfall": "Os xeques não pararam ou o rei negro voltou. Mantenha o rei negro cortado e construa a ponte com sua torre na 4ª fileira.",
+    "lesson": [
+      "Sua torre separa o rei negro do peão. Agora **construa a ponte**: Rd4!",
+      "Saia com o rei. Quando a torre negra der xeque, caminhe em direção à sua torre e **bloqueie o xeque na 4ª fileira**."
+    ]
+  },
+  "philidor": {
+    "title": "A defesa de Philidor",
+    "description": "Você está com um peão a menos. Use a defesa de Philidor na terceira fileira para segurar o empate.",
+    "hint": "Mantenha sua torre na 6ª fileira até o peão avançar para e6; depois leve-a à 1ª fileira e dê xeques por trás.",
+    "technique": [
+      "A torre na sua 3ª fileira (aqui, a 6ª) impede o avanço do rei",
+      "Mantenha seu rei à frente do peão",
+      "Quando o peão chegar a e6, dê xeques por trás, de longe",
+      "O rei branco não tem onde se abrigar"
+    ],
+    "pitfall": "Sua torre saiu da 6ª fileira cedo demais (ou tarde demais) e deixou o rei branco se colocar à frente do peão.",
+    "lesson": [
+      "**Defesa de Philidor**: mantenha sua torre na **6ª fileira**. O rei branco não consegue avançar sem levar xeques.",
+      "Assim que o peão for para e6, ele deixa de abrigar seu rei: leve a torre à 1ª fileira e **dê xeques por trás**."
+    ]
+  },
+  "vancura": {
+    "title": "A posição de Vancura",
+    "description": "Torre contra torre e peão a. Com a torre branca à frente do peão, a defesa Vancura segura: ataque o peão pelo lado.",
+    "hint": "Mantenha sua torre na 6ª fileira atacando a6 pelo lado, e seu rei perto de g7/h7.",
+    "technique": [
+      "A torre ataca o peão pelo lado (de f6)",
+      "Seu rei fica em g7/h7, fora dos xeques de torre pela 7ª",
+      "Se o rei branco se aproximar, dê xeques pelo lado e volte à 6ª fileira"
+    ],
+    "pitfall": "Sua torre deixou de atacar o peão pelo lado. Na Vancura, ela fica na 6ª fileira até poder dar xeque por trás.",
+    "lesson": [
+      "A torre branca está presa à frente do seu peão. Ataque o peão de a6 **pelo lado** com sua torre na 6ª fileira.",
+      "Mantenha seu rei em g7/h7. Se o rei branco vier proteger o peão, dê xeque nele por trás."
+    ]
+  },
+  "rook-behind-passer": {
+    "title": "Torre atrás do peão passado",
+    "description": "A regra de Tarrasch: as torres ficam atrás dos peões passados. Sua torre apoia o peão a por trás, enquanto a torre negra fica presa, passiva, na frente dele.",
+    "hint": "A torre negra não pode sair de a7. Leve seu rei para a ala da dama (ou ataque os peões da ala do rei) e as negras ficam sem lances.",
+    "technique": [
+      "Torre atrás do seu peão passado",
+      "Avance o peão para amarrar a torre negra",
+      "Ative seu rei"
+    ],
+    "pitfall": "Sua torre ou seu rei perderam o controle. Mantenha a torre atrás do peão e use o rei para invadir enquanto as negras estão amarradas.",
+    "lesson": [
+      "**Regra de Tarrasch**: as torres ficam atrás dos peões passados. Sua torre empurra o peão a, enquanto a torre negra está presa na frente dele.",
+      "A torre negra não pode se mexer, então seu rei avança. Logo as negras ficam sem bons lances."
+    ]
+  },
+  "rook-vs-pawn": {
+    "title": "Torre contra peão",
+    "description": "A torre normalmente vence o peão, mas só se seu rei ajudar a tempo. Pare o peão e ganhe-o.",
+    "hint": "Traga seu rei em direção ao peão imediatamente (Kd2!) e use a torre para pará-lo por trás ou na coluna b.",
+    "technique": [
+      "Torre atrás ou na frente do caminho do peão",
+      "Aproxime seu rei do peão",
+      "Cuidado: se o peão promover com o apoio do rei inimigo, pode ser empate"
+    ],
+    "pitfall": "O peão avançou demais ou sua torre foi atacada. Primeiro o rei: leve-o em direção ao peão imediatamente.",
+    "lesson": [
+      "Seu rei precisa voltar já: **Kd2!** A torre sozinha não para um peão apoiado pelo seu rei.",
+      "Depois use a torre na coluna b para parar o peão e ganhe-o com o rei."
+    ]
+  },
+  "cut-off-king": {
+    "title": "Corte o rei",
+    "description": "Sua torre corta o rei negro ao longo da coluna d. Mantenha-o cortado e escolte o peão c.",
+    "hint": "Avance o rei junto com o peão; se as negras derem xeque pelo lado, aproxime-se da torre para bloquear.",
+    "technique": [
+      "O rei cortado não pode ajudar sua torre",
+      "Rei e peão avançam juntos",
+      "Busque a posição de Lucena"
+    ],
+    "pitfall": "O rei negro atravessou a coluna d. Mantenha o corte a qualquer custo.",
+    "lesson": [
+      "Sua torre na coluna d deixa o rei negro fora do jogo. **Nunca o deixe atravessar.**",
+      "Avance o peão com o rei ao lado. Se as negras derem xeque pelo lado, vá em direção à sua torre."
+    ]
+  },
+  "queen-vs-knight-pawn": {
+    "title": "Dama contra peão na 7ª (peão de cavalo)",
+    "description": "Um peão na 7ª apoiado pelo seu rei. Com um peão de cavalo (ou central), a dama ganha.",
+    "hint": "Dê xeque e ataque o peão para que o rei tenha de se colocar na frente dele. A cada vez, aproxime seu rei um passo.",
+    "technique": [
+      "Com xeques, obrigue o rei inimigo a ficar na frente do seu peão",
+      "Isso lhe dá um tempo livre para aproximar seu rei",
+      "Repita até seu rei ajudar a capturar o peão ou dar mate"
+    ],
+    "pitfall": "O peão promoveu ou escapou. Dê xeques até o rei ficar na frente do seu peão e então aproxime seu rei um passo.",
+    "lesson": [
+      "Dê xeque e ataque o peão até o rei negro ter de se colocar **na frente dele**, em b1.",
+      "Cada vez que o rei bloqueia o próprio peão, você ganha um lance livre: aproxime seu rei um passo. Repita."
+    ]
+  },
+  "triangulation-black": {
+    "title": "Triangulação de negras (Alburt–Kasparov 1978)",
+    "description": "Kasparov, de negras, ganhou este final com uma triangulação. O rei branco só pode ir e voltar entre f1, g1 e f2.",
+    "hint": "...Kf5! Kg1 Ke5!: seu rei volta a e4 com as brancas a jogar.",
+    "technique": [
+      "Encontre a posição de zugzwang (rei negro em e4, brancas a jogar)",
+      "Perca um tempo com um triângulo de rei f5–e5–e4",
+      "Depois invada por f4 e g3 para ganhar o peão de h3"
+    ],
+    "pitfall": "Você não perdeu o tempo. Chegue a esta mesma posição com as brancas a jogar: aí as brancas estão em zugzwang.",
+    "lesson": [
+      "Isto é um **zugzwang mútuo**: quem tem de jogar perde terreno. Perca um tempo com um triângulo: ...Kf5, ...Ke5, ...Ke4.",
+      "O rei branco só pode ir e voltar, então não consegue imitar você. Quando as brancas tiverem de ceder, seu rei entra e o peão f promove."
+    ]
+  },
+  "rook-triangulation": {
+    "title": "Triangulação com torre (Topalov–Karpov 2002)",
+    "description": "Até as torres podem perder um tempo. As brancas usam xeques para voltar à mesma posição com as negras a jogar.",
+    "hint": "Rh7+ Kd8 Rh8+ Kd7 Rh6: agora as negras estão em zugzwang.",
+    "technique": [
+      "Dê dois xeques que levem a torre de volta a h6",
+      "O rei negro tem de se afastar do peão",
+      "Depois liberte seu rei com Ka7 e promova"
+    ],
+    "pitfall": "Seu rei ficou preso na frente do peão. Perca um tempo com xeques de torre para que as negras tenham de jogar nesta posição.",
+    "lesson": [
+      "Se as negras tivessem de jogar aqui, perderiam. Use xeques para voltar com as negras a jogar: **Rh7+ Kd8 Rh8+ Kd7 Rh6**.",
+      "Em zugzwang, a torre ou o rei negro tem de ceder, e seu peão promove."
+    ]
+  },
+  "triangulation": {
+    "title": "Triangulação",
+    "description": "Com as negras a jogar, esta posição está perdida para elas, mas são as brancas que jogam. Perca um tempo com o rei para que as negras fiquem em zugzwang.",
+    "hint": "Ke5! Kc6 Kd4! Kd7 Kd5: o rei percorre um triângulo, enquanto o rei negro só pode ir e voltar entre duas casas.",
+    "technique": [
+      "Reconheça o zugzwang mútuo",
+      "Percorra com o rei um triângulo de três casas",
+      "Volte à mesma posição com o adversário a jogar",
+      "Depois invada com Ke6–d6–e7–d7"
+    ],
+    "pitfall": "Você passou a vez às negras na posição crítica. Triangule: Ke5, Kd4, Kd5.",
+    "lesson": [
+      "Com as negras a jogar, isto estaria perdido para elas. Percorra com o rei um **triângulo** (e5, d4, d5) e volte com as negras a jogar.",
+      "O rei negro só pode ir e voltar entre duas casas, então não consegue copiar seu triângulo. Aí seu rei invade."
+    ]
+  },
+  "kp-far-pawn": {
+    "title": "Rei e peão desde o início",
+    "description": "Mesmo com o peão na casa inicial, as brancas ganham, desde que o rei vá na frente.",
+    "hint": "Primeiro Kd2 ou Kf2: o rei tem de abrir caminho. Avançar o peão cedo demais permite que as negras tomem a oposição.",
+    "technique": [
+      "Primeiro o rei, depois o peão",
+      "Busque as casas-chave d4, e4 e f4",
+      "Use a escolha do peão (uma ou duas casas) para ganhar a oposição"
+    ],
+    "pitfall": "Você avançou o peão cedo demais e o rei negro tomou a oposição na frente dele.",
+    "lesson": [
+      "**Primeiro o rei!** Seu rei tem de ir na frente: Kd2 ou Kf2 e depois subir pelo tabuleiro à frente do peão.",
+      "Chegue a uma casa-chave (d4, e4 ou f4) antes de avançar o peão."
+    ]
+  },
+  "two-connected-pawns": {
+    "title": "Dois peões contra o rei",
+    "description": "Dois peões normalmente ganham com facilidade. Avance-os juntos, com o apoio do seu rei.",
+    "hint": "Primeiro traga o rei; peões lado a lado se defendem.",
+    "technique": [
+      "Peões lado a lado controlam as casas à sua frente",
+      "Se o rei atacar um peão, avance o outro",
+      "Use seu rei para escoltá-los"
+    ],
+    "pitfall": "Você perdeu um peão. Mantenha os peões juntos para que se protejam e traga seu rei para ajudar.",
+    "lesson": [
+      "Primeiro traga seu rei: com escolta, os peões avançam mais rápido.",
+      "Avance os peões juntos. Se o rei negro atacar um, avance o outro para que se defendam."
+    ]
+  },
+  "right-bishop": {
+    "title": "Peão de torre com o bispo certo",
+    "description": "Aqui o bispo controla a casa escura de promoção h8, então o peão de torre ganha. Cuidado com o afogamento!",
+    "hint": "Cubra g8/g7 com o bispo antes de levar o peão a h7.",
+    "technique": [
+      "O bispo deve controlar a casa de promoção",
+      "Não deixe o rei afogado no canto",
+      "Jogue h7 com xeque no momento certo"
+    ],
+    "pitfall": "Afogamento ou peão perdido. Cubra primeiro g8/g7 com o bispo e sempre deixe um lance ao rei negro.",
+    "lesson": [
+      "Seu bispo controla a casa **escura** h8, então este peão de torre ganha.",
+      "Cuidado com o afogamento: nunca deixe o rei negro sem lances enquanto ele não estiver em xeque."
+    ]
+  },
+  "knight-and-pawn": {
+    "title": "Cavalo e peão contra o rei",
+    "description": "Cavalo e peão ganham com facilidade se o peão estiver protegido e o rei o apoiar.",
+    "hint": "Coloque o rei à frente do peão; use o cavalo para manter o rei negro afastado.",
+    "technique": [
+      "Proteja o peão com o rei ou o cavalo",
+      "Rei à frente do peão",
+      "Os xeques de cavalo ganham tempos"
+    ],
+    "pitfall": "Você perdeu o peão ou o rei negro o bloqueou. Mantenha o peão protegido e avance com o rei na frente.",
+    "lesson": [
+      "Mantenha o peão protegido: cavalo e peão se defendem mutuamente, então o rei negro não consegue pegar nada.",
+      "Coloque seu rei à frente do peão e depois avance-o, usando o cavalo para tirar casas."
+    ]
+  },
+  "rook-vs-bishop-draw": {
+    "title": "Torre contra bispo: o canto certo",
+    "description": "Torre contra bispo costuma ser empate. Mantenha seu rei no canto que o bispo NÃO controla (h8 é escura, seu bispo é de casas claras).",
+    "hint": "Fique no canto h8 e use o bispo para bloquear os xeques em g8 ou h7.",
+    "technique": [
+      "O canto seguro é o da cor oposta à do seu bispo",
+      "Bloqueie os xeques de torre com o bispo",
+      "Evite o canto da cor do seu bispo: lá surgem redes de mate"
+    ],
+    "pitfall": "Seu rei foi para o canto errado ou o bispo ficou preso. Fique no canto que o bispo NÃO controla.",
+    "lesson": [
+      "Seu bispo é de casas claras, então o **canto seguro é o escuro**: h8.",
+      "Bloqueie os xeques com o bispo em g8 ou h7: no canto certo, isso nunca custa o bispo."
+    ]
+  },
+  "rook-vs-knight-draw": {
+    "title": "Torre contra cavalo: fiquem juntos",
+    "description": "Torre contra cavalo é empate se o cavalo ficar perto do seu rei. Um cavalo sozinho e longe acaba preso.",
+    "hint": "Traga o cavalo de volta para perto do rei (Nh3–f4 ou Ng4) e mantenha o rei no centro.",
+    "technique": [
+      "Mantenha o cavalo ao lado do rei",
+      "Fique longe dos cantos",
+      "Não deixe o cavalo ser cortado"
+    ],
+    "pitfall": "O cavalo se separou do rei e ficou preso. Mantenha-o por perto.",
+    "lesson": [
+      "Seu cavalo está longe do rei, e o rei branco está perto dele. Traga-o para casa: **...Nd3+**.",
+      "Cavalo ao lado do rei = empate. Um cavalo sozinho e longe do rei pode ficar preso."
+    ]
+  },
+  "queen-vs-centre-pawn": {
+    "title": "Dama contra peão central",
+    "description": "O peão negro está prestes a promover, mas contra um peão central a dama ganha com xeques e cravadas.",
+    "hint": "Dê xeques no rei até ele ter de ficar na frente do peão e então aproxime seu rei.",
+    "technique": [
+      "Aproxime-se com xeques e lances de dama que ataquem o peão",
+      "Cada vez que o rei bloquear o peão, use o tempo para trazer seu rei",
+      "Termine ganhando o peão ou com mate"
+    ],
+    "pitfall": "O peão promoveu. Dê xeques até o rei ficar na frente do seu peão e então aproxime seu rei.",
+    "lesson": [
+      "Use xeques e cravadas para obrigar o rei negro a ficar na frente do seu peão, em **d1**.",
+      "Cada vez que o rei bloquear o peão, use o lance livre para aproximar seu rei um passo."
+    ]
+  },
+  "queen-vs-pawn-2": {
+    "title": "Dama contra peão: a escada",
+    "description": "O rei negro apoia um peão de cavalo em b2. Pare-o e ganhe.",
+    "hint": "Mantenha o peão sob controle com a dama (Qb1 o bloqueia de vez) e traga seu rei.",
+    "technique": [
+      "Controle a casa de promoção",
+      "Traga seu rei para ajudar",
+      "Não permita afogamento no canto"
+    ],
+    "pitfall": "O peão promoveu. Bloqueie a casa de promoção com a dama e depois traga seu rei.",
+    "lesson": [
+      "**Qb1!** bloqueia o peão de vez.",
+      "Com o peão parado, leve seu rei até lá e capture-o."
+    ]
+  },
+  "opposition-distant": {
+    "title": "Oposição à distância",
+    "description": "O rei branco quer passar à frente do seu peão. Só um lance o impede: tomar a oposição de longe.",
+    "hint": "Kd7!: na mesma coluna do rei branco, com três casas entre vocês.",
+    "technique": [
+      "Reis na mesma coluna com um número ímpar de casas entre eles",
+      "Imite o rei branco enquanto ele se aproxima",
+      "A oposição à distância vira oposição direta"
+    ],
+    "pitfall": "O rei branco passou por você. Imite os lances dele: mesma coluna e um número ímpar de casas entre os reis.",
+    "lesson": [
+      "A oposição também funciona **de longe**: reis na mesma coluna com um número ímpar de casas entre eles (3 ou 5).",
+      "Continue imitando o rei branco. Conforme ele se aproxima, a oposição à distância vira a oposição normal, e as brancas não conseguem passar."
+    ]
+  },
+  "opposition-diagonal": {
+    "title": "Oposição diagonal",
+    "description": "Os reis estão longe um do outro. Só um lance ganha: tomar a oposição pela diagonal.",
+    "hint": "Kc3!: na mesma diagonal do rei negro, com um número ímpar de casas entre eles.",
+    "technique": [
+      "A oposição também funciona nas diagonais",
+      "Mantenha a oposição enquanto os reis se aproximam",
+      "Chegue a uma casa-chave à frente do seu peão (d5, e5, f5)"
+    ],
+    "pitfall": "Você perdeu a oposição e o rei negro bloqueou seu peão.",
+    "lesson": [
+      "**Oposição diagonal**: reis na mesma diagonal com um número ímpar de casas entre eles. **Kc3!** encara o rei de g7.",
+      "Mantenha a oposição enquanto os reis se aproximam e chegue a uma casa-chave: d5, e5 ou f5."
+    ]
+  },
+  "square-race": {
+    "title": "A regra do quadrado",
+    "description": "Seu rei está longe, mas o das negras também. Seu peão consegue chegar sozinho?",
+    "hint": "b5!: avance já, antes que o rei negro entre no quadrado.",
+    "technique": [
+      "Desenhe o quadrado do peão até sua fileira de promoção",
+      "Se o rei inimigo não conseguir entrar, o peão promove sozinho",
+      "Cada avanço do peão deixa o quadrado menor"
+    ],
+    "pitfall": "Você deu tempo ao rei negro para entrar no quadrado do peão.",
+    "lesson": [
+      "**A regra do quadrado**: desenhe um quadrado do seu peão até a 8ª fileira. O rei negro em g5 está logo fora dele.",
+      "**b5!** diminui o quadrado na hora, e o rei negro nunca consegue alcançá-lo."
+    ]
+  },
+  "queen-vs-bishop-pawn": {
+    "title": "Dama contra peão de bispo: o truque do afogamento",
+    "description": "Você defende com um peão c na 7ª. Com o rei branco longe, um truque de afogamento salva você.",
+    "hint": "Fique perto do peão: Kc1 ou Kd1. Quando a dama bloquear c1, corra para a1: capturar o peão é afogamento.",
+    "technique": [
+      "Mantenha seu rei ao lado do peão",
+      "Quando a dama bloquear, vá para o canto a1",
+      "Aí Qxc2 seria afogamento"
+    ],
+    "pitfall": "Seu rei se afastou do peão. Com um peão de bispo, fique perto de c1/b1/a1 para que o truque do afogamento funcione.",
+    "lesson": [
+      "Aqui o rei negro está no canto. Se a dama capturar o peão em c2, é **afogamento**!",
+      "Então fique ao lado do peão e continue ameaçando promover. O rei branco está longe demais para ajudar."
+    ]
+  },
+  "queen-vs-rook-pawn": {
+    "title": "Dama contra peão de torre: a fortaleza do canto",
+    "description": "Você tem um peão a na 7ª. Com o rei branco longe, esconda-se no canto e é empate.",
+    "hint": "Kb2!: fique ao lado do peão. Se você for empurrado para a1, as brancas têm de liberar você ou é afogamento.",
+    "technique": [
+      "Fique ao lado do peão (b1, b2)",
+      "Seu rei em a1, à frente do peão, está a salvo graças ao afogamento",
+      "O rei branco está longe demais para ajudar"
+    ],
+    "pitfall": "Você saiu da região do canto. Com um peão de torre na 7ª, mantenha seu rei em b1, b2 ou a1.",
+    "lesson": [
+      "Contra um peão de torre, o canto é seu amigo: com seu rei em a1, à frente do peão, as negras não têm lances: **afogamento**.",
+      "**Kb2!** mantém seu rei ao lado do peão. O rei branco está longe demais para ajudar sua dama."
+    ]
+  }
+}

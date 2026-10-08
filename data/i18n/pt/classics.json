@@ -1,0 +1,2008 @@
+{
+  "opera-game": {
+    "title": "A Partida da Ópera",
+    "event": "Ópera de Paris",
+    "opening": "Defesa Philidor",
+    "summary": "Jogada em um camarote da Ópera de Paris durante um espetáculo, esta é a lição mais famosa sobre desenvolvimento rápido. Morphy coloca todas as peças em jogo, abre linhas contra o rei que não rocou e termina com um sacrifício de dama. A lição: desenvolva rápido, faça o roque e castigue o adversário que fica para trás.",
+    "annotations": [
+      {
+        "text": "Paris, 1858. Paul Morphy, a jovem estrela americana, enfrenta dois nobres jogando em equipe, bem no camarote deles na ópera. Repare na rapidez com que ele coloca **todas** as peças na luta."
+      },
+      {
+        "text": "2...d6 é a Defesa Philidor. Protege e5 com solidez, mas também prende o próprio bispo de f8. Sólida, porém um pouco passiva."
+      },
+      {
+        "text": "3...Bg4 crava o cavalo de f3 contra a dama. Parece ativo, mas as negras logo vão trocar esse bispo, e cada troca assim ajuda as brancas a se desenvolver."
+      },
+      {
+        "text": "4...Bxf3 entrega o bispo pelo cavalo. A dama branca recaptura e entra no jogo de graça, enquanto as negras ficam com uma peça a menos em ação."
+      },
+      {
+        "text": "6.Bc4 coloca um segundo atacante sobre f7. Agora as brancas ameaçam Qxf7 com xeque-mate, então as negras precisam reagir."
+      },
+      {
+        "text": "7.Qb3 é um **ataque duplo**: a dama se alinha atrás do bispo contra f7 e ainda ataca o peão de b7."
+      },
+      {
+        "text": "7...Qe7 defende f7, mas agora a dama bloqueia o bispo de f8. As peças da ala do rei das negras estão travadas e o roque está longe."
+      },
+      {
+        "text": "9.Bg5 crava o cavalo de f6 contra a dama. Morphy não sai pegando peões: continua tirando peças. As negras só desenvolveram a dama e um cavalo."
+      },
+      {
+        "text": "10.Nxb5! Morphy entrega um cavalo inteiro para abrir as linhas ao redor do rei negro. Com tantas peças a mais em jogo, ele pode se dar a esse luxo.",
+        "label": "Sacrifício de cavalo"
+      },
+      {
+        "text": "11.Bxb5+ dá xeque e crava o cavalo de d7. Esse cavalo não pode se mexer sem expor o próprio rei."
+      },
+      {
+        "text": "12.O-O-O! O roque coloca o rei em segurança e põe uma torre direto na coluna d aberta, mirando o cavalo cravado.",
+        "label": "A torre entra no ataque"
+      },
+      {
+        "text": "13.Rxd7! Morphy dá uma torre pelo cavalo para manter a pressão. Cada captura abre ainda mais a coluna d.",
+        "label": "Torre por cavalo"
+      },
+      {
+        "text": "14.Rd1 traz a última torre para a coluna d. A torre de d7 está cravada e atacada duas vezes, e as peças da ala do rei das negras ainda nem se mexeram."
+      },
+      {
+        "text": "14...Qe6 coloca mais um defensor em d7 e oferece a troca de damas. As negras querem acalmar o jogo, mas Morphy tem uma ideia mais afiada."
+      },
+      {
+        "text": "15.Bxd7+ elimina a torre com xeque. As negras precisam recapturar com o cavalo."
+      },
+      {
+        "text": "15...Nxd7. Agora esse cavalo é a única peça que bloqueia a coluna d. Se ele pudesse ser desviado, a torre chegaria a d8. Será que as brancas conseguem?"
+      },
+      {
+        "text": "16...Nxb8 era forçado. O cavalo teve que sair de d7, e a coluna d fica totalmente aberta."
+      },
+      {
+        "text": "17.Rd8# Xeque-mate! A torre está protegida pelo bispo de g5. Morphy venceu com apenas duas peças, porque todas as peças que ele tinha estavam trabalhando. **Desenvolva rápido e abra linhas!**",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O cavalo negro de d7 é o último guardião da coluna d. Você encontra um jeito espetacular de tirá-lo de lá?",
+        "hint": "Ofereça sua dama com xeque numa casa que só o cavalo alcança.",
+        "explanation": "16.Qb8+! é um sacrifício de dama. A única resposta é 16...Nxb8, e sem o cavalo em d7, a torre dá mate em d8."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance. Você enxerga?",
+        "hint": "A coluna d está aberta até a última fileira.",
+        "explanation": "17.Rd8# A torre dá xeque na última fileira e o bispo de g5 a protege. O rei negro não tem para onde ir."
+      }
+    ]
+  },
+  "immortal-game": {
+    "title": "A Partida Imortal",
+    "event": "Londres (partida amistosa)",
+    "opening": "Gambito do Rei Aceito, Gambito do Bispo",
+    "summary": "Anderssen entrega um bispo, as duas torres e por fim a dama, e depois dá mate com três peças menores. É o símbolo da era romântica do xadrez. A lição: peças ativas e bem colocadas podem valer mais do que a contagem de material.",
+    "annotations": [
+      {
+        "text": "Londres, 1851. Num intervalo do primeiro torneio internacional, Adolf Anderssen e Lionel Kieseritzky jogaram esta partida amistosa. Ela ficou tão famosa que ganhou o nome de **a Partida Imortal**."
+      },
+      {
+        "text": "2.f4 é o Gambito do Rei. As brancas oferecem um peão para abrir a coluna f e conseguir um centro forte rapidamente. Uma abertura típica do século XIX."
+      },
+      {
+        "text": "3...Qh4+ dá xeque no rei, que já não pode mais rocar. As brancas têm que ir para f1, mas a dama negra saiu cedo e pode virar alvo."
+      },
+      {
+        "text": "4...b5 devolve um peão para tirar o bispo branco da sua bela diagonal. As negras também estão jogando sem muita cautela!"
+      },
+      {
+        "text": "7.d3 é um lance tranquilo: apoia e4 e abre caminho para o bispo de c1. As brancas seguem se desenvolvendo enquanto a dama negra passeia."
+      },
+      {
+        "text": "9.Nf5 coloca o cavalo numa ótima casa, atacando g7 e ficando perto do rei negro."
+      },
+      {
+        "text": "11.Rg1 protege o peão g e deixa o bispo de b5 para ser capturado. Anderssen se importa mais com tempo e ataque do que com um bispo."
+      },
+      {
+        "text": "12.h4 começa a perseguir a dama negra com peões. Cada lance da dama custa às negras um tempo que deveria ir para o desenvolvimento."
+      },
+      {
+        "text": "14...Ng8 manda o cavalo de volta para casa. Olhe a posição das negras: quase nada desenvolvido, enquanto as peças brancas não param de chegar."
+      },
+      {
+        "text": "15.Bxf4 recupera o peão e coloca o último bispo em jogo, ganhando tempo contra a dama."
+      },
+      {
+        "text": "16...Bc5 finalmente desenvolve, e o bispo ataca a torre de g1. As negras esperam ganhar material enquanto as brancas estão ocupadas atacando."
+      },
+      {
+        "text": "17.Nd5! Anderssen ignora a torre de g1. O cavalo ataca a dama negra e ameaça Nxc7+, com garfo no rei e na torre.",
+        "label": "Ignorando as ameaças"
+      },
+      {
+        "text": "18.Bd6!! As brancas oferecem **as duas torres**. O bispo controla f8 e e7, então o rei negro vai ficando encurralado.",
+        "label": "Entregando as duas torres"
+      },
+      {
+        "text": "19.e5 fecha a grande diagonal, e a dama negra não consegue voltar para defender g7. Silencioso, mas mortal."
+      },
+      {
+        "text": "19...Qxa1+ As negras capturaram as duas torres e têm uma enorme vantagem de material. Mas todas essas peças negras estão longe do seu rei."
+      },
+      {
+        "text": "20...Na6 cobre a casa c7 contra um xeque de cavalo. Agora as brancas precisam de algo contundente."
+      },
+      {
+        "text": "21.Nxg7+ O cavalo pega um peão com xeque e agora também controla e8. O rei é empurrado para d8."
+      },
+      {
+        "text": "22...Nxf6 era forçado. As brancas já entregaram um bispo, duas torres e a dama.",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "23.Be7# Xeque-mate com apenas um bispo e dois cavalos contra um exército inteiro! **Peças ativas vencem material a mais.**",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Você já entregou muita coisa. Consegue encontrar o lance mais espetacular do tabuleiro?",
+        "hint": "Sua dama pode dar xeque numa casa onde só um cavalo pode capturá-la.",
+        "explanation": "22.Qf6+!! O cavalo é obrigado a capturar, 22...Nxf6, e isso abre caminho para o bispo dar mate em e7."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance. Qual peça dá o mate?",
+        "hint": "Olhe a casa escura bem ao lado do rei negro.",
+        "explanation": "23.Be7# O bispo dá xeque, o cavalo de d5 o protege, e todas as casas de fuga estão cobertas pelos cavalos."
+      }
+    ]
+  },
+  "evergreen-game": {
+    "title": "A Partida Sempre-Viva",
+    "event": "Berlim (partida amistosa)",
+    "opening": "Gambito Evans",
+    "summary": "Anderssen entrega peões em gambito para ganhar vantagem rápida no desenvolvimento e depois encontra uma combinação famosa, com sacrifício de torre, sacrifício de dama e xeque duplo. Ela mostra como linhas abertas e peças ativas podem se transformar num mate forçado.",
+    "annotations": [
+      {
+        "text": "Berlim, 1852. Adolf Anderssen enfrenta seu amigo Jean Dufresne numa partida amistosa. Ela terminou com uma combinação tão bonita que ganhou o apelido de **a Sempre-Viva**: sempre atual."
+      },
+      {
+        "text": "4.b4 é o Gambito Evans. As brancas oferecem um peão para depois jogar c3 e d4 ganhando tempo e montando um grande centro."
+      },
+      {
+        "text": "6.d4 ataca o centro. As brancas entregam peões com prazer se isso trouxer linhas abertas e desenvolvimento rápido."
+      },
+      {
+        "text": "7...d3 empurra o peão bem fundo no campo branco. É incômodo, porque atrapalha as peças da ala da dama das brancas."
+      },
+      {
+        "text": "8.Qb3 alinha a dama atrás do bispo contra f7, o ponto mais fraco perto do rei negro."
+      },
+      {
+        "text": "9.e5 ganha espaço e expulsa a dama negra. As brancas continuam fazendo lances com ameaças."
+      },
+      {
+        "text": "11.Ba3 coloca o bispo numa grande diagonal mirando e7 e a casa f8, o que dificulta o roque das negras."
+      },
+      {
+        "text": "11...b5 devolve um peão para afastar a dama branca da ala do rei por um momento."
+      },
+      {
+        "text": "15.Ne4 leva o cavalo em direção à ala do rei, de olho em f6. As peças brancas estão se reunindo perto do rei negro."
+      },
+      {
+        "text": "16.Bxd3 finalmente elimina o peão incômodo e aponta o bispo para a ala do rei."
+      },
+      {
+        "text": "17.Nf6+! Um sacrifício de cavalo. Depois de 17...gxf6 18.exf6 a coluna e se abre e o cavalo de e7 fica sob ataque.",
+        "label": "Sacrifício de cavalo"
+      },
+      {
+        "text": "18...Rg8 As negras preparam um contra-ataque pela coluna g. Se as negras conseguirem jogar ...Qxf3, então ...Qxg2 é mate."
+      },
+      {
+        "text": "19.Rad1!! Um lance tranquilo no meio da batalha. Anderssen ignora a ameaça e traz sua última peça para a coluna d. Mais tarde, analistas encontraram defesas para as negras, mas no tabuleiro foi impressionante.",
+        "label": "O lance sempre-vivo"
+      },
+      {
+        "text": "19...Qxf3 As negras capturam o cavalo e ameaçam ...Qxg2 mate. As brancas precisam continuar dando xeques."
+      },
+      {
+        "text": "20.Rxe7+ elimina o defensor com xeque, e as negras não têm tempo para ...Qxg2."
+      },
+      {
+        "text": "21...Kxd7 era forçado. O bispo de d3 está na frente da torre de d1. Quando o bispo se mover, a torre dará xeque.",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "22.Bf5+ é um **xeque duplo**: do bispo e da torre atrás dele. Contra um xeque duplo, a única defesa é mover o rei.",
+        "label": "Xeque duplo!"
+      },
+      {
+        "text": "23.Bd7+ empurra o rei para f8, bem no caminho do bispo de a3."
+      },
+      {
+        "text": "24.Bxe7# Xeque-mate! O bispo está protegido pelo peão de f6. Um exemplo perfeito de como linhas abertas e peças ativas criam um ataque de mate.",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. As negras ameaçam mate em g2. Você encontra um xeque que muda tudo?",
+        "hint": "Sua torre de d1 está alinhada na coluna d. E se o peão de d7 desaparecesse com xeque?",
+        "explanation": "21.Qxd7+!! O rei é obrigado a capturar, e então o bispo e a torre dão xeque duplo com 22.Bf5+, levando ao mate."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance. O rei negro está em f8. Consegue terminar?",
+        "hint": "Seu bispo de casas escuras está esperando em a3 a partida inteira.",
+        "explanation": "24.Bxe7# O bispo captura o cavalo com xeque, o peão de f6 o protege, e o rei não tem mais casas."
+      }
+    ]
+  },
+  "game-of-the-century": {
+    "title": "A Partida do Século",
+    "event": "Memorial Rosenwald, Nova York",
+    "opening": "Defesa Grünfeld",
+    "summary": "Bobby Fischer, com 13 anos, entrega a dama contra um dos melhores mestres americanos e vence com uma equipe de peças menores de tirar o fôlego. A lição: um rei preso no centro é um alvo, e uma dama só vale o que consegue fazer no tabuleiro.",
+    "annotations": [
+      {
+        "text": "Nova York, 1956. Bobby Fischer tem apenas **13 anos** e enfrenta Donald Byrne, um dos melhores jogadores dos Estados Unidos. O que vem a seguir logo ficou conhecido como a Partida do Século."
+      },
+      {
+        "text": "Fischer coloca o bispo em g7, de onde ele varre a grande diagonal. Ele deixa as brancas montarem um centro, planejando atacá-lo mais tarde."
+      },
+      {
+        "text": "5...d5 ataca o centro imediatamente. Essa formação, com ...g6 e ...d5, é a **Defesa Grünfeld**."
+      },
+      {
+        "text": "Agora as brancas têm um grande centro de peões. Mas olhe o rei delas: ainda no meio, com as peças da ala do rei dormindo. Fischer vai cobrar caro por isso."
+      },
+      {
+        "text": "10.Qc5 já é o terceiro lance da dama. Cada lance da dama é um lance que as brancas não usam para desenvolver ou rocar."
+      },
+      {
+        "text": "11...Na4!! Uma oferta impressionante. Se 12.Nxa4, então 12...Nxe4 ataca ao mesmo tempo a dama em c5 e o bispo em g5, e a posição branca desmorona.",
+        "label": "Cavalo oferecido em a4"
+      },
+      {
+        "text": "13...Nxe4! Fischer ganha o peão central e ainda ataca o peão de c3. Enquanto isso, o rei branco continua preso no centro."
+      },
+      {
+        "text": "16...Rfe8+ abre a coluna e com xeque. O rei branco tem que ir para f1, e agora nunca mais poderá rocar."
+      },
+      {
+        "text": "As brancas capturaram a dama, e agora começa o troco. O bispo dá xeque, e o cavalo e o bispo negros vão dançar ao redor do rei branco.",
+        "label": "Começa o troco"
+      },
+      {
+        "text": "20...Nxd4+ é um **xeque descoberto**: o cavalo sai do caminho e o bispo de c4 dá xeque. Xeque, captura, xeque de novo: esse padrão se chama moinho.",
+        "label": "O moinho"
+      },
+      {
+        "text": "O moinho terminou. Pela dama, Fischer já ganhou dois bispos e um peão, sua torre de a8 agora ataca a dama branca, e o cavalo de c3 ataca a torre de d1."
+      },
+      {
+        "text": "25...Nxd1 leva a torre também. As brancas ainda têm a dama, mas as peças negras trabalham em equipe, enquanto a torre branca de h1 nunca se mexeu."
+      },
+      {
+        "text": "A dama branca dá alguns xeques, mas não há perigo real. As negras protegem o rei com calma e mantêm as peças a mais."
+      },
+      {
+        "text": "Com uma grande vantagem de material, Fischer avança os peões da ala da dama e prepara todas as peças para caçar o rei branco."
+      },
+      {
+        "text": "Hora de terminar. 36...Ng3+ inicia a caçada final: cavalo, bispos e torre se revezam dando xeques e levam o rei para a ala da dama.",
+        "label": "A caçada final"
+      },
+      {
+        "text": "41...Rc2# A torre dá mate, protegida pelo bispo de b3, enquanto o cavalo de c3 cobre b1 e d1. Um garoto de 13 anos tinha acabado de jogar uma das partidas mais famosas da história.",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. Sua dama em b6 está atacada pelo bispo de c5. Você encontra a resposta lendária de Fischer?",
+        "hint": "Não salve a dama. Pense no rei branco em f1.",
+        "explanation": "17...Be6!! entrega a dama. O bispo ataca o bispo de c4 e prepara uma tempestade de xeques. Se 18.Bxe6, então 18...Qb5+ leva a um lindo mate sufocado; se as brancas capturam a dama, como na partida, as negras recuperam uma montanha de material."
+      },
+      {
+        "prompt": "As negras jogam. Você entregou a dama e agora é hora de cobrar. Qual xeque põe tudo em movimento?",
+        "hint": "Seu cavalo de c3 pode chegar a uma casa ao lado do rei branco, e seu bispo de c4 está mirando f1.",
+        "explanation": "19...Ne2+ obriga 20.Kf1. Agora o cavalo pode saltar com xeque descoberto do bispo de c4, ganhando material a cada vez, enquanto o rei branco só consegue ir e voltar."
+      },
+      {
+        "prompt": "As negras jogam. O rei branco foi perseguido até c1. Você encontra o xeque-mate?",
+        "hint": "Sua torre de a2 quer entrar na festa.",
+        "explanation": "41...Rc2# A torre dá xeque em c2 e está protegida pelo bispo de b3. O rei não pode ir para b1 nem para d1 por causa do cavalo de c3, e a torre cobre b2 e d2."
+      }
+    ]
+  },
+  "kasparov-topalov-1999": {
+    "title": "A Imortal de Kasparov",
+    "event": "Torneio Hoogovens, Wijk aan Zee",
+    "opening": "Defesa Pirc",
+    "summary": "Kasparov entrega uma torre e depois persegue o rei de Topalov de um lado do tabuleiro até o outro. Muitas vezes chamada de a maior partida de ataque já jogada, ela mostra como um rei exposto pode ser caçado mesmo quando o atacante tem menos material.",
+    "annotations": [
+      {
+        "text": "Wijk aan Zee, 1999. O campeão mundial Garry Kasparov, no auge da sua força, enfrenta a jovem estrela búlgara Veselin Topalov. O que vem a seguir costuma ser chamado de **a Imortal de Kasparov**."
+      },
+      {
+        "text": "A **Defesa Pirc**: as negras deixam as brancas montarem um grande centro de peões e planejam atacá-lo depois com peças e peões."
+      },
+      {
+        "text": "Kasparov faz o roque grande, na ala da dama. Seu rei vai ficar seguro ali enquanto as peças ao redor continuarem firmes."
+      },
+      {
+        "text": "Topalov também roca na ala da dama, mas seus peões de a6, b5 e c6 já avançaram. Isso deixa buracos ao redor do rei, e eles vão pesar mais tarde."
+      },
+      {
+        "text": "**18.Na5** planta um cavalo bem ao lado do rei negro. Ele é incômodo e difícil de expulsar."
+      },
+      {
+        "text": "**21...d4** ataca o cavalo de c3 e parece forte para as negras. Kasparov responde saltando para d5."
+      },
+      {
+        "text": "A posição parece tranquila. O peão negro de d4 parece bem protegido e a dama negra mira as peças brancas. Mas Kasparov enxergou algo incrível."
+      },
+      {
+        "text": "Topalov captura a torre. Agora começa a longa perseguição: a torre branca chega a e7 com xeque, e o rei negro é expulso do seu abrigo.",
+        "label": "Sacrifício de torre!"
+      },
+      {
+        "text": "O rei negro avança para b6. Ele já está a céu aberto, com a dama e a torre brancas por perto."
+      },
+      {
+        "text": "O rei captura o cavalo em a5 e continua subindo no tabuleiro. Cada passo o afasta ainda mais do seu exército.",
+        "label": "Começa a caçada ao rei"
+      },
+      {
+        "text": "O rei agora está em a4, bem dentro da metade branca do tabuleiro. Kasparov continua trazendo peças para cercá-lo."
+      },
+      {
+        "text": "O rei negro continua pegando peões, mas cada captura o leva mais fundo para o perigo."
+      },
+      {
+        "text": "O rei negro está em c3! As brancas seguem dando xeques para empurrá-lo ainda mais para baixo no tabuleiro."
+      },
+      {
+        "text": "O rei caminhou de c8 até d1, atravessando o tabuleiro inteiro. Agora Kasparov precisa do golpe final.",
+        "label": "Atravessando o tabuleiro inteiro"
+      },
+      {
+        "text": "**36.Bf1!** é um lance tranquilo com um golpe forte. O bispo ataca a dama negra em c4 e aperta a rede ao redor do rei.",
+        "label": "Silencioso, mas mortal"
+      },
+      {
+        "text": "Mais uma oferta de torre. **37.Rd7** desafia a torre negra da coluna d e a desvia da defesa."
+      },
+      {
+        "text": "As brancas recuperaram material e agora têm dama contra torre. O resto é técnica."
+      },
+      {
+        "text": "Depois de **44.Qa7** Topalov abandonou: a dama branca e o material a mais decidem. A lição: quando o rei inimigo sai do abrigo, mantenha-o correndo com xeques e traga todas as peças para a caçada.",
+        "label": "As negras abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O peão negro de d4 parece seguro. Kasparov encontrou um dos lances mais famosos de todos os tempos. E você?",
+        "hint": "Entregue uma torre para abrir a coluna e.",
+        "explanation": "**24.Rxd4!!** entrega uma torre por um peão. Depois de **24...cxd4 25.Re7+** o rei negro é arrastado para campo aberto, e a dama branca entra na perseguição."
+      },
+      {
+        "prompt": "As brancas jogam. O bispo negro veio para b7 proteger o rei. O que você faz com ele?",
+        "hint": "Elimine o defensor.",
+        "explanation": "**30.Rxb7!** captura o bispo defensor. Agora a torre controla a coluna b, e o rei negro tem ainda menos lugares para se esconder."
+      },
+      {
+        "prompt": "As brancas jogam. Topalov acabou de capturar a torre em d7. Como as brancas recuperam o material?",
+        "hint": "Veja o que o bispo de f1 está atacando.",
+        "explanation": "**38.Bxc4** captura a dama negra. Era essa a ideia de **36.Bf1**: o bispo estava de olho em c4 o tempo todo."
+      }
+    ]
+  },
+  "reti-tartakower-1910": {
+    "title": "A brilhante miniatura de Réti",
+    "event": "Viena (partida amistosa)",
+    "opening": "Defesa Caro-Kann",
+    "summary": "Em apenas onze lances, Réti sacrifica a dama e dá mate com um bispo e uma torre. Um exemplo perfeito de xeque duplo descoberto. A lição: quando você faz o roque grande, a torre cai na coluna d, e isso pode ser mortal contra um rei no centro.",
+    "annotations": [
+      {
+        "text": "Viena, 1910. Duas futuras lendas do xadrez, Richard Réti e Savielly Tartakower, se enfrentam numa partida amistosa. Ela dura apenas onze lances."
+      },
+      {
+        "text": "1...c6 é a Defesa Caro-Kann. As negras preparam ...d5 para disputar o centro de forma sólida."
+      },
+      {
+        "text": "3...dxe4 As negras trocam no centro. As brancas recapturam com o cavalo, que ganha uma bela casa central."
+      },
+      {
+        "text": "5.Qd3 é incomum. A dama protege o cavalo e prepara o roque grande, colocando uma torre na coluna d."
+      },
+      {
+        "text": "5...e5 As negras oferecem um peão para abrir linhas enquanto o rei branco ainda está no meio."
+      },
+      {
+        "text": "6...Qa5+ dá xeque no rei e ataca o peão de e5 ao mesmo tempo, então as negras recuperam o peão."
+      },
+      {
+        "text": "7...Qxe5 crava o cavalo de e4 contra o rei branco. Parece que as negras vão ganhar uma peça."
+      },
+      {
+        "text": "8.O-O-O! As brancas rocam, e o cavalo deixa de estar cravado, mas fica pendurado. A torre cai em d1, atrás do bispo de d2.",
+        "label": "Roque rumo ao ataque"
+      },
+      {
+        "text": "8...Nxe4? As negras pegam o cavalo, mas esquecem que o rei ainda está em e8 e que a coluna d está aberta.",
+        "label": "A captura fatal"
+      },
+      {
+        "text": "9...Kxd8 era forçado. Agora só o bispo de d2 está entre a torre de d1 e o rei negro."
+      },
+      {
+        "text": "10.Bg5+ é um **xeque duplo**: o bispo dá xeque pela diagonal e a torre dá xeque pela coluna d. Só um lance de rei resolve.",
+        "label": "Xeque duplo!"
+      },
+      {
+        "text": "10...Kc7 Depois de 10...Ke8 as brancas dão mate com 11.Rd8#. Kc7 também perde, mas de um jeito mais bonito."
+      },
+      {
+        "text": "11.Bd8# Xeque-mate! O bispo está protegido pela torre, e as próprias peças negras bloqueiam a fuga do rei. **Não deixe seu rei no centro quando a coluna d se abre.**",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Você perdeu um cavalo, mas o rei negro ainda está no centro. Consegue encontrar um lance surpreendente?",
+        "hint": "A coluna d está aberta. E se o rei negro fosse obrigado a ir para d8?",
+        "explanation": "9.Qd8+!! O rei é obrigado a capturar, e então 10.Bg5+ dá xeque duplo com bispo e torre, levando ao mate."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance. Você enxerga?",
+        "hint": "A torre de d1 controla toda a coluna d.",
+        "explanation": "11.Bd8# O bispo dá xeque no rei em c7, a torre o protege, e os próprios peões e peças das negras não deixam saída."
+      }
+    ]
+  },
+  "lasker-thomas-1912": {
+    "title": "A caçada ao rei de Lasker",
+    "event": "Londres (partida amistosa)",
+    "opening": "Defesa Holandesa",
+    "summary": "Depois de um sacrifício de dama em h7, o rei negro é perseguido com xeques de g8 até g1 e leva mate na última fileira das próprias brancas. É a caçada ao rei mais famosa do xadrez. A lição: um rei arrancado do seu abrigo pode ser caçado por poucas peças ativas.",
+    "annotations": [
+      {
+        "text": "Londres, 1912. Edward Lasker (não confunda com o campeão mundial Emanuel Lasker) enfrenta Sir George Thomas. Prepare-se para a caminhada de rei mais famosa do xadrez."
+      },
+      {
+        "text": "2...f5 cria uma formação de Defesa Holandesa. Luta pela casa e4, mas enfraquece as casas ao redor do rei negro."
+      },
+      {
+        "text": "5.Bxf6 elimina o cavalo que vigiava e4, para que as brancas possam abrir o centro com e4."
+      },
+      {
+        "text": "7.Nxe4 Com os peões e trocados, o cavalo chega ao centro, apontando para a ala do rei das negras."
+      },
+      {
+        "text": "8.Ne5 Os dois cavalos agora estão em casas centrais fortes, prontos para saltar em direção ao rei."
+      },
+      {
+        "text": "9.Bd3 aponta o bispo para h7. O cavalo de e4 está na frente dele, e isso logo vai fazer diferença."
+      },
+      {
+        "text": "10.Qh5 A dama entra no ataque e também mira h7. As peças brancas estão reunidas perto do rei rocado."
+      },
+      {
+        "text": "10...Qe7? parece natural, mas não ajuda o rei. As negras precisavam cuidar dos cavalos primeiro."
+      },
+      {
+        "text": "11...Kxh7 era forçado. As brancas entregaram a dama, mas agora o rei saiu do seu abrigo.",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "12.Nxf6+ é um **xeque duplo**: o cavalo dá xeque e, ao se mover, descobre o bispo de d3 mirando h7. O rei tem que se mexer.",
+        "label": "Xeque duplo!"
+      },
+      {
+        "text": "13.Neg4+ O outro cavalo entra na dança, e o rei é empurrado ainda mais para cima no tabuleiro.",
+        "label": "Começa a caçada ao rei"
+      },
+      {
+        "text": "14.h4+ Um peão dá xeque. As brancas mantêm o rei em fuga a cada lance."
+      },
+      {
+        "text": "15.g3+ Mais um xeque de peão, empurrando o rei ainda mais fundo no campo branco."
+      },
+      {
+        "text": "16.Be2+ O bispo se junta ao ataque. O rei caminhou de g8 até f3, cercado pelo exército branco."
+      },
+      {
+        "text": "17.Rh2+ A torre dá xeque e o rei é obrigado a ir para g1, a última fileira das próprias brancas."
+      },
+      {
+        "text": "18.Kd2# Xeque-mate! O lance do rei descobre a torre de a1. O roque grande também daria mate. **Um rei arrancado para campo aberto pode ser caçado.**",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Todas as suas peças miram o rei negro. Você encontra o primeiro golpe surpreendente?",
+        "hint": "Lembre-se do bispo escondido atrás do cavalo de e4.",
+        "explanation": "11.Qxh7+!! O rei é obrigado a capturar, e então 12.Nxf6+ é um xeque duplo que dá início à caçada."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance. O rei negro está em g1. Você encontra?",
+        "hint": "Sua torre de a1 está pronta, se ao menos o seu próprio rei saísse do caminho.",
+        "explanation": "18.Kd2# O rei sai do caminho e descobre a torre de a1, que dá xeque pela última fileira. O roque grande (18.O-O-O#) também dá mate."
+      }
+    ]
+  },
+  "steinitz-bardeleben-1895": {
+    "title": "A torre intocável",
+    "event": "Torneio de Hastings",
+    "opening": "Giuoco Piano",
+    "summary": "O primeiro campeão mundial, aos 59 anos, cria pressão na coluna e e depois solta uma torre que não pode ser capturada. Uma lição brilhante sobre manter a iniciativa: quando todo lance é xeque, o adversário nunca tem tempo de executar as próprias ameaças.",
+    "annotations": [
+      {
+        "text": "Hastings, 1895. Wilhelm Steinitz, o primeiro campeão mundial oficial, tem 59 anos e joga de brancas contra o forte mestre alemão Curt von Bardeleben. Esta partida ganhou o prêmio de beleza do torneio."
+      },
+      {
+        "text": "3.Bc4. A Abertura Italiana: o bispo branco mira direto f7, o ponto mais fraco perto do rei negro."
+      },
+      {
+        "text": "6...Bb4+. As brancas montaram um grande centro de peões, então as negras dão um xeque para frear o desenvolvimento branco."
+      },
+      {
+        "text": "7...d5. Boa resposta! As negras contra-atacam o centro antes que os peões brancos avancem."
+      },
+      {
+        "text": "13...Nxe7. Depois de uma série de trocas, repare numa coisa: o rei negro continua parado no meio, em e8."
+      },
+      {
+        "text": "14.Re1. A torre ocupa a coluna e aberta. O cavalo negro de e7 agora está **cravado**: não pode se mexer sem expor o rei.",
+        "label": "Cravada na coluna e"
+      },
+      {
+        "text": "14...f6. As negras planejam ...Kf7 para sair da cravada, mas o lance de peão enfraquece as casas ao redor do rei."
+      },
+      {
+        "text": "17.d5! As brancas entregam um peão para liberar a casa d4 para o cavalo. De lá, ele pode saltar em direção ao rei negro.",
+        "label": "Sacrifício de peão"
+      },
+      {
+        "text": "18...Kf7. O rei finalmente sai da cravada e espera conectar as torres."
+      },
+      {
+        "text": "19.Ne6! O cavalo se instala bem no fundo do campo negro. Nenhum peão negro consegue expulsá-lo, e ele vigia c7, d8, f8 e g7.",
+        "label": "Posto avançado do cavalo"
+      },
+      {
+        "text": "19...Rhc8. As negras reagem pela coluna c e se preparam para trocar ou ganhar a torre branca de c1."
+      },
+      {
+        "text": "20...g6. A dama branca ameaçava Qxg7+, então as negras precisam bloquear a coluna g."
+      },
+      {
+        "text": "21...Ke8. Olhe com atenção: o cavalo saiu de e6, então a dama negra agora ataca a dama branca em g4. A torre branca de c1 também está atacada. Duas peças estão penduradas!"
+      },
+      {
+        "text": "22...Kf8. As negras ainda ameaçam ...Qxg4 e ...Rxc1+. Por isso as brancas precisam continuar dando xeque, lance após lance."
+      },
+      {
+        "text": "23.Rf7+! A torre continua dando xeque. Ela não pode ser capturada porque o cavalo de g5 protege f7.",
+        "label": "A dança da torre"
+      },
+      {
+        "text": "24.Rg7+. De novo! Se 24...Kxg7, então 25.Qxd7+ ganha a dama negra, já que a dama de g4 agora enxerga d7 pela diagonal."
+      },
+      {
+        "text": "25.Rxh7+. Nesse momento, von Bardeleben saiu discretamente do salão e nunca mais voltou, perdendo por tempo. Steinitz então mostrou ao público um mate forçado começando com 25...Kg8 26.Rg7+ Kh8 27.Qh4+. A lição: quando todo lance é xeque, as ameaças do adversário nunca têm vez.",
+        "label": "Bardeleben vai embora"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O cavalo de e6 é um monstro, e as negras acabaram de bloquear a coluna g. Você encontra um lance forçante que leve o cavalo ainda mais perto do rei?",
+        "hint": "Procure um salto de cavalo que dê xeque.",
+        "explanation": "21.Ng5+! O xeque ganha tempo e o cavalo continua vigiando f7 e h7. Ele abre a linha entre as duas damas, mas Steinitz tinha visto algo muito mais profundo."
+      },
+      {
+        "prompt": "As brancas jogam. Sua dama e sua torre de c1 estão atacadas. Em vez de defender, você encontra um lance que continue dando xeque?",
+        "hint": "O cavalo cravado em e7 só está protegido pelo rei e pela dama.",
+        "explanation": "22.Rxe7+!! A torre captura o cavalo com xeque e não pode ser tomada: 22...Qxe7 23.Rxc8+ Rxc8 24.Qxc8+ ganha, e 22...Kxe7 23.Re1+ leva o rei para um ataque mortal."
+      },
+      {
+        "prompt": "As brancas jogam. A torre deu três xeques seguidos. Como você mantém o ataque?",
+        "hint": "O cavalo de g5 protege mais uma casa ao lado do rei.",
+        "explanation": "25.Rxh7+! Mais um xeque, e o cavalo de g5 protege a torre. Depois de 25...Kg8 26.Rg7+ Kh8 27.Qh4+ a dama entra no ataque e o mate não pode ser evitado."
+      }
+    ]
+  },
+  "botvinnik-capablanca-1938": {
+    "title": "A obra-prima de Botvinnik no AVRO",
+    "event": "Torneio AVRO, Países Baixos",
+    "opening": "Defesa Nimzoíndia",
+    "summary": "O jovem Botvinnik vence o lendário Capablanca avançando seus peões centrais e depois sacrificando um bispo e um cavalo para que um único peão chegue à oitava fileira. Uma lição perfeita de como um peão passado pode valer mais do que uma peça inteira.",
+    "annotations": [
+      {
+        "text": "O torneio AVRO de 1938 reuniu os melhores jogadores do mundo. Aqui, a estrela soviética em ascensão Mikhail Botvinnik enfrenta o ex-campeão mundial José Raúl Capablanca, famoso por quase nunca perder."
+      },
+      {
+        "text": "Com **5...Bxc3+** as negras entregam o bispo para dobrar os peões c das brancas. As brancas ficam com o par de bispos e um centro forte; as negras esperam que os peões dobrados virem alvos. Uma troca clássica de vantagens."
+      },
+      {
+        "text": "**14...c4** fecha a ala da dama e dá às negras um peão a mais ali. Mas também alivia a pressão sobre o centro, e as brancas ficam livres para preparar **e3-e4** com seus próprios peões centrais."
+      },
+      {
+        "text": "O cavalo de Capablanca faz uma longa viagem até b3, bem no fundo do campo branco, e a dama dele vai pegar o peão de a4 em seguida. Mas repare como essas peças agora estão longe do próprio rei."
+      },
+      {
+        "text": "Botvinnik não defende o peão a. **19.e4** inicia o verdadeiro plano: seus peões avançam no centro e na ala do rei, onde as negras têm menos defensores.",
+        "label": "A ruptura central"
+      },
+      {
+        "text": "As negras têm um peão a mais, mas a dama e o cavalo estão do outro lado do tabuleiro. No xadrez, onde as suas peças estão muitas vezes importa mais do que contar peões."
+      },
+      {
+        "text": "**22.f4** traz mais um peão para o ataque. A ameaça é **f4-f5**, abrindo linhas em direção ao rei negro."
+      },
+      {
+        "text": "**24.f5** continua avançando. Os peões brancos funcionam como um aríete contra a ala do rei das negras."
+      },
+      {
+        "text": "Depois das trocas de torres, as brancas têm um **peão passado** em e6: nenhum peão negro jamais poderá pará-lo. Faltam só dois passos para ele virar dama.",
+        "label": "Um peão passado em e6"
+      },
+      {
+        "text": "Capablanca estaciona a dama em e7, bem na frente do peão, para bloqueá-lo. A dama está fazendo um trabalho vital. Será que as brancas conseguem expulsá-la dessa casa?"
+      },
+      {
+        "text": "As negras precisam capturar: se a dama sair da coluna e, o peão avança para e7. Mas agora a dama está em a3, longe da ação, e a dama e o cavalo brancos partem para cima do rei.",
+        "label": "Sacrifício de bispo!"
+      },
+      {
+        "text": "Capablanca captura a segunda peça também. Seu rei perdeu o escudo de peões, e a dama branca agora pode dar xeques e pegar o cavalo de f6."
+      },
+      {
+        "text": "**33.Qxf6+** ganha o cavalo com xeque. As brancas entregaram duas peças, mas o peão e está prestes a cruzar a linha de chegada."
+      },
+      {
+        "text": "A única esperança das negras é o **xeque perpétuo**: dar xeque no rei branco para sempre e forçar o empate. Botvinnik precisa encontrar um esconderijo seguro.",
+        "label": "Em busca do empate"
+      },
+      {
+        "text": "O rei branco sobe corajosamente no tabuleiro e até captura o peão de h5. Parece assustador, mas Botvinnik calculou que os xeques vão acabar."
+      },
+      {
+        "text": "**40.g4** bloqueia o xeque com um peão. Agora o rei tem um abrigo em h5."
+      },
+      {
+        "text": "Depois de **41.Kh5** as negras não têm mais xeques úteis, e nada impede **e8=Q**. Capablanca abandonou. A lição: um peão passado bem avançado pode valer mais do que um bispo e um cavalo.",
+        "label": "As negras abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. A dama negra está bloqueando o peão e. Como as brancas podem arrancá-la de e7?",
+        "hint": "Procure uma peça que você possa oferecer à dama.",
+        "explanation": "**30.Ba3!** ataca a dama. Se ela sair da coluna e, o peão corre para e7; se ela capturar o bispo, fica longe do seu rei. De qualquer forma, as brancas vencem."
+      },
+      {
+        "prompt": "As brancas jogam. A dama negra foi para a3. Hora de atacar o rei. O que você jogaria?",
+        "hint": "Um xeque de cavalo descobre algo.",
+        "explanation": "**31.Nh5+!** entrega o cavalo. Depois de **31...gxh5** o rei negro fica exposto, e a dama branca pode dar xeque em g5 e depois capturar o cavalo de f6."
+      },
+      {
+        "prompt": "As brancas jogam. O cavalo de f6 já era. Qual é o jeito mais rápido de vencer?",
+        "hint": "Seu melhor jogador é um peão.",
+        "explanation": "**34.e7!** ameaça **e8=Q**. As negras só podem dar xeques, e Botvinnik já calculou que o rei dele vai escapar."
+      }
+    ]
+  },
+  "fischer-spassky-1972-g6": {
+    "title": "Fischer–Spassky, partida 6",
+    "event": "Campeonato Mundial, Reykjavik",
+    "opening": "Gambito da Dama Recusado (Tartakower)",
+    "summary": "Fischer surpreende todo mundo com 1.c4, pressiona os peões centrais das negras e transforma uma posição tranquila num ataque arrasador na ala do rei. Foi tão bonita que o próprio Spassky aplaudiu. Um modelo de como construir pressão aos poucos antes de dar o golpe.",
+    "annotations": [
+      {
+        "text": "Reykjavik, 1972, Campeonato Mundial. O match está empatado em 2½–2½. Todos esperam que Fischer abra com 1.e4, como ele quase sempre faz."
+      },
+      {
+        "text": "1.c4! Fischer quase nunca tinha aberto assim. Uma surpresa logo no primeiro lance.",
+        "label": "1.c4, uma surpresa!"
+      },
+      {
+        "text": "Os jogadores chegam a um Gambito da Dama Recusado clássico. Com 7...b6, Spassky escolhe uma formação sólida que jogava havia anos."
+      },
+      {
+        "text": "Muitas trocas. As negras têm um peão em d5 e logo terão outro em c5. Peões lado a lado assim são fortes se avançam, mas também podem virar alvos."
+      },
+      {
+        "text": "Agora as negras têm sua dupla de peões centrais em c5 e d5. O plano das brancas é pressioná-los e impedir que avancem."
+      },
+      {
+        "text": "16...Ra7 é um jeito incomum de levar a torre para o centro. Fischer melhora suas peças sem alarde."
+      },
+      {
+        "text": "As brancas trocam o cavalo pelo bispo. O novo peão negro em e6 protege d5, mas é mais um alvo para as peças brancas."
+      },
+      {
+        "text": "Spassky avança. Seu peão d agora é passado e protegido, mas está bloqueado, e as casas e5 e c4 passam a ser das brancas."
+      },
+      {
+        "text": "22.e5 ganha espaço e tira a casa f6 do cavalo negro. As peças brancas vão se acumular contra e6."
+      },
+      {
+        "text": "O bispo chega à diagonal dos sonhos, mirando e6 e, mais adiante, g8.",
+        "label": "A diagonal dos sonhos"
+      },
+      {
+        "text": "24.Qh3 se junta ao bispo contra e6. As peças negras estão presas à defesa desse peão."
+      },
+      {
+        "text": "A coluna f está aberta, e as torres de Fischer vão se alinhar nela. O rei negro tem pouquíssimos defensores."
+      },
+      {
+        "text": "31.e6! O peão vira um monstro: passado, protegido pelo bispo e dividindo as peças negras em duas.",
+        "label": "Um monstro em e6"
+      },
+      {
+        "text": "Fischer melhora suas peças com calma, com a4, R1f2, R2f3 e Bd3, enquanto Spassky só consegue mexer a dama de um lado para o outro. Não há pressa quando o adversário não tem lances úteis."
+      },
+      {
+        "text": "Depois de 38...gxf6 39.Rxf6, o rei negro está totalmente exposto. A dama, a torre e o bispo brancos estão prontos para atacar."
+      },
+      {
+        "text": "41.Qf4 ameaça Qxh6+ e mais, e Spassky abandonou. Em seguida, ele se juntou ao público para aplaudir Fischer. Fischer assumiu a liderança pela primeira vez e acabou se tornando campeão mundial.",
+        "label": "Spassky aplaude"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Os peões negros de c5 e d5 dominam o centro. Como você pode desafiá-los imediatamente?",
+        "hint": "Ataque o peão de d5 com um dos seus peões.",
+        "explanation": "20.e4! ataca d5. Se as negras capturam, o centro delas desmorona; se avançam 20...d4, como na partida, os peões ficam travados e as peças brancas dominam as casas à frente deles."
+      },
+      {
+        "prompt": "As brancas jogam. Suas peças miram a ala do rei das negras. Qual avanço de peão abre linhas para as suas torres?",
+        "hint": "Seu peão f quer avançar.",
+        "explanation": "26.f5! abre a coluna f. Depois de 26...exf5 27.Rxf5, a torre branca entra no ataque e o peão de e5 se torna um peão passado."
+      },
+      {
+        "prompt": "As brancas jogam. O cavalo de f6 é o último defensor do rei negro. Qual é a forma mais contundente de lidar com ele?",
+        "hint": "Às vezes uma torre vale menos do que um rei exposto.",
+        "explanation": "38.Rxf6! entrega uma torre pelo cavalo. Depois de 38...gxf6 39.Rxf6, o rei fica sem proteção, e a dama, a torre, o bispo e o peão e das brancas são demais para as negras."
+      }
+    ]
+  },
+  "deep-blue-kasparov-1996": {
+    "title": "A primeira vitória do Deep Blue",
+    "event": "Match Deep Blue x Kasparov, Filadélfia",
+    "opening": "Defesa Siciliana, Variante Alapin",
+    "summary": "A primeira vez que um computador venceu um campeão mundial em exercício numa partida com ritmo de jogo normal. O Deep Blue captura peões com calma enquanto Kasparov ataca seu rei, porque calculou que o próprio ataque chegaria primeiro. Mesmo assim, Kasparov venceu o match por 4-2.",
+    "annotations": [
+      {
+        "text": "Filadélfia, fevereiro de 1996. O Deep Blue da IBM, uma máquina que analisa milhões de posições por segundo, enfrenta o campeão mundial Garry Kasparov na partida 1 de um match de seis partidas."
+      },
+      {
+        "text": "Contra a Siciliana, o Deep Blue escolhe **2.c3**, um lance tranquilo que prepara **d2-d4** para montar um centro completo de peões."
+      },
+      {
+        "text": "A dama de Kasparov sai cedo, para d5. Aqui tudo bem, porque as brancas ainda não têm um cavalo em c3 para persegui-la."
+      },
+      {
+        "text": "Agora as brancas têm um **peão isolado** em d4: nenhum peão amigo nas colunas c ou e pode protegê-lo. Ele dá atividade às peças brancas, mas também pode virar uma fraqueza."
+      },
+      {
+        "text": "**13.Nb5** persegue a dama negra e mira a casa d6. O Deep Blue mantém suas peças ativas."
+      },
+      {
+        "text": "Depois de **18.Bxf6 gxf6** os peões da ala do rei das negras ficam quebrados. Em troca, Kasparov ganha a coluna g aberta para usar contra o rei branco."
+      },
+      {
+        "text": "**23.d5!** se livra do peão isolado e abre linhas para as peças brancas. Um jeito limpo de transformar uma fraqueza em atividade.",
+        "label": "Libertação"
+      },
+      {
+        "text": "Kasparov coloca o rei em h8 para que sua torre possa usar a coluna g. Ele está disposto a entregar peões para atacar o rei branco."
+      },
+      {
+        "text": "A torre negra chega a g8, mirando direto o rei branco. A corrida começou: as negras atacam o rei, as brancas contam peões."
+      },
+      {
+        "text": "O Deep Blue pega mais um peão enquanto as peças negras se reúnem perto do seu rei. Muitos humanos entrariam em pânico. A máquina tinha calculado que estava segura.",
+        "label": "Coragem ou ganância?"
+      },
+      {
+        "text": "**30...f3** cutuca o rei branco e ameaça romper em g2. A coisa está ficando afiada."
+      },
+      {
+        "text": "**31.g3** mantém a ala do rei fechada. O Deep Blue defende só o necessário."
+      },
+      {
+        "text": "Kasparov joga tudo no ataque com **33...Re1+**. Sua torre, cavalo, dama e o peão de f3 estão todos perto do rei branco."
+      },
+      {
+        "text": "As peças negras cercam o rei branco, e se as brancas hesitarem, o ataque negro vai romper. Mas é a vez das brancas, e o Deep Blue tem xeques."
+      },
+      {
+        "text": "Depois de **37.Rxh7+** o rei negro está encurralado e o mate está próximo, então Kasparov abandonou. Pela primeira vez, uma máquina tinha vencido o campeão mundial. Kasparov reagiu e venceu o match por 4-2.",
+        "label": "A história foi feita"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O peão negro de b6 não tem defensores. É seguro capturá-lo?",
+        "hint": "Conte quem protege b6.",
+        "explanation": "**26.Qxb6** simplesmente ganha um peão. O Deep Blue tinha calculado que o contra-ataque das negras não chegaria a tempo."
+      },
+      {
+        "prompt": "As brancas jogam. As negras ameaçam romper contra o seu rei. Você consegue atacar primeiro?",
+        "hint": "Primeiro os xeques. Olhe o peão de f7.",
+        "explanation": "**35.Nxf7+!** inicia uma cadeia de xeques. O rei negro é arrancado do abrigo, e o cavalo, a torre e a dama brancos fecham o cerco antes que as negras consigam atacar."
+      },
+      {
+        "prompt": "As brancas jogam. O rei negro está em h6. Como você termina o ataque?",
+        "hint": "Torre captura um peão com xeque.",
+        "explanation": "**37.Rxh7+** arranca o último peão perto do rei. A dama, a torre e o cavalo brancos agora o prendem, e Kasparov abandonou."
+      }
+    ]
+  },
+  "rotlewi-rubinstein-1907": {
+    "title": "A Imortal de Rubinstein",
+    "event": "Łódź",
+    "opening": "Gambito da Dama Recusado",
+    "summary": "Rubinstein sacrifica a dama e uma torre para que seus dois bispos varram o rei branco pelas grandes diagonais. Um exemplo perfeito de como peças ativas e bem apontadas podem vencer uma montanha de material a mais.",
+    "annotations": [
+      {
+        "text": "Łódź, 1907. Akiba Rubinstein, um gênio discreto que viria a ser um dos melhores jogadores do mundo, joga de negras contra Georg Rotlewi. O final é tão impressionante que esta partida é chamada de **a Imortal de Rubinstein**."
+      },
+      {
+        "text": "6.dxc5. As brancas liberam a tensão no centro. As negras recapturam com o bispo, desenvolvendo uma peça ao mesmo tempo."
+      },
+      {
+        "text": "7...a6. Os dois lados se copiam, mantendo as peças inimigas longe de b5 e se preparando para avançar na ala da dama."
+      },
+      {
+        "text": "11...dxc4. As negras capturam para que o bispo branco tenha que se mexer de novo, e ele logo será perseguido outra vez com ...b5."
+      },
+      {
+        "text": "12...b5. As negras ganham espaço com tempo e abrem espaço para o bispo em b7."
+      },
+      {
+        "text": "14...Bb7. Lembre-se deste bispo! Assim que o cavalo de c6 sair, ele vai encarar a grande diagonal em direção ao rei branco."
+      },
+      {
+        "text": "16...Bxe5. Depois da troca, a grande diagonal está totalmente aberta, de b7 até g2."
+      },
+      {
+        "text": "17.f4. As brancas expulsam o bispo e planejam e4 e e5. Mas mexer o peão f também abre uma diagonal em direção ao próprio rei em g1."
+      },
+      {
+        "text": "17...Bc7. O bispo recua com calma. Ele logo vai reaparecer em b6, mirando direto o rei branco."
+      },
+      {
+        "text": "19.e5. As brancas expulsam o cavalo de f6 e parecem muito ativas. Rubinstein preparou uma resposta impressionante."
+      },
+      {
+        "text": "19...Bb6+. Xeque! Sem o peão f em f2, o bispo corta o tabuleiro até g1."
+      },
+      {
+        "text": "20...Ng4. O cavalo salta em direção ao rei branco. Em seguida vem ...Qh4, mirando h2."
+      },
+      {
+        "text": "21...Qh4. As negras ameaçam 22...Qxh2 mate. As brancas precisam se defender."
+      },
+      {
+        "text": "23.gxh4. As brancas capturam a dama. As negras estão com uma dama inteira a menos, mas olhe esses dois bispos apontados para o rei branco!",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "24.Qxd2. As brancas pegam a torre também. Mas agora a dama saiu de e2 e já não protege o bispo de e4.",
+        "label": "Sacrifício de torre!"
+      },
+      {
+        "text": "24...Bxe4+. Xeque pela grande diagonal! O bispo que esperou em b7 a partida inteira finalmente ataca."
+      },
+      {
+        "text": "25...Rh3! A dama branca está cravada contra o rei pelo bispo de e4, então não pode capturar a torre. Não há um bom jeito de impedir ...Rxh2 mate, e as brancas abandonaram. Dois bispos apontados para um rei podem valer mais do que uma dama!",
+        "label": "Mate inevitável"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. As brancas acabaram de atacar sua dama com 22.g3. Em vez de movê-la, você encontra um lance ousado que faz a grande diagonal trabalhar a seu favor?",
+        "hint": "O cavalo de c3 é a peça que protege e4.",
+        "explanation": "22...Rxc3!! As negras ignoram a dama e eliminam o defensor de e4. Se 23.gxh4, o golpe seguinte, 23...Rd2!!, destroça a posição branca."
+      },
+      {
+        "prompt": "As negras jogam. Você entregou a dama. Agora encontre o lance que afasta a dama branca da defesa do bispo de e4.",
+        "hint": "Uma torre pode chegar à segunda fileira com ataque.",
+        "explanation": "23...Rd2!! A torre ataca a dama branca. Depois de 24.Qxd2, a resposta 24...Bxe4+ abre a grande diagonal com xeque."
+      },
+      {
+        "prompt": "As negras jogam. As brancas bloquearam o xeque com a dama em g2. Encontre o lance tranquilo que decide a partida.",
+        "hint": "A dama de g2 não pode se mover livremente. Qual lance de torre mira h2?",
+        "explanation": "25...Rh3! A dama não pode capturar porque está cravada contra o rei. As negras ameaçam ...Rxh2 mate, e as brancas não têm uma boa defesa."
+      }
+    ]
+  },
+  "paulsen-morphy-1857": {
+    "title": "O sacrifício de dama de Morphy",
+    "event": "1º Congresso Americano de Xadrez, Nova York",
+    "opening": "Abertura dos Quatro Cavalos",
+    "summary": "Na final do primeiro Congresso Americano de Xadrez, Morphy entrega a dama para arrebentar a ala do rei das brancas. Depois, suas torres e bispos caçam o rei até Paulsen abandonar. A lição: quando suas peças estão muito mais ativas, um grande sacrifício pode valer a pena.",
+    "annotations": [
+      {
+        "text": "Nova York, 1857. Na final do primeiro Congresso Americano de Xadrez, Paul Morphy, de 20 anos, enfrenta Louis Paulsen, um forte mestre alemão. Vamos acompanhar pelo lado de Morphy, com as negras."
+      },
+      {
+        "text": "6...Re8 Paulsen capturou o peão de e5, mas Morphy não tem pressa de recuperá-lo. Ele se desenvolve e coloca a torre na coluna e aberta."
+      },
+      {
+        "text": "7...dxc6 Recapturar em direção ao centro abre a coluna d e libera o bispo de c8. As peças negras têm muito espaço."
+      },
+      {
+        "text": "9...Nxe4 Morphy recupera o peão com uma pequena tática. A torre de e8 apoia o cavalo, então depois das trocas as negras recuperam o peão."
+      },
+      {
+        "text": "10...Rxe4 A torre negra agora está muito ativa no meio do tabuleiro."
+      },
+      {
+        "text": "12...Qd3! A dama salta bem para dentro do campo branco. Ela bloqueia o peão d, e assim o bispo de c1 e a torre de a1 das brancas têm dificuldade para se desenvolver."
+      },
+      {
+        "text": "15...Bd7 Morphy coloca com calma sua última peça menor em jogo. Todas as suas peças agora miram o rei branco."
+      },
+      {
+        "text": "16...Rae8 As duas torres estão na coluna e. A dama branca saiu para caçar peões na ala da dama, longe de casa."
+      },
+      {
+        "text": "18.gxf3 As brancas tiveram que capturar a dama, mas o escudo de peões na frente do rei agora está quebrado.",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "19...Bh3 O bispo ameaça ...Bg2+ e ideias de mate pela coluna g. O rei branco corre perigo de verdade."
+      },
+      {
+        "text": "21...Bxf3+ Morphy pega um peão com xeque. Todo lance dele vem com uma ameaça."
+      },
+      {
+        "text": "24...Bxf2 O outro bispo entra no ataque e agora cobre g1. As negras ameaçam ...Bg2 com xeque-mate, e as brancas só conseguem impedir entregando a dama."
+      },
+      {
+        "text": "25...Bxf1 As brancas devolveram a dama para evitar o mate, então agora as negras têm vantagem de material, e o ataque continua.",
+        "label": "Recuperando a dama"
+      },
+      {
+        "text": "26...Re2 A torre invade a segunda fileira, perto do rei branco."
+      },
+      {
+        "text": "27...Rh6 A outra torre vai para a coluna h, mirando h2."
+      },
+      {
+        "text": "28...Be3 O bispo cobre g1, então ...Rxh2 será xeque-mate e as brancas não conseguem impedir isso por muito tempo. Paulsen abandonou. **Peças ativas perto do rei inimigo podem valer mais do que uma dama.**",
+        "label": "As brancas abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. A dama branca está longe, em a6. Você encontra um jeito ousado de escancarar o rei branco?",
+        "hint": "Qual peça branca está protegendo o rei, e o que pode capturá-la?",
+        "explanation": "17...Qxf3!! Depois de 18.gxf3, o rei perde o escudo de peões, e a torre e os bispos negros invadem com xeques."
+      },
+      {
+        "prompt": "As negras jogam. Você entregou a dama e a ala do rei das brancas está aberta. Como você mantém o ataque?",
+        "hint": "Procure um xeque pela coluna g que acabou de se abrir.",
+        "explanation": "18...Rg6+ A torre dá xeque pela coluna g, e o bispo de casas claras logo entra no ataque com ...Bh3 e ...Bg2+."
+      }
+    ]
+  },
+  "fischer-benko-1963": {
+    "title": "A torre de Fischer em f6",
+    "event": "Campeonato dos EUA, Nova York",
+    "opening": "Defesa Pirc (Ataque Austríaco)",
+    "summary": "A caminho de uma campanha perfeita de 11 em 11 no Campeonato dos EUA, Fischer abre a coluna f e coloca uma torre bem na frente do rei negro. A partida mostra como linhas abertas e uma torre que não pode ser capturada com segurança podem decidir o jogo em poucos lances.",
+    "annotations": [
+      {
+        "text": "Nova York, dezembro de 1963. Fischer está a caminho de uma campanha perfeita de **11 em 11** no Campeonato dos EUA. Seu adversário, Pal Benko, é um grande mestre forte e também um jogador perigoso."
+      },
+      {
+        "text": "Benko escolhe uma formação flexível: bispo em g7, depois ...d6 e ...Nf6. Ele deixa as brancas tomarem o centro e espera contra-atacar mais tarde."
+      },
+      {
+        "text": "4.f4 é o **Ataque Austríaco**. As brancas ganham ainda mais espaço e se preparam para avançar o peão f em direção ao rei negro."
+      },
+      {
+        "text": "Benko entrega o bispo pelo cavalo. As brancas ficam com os dois bispos, e a dama vai para f3, já mirando a ala do rei."
+      },
+      {
+        "text": "11.f5! O peão avança com tudo. Depois de 11...gxf5 12.Qxf5 a coluna f fica aberta para a torre branca, e o rei negro perde um peão defensor.",
+        "label": "Abrindo a coluna f"
+      },
+      {
+        "text": "12...Nd4 salta para uma ótima casa central e expulsa a dama branca. As negras tentam reagir."
+      },
+      {
+        "text": "O outro cavalo negro vai para d6 para ajudar na defesa. Mas defender leva tempo, e as brancas aproveitam."
+      },
+      {
+        "text": "O roque coloca a torre em f1, bem na coluna aberta. Agora todas as peças brancas apontam para a ala do rei."
+      },
+      {
+        "text": "A dama passou por g3, g4 e agora h5, sempre perto do rei negro e de olho em h7."
+      },
+      {
+        "text": "18.Bxd4 exd4 eliminou o forte cavalo de d4. A torre branca agora tem um caminho para o campo negro, e vem aí algo incrível."
+      },
+      {
+        "text": "Benko afasta o rei. Capturar a torre não era melhor: depois de 19...Bxf6 20.e5, o bispo de d3 se junta à dama contra h7 e o ataque é decisivo.",
+        "label": "A torre não pode ser capturada"
+      },
+      {
+        "text": "20...h6 bloqueia por enquanto o caminho da dama até h7. Mas as peças negras estão apertadas e o rei continua sob fogo."
+      },
+      {
+        "text": "21.Ne2! traz a última peça para o ataque: o cavalo vai para f4 para se juntar à dama e à torre. Benko viu que não conseguiria defender tudo e abandonou.",
+        "label": "Benko abandona"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Todas as peças brancas apontam para o rei negro. Você encontra o impressionante lance de torre de Fischer?",
+        "hint": "Coloque sua torre onde parece que ela pode simplesmente ser capturada.",
+        "explanation": "19.Rf6!! cai na frente do rei, ataca o cavalo de d6 e bloqueia o bispo de g7. Se 19...Bxf6, então 20.e5 abre a diagonal do bispo até h7 e o ataque não pode ser contido."
+      },
+      {
+        "prompt": "As brancas jogam. O rei negro acabou de fugir para g8. Um lance de peão abre uma linha mortal. Qual?",
+        "hint": "Seu bispo de d3 adoraria enxergar h7.",
+        "explanation": "20.e5! abre caminho para o bispo de d3, e as brancas ameaçam Qxh7 com xeque-mate. O peão também ataca o cavalo de d6."
+      }
+    ]
+  },
+  "levitsky-marshall-1912": {
+    "title": "A partida das moedas de ouro",
+    "event": "Breslau",
+    "opening": "Defesa Francesa",
+    "summary": "Frank Marshall vence com um dos lances mais espetaculares da história: um lance de dama para uma casa onde ela pode ser capturada de três maneiras, e todas perdem. Aprenda como cavalos e torres trabalham juntos contra o rei e por que as linhas abertas importam.",
+    "annotations": [
+      {
+        "text": "Breslau, 1912. Frank Marshall, campeão dos Estados Unidos e atacante destemido, joga de negras contra Stepan Levitsky. Diz a lenda que o público ficou tão empolgado com o último lance que choveram moedas de ouro sobre o tabuleiro."
+      },
+      {
+        "text": "3...c5. As negras atacam o centro branco imediatamente: uma versão agressiva da Defesa Francesa."
+      },
+      {
+        "text": "5...exd5. O centro se abre. Linhas abertas costumam favorecer o lado cujas peças estão prontas para usá-las."
+      },
+      {
+        "text": "9.dxc5. As brancas ganham um peão, mas as peças negras estão muito ativas e logo vão recuperá-lo."
+      },
+      {
+        "text": "11...fxe6. As negras recapturam em direção ao centro e ganham a coluna f semiaberta para a torre. Essa coluna vai importar mais adiante.",
+        "label": "A coluna f se abre"
+      },
+      {
+        "text": "15...Rxf6. A torre recaptura e agora está em f6, pronta para se deslocar pela sexta fileira."
+      },
+      {
+        "text": "17...Bxc3. As negras entregam o bispo pelo cavalo para desfazer os peões brancos da ala da dama."
+      },
+      {
+        "text": "18...Qxc3. As negras ganham um peão e a dama delas fica muito ativa."
+      },
+      {
+        "text": "19.Rxd5. As brancas recuperam o peão de d5, mas a dama em e2 está prestes a ser perseguida."
+      },
+      {
+        "text": "19...Nd4! O cavalo salta para o centro, ataca a dama branca e vigia as casas e2 e f3, perto do rei branco.",
+        "label": "Cavalo em d4!"
+      },
+      {
+        "text": "20.Qh5. A dama foge em direção ao rei negro, buscando contra-ataque."
+      },
+      {
+        "text": "21...Rh6. A torre se desloca pela sexta fileira e persegue a dama branca. Atrás da dama está o bispo de h3."
+      },
+      {
+        "text": "22.Qg5. A dama sai do caminho, mas agora o bispo de h3 está na mira da torre."
+      },
+      {
+        "text": "23.Rc5. As brancas atacam a dama negra. Quase qualquer jogador simplesmente a colocaria em segurança, mas Marshall tinha algo muito melhor."
+      },
+      {
+        "text": "23...Qg3!! A dama salta para uma casa onde três peças brancas podem capturá-la, e todas as capturas perdem: 24.hxg3 Ne2 mate, 24.fxg3 Ne2+ 25.Kh1 Rxf1 mate, e 24.Qxg3 Ne2+ 25.Kh1 Nxg3+ deixa as negras com uma peça a mais. Enquanto isso, ameaça ...Qxh2 mate. As brancas abandonaram.",
+        "label": "O lance de ouro"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. A dama branca acabou de ir para g5. Você vê uma forma de ganhar material?",
+        "hint": "Se o peão de g2 recapturar, qual salto de cavalo ataca o rei e a dama ao mesmo tempo?",
+        "explanation": "22...Rxh3! O bispo cai. Se 23.gxh3, então 23...Nf3+ é um garfo no rei branco e na dama de g5."
+      },
+      {
+        "prompt": "As negras jogam. As brancas atacam sua dama em c3. Não se limite a recuar: encontre o lance que, segundo a lenda, provocou uma chuva de moedas de ouro!",
+        "hint": "Coloque sua dama onde ela possa ser capturada de três maneiras diferentes.",
+        "explanation": "23...Qg3!! Todas as capturas perdem: hxg3 permite ...Ne2 mate, fxg3 permite ...Ne2+ e ...Rxf1 mate, e Qxg3 permite ...Ne2+ e ...Nxg3+. Se as brancas a ignorarem, ...Qxh2 é mate."
+      }
+    ]
+  },
+  "short-timman-1991": {
+    "title": "A caminhada do rei de Short",
+    "event": "Tilburg",
+    "opening": "Defesa Alekhine",
+    "summary": "Short amarra as peças negras e depois marcha com o próprio rei de g1 até g5 para ajudar a dar xeque-mate. Essa caminhada do rei é uma das mais famosas da história e ensina uma lição surpreendente: quando o adversário não consegue atacar, até o rei pode virar um atacante.",
+    "annotations": [
+      {
+        "text": "Tilburg, 1991. O inglês Nigel Short enfrenta a estrela holandesa Jan Timman. Esta partida é lembrada por um dos planos mais surpreendentes da história do xadrez."
+      },
+      {
+        "text": "**Defesa Alekhine**: as negras convidam os peões brancos a avançar, esperando que mais tarde virem alvos."
+      },
+      {
+        "text": "As brancas mantêm um peão em e5. Ele tira as casas f6 e d6 das peças negras e deixa a posição negra apertada."
+      },
+      {
+        "text": "A dama negra está centralizada em d4, mas as brancas logo vão persegui-la ganhando tempo."
+      },
+      {
+        "text": "**21.Qh4** leva a dama branca para a ala do rei, ao lado do rei negro."
+      },
+      {
+        "text": "**23.Bh6** oferece a troca do melhor defensor das negras, o bispo de g7, que protege as casas escuras ao redor do rei."
+      },
+      {
+        "text": "Timman evita a troca com **23...Bh8**, mas em h8 o bispo fica muito passivo."
+      },
+      {
+        "text": "**24.Rd8** invade com a torre e crava as peças negras na última fileira."
+      },
+      {
+        "text": "A torre se instala em d7, na sétima fileira, atacando c7 e f7. As negras estão sendo sufocadas."
+      },
+      {
+        "text": "A dama branca está em f6, bem ao lado do rei negro. Mais um atacante em g7 ou h8 seria xeque-mate. Mas qual peça consegue chegar lá?"
+      },
+      {
+        "text": "Por enquanto as negras resistem: nenhuma peça branca consegue alcançar g7 ou h8. Mas as peças negras estão congeladas, e Timman só pode mexer as peças de um lado para o outro."
+      },
+      {
+        "text": "**31.Kh2!** A resposta é o rei! As negras não têm como atacá-lo, então o rei branco pode subir pelo tabuleiro e ajudar no mate.",
+        "label": "Começa a caminhada do rei"
+      },
+      {
+        "text": "Segundo passo: **32.Kg3**. As peças de Timman só podem ir e voltar."
+      },
+      {
+        "text": "**33.Kf4** continua subindo, usando as casas escuras que as negras já não conseguem defender."
+      },
+      {
+        "text": "Timman abandonou. O plano é **Kh6** e depois **Qg7** é xeque-mate. Lição: se o adversário não tem como atacá-lo, seu rei pode ser uma peça de ataque poderosa.",
+        "label": "As negras abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O bispo negro de g7 protege as casas escuras ao redor do rei. O que você faria?",
+        "hint": "Elimine o defensor.",
+        "explanation": "**27.Bxg7** troca o melhor defensor das negras. Agora as casas escuras ao redor do rei negro estão fracas, e a dama branca pode entrar."
+      },
+      {
+        "prompt": "As brancas jogam. Sem o bispo, o rei negro tem buracos por todos os lados. Onde a dama deve ficar?",
+        "hint": "Encontre um xeque em uma casa escura.",
+        "explanation": "**29.Qf6+** coloca a dama bem ao lado do rei. De f6 ela vigia g7 e h8, e as negras vão ter que defendê-las para sempre."
+      },
+      {
+        "prompt": "As brancas jogam. Seu rei já chegou a f4. Qual é o próximo passo da caminhada?",
+        "hint": "Continue marchando em direção a h6.",
+        "explanation": "**34.Kg5!** O rei vai para h6, onde vai proteger a dama em g7 para dar xeque-mate. As negras não conseguem impedir."
+      }
+    ]
+  },
+  "saemisch-nimzowitsch-1923": {
+    "title": "A Imortal do Zugzwang",
+    "event": "Copenhague",
+    "opening": "Defesa Índia da Dama",
+    "summary": "Nimzowitsch vai sufocando as brancas aos poucos até que todas as peças delas fiquem amarradas. No fim, as brancas têm muitos lances legais, mas nenhum bom: um raro zugzwang em pleno meio-jogo, com quase todas as peças ainda no tabuleiro.",
+    "annotations": [
+      {
+        "text": "Copenhague, 1923. Aron Nimzowitsch, um dos pensadores mais profundos da história do xadrez, joga de negras contra Friedrich Sämisch. O final é tão incomum que a partida é chamada de **Imortal do Zugzwang**: as brancas ficam sem lances bons enquanto o tabuleiro ainda está cheio de peças."
+      },
+      {
+        "text": "1...Nf6. Nimzowitsch gostava de controlar o centro com peças à distância, em vez de avançar os peões às pressas."
+      },
+      {
+        "text": "4...Bb7. A Defesa Índia da Dama: o bispo negro vigia a grande diagonal e a casa-chave e4."
+      },
+      {
+        "text": "8.Ne5. O cavalo branco salta para frente e abre o bispo de g2 em direção à ala da dama negra."
+      },
+      {
+        "text": "11...b5. As negras ganham espaço na ala da dama e tiram a casa c4 das peças brancas."
+      },
+      {
+        "text": "15...Nh5. O cavalo vai para a borda com um propósito: ataca o bispo de f4 e prepara ...f5."
+      },
+      {
+        "text": "16...f5. As negras assumem o controle firme de e4. As peças brancas começam a ficar sem boas casas."
+      },
+      {
+        "text": "18.Nb1. O cavalo precisa voltar até a casa inicial. As brancas estão ficando apertadas.",
+        "label": "Empurrado para trás"
+      },
+      {
+        "text": "18...Bb5. O bispo encontra uma ótima diagonal, de olho em e2 e nas casas claras do campo branco."
+      },
+      {
+        "text": "20.e4. As brancas finalmente tentam se libertar. Com o peão e fora de e2, a dama em d1 agora ataca o cavalo de h5."
+      },
+      {
+        "text": "21.Qxh5. As brancas ganham o cavalo, mas em troca as negras ficam com peões, a coluna f aberta e um ataque duradouro.",
+        "label": "Sacrifício de cavalo"
+      },
+      {
+        "text": "22.Qg5. A dama volta correndo para defender, mas as peças brancas em b1, c1 e d2 continuam dormindo."
+      },
+      {
+        "text": "22...Raf8. As negras dobram as torres na coluna f. As duas torres agora apontam para o rei branco."
+      },
+      {
+        "text": "23...R8f5. A torre expulsa a dama branca de g5."
+      },
+      {
+        "text": "24...Bd3. O bispo chega a d3 e corta a posição branca em duas. As peças negras dominam o tabuleiro inteiro.",
+        "label": "Domínio total"
+      },
+      {
+        "text": "25...h6!! Um tranquilo lance de peão que também dá ao rei negro uma casa de fuga. Agora as brancas estão em **zugzwang**: têm muitos lances legais, mas todos perdem material ou deixam o ataque negro passar. Sämisch abandonou.",
+        "label": "Zugzwang!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. As brancas atacaram seu peão de f5, e a dama em d1 agora ataca seu cavalo em h5. Qual é a resposta corajosa?",
+        "hint": "Abra linhas para suas torres, mesmo que custe uma peça.",
+        "explanation": "20...fxe4! As negras abrem mão do cavalo. Em troca, ganham peões, a coluna f aberta e um ataque duradouro contra o rei branco."
+      },
+      {
+        "prompt": "As negras jogam. As brancas acabaram de capturar seu cavalo. Agora contra-ataque pela coluna f aberta!",
+        "hint": "Qual peão ao lado do rei branco está sem proteção?",
+        "explanation": "21...Rxf2! A torre invade a segunda fileira branca, crava o bispo de g2 contra o rei, e a dama branca está longe, em h5."
+      }
+    ]
+  },
+  "adams-torre-1920": {
+    "title": "Adams x Torre: a dança da última fileira",
+    "event": "Nova Orleans",
+    "opening": "Defesa Philidor",
+    "summary": "As brancas oferecem a dama várias vezes, e as negras nunca podem capturá-la porque a própria última fileira está fraca demais. A lição mais famosa de todos os tempos sobre fraqueza da última fileira e desvio: uma peça que precisa proteger algo pode ser perseguida até ceder.",
+    "annotations": [
+      {
+        "text": "Nova Orleans, 1920. Edwin Adams enfrenta Carlos Torre, um jovem talento do México. Esta é a combinação de **última fileira** mais famosa de todas (alguns historiadores suspeitam que ela foi composta, mas as ideias valem ouro)."
+      },
+      {
+        "text": "2...d6 é a Defesa Philidor: sólida, mas um pouco passiva. As peças negras vão ter menos espaço."
+      },
+      {
+        "text": "O cavalo negro atacou a dama branca em d4, então 5.Bb5 o crava contra o rei negro."
+      },
+      {
+        "text": "Os dois lados desenvolvem e fazem o roque. A verdadeira história vai acontecer na coluna e, que está prestes a se abrir."
+      },
+      {
+        "text": "Os peões são trocados. Agora as colunas e e c estão abertas, e a partida vira uma batalha de torres e damas."
+      },
+      {
+        "text": "16.Rae1: as torres brancas estão dobradas na coluna e aberta, encarando a torre de e8.",
+        "label": "Torres dobradas"
+      },
+      {
+        "text": "17.Bxf6 elimina o cavalo. Agora a última fileira negra tem um problema: o rei não tem casa de fuga, e só a dama mantém e8 protegida."
+      },
+      {
+        "text": "A dama vai para b5, ainda protegendo e8 pela diagonal. A dança começou!",
+        "label": "Começa a dança"
+      },
+      {
+        "text": "19.Qc4! A dama é oferecida de novo. Capturá-la permite Rxe8+ e mate, então a dama negra precisa se mover outra vez."
+      },
+      {
+        "text": "De volta a d7, ainda vigiando e8. A dama negra está ficando sem boas casas."
+      },
+      {
+        "text": "As negras não podem capturar em c7: tanto 20...Qxc7 quanto 20...Rxc7 deixam as brancas capturar em e8 com mate a caminho. Então a dama volta para b5."
+      },
+      {
+        "text": "21.a4! Até um peão entra na dança. A única casa que ainda protege e8 é a4, então as negras precisam capturar.",
+        "label": "Até um peão entra na dança"
+      },
+      {
+        "text": "22.Re4! atacou a dama, e mais uma vez ela teve que achar uma casa que protegesse e8: b5. Agora vem o golpe final."
+      },
+      {
+        "text": "23.Qxb7! A dama negra não pode sair da diagonal a4–e8 nem continuar atacada. As negras abandonaram. Lição: uma última fileira fraca pode transformar sua peça mais forte em prisioneira.",
+        "label": "As negras abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. A dama negra em d7 é a única defensora da torre de e8. Como você pode atraí-la para longe?",
+        "hint": "Coloque sua dama onde a dama negra possa capturá-la.",
+        "explanation": "18.Qg4! Se 18...Qxg4, então 19.Rxe8+ Rxe8 20.Rxe8 é xeque-mate. Por isso a dama negra precisa continuar protegendo e8 e não pode aceitar o presente."
+      },
+      {
+        "prompt": "As brancas jogam. A dama negra voltou para d7. Você consegue encontrar o lance de dama mais ousado de todos?",
+        "hint": "Ofereça sua dama onde duas peças negras possam capturá-la.",
+        "explanation": "20.Qc7!! Nem a dama nem a torre de c8 podem capturá-la: qualquer captura deixa as brancas tomar em e8 com mate. Enquanto isso, as brancas ameaçam Qxb7 e continuar perseguindo a dama."
+      },
+      {
+        "prompt": "As brancas jogam. A dama negra capturou em a4 e ainda protege e8. Como persegui-la de novo?",
+        "hint": "Uma torre pode atacar pela quarta fileira.",
+        "explanation": "22.Re4! ataca a dama. Capturar a torre só perderia a dama para 23.Rxe4, então a dama precisa achar outra casa que ainda proteja e8, e só resta b5."
+      }
+    ]
+  },
+  "alekhine-nimzowitsch-1930": {
+    "title": "O canhão de Alekhine",
+    "event": "San Remo",
+    "opening": "Defesa Francesa, Variante Winawer",
+    "summary": "O campeão mundial Alekhine ganha espaço, crava um peão bem fundo em a6 e empilha as peças pesadas na coluna c até as negras ficarem completamente paralisadas. A formação de duas torres com a dama atrás delas até hoje é chamada de canhão de Alekhine.",
+    "annotations": [
+      {
+        "text": "San Remo, 1930. O campeão mundial Alexander Alekhine joga de brancas contra Aron Nimzowitsch, um mestre em restringir as peças do adversário. Aqui Alekhine o vence no próprio jogo dele e conquista o torneio com estilo."
+      },
+      {
+        "text": "3...Bb4. A Variante Winawer da Francesa: as negras cravam o cavalo de c3 e pressionam e4."
+      },
+      {
+        "text": "4.e5. As brancas ganham espaço no centro. A cadeia de peões aperta as peças negras da ala do rei."
+      },
+      {
+        "text": "6.Nb5. O cavalo vai rumo a d6, uma casa que as negras vão ter dificuldade para proteger."
+      },
+      {
+        "text": "6...Bxd2+. As negras entregam o bispo de casas escuras. Sem ele, d6 vira um buraco, a casa perfeita para o cavalo branco.",
+        "label": "Um buraco em d6"
+      },
+      {
+        "text": "9.f4. As brancas apoiam o peão de e5. O centro está travado e as brancas têm mais espaço."
+      },
+      {
+        "text": "11.a4. Alekhine começa a se expandir na ala da dama, onde quer abrir linhas."
+      },
+      {
+        "text": "13.cxb4. A coluna c agora está aberta. Quem controlá-la vai levar vantagem."
+      },
+      {
+        "text": "14...f5. As negras fecham a porta da ala do rei. Agora a batalha vai ser decidida na ala da dama, onde as brancas são muito mais fortes."
+      },
+      {
+        "text": "16.Nxb7. Alekhine troca seu orgulhoso cavalo pelo bispo negro, porque agora o próprio bispo pode dominar as casas claras."
+      },
+      {
+        "text": "17.a6! O peão se finca em a6 e congela a ala da dama negra. As peças negras vão sofrer por falta de espaço pelo resto da partida.",
+        "label": "Um espinho em a6"
+      },
+      {
+        "text": "18.Bb5. O bispo ocupa um posto belíssimo, pressionando o cavalo de c6."
+      },
+      {
+        "text": "20.Rfc1. Os dois lados se alinham na coluna c, mas as brancas têm muito mais espaço para trazer reforços."
+      },
+      {
+        "text": "22...Rab8. As negras estão ficando sem lances úteis e só podem mexer as peças de um lado para o outro e esperar."
+      },
+      {
+        "text": "26.Qc1. Duas torres com a dama atrás delas, todas na coluna c. Essa bateria até hoje é chamada de **canhão de Alekhine**.",
+        "label": "O canhão de Alekhine"
+      },
+      {
+        "text": "27.Ba4. O bispo recua, mas mantém o cavalo de c6 cravado contra a dama negra em d7."
+      },
+      {
+        "text": "28...Ke8. O rei negro caminha para a ala da dama para ajudar na defesa, a única parte do tabuleiro que importa agora."
+      },
+      {
+        "text": "30.h4. Alekhine faz um lance tranquilo de peão e espera. As negras estão completamente amarradas: o cavalo de c6 está cravado, quase não há lances úteis, e b5 está a caminho para ganhar o cavalo. Nimzowitsch abandonou.",
+        "label": "Paralisia total"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O bispo negro de casas escuras sumiu. Para onde deve ir seu cavalo de b5?",
+        "hint": "Procure uma casa no campo negro que nenhum peão negro possa atacar.",
+        "explanation": "14.Nd6! O cavalo se instala no buraco de d6. Nenhum peão negro pode expulsá-lo, e de lá ele ataca o bispo de b7 e pressiona fundo na posição negra."
+      },
+      {
+        "prompt": "As brancas jogam. As negras acabaram de jogar 27...b5 para atacar seu bispo. Qual é a melhor resposta?",
+        "hint": "O peão de b5 está protegido?",
+        "explanation": "28.Bxb5! As brancas simplesmente ganham um peão, e o bispo volta direto para seu posto ideal, ainda pressionando c6."
+      }
+    ]
+  },
+  "fischer-fine-1963": {
+    "title": "Fischer x Fine: Gambito Evans",
+    "event": "Partida amistosa, Nova York",
+    "opening": "Gambito Evans",
+    "summary": "Em uma partida amistosa, Fischer entrega peões para colocar as peças em jogo rapidamente, e um ex-grande mestre de nível mundial está perdido em 17 lances. Uma lição perfeita sobre por que o desenvolvimento e a segurança do rei importam mais do que ganhar peões.",
+    "annotations": [
+      {
+        "text": "Nova York, 1963. Em uma partida amistosa, Fischer enfrenta Reuben Fine, ex-grande mestre de nível mundial. Fischer escolhe uma abertura antiga e aventureira para mostrar que o **desenvolvimento rápido** pode vencer peões a mais."
+      },
+      {
+        "text": "Os dois bispos apontam para as casas mais fracas de cada campo: f7 e f2. Esta é a Abertura Italiana."
+      },
+      {
+        "text": "4.b4!? é o **Gambito Evans**. As brancas entregam um peão para ganhar tempo: quando as negras o capturam, as brancas montam um grande centro com c3 e d4, atacando enquanto avançam.",
+        "label": "O Gambito Evans"
+      },
+      {
+        "text": "6.d4 abre linhas. Fischer não se preocupa com peões; ele quer as peças em jogo rapidamente."
+      },
+      {
+        "text": "Fine captura um terceiro peão. Que ganância! As negras têm mais material, mas a maioria das peças ainda está em casa e o rei está no centro."
+      },
+      {
+        "text": "8.Qb3 alinha a dama e o bispo contra f7, o ponto mais fraco ao lado do rei negro."
+      },
+      {
+        "text": "As brancas recuperam um peão e desenvolvem mais uma peça. Veja a diferença: quase todas as peças brancas estão em jogo, enquanto as negras têm só três desenvolvidas e o rei continua no centro."
+      },
+      {
+        "text": "10.Nd5 salta para frente e ataca a dama em e7. Quase todo lance das brancas vem com uma ameaça."
+      },
+      {
+        "text": "As negras tentam trocar peças. Trocar é uma boa forma de se defender, mas o rei negro continua preso no meio."
+      },
+      {
+        "text": "13.Bb2 leva o último bispo à grande diagonal, atacando a dama em e5 e mirando g7."
+      },
+      {
+        "text": "14.h4! oferece mais um peão para arrastar a dama negra para longe. Fischer a quer o mais longe possível da ação.",
+        "label": "Mais um peão oferecido"
+      },
+      {
+        "text": "Fine aceita, mas agora a dama dele está na borda do tabuleiro, longe do próprio rei."
+      },
+      {
+        "text": "15.Bxg7 captura um peão e ataca a torre de h8. Assim que a torre se mover, as negras não poderão mais fazer o roque pequeno."
+      },
+      {
+        "text": "O rei escapa para d8, mas está cercado pelas próprias peças e não tem um lugar seguro."
+      },
+      {
+        "text": "Fine abandonou. Se 17...Qxg3, então 18.Bf6 é xeque-mate; caso contrário, 18.Bf6+ ganha a dama negra. Apenas 17 lances: o desenvolvimento venceu o material.",
+        "label": "As negras abandonam"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O rei negro ainda está no centro e a coluna e está totalmente aberta. Como você vai atrás dele?",
+        "hint": "Coloque uma torre em jogo com xeque.",
+        "explanation": "16.Rfe1+ aproveita a coluna e aberta. O rei não tem boa casa: 16...Kd8 o deixa encurralado, bem ao alcance do bispo e da dama brancos."
+      },
+      {
+        "prompt": "As brancas jogam. Você consegue encontrar o lance tranquilo de dama que deixa as negras sem defesa?",
+        "hint": "Ofereça uma troca de damas que as negras não podem aceitar.",
+        "explanation": "17.Qg3! prepara 18.Bf6+, que dá xeque no rei e ataca a dama em h4 ao mesmo tempo. Se as negras capturarem a dama, 18.Bf6 é xeque-mate, porque a torre de e1 cobre e8 e e7."
+      }
+    ]
+  },
+  "deep-blue-kasparov-1997": {
+    "title": "Deep Blue vence o match",
+    "event": "Revanche Deep Blue x Kasparov, Nova York",
+    "opening": "Defesa Caro-Kann",
+    "summary": "A partida decisiva da revanche de 1997. Kasparov erra na abertura, o Deep Blue sacrifica um cavalo para manter o rei negro preso no centro, e o campeão mundial abandona após apenas 19 lances. Foi a primeira vez que um computador venceu um match contra um campeão mundial em exercício.",
+    "annotations": [
+      {
+        "text": "Nova York, maio de 1997. A revanche entre Kasparov e um Deep Blue aprimorado está empatada em 2,5-2,5 antes da sexta e última partida. Está tudo em jogo."
+      },
+      {
+        "text": "Kasparov escolhe a **Caro-Kann**, uma defesa muito sólida que ele raramente jogava. Ele esperava evitar lutas táticas contra a máquina."
+      },
+      {
+        "text": "**4...Nd7** prepara **...Ngf6**, para que, se as brancas trocarem cavalos, as negras possam recapturar com o outro cavalo e manter uma estrutura de peões saudável."
+      },
+      {
+        "text": "**5.Ng5** é uma ideia aguda: o cavalo mira f7 e e6, duas casas sensíveis perto do rei negro."
+      },
+      {
+        "text": "**7...h6?** expulsa o cavalo, mas nesta posição exata é um erro conhecido: permite um sacrifício de cavalo em e6. Kasparov confundiu a ordem dos lances.",
+        "label": "Um deslize fatal"
+      },
+      {
+        "text": "Kasparov não captura de imediato. A dama em e7 ataca o cavalo e, por enquanto, bloqueia a coluna e."
+      },
+      {
+        "text": "O Deep Blue não tem pressa. Primeiro faz o roque, aproximando a torre da coluna e, onde o rei negro vai ficar preso."
+      },
+      {
+        "text": "As negras têm um cavalo a mais, mas o rei continua no centro e o peão f já se moveu, abrindo a diagonal em direção a e8."
+      },
+      {
+        "text": "**10.Bg6+** obriga o rei a se mexer. As negras nunca mais poderão fazer o roque, e as peças delas atrapalham umas às outras.",
+        "label": "Adeus ao roque"
+      },
+      {
+        "text": "Kasparov tenta abrir espaço para o rei na ala da dama com **11...b5**. A resposta das brancas, **12.a4**, ataca esse peão imediatamente."
+      },
+      {
+        "text": "O rei foge para c8, mas o bispo de f8 e a torre de h8 continuam dormindo. O cavalo a mais das negras não está fazendo muita coisa."
+      },
+      {
+        "text": "**16.Qd3** traz a dama para o ataque. Todas as peças brancas estão ativas; metade das negras, não."
+      },
+      {
+        "text": "O material está mais ou menos igual de novo, mas o rei negro está desprotegido e as peças estão emboladas. O ataque branco continua."
+      },
+      {
+        "text": "**19.c4** abre ainda mais linhas em direção ao rei negro, e Kasparov abandonou. Foi a primeira vitória de um computador em um match contra um campeão mundial. Lição: conheça a ordem dos lances da sua abertura, e um rei preso no centro é um grande alvo.",
+        "label": "Kasparov abandona"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. As negras acabaram de jogar 7...h6, atacando o cavalo de g5. Para onde o cavalo pode ir com estrondo?",
+        "hint": "O peão de e6 protege o rei negro.",
+        "explanation": "**8.Nxe6!** entrega o cavalo por um peão. Se as negras o capturarem, o rei fica preso no centro com linhas abertas por todos os lados."
+      },
+      {
+        "prompt": "As brancas jogam. A dama negra em e7 está na mesma coluna que sua torre, com apenas o peão de e6 no meio. Como você pode eliminar esse peão?",
+        "hint": "Ofereça um bispo que o peão não possa recusar.",
+        "explanation": "**17.Bf5!** Se **17...exf5**, a coluna e se abre e a torre branca ataca a dama negra."
+      },
+      {
+        "prompt": "As brancas jogam. A coluna e está aberta. O que você captura?",
+        "hint": "Tem algo grande em e7.",
+        "explanation": "**18.Rxe7** ganha a dama por uma torre, e o rei negro continua exposto."
+      }
+    ]
+  },
+  "spassky-bronstein-1960": {
+    "title": "A partida de \"Moscou contra 007\"",
+    "event": "Campeonato da URSS, Leningrado",
+    "opening": "Gambito do Rei Aceito",
+    "summary": "O jovem Spassky joga o ousado Gambito do Rei, deixa as negras fazerem uma nova dama e continua atacando mesmo assim. Uma versão da posição final apareceu no filme de James Bond Moscou contra 007. A lição: um ataque ao rei pode valer muito mais do que uma torre.",
+    "annotations": [
+      {
+        "text": "Leningrado, 1960, Campeonato Soviético. O jovem Boris Spassky joga o ousado Gambito do Rei contra David Bronstein, um dos jogadores mais criativos de todos os tempos. Uma versão desta partida apareceu mais tarde em um filme de James Bond."
+      },
+      {
+        "text": "2.f4 oferece um peão para desviar o peão e negro do centro e abrir a coluna f para a torre branca. Uma escolha romântica e de ataque.",
+        "label": "O Gambito do Rei"
+      },
+      {
+        "text": "Bronstein contra-ataca no centro imediatamente. Devolver um peão para liberar as peças é uma resposta clássica ao gambito."
+      },
+      {
+        "text": "Os dois lados desenvolvem rapidamente. O plano das brancas: fazer o roque, recuperar o peão de f4 e usar a coluna f aberta."
+      },
+      {
+        "text": "9.Ne4 deixa as negras capturar em d5. Spassky prefere peças ativas a um peão: o cavalo está a caminho de d6 e f6."
+      },
+      {
+        "text": "10...Ne3 é um garfo, atacando a dama em d1 e a torre em f1. Spassky simplesmente captura o cavalo."
+      },
+      {
+        "text": "Agora as negras têm um peão em e3, bem dentro da posição branca. Fique de olho nele!"
+      },
+      {
+        "text": "12.c5 expulsa o bispo de d6, a casa que o cavalo branco quer."
+      },
+      {
+        "text": "14...e2! O peão ataca a torre de f1 e quer virar dama. A maioria dos jogadores salvaria a torre. Spassky tem outros planos.",
+        "label": "O peão ataca"
+      },
+      {
+        "text": "Bronstein leva o cavalo para f8 para proteger h7. Mas agora o peão de f7 está fraco."
+      },
+      {
+        "text": "As negras fazem uma nova dama com xeque! Mas as brancas simplesmente a capturam, e as peças delas cercam o rei negro."
+      },
+      {
+        "text": "As negras tentam bloquear a dama branca, mas o bispo de f5 simplesmente está perdido."
+      },
+      {
+        "text": "O material está mais ou menos igual de novo, e o cavalo de f7 está cravado como um espinho bem ao lado do rei negro."
+      },
+      {
+        "text": "O segundo cavalo salta para e5. Os dois cavalos brancos agora estão bem na frente do rei negro."
+      },
+      {
+        "text": "21.Bb3 alinha o bispo atrás do cavalo de f7, mirando o rei em g8. Quando o cavalo se mover, será um **xeque descoberto**."
+      },
+      {
+        "text": "22.Nxe5+ é esse xeque descoberto. O rei precisa fugir para h7.",
+        "label": "Xeque descoberto"
+      },
+      {
+        "text": "23.Qe4+ e Bronstein abandonou. O rei não pode voltar para g8 por causa do bispo de b3, e a dama, a torre e o cavalo brancos estão prestes a romper a defesa.",
+        "label": "Bronstein abandona"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O peão negro de e2 ataca sua torre e quer virar dama. O que você faria?",
+        "hint": "Esqueça a torre. Qual ponto perto do rei negro é o mais fraco?",
+        "explanation": "15.Nd6!! ignora a ameaça. O cavalo ataca a torre de e8 e mira f7. Se 15...Bxd6, então 16.Qh7+ inicia um ataque feroz. Spassky avaliou que o ataque valia mais do que uma torre."
+      },
+      {
+        "prompt": "As brancas jogam. O cavalo negro foi para f8 para defender. Onde seu cavalo ataca agora?",
+        "hint": "Olhe para o peão ao lado do rei negro.",
+        "explanation": "16.Nxf7! captura o peão, ataca a dama em d8 e abre a coluna f em direção ao rei negro. As negras podem fazer uma nova dama em f1, mas ela é simplesmente capturada."
+      }
+    ]
+  },
+  "bernstein-capablanca-1914": {
+    "title": "O raio de Capablanca na última fileira",
+    "event": "Moscou (partida de exibição)",
+    "opening": "Gambito da Dama Recusado",
+    "summary": "Capablanca avança com paciência um peão passado, deixa as brancas ganhá-lo e depois ataca com um lance de dama impressionante que explora a última fileira fraca das brancas. Um lembrete clássico para nunca esquecer a casa de fuga do seu rei.",
+    "annotations": [
+      {
+        "text": "Moscou, 1914. José Raúl Capablanca, a estrela cubana que se tornaria campeão mundial em 1921, joga de negras em uma partida de exibição contra o forte mestre Ossip Bernstein. Fique de olho na última fileira das brancas."
+      },
+      {
+        "text": "5...O-O. Um Gambito da Dama Recusado clássico: as negras mantêm um centro sólido e fazem o roque rapidamente."
+      },
+      {
+        "text": "8...exd5. Depois da troca no centro, as negras têm um peão firme em d5 e uma linha aberta para o bispo de casas claras."
+      },
+      {
+        "text": "10.Ba6. As brancas oferecem a troca dos bispos de casas claras, eliminando um bom defensor da ala da dama negra."
+      },
+      {
+        "text": "11...c5. As negras desafiam o centro e dão mais espaço às suas peças."
+      },
+      {
+        "text": "13...bxc5. Agora as negras têm dois peões lado a lado em c5 e d5, chamados de **peões pendentes**: fortes juntos, mas exigem cuidado."
+      },
+      {
+        "text": "15...c4. As negras avançam e ganham espaço na ala da dama."
+      },
+      {
+        "text": "16...Rfd8. A torre negra ocupa a coluna d. Guarde isso: essa torre tem um papel principal bem no final."
+      },
+      {
+        "text": "17...Bb4. O bispo crava o cavalo de c3 e aumenta a pressão sobre a ala da dama branca."
+      },
+      {
+        "text": "19...dxc4. As brancas não têm mais peões nas colunas b, c ou d, então o peão c das negras agora é um **peão passado**, livre para avançar.",
+        "label": "Um peão passado"
+      },
+      {
+        "text": "21...Nd5. O cavalo chega a uma ótima casa, atacando a torre de c3 e apoiando o peão c."
+      },
+      {
+        "text": "23...Rc5. A torre protege o peão de c3 por trás, mantendo-o vivo."
+      },
+      {
+        "text": "26.Nb5. O cavalo branco mira o peão de c3. Bernstein se esforça para ganhá-lo."
+      },
+      {
+        "text": "27.Nxc3. As brancas finalmente ganham o peão, e segue-se uma série de trocas em c3.",
+        "label": "As brancas ganham o peão"
+      },
+      {
+        "text": "29.Rxc3. As brancas têm um peão a mais e se sentem seguras. Mas olhe o rei delas: não tem casa de fuga, e a torre negra ainda domina a coluna d."
+      },
+      {
+        "text": "29...Qb2!! Um raio em céu azul. A dama branca não pode capturar por causa de ...Rd1 mate, e não consegue proteger ao mesmo tempo a última fileira e a torre de c3. Bernstein abandonou. Sempre dê um pouco de espaço para seu rei respirar!",
+        "label": "Um raio em céu azul"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As negras jogam. Seu peão passado em c4 está bem apoiado pelo cavalo de d5. Como você pode torná-lo ainda mais perigoso?",
+        "hint": "Peões passados devem avançar!",
+        "explanation": "22...c3! O peão fica um passo mais perto da promoção, protegido pelo cavalo. Agora as peças brancas precisam gastar tempo para pará-lo."
+      },
+      {
+        "prompt": "As negras jogam. As brancas acabaram de ganhar um peão e parecem contentes. Olhe a última fileira das brancas: você encontra o lance que encerra a partida na hora?",
+        "hint": "Ataque a dama e a torre brancas ao mesmo tempo.",
+        "explanation": "29...Qb2!! A dama ataca tanto a dama branca quanto a torre de c3. 30.Qxb2 cai em 30...Rd1 mate, porque o rei branco não tem casa de fuga. Caso contrário, as brancas perdem material."
+      }
+    ]
+  },
+  "lasker-bauer-1889": {
+    "title": "O sacrifício duplo de bispos de Lasker",
+    "event": "Torneio de Amsterdã",
+    "opening": "Abertura Bird",
+    "summary": "Um jovem Emanuel Lasker sacrifica os dois bispos para arrombar o roque negro e depois recupera o material com uma elevação de torre e um ataque duplo. O sacrifício duplo de bispos em h7 e g7 virou um padrão de ataque clássico que todo jogador deveria conhecer.",
+    "annotations": [
+      {
+        "text": "Amsterdã, 1889. Emanuel Lasker, aos 20 anos, que mais tarde seria campeão mundial por 27 anos, joga de brancas contra Johann Bauer. Repare para onde apontam os dois bispos brancos."
+      },
+      {
+        "text": "1.f4. Abertura Bird: as brancas controlam a casa e5 com um peão, em vez dos habituais 1.e4 ou 1.d4."
+      },
+      {
+        "text": "5.Bd3. Agora os dois bispos miram a ala do rei negra: um aponta para h7, o outro para a grande diagonal."
+      },
+      {
+        "text": "8...O-O. As negras fazem o roque bem na linha de fogo desses dois bispos."
+      },
+      {
+        "text": "10.Ng3. O cavalo vai rumo a h5, pronto para se juntar ao ataque ao rei negro."
+      },
+      {
+        "text": "12.Bxe5. Depois da troca, o bispo fica em e5 encarando g7. Só o cavalo de f6 segura a posição negra."
+      },
+      {
+        "text": "13...a6? As negras planejam avançar na ala da dama e se esquecem do rei. Esse lance lento dá a Lasker o tempo de que ele precisa.",
+        "label": "Um lance lento"
+      },
+      {
+        "text": "14.Nh5! As brancas oferecem o cavalo para atrair o cavalo de f6, o principal defensor de h7."
+      },
+      {
+        "text": "15...Kxh7. O primeiro bispo se foi, mas agora 16.Qxh5+ recupera o cavalo com xeque e a dama entra no ataque.",
+        "label": "Primeiro sacrifício de bispo"
+      },
+      {
+        "text": "17...Kxg7. Os dois bispos foram entregues, mas o rei negro perdeu toda a proteção de peões.",
+        "label": "O segundo bispo!"
+      },
+      {
+        "text": "19...e5. A única defesa. Esse lance abre a sexta fileira para que a dama negra possa bloquear um xeque em h6."
+      },
+      {
+        "text": "21.Rxh6+. As brancas ganham a dama negra. Faça as contas: Lasker deu dois bispos e uma torre e recebeu de volta um cavalo, a dama e dois peões.",
+        "label": "Dama ganha"
+      },
+      {
+        "text": "23.Qxb7. O bispo cai. O material agora está mais ou menos igual, mas o rei negro está desprotegido e a dama e a torre brancas continuam pressionando."
+      },
+      {
+        "text": "27.fxe5. As brancas abrem a coluna f para a torre, apontando direto para o rei negro em f8."
+      },
+      {
+        "text": "28.e6. O peão a mais avança, apertando as negras e enfraquecendo ainda mais a defesa ao redor do rei."
+      },
+      {
+        "text": "30.Rxf6+! A torre rompe a defesa. Depois de 30...Bxf6 31.Qxf6+ a dama persegue o rei e mira a torre solta em b7."
+      },
+      {
+        "text": "34.Qxb7. A torre de b7 cai com a ajuda dos xeques da dama. Agora as brancas têm dama contra torre: um final ganho."
+      },
+      {
+        "text": "38.Qxd3. A última esperança das negras, o peão d passado, desaparece, e Bauer abandonou. O sacrifício em h7 e g7 hoje é conhecido como **combinação de Lasker**. Cuidado quando os dois bispos adversários apontarem para o seu rei!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. As negras acabaram de capturar seu cavalo em h5. Seus dois bispos apontam para o rei negro. Qual é a continuação ousada?",
+        "hint": "Comece com um xeque em h7.",
+        "explanation": "15.Bxh7+! O bispo arranca o peão de h7 com xeque. Depois de 15...Kxh7 16.Qxh5+, as brancas recuperam o cavalo com xeque, e o rei negro fica exposto."
+      },
+      {
+        "prompt": "As brancas jogam. Você já entregou um bispo. Consegue encontrar o próximo golpe?",
+        "hint": "Seu outro bispo, em e5, também tem um alvo.",
+        "explanation": "17.Bxg7! O segundo bispo elimina o último escudo de peões. Ele também ameaça 18.Qh8 mate; e se as negras o capturarem, a dama e a torre invadem."
+      },
+      {
+        "prompt": "As brancas jogam. O rei negro está a céu aberto em h7. Como você pode trazer mais uma peça para o ataque?",
+        "hint": "Uma torre pode se deslocar pela terceira fileira.",
+        "explanation": "19.Rf3! A torre se desloca para h3 para dar um xeque mortal. A única defesa das negras é 19...e5 20.Rh3+ Qh6, e então as brancas ganham a dama."
+      },
+      {
+        "prompt": "As brancas jogam. Seu ataque recuperou o material. Agora encontre um lance que ataque duas peças negras ao mesmo tempo!",
+        "hint": "Olhe para os bispos de e7 e b7.",
+        "explanation": "22.Qd7! Um ataque duplo: a dama ataca o bispo de e7 e o bispo de b7. As negras só podem salvar um deles."
+      }
+    ]
+  },
+  "tal-smyslov-1959": {
+    "title": "Tal x Smyslov: o Mágico",
+    "event": "Torneio de Candidatos, Iugoslávia",
+    "opening": "Defesa Caro-Kann",
+    "summary": "Mikhail Tal, o Mágico de Riga, deixa um bispo para trás, lança as peças contra o rei de um ex-campeão mundial e termina com um sacrifício de dama. A partida mostra como atividade e ameaças podem valer mais do que material.",
+    "annotations": [
+      {
+        "text": "Iugoslávia, 1959: o Torneio de Candidatos, que decidia quem desafiaria o campeão mundial. Mikhail Tal, **o Mágico de Riga**, enfrenta o ex-campeão mundial Vasily Smyslov."
+      },
+      {
+        "text": "2.d3 é uma resposta tranquila e incomum à Caro-Kann. Tal foge dos caminhos conhecidos e busca a luta."
+      },
+      {
+        "text": "O centro se abre rapidamente. Sem os peões, as peças ativas vão decidir tudo."
+      },
+      {
+        "text": "9.O-O-O: Tal faz o roque grande, enquanto as negras vão fazer o roque pequeno. Com os reis em alas opostas, vira uma corrida de ataques."
+      },
+      {
+        "text": "10.Nd6! O cavalo salta fundo no campo negro, de olho em f7 e b7, e atrapalha as peças negras.",
+        "label": "Cavalo mergulha em d6"
+      },
+      {
+        "text": "12.Bd2!? ataca a dama em a5 e simplesmente deixa o bispo de c4 cair. Tal confia mais no ataque do que no material.",
+        "label": "Bispo abandonado"
+      },
+      {
+        "text": "O cavalo vai para f5, mirando o bispo de e7 e as casas perto do rei negro. As peças de Tal se reúnem na ala do rei."
+      },
+      {
+        "text": "As negras finalmente capturam o bispo. Estão com uma peça a mais, mas a dama e o cavalo brancos estão perto do rei negro."
+      },
+      {
+        "text": "17...Qxa2 contra-ataca: a dama negra mergulha ao lado do rei branco e ameaça ...Qa1+."
+      },
+      {
+        "text": "18...Nf6 ataca a dama branca. Agora os dois reis estão em perigo. Quem ataca primeiro?"
+      },
+      {
+        "text": "19.Qxf7!! A dama entra na cova dos leões. Tal viu que o cavalo de h6 e a torre de d1 vão recuperar o material.",
+        "label": "Sacrifício de dama!"
+      },
+      {
+        "text": "Smyslov dá xeque primeiro. O rei branco vai para d2, e repare: a dama negra em a1 agora está na frente da torre branca de d1."
+      },
+      {
+        "text": "A fumaça se dissipa. As brancas têm duas torres contra uma, e o rei negro está a céu aberto."
+      },
+      {
+        "text": "24.Nxc6 ganha um peão e ataca o bispo de d8 e o peão de a7."
+      },
+      {
+        "text": "26.Bd4 bloqueia o xeque. As brancas têm uma qualidade a mais e as peças negras estão espalhadas, então Smyslov abandonou. Tal venceu o torneio e se tornou campeão mundial em 1960.",
+        "label": "Smyslov abandona"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O bispo de d8 ataca sua dama em g5. Você consegue salvar a dama e ganhar algo ao mesmo tempo?",
+        "hint": "Primeiro vem um xeque de cavalo.",
+        "explanation": "16.Nh6+! empurra o rei para o canto (se 16...gxh6, a dama ainda captura em h5 e o rei negro fica totalmente exposto). Então 17.Qxh5 recupera o cavalo com o ataque ainda em andamento."
+      },
+      {
+        "prompt": "As brancas jogam. A torre negra acabou de capturar sua dama. Você consegue recuperar tudo?",
+        "hint": "Recapture com xeque e depois olhe para a1.",
+        "explanation": "21.Nxf7+ captura a torre com xeque. Depois que o rei se mover, 22.Rxa1 captura a dama negra, e as brancas saem na frente."
+      }
+    ]
+  },
+  "legal-mate-1750": {
+    "title": "Mate de Légal",
+    "event": "Café de la Régence, Paris",
+    "opening": "Defesa Philidor",
+    "summary": "Uma miniatura de sete lances que deu nome a uma armadilha clássica. As brancas entregam a dama, e três peças menores dão mate. A lição: uma cravada só é cravada se quebrá-la realmente custar algo, e capturar a dama sem olhar pode ser fatal.",
+    "annotations": [
+      {
+        "text": "Paris, por volta de 1750, no famoso Café de la Régence. Légal, um dos melhores jogadores da época, arma uma armadilha que ainda hoje pega muita gente."
+      },
+      {
+        "text": "1.e4 ocupa o centro e abre linhas para a dama e o bispo."
+      },
+      {
+        "text": "1...e5 As negras respondem da mesma forma, reivindicando sua parte do centro."
+      },
+      {
+        "text": "2.Bc4 aponta o bispo para f7, o ponto mais fraco do campo negro, protegido apenas pelo rei."
+      },
+      {
+        "text": "2...d6 protege e5 e abre caminho para o bispo de c8."
+      },
+      {
+        "text": "3.Nf3 desenvolve um cavalo e ataca o peão de e5."
+      },
+      {
+        "text": "3...Bg4 crava o cavalo contra a dama branca: se o cavalo se mover, a dama em d1 fica exposta.",
+        "label": "A cravada"
+      },
+      {
+        "text": "4.Nc3 desenvolve mais uma peça e, discretamente, acrescenta um atacante à casa d5."
+      },
+      {
+        "text": "4...g6? Um lance lento. As negras deveriam estar desenvolvendo peças, e esse lance não faz nada contra o truque escondido das brancas em e5."
+      },
+      {
+        "text": "5...Bxd1? As negras capturam a dama sem olhar o que as brancas ameaçam. É o lance que perde.",
+        "label": "Mordendo a isca"
+      },
+      {
+        "text": "6.Bxf7+ O bispo ataca f7 com xeque, protegido pelo cavalo de e5. O rei só tem uma casa: e7."
+      },
+      {
+        "text": "6...Ke7 era o único lance. Agora veja quais casas ao redor do rei ainda estão livres."
+      },
+      {
+        "text": "7.Nd5# Xeque-mate com três peças menores! As negras têm uma dama a mais, mas perderam a partida. **Antes de capturar material, sempre pergunte o que seu adversário está ameaçando.**",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. Seu cavalo em f3 está cravado contra a dama. Você consegue quebrar a cravada mesmo assim?",
+        "hint": "Perder a dama é realmente um problema se você tem algo mais forte preparado?",
+        "explanation": "5.Nxe5! Se as negras capturarem a dama com 5...Bxd1, as brancas dão mate com 6.Bxf7+ e 7.Nd5#. Se, em vez disso, 5...dxe5, então 6.Qxg4 e as brancas ficam com um peão a mais."
+      },
+      {
+        "prompt": "As brancas jogam e dão mate em um. As negras acabaram de capturar sua dama. Você consegue puni-las?",
+        "hint": "Seu cavalo de c3 tem um salto que dá xeque.",
+        "explanation": "7.Nd5# O cavalo dá xeque de d5, e o bispo e o outro cavalo cobrem todas as casas de fuga."
+      }
+    ]
+  },
+  "carlsen-ernst-2004": {
+    "title": "Carlsen aos 13 anos",
+    "event": "Corus, Grupo C, Wijk aan Zee",
+    "opening": "Defesa Caro-Kann",
+    "summary": "Aos 13 anos, Magnus Carlsen sacrifica um cavalo, um bispo e uma torre para arrombar o rei negro e termina com um belo xeque-mate. A partida fez o mundo do xadrez prestar atenção no futuro campeão mundial e mostra como um peão em h5 pode virar a ponta de lança de um ataque.",
+    "annotations": [
+      {
+        "text": "Wijk aan Zee, janeiro de 2004. Magnus Carlsen, com treze anos, enfrenta o grande mestre holandês Sipke Ernst. Este ataque fez o mundo do xadrez prestar atenção nele. Carlsen se tornou campeão mundial em 2013."
+      },
+      {
+        "text": "A **Caro-Kann**: as negras apoiam **...d5** com o peão c, uma forma sólida de lutar pelo centro."
+      },
+      {
+        "text": "**4...Bf5** tira o bispo de casas claras antes de jogar **...e6**, para que ele não fique preso."
+      },
+      {
+        "text": "**6.h4** avança o peão h para perseguir o bispo e ganhar espaço na ala do rei."
+      },
+      {
+        "text": "O peão chega a h5. Guarde isso: ele vai ter um papel principal mais adiante."
+      },
+      {
+        "text": "Carlsen faz o roque grande. Com os reis em alas opostas, os dois jogadores podem lançar peões e peças contra o rei adversário."
+      },
+      {
+        "text": "Ernst faz o roque pequeno, bem na frente do peão branco de h5. Esse peão já controla g6."
+      },
+      {
+        "text": "**16.Ne5** coloca o cavalo em uma forte casa central, de olho em f7 e g6."
+      },
+      {
+        "text": "Ernst contra-ataca no centro com **17...c5**. Mas as peças brancas apontam para o rei negro. Existe uma forma de invadir?"
+      },
+      {
+        "text": "Ernst captura o cavalo. Agora o peão de e6 perdeu seu amigo em f7, e o peão branco de h5 pode recapturar em g6.",
+        "label": "Sacrifício de cavalo!"
+      },
+      {
+        "text": "**19.Qxe6+** invade com xeque e ataca o bispo de e7."
+      },
+      {
+        "text": "O peão h agora está em g6, um espinho bem ao lado do rei negro. Em seguida, as brancas querem abrir a coluna h."
+      },
+      {
+        "text": "A coluna h está aberta, e as brancas entregam uma torre para mantê-la assim. O rei negro está ficando sem defensores.",
+        "label": "Sacrifício de torre também!"
+      },
+      {
+        "text": "**23.Qxe7** captura o bispo e ameaça **Qh7#**, com o peão de g6 protegendo a dama."
+      },
+      {
+        "text": "As negras bloquearam com **23...Nf7**, então o peão simplesmente o captura. Agora o peão está em f7, bem dentro do campo negro."
+      },
+      {
+        "text": "**25.Rd3!** A última torre se desloca em direção à coluna g para se juntar ao ataque.",
+        "label": "Elevação de torre"
+      },
+      {
+        "text": "**29.Qd7#** Xeque-mate! A dama dá xeque pela sétima fileira e a torre de g3 cobre a coluna g. Um final brilhante de um garoto de 13 anos.",
+        "label": "Xeque-mate!"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "As brancas jogam. O peão negro de f7 protege e6 e g6. Você consegue atraí-lo para longe?",
+        "hint": "Uma oferta de cavalo ao lado do rei.",
+        "explanation": "**18.Ng6!** Se **18...fxg6**, o peão de e6 cai com xeque e o peão de h5 recaptura em g6, bem ao lado do rei negro."
+      },
+      {
+        "prompt": "As brancas jogam. O rei negro se esconde atrás do peão de h6. Como você abre a coluna h?",
+        "hint": "Um bispo pode capturar um peão.",
+        "explanation": "**21.Bxh6!** Se **21...gxh6**, então vem **22.Rxh6+** e a coluna h fica totalmente aberta."
+      },
+      {
+        "prompt": "As brancas jogam e dão xeque-mate em um lance!",
+        "hint": "Sua torre em g3 já cobre a coluna g.",
+        "explanation": "**29.Qd7#** dá xeque pela sétima fileira. O rei não pode ir para a coluna g por causa da torre, e e6, e7 e e8 estão cobertas pela dama."
+      }
+    ]
+  }
+}

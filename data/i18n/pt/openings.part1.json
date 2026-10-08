@@ -1,0 +1,1648 @@
+{
+  "kings-pawn-opening": {
+    "name": "Abertura do Peão do Rei",
+    "family": "Abertura do Peão do Rei",
+    "description": "O primeiro lance mais popular do xadrez. 1.e4 toma o centro, abre linhas para a dama e o bispo de casas claras e costuma levar a partidas abertas e táticas.",
+    "ideas": [
+      "Ocupe o centro com um peão",
+      "Abra diagonais para a dama e o bispo de f1",
+      "Continue com Nf3, Bc4/Bb5 e um roque rápido"
+    ],
+    "traps": [
+      "Iniciantes costumam tirar a dama cedo com Qh5 — ela pode ser perseguida com ganho de tempo"
+    ]
+  },
+  "queens-pawn-opening": {
+    "name": "Abertura do Peão da Dama",
+    "family": "Abertura do Peão da Dama",
+    "description": "1.d4 reivindica o centro com um peão que já está protegido pela dama. As partidas tendem a ser mais estratégicas e fechadas do que depois de 1.e4.",
+    "ideas": [
+      "Controle e5 e c5",
+      "Prepare c4 para atacar o centro das negras pela lateral",
+      "Desenvolva com calma: Nf3, Bf4/Bg5, e3"
+    ],
+    "traps": [
+      "O Gambito Englund (1...e5) esconde a armadilha 2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+ ganhando b2"
+    ]
+  },
+  "english-opening": {
+    "name": "Abertura Inglesa",
+    "family": "Abertura Inglesa",
+    "description": "Uma abertura de flanco flexível: as brancas controlam d5 com o peão c e muitas vezes fazem o fianqueto do bispo do rei. Pode transpor para várias aberturas de d4.",
+    "ideas": [
+      "Controle d5 pela lateral",
+      "Fianqueto com g3 e Bg2",
+      "Mantenha a opção de transpor para estruturas do Gambito da Dama"
+    ]
+  },
+  "reti-opening": {
+    "name": "Abertura Réti",
+    "family": "Abertura Réti",
+    "description": "Um início hipermoderno: as brancas desenvolvem um cavalo, controlam o centro à distância e esperam para ver o esquema das negras antes de comprometer os peões.",
+    "ideas": [
+      "Controle e5 e d4 com uma peça",
+      "Mantenha a flexibilidade: c4, g3 e b3 são todos possíveis",
+      "Transponha para um sistema de d4 ou c4 favorável"
+    ]
+  },
+  "birds-opening": {
+    "name": "Abertura Bird",
+    "family": "Abertura Bird",
+    "description": "1.f4 luta por e5 e prepara um ataque na ala do rei, como uma Defesa Holandesa com um tempo a mais. Enfraquece um pouco o rei branco.",
+    "ideas": [
+      "Controle e5 com o peão f",
+      "Fianqueto do bispo da dama com b3 e Bb2",
+      "Ataque na ala do rei com Qe1-h4"
+    ],
+    "traps": [
+      "Gambito From: 1...e5 2.fxe5 d6 3.exd6 Bxd6 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3# — jogue 4.Nf3 primeiro"
+    ]
+  },
+  "nimzo-larsen-attack": {
+    "name": "Ataque Nimzo-Larsen",
+    "family": "Ataque Nimzo-Larsen",
+    "description": "As brancas fazem logo o fianqueto do bispo da dama para mirar a grande diagonal e a casa e5. Uma das favoritas de Bent Larsen e dos jogadores modernos de partidas rápidas.",
+    "ideas": [
+      "Pressione e5 e a grande diagonal a1-h8",
+      "Jogue e3, Nf3 e c4 mais tarde",
+      "Fuja da teoria das linhas principais"
+    ]
+  },
+  "kings-fianchetto-opening": {
+    "name": "Abertura do Fianqueto do Rei",
+    "family": "Abertura Incomum",
+    "description": "Também chamada de Abertura Benko. As brancas preparam Bg2 para controlar a grande diagonal e mantêm todas as opções centrais em aberto.",
+    "ideas": [
+      "Faça o fianqueto do bispo do rei",
+      "Faça o roque rápido",
+      "Escolha o esquema central depois (c4, d4 ou e4)"
+    ]
+  },
+  "polish-opening": {
+    "name": "Abertura Polonesa",
+    "family": "Abertura Incomum",
+    "description": "A Sokolsky ou Orangotango: as brancas ganham espaço na ala da dama e preparam Bb2 para atacar e5. As negras podem atacar diretamente o peão de b4.",
+    "ideas": [
+      "Ganhe espaço na ala da dama",
+      "Jogue Bb2 para pressionar e5",
+      "Continue com a3 ou c3 para apoiar b4"
+    ],
+    "traps": [
+      "Depois de 1...e5 2.Bb2 Bxb4 o peão se foi — em troca, as brancas levam o peão de e5 com 3.Bxe5"
+    ]
+  },
+  "grob-opening": {
+    "name": "Abertura Grob",
+    "family": "Abertura Incomum",
+    "description": "Um primeiro lance agressivo, mas duvidoso, que abre a grande diagonal para Bg2 enquanto enfraquece a ala do rei das brancas.",
+    "ideas": [
+      "Fianqueto com Bg2 e pressão em b7",
+      "Surpreenda o adversário logo cedo",
+      "Busque truques na diagonal h1-a8"
+    ],
+    "traps": [
+      "Depois de 1...d5 2.Bg2 Bxg4 3.c4 c6 4.cxd5 cxd5 5.Qb3 as brancas atacam b7 e d5 — mas, objetivamente, as negras estão bem",
+      "Risco de Mate do Louco: g4 junto com f3/f4 permite Qh4#"
+    ]
+  },
+  "van-geet-opening": {
+    "name": "Abertura Van Geet",
+    "family": "Abertura Incomum",
+    "description": "Também chamada de Abertura Dunst. As brancas desenvolvem um cavalo em direção ao centro e guardam e4 e d4 para depois.",
+    "ideas": [
+      "Desenvolva rápido mirando e4/d5",
+      "Muitas vezes transpõe para linhas de 1.e4",
+      "Evite teoria logo cedo"
+    ]
+  },
+  "anderssen-opening": {
+    "name": "Abertura Anderssen",
+    "family": "Abertura Incomum",
+    "description": "Um lance de espera usado por Adolf Anderssen: na prática, as brancas jogam as aberturas das negras com o tempo extra a3.",
+    "ideas": [
+      "Jogue aberturas invertidas com um tempo a mais",
+      "a3 impede as cravadas com ...Bb4",
+      "Prepare a expansão com b4"
+    ]
+  },
+  "ware-opening": {
+    "name": "Abertura Ware",
+    "family": "Abertura Incomum",
+    "description": "Um raro lance de peão da torre que faz pouco pelo centro. As brancas podem seguir com a elevação da torre via Ra3, mas o lance é sobretudo uma arma de surpresa.",
+    "ideas": [
+      "Prepare uma elevação de torre precoce com Ra3",
+      "Ganhe espaço na ala da dama",
+      "Evite a teoria"
+    ]
+  },
+  "clemenz-opening": {
+    "name": "Abertura Clemenz",
+    "family": "Abertura Incomum",
+    "description": "Um lance de espera tranquilo. Impede ...Bg4, mas deixa as negras à vontade no centro.",
+    "ideas": [
+      "Evite as cravadas com ...Bg4",
+      "Prepare g4 para ganhar espaço",
+      "Transponha para um esquema normal mais tarde"
+    ]
+  },
+  "desprez-opening": {
+    "name": "Abertura Desprez",
+    "family": "Abertura Incomum",
+    "description": "A Abertura Kádas: um lance de peão de flanco que prepara a elevação da torre via h3, mas não faz nada pelo centro.",
+    "ideas": [
+      "Prepare Rh3",
+      "Ganhe espaço na ala do rei",
+      "Vale só pela surpresa"
+    ]
+  },
+  "saragossa-opening": {
+    "name": "Abertura Saragoça",
+    "family": "Abertura Incomum",
+    "description": "As brancas preparam d4 e abrem a diagonal d1-a4 para a dama. É sólida, mas passiva.",
+    "ideas": [
+      "Apoie um futuro d4",
+      "Possíveis ideias de Qa4+ ou Qb3",
+      "Jogue uma estrutura de Caro-Kann/Eslava invertida"
+    ]
+  },
+  "mieses-opening": {
+    "name": "Abertura Mieses",
+    "family": "Abertura Incomum",
+    "description": "Um lance modesto que libera o bispo de c1 e muitas vezes caminha para um esquema de Ataque Índio do Rei.",
+    "ideas": [
+      "Jogue e4, Nf3, g3 e Bg2 depois",
+      "Mantenha a posição fechada e flexível",
+      "Jogue uma Pirc invertida"
+    ]
+  },
+  "vant-kruijs-opening": {
+    "name": "Abertura Van't Kruijs",
+    "family": "Abertura Incomum",
+    "description": "Um lance tranquilo que abre linhas para o bispo de f1 e a dama. Pode transpor para uma Francesa invertida ou para sistemas do Peão da Dama.",
+    "ideas": [
+      "Desenvolva o bispo de f1",
+      "Continue com d4 ou c4",
+      "Evite teoria afiada"
+    ]
+  },
+  "barnes-opening": {
+    "name": "Abertura Barnes",
+    "family": "Abertura Incomum",
+    "description": "Um dos piores primeiros lances: tira a casa f3 do cavalo e enfraquece o rei. É o primeiro passo do Mate do Louco.",
+    "ideas": [
+      "Preparar o apoio a e4 (na teoria)",
+      "Espaço na ala do rei sem fianqueto",
+      "Basicamente uma abertura de brincadeira"
+    ],
+    "traps": [
+      "Mate do Louco: 1.f3 e5 2.g4?? Qh4# — o xeque-mate mais rápido do xadrez"
+    ]
+  },
+  "durkin-opening": {
+    "name": "Abertura Durkin",
+    "family": "Abertura Incomum",
+    "description": "O Ataque Sódio: as brancas desenvolvem o cavalo na borda, pensando em Nc4 ou c3/Nc2 depois.",
+    "ideas": [
+      "Reposicione o cavalo para c4 ou c2",
+      "Surpreenda o adversário",
+      "Evite a teoria"
+    ],
+    "traps": [
+      "\"Cavalo na borda, peça que não acorda\" — não o deixe em a3"
+    ]
+  },
+  "amar-opening": {
+    "name": "Abertura Amar",
+    "family": "Abertura Incomum",
+    "description": "A Abertura Paris: o cavalo se desenvolve na borda, a caminho de f4 ou g5. Raramente vista em partidas sérias.",
+    "ideas": [
+      "Reposicione o cavalo para f4",
+      "Jogue g3/Bg2 com fianqueto",
+      "Vale pela surpresa"
+    ]
+  },
+  "open-game": {
+    "name": "Abertura do Peão do Rei: Jogo Aberto",
+    "family": "Abertura do Peão do Rei",
+    "description": "As negras espelham o primeiro lance das brancas e reivindicam sua parte do centro. Isso leva a posições clássicas e abertas, com muito jogo de peças.",
+    "ideas": [
+      "Lute pelo centro de forma simétrica",
+      "Desenvolva cavalos e bispos rapidamente",
+      "Cuidado com os ataques em f7"
+    ],
+    "traps": [
+      "Mate do Pastor: 2.Qh5 Nc6 3.Bc4 Nf6?? 4.Qxf7#"
+    ]
+  },
+  "parham-attack": {
+    "name": "Ataque Parham (Dama Errante)",
+    "family": "Abertura do Peão do Rei",
+    "description": "As brancas tiram a dama imediatamente, mirando e5 e f7 na esperança de um Mate do Pastor. Contra um jogo cuidadoso, a dama só acaba sendo perseguida.",
+    "ideas": [
+      "Ameace Qxe5+ e Bc4 com Qxf7#",
+      "Arme armadilhas cedo contra iniciantes",
+      "Esteja pronto para recuar a dama"
+    ],
+    "traps": [
+      "Mate do Pastor: 2...Nc6 3.Bc4 Nf6?? 4.Qxf7#",
+      "Defesa correta: 2...Nc6 3.Bc4 g6 4.Qf3 Nf6 e as negras ganham tempo sobre a dama"
+    ]
+  },
+  "center-game": {
+    "name": "Jogo do Centro",
+    "family": "Jogo do Centro",
+    "description": "As brancas recapturam em d4 com a dama, que fica exposta a ...Nc6 com ganho de tempo. Leva a posições incomuns, nas quais as brancas muitas vezes fazem o roque grande.",
+    "ideas": [
+      "Recue para Qe3 e faça o roque grande",
+      "Ataque rápido com f4 e e5",
+      "Aproveite a coluna d aberta"
+    ],
+    "traps": [
+      "Depois de 3...Nc6 a dama precisa se mover — não a coloque onde ...Nb4 ou ...Bb4 a ataque de novo"
+    ]
+  },
+  "danish-gambit": {
+    "name": "Gambito Dinamarquês",
+    "family": "Gambito Dinamarquês",
+    "description": "As brancas sacrificam dois peões em troca de dois bispos varrendo o tabuleiro e uma enorme vantagem de desenvolvimento. Muito perigoso no nível de clube.",
+    "ideas": [
+      "Dois bispos mirando f7 e g7",
+      "Desenvolvimento relâmpago e ataque",
+      "As negras devem devolver material com ...d5"
+    ],
+    "traps": [
+      "O antídoto mais seguro das negras: 5...d5! 6.Bxd5 Nf6, devolvendo um peão para recuperar o desenvolvimento"
+    ]
+  },
+  "scotch-game": {
+    "name": "Abertura Escocesa",
+    "family": "Abertura Escocesa",
+    "description": "As brancas abrem o centro de imediato com 3.d4. O jogo é aberto e direto, com menos teoria do que a Ruy López.",
+    "ideas": [
+      "Abra o centro cedo",
+      "Cavalo forte em d4",
+      "Desenvolvimento rápido e roque pequeno"
+    ],
+    "traps": [
+      "4...Nxd4?! 5.Qxd4 apenas centraliza a dama branca",
+      "4...Qh4!? (Steinitz) captura e4 se as brancas se descuidarem"
+    ]
+  },
+  "scotch-classical": {
+    "name": "Abertura Escocesa: Variante Clássica",
+    "family": "Abertura Escocesa",
+    "description": "As negras atacam o cavalo de d4 de imediato. As brancas costumam jogar 5.Be3 ou 5.Nxc6, e a luta gira em torno da diagonal a7-g1.",
+    "ideas": [
+      "...Qf6 dobra a pressão sobre d4",
+      "Desenvolva com ...Nge7 e faça o roque",
+      "Nb3 das brancas ganha tempo sobre o bispo de c5"
+    ]
+  },
+  "scotch-mieses": {
+    "name": "Abertura Escocesa: Variante Mieses",
+    "family": "Abertura Escocesa",
+    "description": "A linha principal moderna da Escocesa: as brancas ganham espaço com e5 e c4, enquanto a dama e o bispo das negras ficam temporariamente desajeitados.",
+    "ideas": [
+      "O peão de e5 das brancas sufoca as negras",
+      "As negras pressionam e5 com ...Qe6/...f6",
+      "Os peões dobrados na coluna c dão às negras a coluna b aberta"
+    ],
+    "traps": [
+      "7...Ba6 crava o peão de c4 — as brancas precisam ficar atentas às táticas com b3/Qe4"
+    ]
+  },
+  "scotch-gambit": {
+    "name": "Gambito Escocês",
+    "family": "Abertura Escocesa",
+    "description": "Em vez de recapturar, as brancas desenvolvem o bispo mirando f7 e oferecem um peão em troca de desenvolvimento. Muitas vezes transpõe para a Defesa dos Dois Cavalos.",
+    "ideas": [
+      "Pressione f7",
+      "Desenvolvimento rápido e roque cedo",
+      "Avance e5 para expulsar o cavalo de f6"
+    ],
+    "traps": [
+      "4...Nf6 5.e5 d5! é a resposta mais limpa das negras — uma defesa passiva deixa as brancas atacarem f7"
+    ]
+  },
+  "goring-gambit": {
+    "name": "Gambito Göring",
+    "family": "Abertura Escocesa",
+    "description": "Um gambito ao estilo do Dinamarquês dentro da Escocesa: as brancas oferecem o peão c em troca de desenvolvimento rápido e chances de ataque.",
+    "ideas": [
+      "Dois bispos em diagonais abertas",
+      "Vantagem de desenvolvimento",
+      "Busque um ataque rápido em f7"
+    ],
+    "traps": [
+      "As negras podem recusar com 4...d5! 5.exd5 Qxd5 e continuam sólidas"
+    ]
+  },
+  "ponziani-opening": {
+    "name": "Abertura Ponziani",
+    "family": "Abertura Ponziani",
+    "description": "As brancas preparam d4 com c3, montando um centro clássico. As negras podem reagir diretamente com ...d5 ou ...Nf6.",
+    "ideas": [
+      "Monte um grande centro com d4",
+      "Ideias de Qa4 cravando o cavalo de c6",
+      "Fuja da teoria das linhas principais"
+    ],
+    "traps": [
+      "3...Nf6 4.d4 Nxe4 5.d5 Ne7 6.Nxe5 Ng6 leva a um jogo afiado — estude antes de experimentar"
+    ]
+  },
+  "italian-game": {
+    "name": "Abertura Italiana",
+    "family": "Abertura Italiana",
+    "description": "Uma das aberturas mais antigas. As brancas se desenvolvem rapidamente e apontam o bispo para a casa mais fraca das negras, f7.",
+    "ideas": [
+      "Desenvolva os cavalos antes dos bispos",
+      "Faça o roque cedo",
+      "Prepare d4 com c3 para montar um centro forte"
+    ],
+    "traps": [
+      "Ataque Fegatello (Fried Liver) depois de 3...Nf6 4.Ng5",
+      "Armadilhas no estilo do Mate de Légal depois de ...Bg4 e um Nxe5 precoce"
+    ]
+  },
+  "giuoco-piano": {
+    "name": "Giuoco Piano",
+    "family": "Abertura Italiana",
+    "description": "O \"jogo tranquilo\": os dois lados desenvolvem os bispos nas melhores diagonais. As brancas escolhem entre esquemas lentos com d3 e a ruptura afiada c3-d4.",
+    "ideas": [
+      "Os dois bispos miram o peão f do adversário",
+      "c3 e d4 para um grande centro",
+      "Faça o roque rápido e leve as torres ao centro"
+    ],
+    "traps": [
+      "O Gambito Jerome 4.Bxf7+? é incorreto, mas cheio de truques"
+    ]
+  },
+  "giuoco-pianissimo": {
+    "name": "Giuoco Pianissimo",
+    "family": "Abertura Italiana",
+    "description": "A forma moderna de jogar a Italiana: as brancas mantêm a tensão com d3, c3, O-O, Re1 e um jogo lento de manobras, como fazem hoje os melhores jogadores.",
+    "ideas": [
+      "Construção lenta: c3, O-O, Re1, Nbd2-f1-g3",
+      "Prepare d4 no momento certo",
+      "Use a4 para abrir espaço para o bispo em a2"
+    ],
+    "traps": [
+      "Cuidado com ...Ng4 atacando f2 se as brancas rocarem cedo sem h3"
+    ]
+  },
+  "giuoco-piano-main": {
+    "name": "Giuoco Piano: Linha Principal",
+    "family": "Abertura Italiana",
+    "description": "A linha principal clássica: as brancas montam o centro ideal com c3 e d4, e as negras reagem com um xeque e pressão sobre e4.",
+    "ideas": [
+      "As negras atacam o centro com ...d5",
+      "As brancas podem gambitear com Nc3",
+      "Simplifique com Bd2 para uma vantagem segura"
+    ],
+    "traps": [
+      "7.Nc3 Nxe4 8.O-O entra no Ataque Møller",
+      "7.Bd2 Bxd2+ 8.Nbxd2 d5! libera o jogo das negras"
+    ]
+  },
+  "moller-attack": {
+    "name": "Giuoco Piano: Ataque Møller",
+    "family": "Abertura Italiana",
+    "description": "Um gambito selvagem em que as brancas sacrificam material para abrir linhas contra o rei negro ainda sem roque. Exige defesa precisa dos dois lados.",
+    "ideas": [
+      "Abra a coluna e contra o rei negro",
+      "Torre em e1 com ganho de tempo",
+      "As negras devem devolver material com ...Bf6 e ...Ne7"
+    ],
+    "traps": [
+      "9...Bf6 10.Re1 Ne7 11.Rxe4 d6 é a defesa conhecida; outros lances podem perder rapidamente"
+    ]
+  },
+  "evans-gambit": {
+    "name": "Gambito Evans",
+    "family": "Abertura Italiana",
+    "description": "As brancas sacrificam o peão b para ganhar tempo para c3 e d4. Favorito de Morphy e Kasparov, leva a ataques rápidos.",
+    "ideas": [
+      "Desvie o bispo de c5 com b4",
+      "Ganhe tempo para c3 e d4",
+      "Ataque f7 com Qb3 e Bc4"
+    ],
+    "traps": [
+      "Depois de ...Bxb4 ...Ba5, as negras precisam seguir com linhas precisas de ...d6 ou ...Nf6",
+      "Cuidado com os ataques duplos de Qb3 sobre f7 e b7"
+    ]
+  },
+  "evans-gambit-accepted": {
+    "name": "Gambito Evans Aceito",
+    "family": "Abertura Italiana",
+    "description": "As negras pegam o peão e as brancas atacam imediatamente o centro com d4. O peão de c3 e o bispo de c4 criam fortes chances de ataque.",
+    "ideas": [
+      "Centro forte depois de c3 e d4",
+      "Qb3 ataca f7",
+      "As negras buscam devolver o peão com ...d6 ou ...exd4"
+    ],
+    "traps": [
+      "5...Ba5 6.d4 exd4? 7.O-O dxc3?! 8.Qb3 dá às brancas um ataque famoso"
+    ]
+  },
+  "two-knights-defense": {
+    "name": "Defesa dos Dois Cavalos",
+    "family": "Abertura Italiana",
+    "description": "As negras contra-atacam e4 em vez de copiar as brancas. Isso convida ao agressivo 4.Ng5, levando a um jogo tático afiado.",
+    "ideas": [
+      "Contra-ataque e4 de imediato",
+      "Desenvolvimento rápido",
+      "Esteja pronto para o ataque Ng5 sobre f7"
+    ],
+    "traps": [
+      "4.Ng5 d5 5.exd5 Nxd5? 6.Nxf7! é o Ataque Fegatello (Fried Liver)",
+      "4.Ng5 Bc5!? é o Contra-ataque Traxler"
+    ]
+  },
+  "italian-two-knights-d3": {
+    "name": "Abertura Italiana: Dois Cavalos, Variante d3",
+    "family": "Abertura Italiana",
+    "description": "As brancas defendem e4 com calma e mantêm um esquema lento de Italiana. Isso evita teoria afiada e leva a meios-jogos de manobras.",
+    "ideas": [
+      "Proteção sólida de e4",
+      "Prepare c3, O-O, Re1",
+      "Pressão de longo prazo sobre f7"
+    ],
+    "traps": [
+      "Fique atento aos truques das negras com ...Ng4 contra f2"
+    ]
+  },
+  "fried-liver-attack": {
+    "name": "Ataque Fegatello (Fried Liver)",
+    "family": "Abertura Italiana",
+    "description": "As brancas sacrificam um cavalo em f7 para arrastar o rei negro para o campo aberto. Muito perigoso para iniciantes e muito divertido de aprender.",
+    "ideas": [
+      "Sacrifique em f7 para expor o rei",
+      "Qf3+ dá garfo no rei e no cavalo de d5",
+      "Traga todas as peças para o ataque"
+    ],
+    "traps": [
+      "6...Kxf7 7.Qf3+ Ke6 8.Nc3 — o rei negro fica preso no centro",
+      "As negras evitam isso com 5...Na5! em vez de 5...Nxd5"
+    ]
+  },
+  "two-knights-polerio": {
+    "name": "Defesa dos Dois Cavalos: Defesa Polerio",
+    "family": "Abertura Italiana",
+    "description": "A linha principal contra 4.Ng5: as negras entregam um peão, mas perseguem o bispo de c4 e ganham uma grande vantagem de desenvolvimento.",
+    "ideas": [
+      "Expulse o bispo com ...Na5",
+      "Desenvolvimento em troca de um peão",
+      "...h6 e ...e4 ganham mais tempo"
+    ],
+    "traps": [
+      "6.Bb5+ c6 7.dxc6 bxc6 8.Be2 h6 9.Nf3 e4 — a atividade das negras compensa o peão"
+    ]
+  },
+  "traxler-counterattack": {
+    "name": "Defesa dos Dois Cavalos: Contra-ataque Traxler",
+    "family": "Abertura Italiana",
+    "description": "As negras ignoram a ameaça a f7 e contra-atacam f2. Uma linha selvagem e tática em que os dois reis ficam sob fogo.",
+    "ideas": [
+      "Contra-ataque f2 de imediato",
+      "Aceite perder material em troca da iniciativa",
+      "Táticas relâmpago dos dois lados"
+    ],
+    "traps": [
+      "5.Nxf7 Bxf2+! 6.Kxf2 Nxe4+ é a linha crítica",
+      "5.Bxf7+ Ke7 é o teste mais seguro para as brancas"
+    ]
+  },
+  "hungarian-defense": {
+    "name": "Defesa Húngara",
+    "family": "Abertura Italiana",
+    "description": "Uma resposta sólida, mas passiva, à Italiana. As negras evitam todos os gambitos e preparam ...d6 e ...Nf6.",
+    "ideas": [
+      "Evite teoria afiada",
+      "Estrutura sólida com ...d6",
+      "Desenvolva com calma e faça o roque"
+    ],
+    "traps": [
+      "4.d4 exd4? 5.c3 dá às brancas uma iniciativa rápida"
+    ]
+  },
+  "blackburne-shilling-gambit": {
+    "name": "Gambito Blackburne Shilling",
+    "family": "Abertura Italiana",
+    "description": "Um lance armadilha que convida a 4.Nxe5?, que leva a um mate rápido. Contra um jogo correto, é simplesmente fraco.",
+    "ideas": [
+      "Atraia as brancas para capturar em e5",
+      "Dama em g5 atacando g2 e o cavalo",
+      "Abertura de pura armadilha"
+    ],
+    "traps": [
+      "4.Nxe5? Qg5! 5.Nxf7?? Qxg2 6.Rf1 Qxe4+ 7.Be2 Nf3# — um mate em estilo de mate sufocado",
+      "O correto para as brancas: 4.Nxd4 exd4 5.c3 ou 4.O-O"
+    ]
+  },
+  "rousseau-gambit": {
+    "name": "Gambito Rousseau",
+    "family": "Abertura Italiana",
+    "description": "Uma resposta agressiva em que as negras atacam e4 com o peão f, abrindo a coluna f e enfraquecendo o rei.",
+    "ideas": [
+      "Contra-ataque e4",
+      "Abra a coluna f",
+      "Vale pela surpresa"
+    ],
+    "traps": [
+      "4.d3 Nf6 5.Ng5 mira as casas claras enfraquecidas"
+    ]
+  },
+  "jerome-gambit": {
+    "name": "Gambito Jerome",
+    "family": "Abertura Italiana",
+    "description": "Um sacrifício incorreto do século XIX: as brancas entregam um bispo para puxar o rei para fora. Divertido no blitz, mas perde contra uma boa defesa.",
+    "ideas": [
+      "Exponha o rei negro",
+      "Continue com Nxe5+ e Qh5+",
+      "Puro efeito de choque"
+    ],
+    "traps": [
+      "4...Kxf7 5.Nxe5+ Nxe5 6.Qh5+ g6! 7.Qxe5 d6 e as negras estão claramente melhor"
+    ]
+  },
+  "ruy-lopez": {
+    "name": "Ruy López",
+    "family": "Ruy López",
+    "description": "A Abertura Espanhola: as brancas pressionam o cavalo que defende e5 e jogam por uma vantagem de longo prazo.",
+    "ideas": [
+      "Pressione o peão de e5 de forma indireta",
+      "Faça o roque e jogue Re1, c3 e d4",
+      "Longas batalhas estratégicas de manobras"
+    ],
+    "traps": [
+      "A Armadilha da Arca de Noé prende o bispo de b3 com ...c5-c4",
+      "Não ganhe o peão de e5 cedo demais: Bxc6 + Nxe5 permite ...Qd4"
+    ]
+  },
+  "ruy-lopez-morphy": {
+    "name": "Ruy López: Defesa Morphy",
+    "family": "Ruy López",
+    "description": "As negras perguntam ao bispo suas intenções com ...a6. As brancas mantêm a cravada recuando para a4, a porta de entrada para a maioria das linhas principais da Ruy López.",
+    "ideas": [
+      "...a6 e ...b5 ganham espaço na ala da dama",
+      "Mantenha a opção de desfazer a cravada",
+      "Desenvolva com ...Nf6, ...Be7 e faça o roque"
+    ],
+    "traps": [
+      "Armadilha da Arca de Noé: o bispo branco em b3 pode ser capturado com ...c5 e ...c4"
+    ]
+  },
+  "ruy-lopez-exchange": {
+    "name": "Ruy López: Variante das Trocas",
+    "family": "Ruy López",
+    "description": "As brancas entregam o par de bispos para danificar a estrutura de peões das negras. Buscam um final melhor graças à maioria saudável de 4 contra 3 na ala do rei.",
+    "ideas": [
+      "Troque peças rumo a um final com maioria na ala do rei",
+      "As negras ficam com o par de bispos e desenvolvimento livre",
+      "O-O e d4 são os planos principais das brancas"
+    ],
+    "traps": [
+      "5.Nxe5? Qd4! recupera o peão com vantagem"
+    ]
+  },
+  "ruy-lopez-berlin": {
+    "name": "Ruy López: Defesa Berlinense",
+    "family": "Ruy López",
+    "description": "O \"Muro de Berlim\" que Kramnik tornou famoso: uma defesa ultrassólida que contra-ataca e4 e muitas vezes leva a um meio-jogo sem damas.",
+    "ideas": [
+      "Contra-ataque e4 de imediato",
+      "Aceite o final com o par de bispos",
+      "Uma defesa sólida como rocha em todos os níveis"
+    ]
+  },
+  "ruy-lopez-berlin-wall": {
+    "name": "Ruy López: Defesa Berlinense, Muro de Berlim",
+    "family": "Ruy López",
+    "description": "O final da Berlinense: as damas são trocadas cedo, as negras perdem o direito de rocar, mas ficam com o par de bispos e uma estrutura sólida, quase uma fortaleza.",
+    "ideas": [
+      "As negras bloqueiam com ...h6, ...Ke8 e ...Be6",
+      "As brancas usam a maioria na ala do rei (e5, f4-f5)",
+      "Um final técnico e longo"
+    ]
+  },
+  "ruy-lopez-anti-berlin": {
+    "name": "Ruy López: Defesa Berlinense, Variante d3",
+    "family": "Ruy López",
+    "description": "As brancas evitam o final da Berlinense defendendo e4 tranquilamente com d3, mantendo as damas no tabuleiro e um jogo lento ao estilo espanhol.",
+    "ideas": [
+      "Mantenha as damas no tabuleiro",
+      "Construção lenta com c3, O-O, Re1, Nbd2",
+      "Manobre como na Ruy López Fechada"
+    ]
+  },
+  "ruy-lopez-closed": {
+    "name": "Ruy López: Variante Fechada",
+    "family": "Ruy López",
+    "description": "As negras se desenvolvem com calma e preparam o roque, levando à Ruy López Fechada — uma batalha estratégica rica, com manobras nas duas alas.",
+    "ideas": [
+      "As negras mantêm o ponto forte em e5",
+      "As brancas montam c3 e d4",
+      "Manobras de cavalo Nb1-d2-f1-g3 para as brancas"
+    ],
+    "traps": [
+      "Depois de 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 começa a linha principal; omitir h3 permite ...Bg4"
+    ]
+  },
+  "ruy-lopez-closed-main": {
+    "name": "Ruy López: Variante Fechada, Linha Principal",
+    "family": "Ruy López",
+    "description": "A tabiya clássica da Espanhola. As negras escolhem entre a Chigorin, a Breyer, a Zaitsev e outros sistemas.",
+    "ideas": [
+      "As brancas preparam d4 com todo o apoio",
+      "h3 impede as cravadas com ...Bg4",
+      "As negras reorganizam as peças da ala da dama antes de ...c5 ou ...d5"
+    ]
+  },
+  "ruy-lopez-chigorin": {
+    "name": "Ruy López: Variante Fechada, Defesa Chigorin",
+    "family": "Ruy López",
+    "description": "As negras expulsam o bispo de b3, jogam ...c5 e ganham espaço na ala da dama. Um sistema clássico de profundo conteúdo estratégico.",
+    "ideas": [
+      "...Na5 e ...c5 ganham espaço na ala da dama",
+      "...Qc7 apoia e5",
+      "As brancas jogam Nbd2-f1-g3 e d5 no momento certo"
+    ]
+  },
+  "ruy-lopez-breyer": {
+    "name": "Ruy López: Variante Fechada, Defesa Breyer",
+    "family": "Ruy López",
+    "description": "As negras recuam o cavalo para b8 para levá-lo a d7, liberando o peão c e abrindo espaço para ...Bb7. Preferida por Spassky e Carlsen.",
+    "ideas": [
+      "Manobra de cavalo ...Nb8-d7",
+      "...Bb7 e ...c5 ou ...c6",
+      "Estrutura muito sólida e flexível"
+    ]
+  },
+  "ruy-lopez-zaitsev": {
+    "name": "Ruy López: Variante Fechada, Variante Zaitsev",
+    "family": "Ruy López",
+    "description": "As negras acumulam pressão sobre e4 com ...Bb7 e ...Re8, preparando ...Bf8. Uma das favoritas de Karpov em seus matches pelo Campeonato Mundial.",
+    "ideas": [
+      "Pressione e4",
+      "...Bf8 para reforçar a ala do rei",
+      "Contrajogo com ...exd4 e ...c5"
+    ],
+    "traps": [
+      "10.Ng5 Rf8 11.Nf3 Re8 repete lances — as brancas precisam encontrar outro plano para evitar o empate"
+    ]
+  },
+  "ruy-lopez-marshall": {
+    "name": "Ruy López: Ataque Marshall",
+    "family": "Ruy López",
+    "description": "O famoso sacrifício de peão de Frank Marshall: as negras entregam um peão por um perigoso ataque na ala do rei. Muito analisado e totalmente correto.",
+    "ideas": [
+      "Sacrifique d5 em troca de desenvolvimento rápido",
+      "Ataque com ...Bd6, ...Qh4 e ...Bg4",
+      "As brancas precisam se defender com precisão e devolver material"
+    ],
+    "traps": [
+      "As linhas gananciosas com Rxe5 permitem ...Bd6 e ...Qh4 com um ataque feroz"
+    ]
+  },
+  "ruy-lopez-anti-marshall": {
+    "name": "Ruy López: Anti-Marshall",
+    "family": "Ruy López",
+    "description": "As brancas evitam o gambito Marshall atacando o peão de b5 com 8.a4, pressionando a ala da dama.",
+    "ideas": [
+      "Pressione b5 com a4",
+      "Evite a teoria do Marshall",
+      "Use a coluna a mais tarde"
+    ]
+  },
+  "ruy-lopez-open": {
+    "name": "Ruy López: Variante Aberta",
+    "family": "Ruy López",
+    "description": "As negras capturam o peão de e4 e ganham jogo ativo de peças. As brancas o recuperam com d4 e ganham vantagem de espaço com e5.",
+    "ideas": [
+      "Peças ativas para as negras",
+      "Estrutura com ...b5, ...d5 e ...Be6",
+      "As brancas jogam d4, dxe5 e c3"
+    ],
+    "traps": [
+      "A Armadilha Tarrasch: 6.d4 b5 7.Bb3 d5 8.dxe5 Be6 9.c3 Be7 10.Re1 O-O 11.Nd4 Qd7?? 12.Nxe6 fxe6 13.Rxe4 ganha"
+    ]
+  },
+  "ruy-lopez-schliemann": {
+    "name": "Ruy López: Defesa Schliemann",
+    "family": "Ruy López",
+    "description": "O Gambito Jaenisch: as negras atacam e4 com o peão f, levando a posições afiadas parecidas com o Gambito do Rei, com as cores invertidas.",
+    "ideas": [
+      "Abra a coluna f",
+      "Contra-ataque e4 rapidamente",
+      "Aceite o risco em troca de atividade"
+    ],
+    "traps": [
+      "4.Nc3 fxe4 5.Nxe4 d5 6.Nxe5! dxe4 7.Nxc6 é uma linha longa e forçada que vale a pena conhecer"
+    ]
+  },
+  "ruy-lopez-steinitz": {
+    "name": "Ruy López: Defesa Steinitz",
+    "family": "Ruy López",
+    "description": "As negras defendem e5 de forma sólida com ...d6, mas a posição é passiva e as brancas ficam à vontade no centro.",
+    "ideas": [
+      "Segure e5 com ...d6",
+      "Sólida, mas apertada",
+      "...Bd7 para desfazer a cravada do cavalo"
+    ],
+    "traps": [
+      "Armadilha Tarrasch: 4.d4 Bd7 5.Nc3 Nf6 6.O-O Be7 7.Re1 O-O?? 8.Bxc6 Bxc6 9.dxe5 dxe5 10.Qxd8 Raxd8 11.Nxe5 ganha um peão e logo a qualidade"
+    ]
+  },
+  "ruy-lopez-classical": {
+    "name": "Ruy López: Defesa Clássica",
+    "family": "Ruy López",
+    "description": "As negras desenvolvem o bispo ativamente em c5, como na Italiana. As brancas costumam reagir com c3 e d4.",
+    "ideas": [
+      "Bispo ativo em c5",
+      "Desenvolvimento rápido",
+      "Esquemas com ...Nge7 ou ...Nf6"
+    ],
+    "traps": [
+      "4.c3 f5!? é o afiado Gambito Cordel"
+    ]
+  },
+  "ruy-lopez-arkhangelsk": {
+    "name": "Ruy López: Variante Arkhangelsk",
+    "family": "Ruy López",
+    "description": "As negras desenvolvem cedo o bispo em b7, aumentando a pressão sobre e4 e a grande diagonal. Uma alternativa dinâmica às linhas fechadas.",
+    "ideas": [
+      "Pressione e4 com ...Bb7",
+      "...Bc5 para um jogo ativo",
+      "Táticas afiadas em torno de e4 e f2"
+    ]
+  },
+  "ruy-lopez-moller": {
+    "name": "Ruy López: Defesa Møller",
+    "family": "Ruy López",
+    "description": "Também chamada de Neo-Arkhangelsk: as negras colocam o bispo em c5 para pressionar f2 e d4.",
+    "ideas": [
+      "Bispo ativo em c5",
+      "Combine ...b5 e ...Bc5",
+      "Pressione a ruptura d4 das brancas"
+    ]
+  },
+  "ruy-lopez-bird": {
+    "name": "Ruy López: Variante Bird",
+    "family": "Ruy López",
+    "description": "As negras trocam cavalos para se livrar da cravada, aceitando um peão d dobrado. Rara, mas jogável.",
+    "ideas": [
+      "Troque o cavalo atacado",
+      "O peão de d4 aperta as brancas",
+      "...c6 e ...Ne7 rapidamente"
+    ]
+  },
+  "petrov-defense": {
+    "name": "Defesa Petrov",
+    "family": "Defesa Petrov",
+    "description": "A Defesa Russa: as negras contra-atacam e4 em vez de defender e5. Extremamente sólida e uma das favoritas dos jogadores de elite que buscam a igualdade.",
+    "ideas": [
+      "Contra-ataque simétrico",
+      "Estrutura sólida com poucas fraquezas",
+      "Iguale e depois supere o adversário"
+    ],
+    "traps": [
+      "3.Nxe5 Nxe4?? 4.Qe2! Nf6?? 5.Nc6+ ganha a dama com um ataque descoberto",
+      "O correto: 3.Nxe5 d6 4.Nf3 Nxe4"
+    ]
+  },
+  "petrov-classical": {
+    "name": "Defesa Petrov: Ataque Clássico",
+    "family": "Defesa Petrov",
+    "description": "A linha principal da Petrov. As brancas ganham uma pequena vantagem de espaço, enquanto o cavalo negro em e4 é forte, mas pode ser desafiado.",
+    "ideas": [
+      "Desafie o cavalo de e4 com Bd3, O-O, Re1, c4",
+      "As negras apoiam e4 com ...d5",
+      "Posições simétricas, mas ricas"
+    ]
+  },
+  "petrov-steinitz": {
+    "name": "Defesa Petrov: Ataque Steinitz",
+    "family": "Defesa Petrov",
+    "description": "As brancas abrem o centro imediatamente com 3.d4, levando a um jogo mais aberto do que na linha principal.",
+    "ideas": [
+      "Abra o centro rapidamente",
+      "Desenvolva com Bd3 e O-O",
+      "Aproveite a vantagem de desenvolvimento"
+    ]
+  },
+  "stafford-gambit": {
+    "name": "Gambito Stafford",
+    "family": "Defesa Petrov",
+    "description": "Um gambito cheio de armadilhas, popular na internet: as negras entregam um peão em troca de desenvolvimento rápido e muitos truques contra o rei.",
+    "ideas": [
+      "Atraia o cavalo para capturar em c6",
+      "Bc5 e Ng4 atacando f2",
+      "Muitas armadilhas no blitz"
+    ],
+    "traps": [
+      "4.Nxc6 dxc6 5.d3?? Bc5 6.Bg5?? Nxe4! 7.Bxd8 Bxf2+ 8.Ke2 Bg4# — o famoso mate",
+      "O correto para as brancas: 4.Nxc6 dxc6 5.d3 Bc5 6.Be2 e o gambito é fraco"
+    ]
+  },
+  "philidor-defense": {
+    "name": "Defesa Philidor",
+    "family": "Defesa Philidor",
+    "description": "Uma defesa sólida, mas passiva, que protege e5 com um peão. As brancas ganham mais espaço, mas a posição das negras é difícil de quebrar.",
+    "ideas": [
+      "Defenda e5 com ...d6",
+      "Estrutura sólida",
+      "Busque ...Nf6, ...Nbd7, ...Be7"
+    ],
+    "traps": [
+      "Mate de Légal: 3.Bc4 Bg4 4.Nc3 g6? 5.Nxe5! Bxd1?? 6.Bxf7+ Ke7 7.Nd5#",
+      "3.d4 exd4 leva a uma passiva Variante das Trocas"
+    ]
+  },
+  "philidor-hanham": {
+    "name": "Defesa Philidor: Variante Hanham",
+    "family": "Defesa Philidor",
+    "description": "As negras mantêm o ponto forte em e5 com ...Nbd7. A posição resultante lembra uma Índia Antiga, com jogo sólido, mas apertado.",
+    "ideas": [
+      "Segure e5 a qualquer custo",
+      "...Be7, ...O-O, ...c6",
+      "Prepare ...b5 ou ...exd4 no momento certo"
+    ],
+    "traps": [
+      "5.Bc4 Be7 6.dxe5 dxe5? 7.Bxf7+! Kxf7 8.Ng5+ Kg8 9.Ne6 ganha a dama — recapture com 6...Nxe5"
+    ]
+  },
+  "philidor-exchange": {
+    "name": "Defesa Philidor: Variante das Trocas",
+    "family": "Defesa Philidor",
+    "description": "As negras cedem o centro para liberar as peças. As brancas centralizam com Nxd4 e ficam com uma confortável vantagem de espaço.",
+    "ideas": [
+      "Abra linhas para as peças",
+      "O fianqueto com ...g6 é possível",
+      "Contrajogo contra e4"
+    ]
+  },
+  "latvian-gambit": {
+    "name": "Gambito Letão",
+    "family": "Gambito Letão",
+    "description": "Um gambito muito agressivo e arriscado: as negras atacam e4 com o peão f de imediato, enfraquecendo o rei em troca de atividade.",
+    "ideas": [
+      "Abra a coluna f",
+      "Lute pela iniciativa",
+      "Arma de surpresa"
+    ],
+    "traps": [
+      "3.Nxe5 Qf6 4.d4 d6 5.Nc4 fxe4 6.Nc3 Qg6 7.f3! é forte para as brancas",
+      "Ideias com Bc4 contra a diagonal e8-h5 enfraquecida"
+    ]
+  },
+  "elephant-gambit": {
+    "name": "Gambito Elefante",
+    "family": "Gambito Elefante",
+    "description": "As negras reagem imediatamente no centro com ...d5. Objetivamente duvidoso, mas pode confundir adversários despreparados.",
+    "ideas": [
+      "Contra-ataque o centro",
+      "Abra linhas rapidamente",
+      "Arma de surpresa"
+    ],
+    "traps": [
+      "3.exd5 e4 4.Qe2 Nf6 5.d3 e as brancas estão melhor"
+    ]
+  },
+  "damiano-defense": {
+    "name": "Defesa Damiano",
+    "family": "Abertura do Peão do Rei",
+    "description": "Uma defesa fraca de e5 que enfraquece a diagonal do rei. Uma lição clássica de por que ...f6 é perigoso.",
+    "ideas": [
+      "(Não recomendado) defender e5 com um peão",
+      "Entenda por que ...f6 enfraquece o rei",
+      "Conheça a refutação"
+    ],
+    "traps": [
+      "3.Nxe5! fxe5? 4.Qh5+ Ke7 (4...g6 5.Qxe5+) 5.Qxe5+ Kf7 6.Bc4+ e as brancas ganham"
+    ]
+  },
+  "four-knights-game": {
+    "name": "Abertura dos Quatro Cavalos",
+    "family": "Abertura dos Quatro Cavalos",
+    "description": "Uma abertura clássica e simétrica: os dois lados desenvolvem os cavalos primeiro. Princípios simples, ótima para aprender.",
+    "ideas": [
+      "Cavalos antes dos bispos",
+      "Desenvolvimento simétrico",
+      "Escolha planos com Bb5 (espanhol) ou d4 (escocês)"
+    ],
+    "traps": [
+      "4.Nxe5? Nxe5 5.d4 é o Gambito Halloween — um verdadeiro sacrifício de cavalo"
+    ]
+  },
+  "four-knights-spanish": {
+    "name": "Abertura dos Quatro Cavalos: Variante Espanhola",
+    "family": "Abertura dos Quatro Cavalos",
+    "description": "As brancas cravam o cavalo de c6 como na Ruy López. As negras podem espelhar com ...Bb4 ou jogar o afiado ...Nd4 da Rubinstein.",
+    "ideas": [
+      "Pressione e5 através da cravada",
+      "Faça o roque e jogue d3 ou d4",
+      "Desenvolvimento simples e clássico"
+    ],
+    "traps": [
+      "4...Nd4 5.Nxe5? Qe7 recupera o material com juros"
+    ]
+  },
+  "four-knights-scotch": {
+    "name": "Abertura dos Quatro Cavalos: Variante Escocesa",
+    "family": "Abertura dos Quatro Cavalos",
+    "description": "As brancas abrem o centro com d4. Depois de 4...exd4 5.Nxd4 o jogo lembra a Abertura Escocesa, com os dois cavalos desenvolvidos.",
+    "ideas": [
+      "Abra o centro",
+      "Jogo ativo de peças",
+      "Use ideias com Nxc6 e e5"
+    ]
+  },
+  "halloween-gambit": {
+    "name": "Abertura dos Quatro Cavalos: Gambito Halloween",
+    "family": "Abertura dos Quatro Cavalos",
+    "description": "Um sacrifício de cavalo assustador: as brancas entregam uma peça inteira por um grande centro de peões e para perseguir os cavalos negros.",
+    "ideas": [
+      "Grande centro com d4 e e5",
+      "Expulse os cavalos com ganho de tempo",
+      "Efeito de choque no blitz"
+    ],
+    "traps": [
+      "4...Nxe5 5.d4 Ng6 6.e5 Ng8 7.Bc4 — as negras precisam se defender com calma e depois ficam muito melhor"
+    ]
+  },
+  "three-knights-game": {
+    "name": "Abertura dos Três Cavalos",
+    "family": "Abertura dos Quatro Cavalos",
+    "description": "As brancas desenvolvem o cavalo da dama antes de decidir o plano. As negras costumam transpor para os Quatro Cavalos com ...Nf6.",
+    "ideas": [
+      "Desenvolva os cavalos primeiro",
+      "Flexível: Bb5, Bc4 ou d4 depois",
+      "Ferramenta de transposição"
+    ]
+  },
+  "vienna-game": {
+    "name": "Abertura Vienense",
+    "family": "Abertura Vienense",
+    "description": "As brancas desenvolvem primeiro o cavalo da dama, deixando o peão f livre para um avanço f4 precoce. Pode ser tranquila ou muito agressiva.",
+    "ideas": [
+      "Prepare f4 como em um Gambito do Rei",
+      "Controle d5",
+      "Pressão de Bc4 sobre f7"
+    ],
+    "traps": [
+      "Frankenstein-Drácula: 2...Nf6 3.Bc4 Nxe4!? 4.Qh5 é muito afiada"
+    ]
+  },
+  "vienna-falkbeer": {
+    "name": "Abertura Vienense: Variante Falkbeer",
+    "family": "Abertura Vienense",
+    "description": "As negras se desenvolvem e contra-atacam e4. As brancas escolhem entre o Gambito Vienense (f4), Bc4 ou um tranquilo g3.",
+    "ideas": [
+      "Contra-ataque e4",
+      "Prepare ...d5 para liberar o jogo",
+      "Desenvolvimento sólido"
+    ]
+  },
+  "vienna-max-lange": {
+    "name": "Abertura Vienense: Defesa Max Lange",
+    "family": "Abertura Vienense",
+    "description": "As negras espelham o desenvolvimento das brancas. As brancas ainda podem jogar f4, Bc4 ou um esquema lento com g3.",
+    "ideas": [
+      "Desenvolvimento simétrico",
+      "Controle d4",
+      "Planos flexíveis"
+    ]
+  },
+  "vienna-gambit": {
+    "name": "Gambito Vienense",
+    "family": "Abertura Vienense",
+    "description": "Um Gambito do Rei com o cavalo já em c3. As brancas querem abrir a coluna f e avançar e5 para expulsar o cavalo negro.",
+    "ideas": [
+      "Avance e5 para ganhar espaço",
+      "Abra a coluna f",
+      "Ataque rápido na ala do rei"
+    ],
+    "traps": [
+      "3...d5! é a melhor resposta: 4.fxe5 Nxe4 5.Nf3 com jogo complexo",
+      "3...exf4 4.e5 Ng8 dá às brancas um grande centro"
+    ]
+  },
+  "vienna-frankenstein-dracula": {
+    "name": "Abertura Vienense: Variante Frankenstein-Drácula",
+    "family": "Abertura Vienense",
+    "description": "Uma das linhas mais selvagens do xadrez: as brancas ganham uma torre, mas o cavalo em a8 fica preso, e as negras conseguem um centro poderoso e ataque.",
+    "ideas": [
+      "As negras sacrificam a qualidade por um centro enorme",
+      "Prenda o cavalo de a8",
+      "A dama branca precisa evitar ser capturada"
+    ],
+    "traps": [
+      "4.Qh5 ameaça Qxf7# — as negras precisam jogar 4...Nd6"
+    ]
+  },
+  "bishops-opening": {
+    "name": "Abertura do Bispo",
+    "family": "Abertura do Bispo",
+    "description": "As brancas desenvolvem o bispo primeiro, mirando f7 e mantendo o peão f livre. Muitas vezes transpõe para a Italiana ou a Vienense.",
+    "ideas": [
+      "Mire f7 desde cedo",
+      "Mantenha a opção de f4",
+      "Transposições flexíveis"
+    ]
+  },
+  "bishops-opening-berlin": {
+    "name": "Abertura do Bispo: Defesa Berlinense",
+    "family": "Abertura do Bispo",
+    "description": "As negras contra-atacam e4 imediatamente. As brancas costumam defender com d3 e jogar um jogo lento ao estilo da Italiana.",
+    "ideas": [
+      "Contra-ataque e4",
+      "Ruptura ...d5",
+      "Desenvolvimento simples"
+    ],
+    "traps": [
+      "3.d4 exd4 4.Nf3 é o Gambito Urusov — jogo afiado"
+    ]
+  },
+  "kings-gambit": {
+    "name": "Gambito do Rei",
+    "family": "Gambito do Rei",
+    "description": "O gambito romântico do século XIX: as brancas oferecem o peão f para desviar o peão e das negras, abrir a coluna f e montar um grande centro.",
+    "ideas": [
+      "Desvie o peão de e5 e jogue d4",
+      "Abra a coluna f para atacar f7",
+      "Desenvolvimento rápido"
+    ],
+    "traps": [
+      "Depois de 2...exf4 3.Nf3 g5 4.h4 g4 5.Ne5 (Kieseritzky) as brancas lutam pelo peão de f4",
+      "Sem Nf3, ...Qh4+ obriga o rei branco a se mover — 3.Nf3 impede isso"
+    ]
+  },
+  "kings-gambit-accepted": {
+    "name": "Gambito do Rei Aceito",
+    "family": "Gambito do Rei",
+    "description": "As negras capturam o peão. A luta gira em torno de saber se as negras conseguem manter o peão de f4 ou se precisam devolvê-lo em troca de desenvolvimento.",
+    "ideas": [
+      "As negras podem segurar o peão com ...g5",
+      "As brancas jogam Nf3, d4 e Bxf4",
+      "Os reis muitas vezes ficam no centro"
+    ],
+    "traps": [
+      "3.Nf3 g5 4.Bc4 g4 5.O-O!? gxf3 6.Qxf3 é o Gambito Muzio"
+    ]
+  },
+  "kings-gambit-kieseritzky": {
+    "name": "Gambito do Rei: Gambito Kieseritzky",
+    "family": "Gambito do Rei",
+    "description": "As brancas minam a cadeia de peões das negras com h4 e instalam o cavalo em e5. Uma das linhas mais respeitadas do Gambito do Rei.",
+    "ideas": [
+      "Mine g5 com h4",
+      "Cavalo em e5 ataca f7 e g4",
+      "Recupere f4 com d4 e Bxf4"
+    ]
+  },
+  "kings-gambit-muzio": {
+    "name": "Gambito do Rei: Gambito Muzio",
+    "family": "Gambito do Rei",
+    "description": "As brancas sacrificam um cavalo inteiro para abrir a coluna f contra f7. Uma linha romântica espetacular, com enormes chances de ataque.",
+    "ideas": [
+      "Sacrifique o cavalo de f3 em troca de desenvolvimento",
+      "Ataques com Qxf3 e Bxf7+",
+      "Todas as peças entram no ataque"
+    ]
+  },
+  "kings-gambit-fischer": {
+    "name": "Gambito do Rei: Defesa Fischer",
+    "family": "Gambito do Rei",
+    "description": "A \"refutação\" de Bobby Fischer: as negras impedem Ne5 com ...d6 antes de jogar ...g5 para manter o peão a mais.",
+    "ideas": [
+      "Impeça Ne5 com ...d6",
+      "Depois ...g5 para segurar f4",
+      "Um peão a mais sólido"
+    ]
+  },
+  "kings-gambit-bishops": {
+    "name": "Gambito do Rei: Gambito do Bispo",
+    "family": "Gambito do Rei",
+    "description": "As brancas desenvolvem o bispo em vez de Nf3, permitindo ...Qh4+, mas mantendo o rei ativo em f1.",
+    "ideas": [
+      "Pressione f7",
+      "O rei vai para f1 com segurança",
+      "Desenvolva rápido e recupere f4"
+    ]
+  },
+  "kings-gambit-falkbeer": {
+    "name": "Gambito do Rei Recusado: Contragambito Falkbeer",
+    "family": "Gambito do Rei",
+    "description": "As negras recusam com um contragambito, atacando o centro e abrindo linhas em direção ao rei branco enfraquecido.",
+    "ideas": [
+      "Contra-ataque em vez de aceitar",
+      "...e4 aperta as brancas",
+      "Abra linhas contra o rei branco"
+    ]
+  },
+  "kings-gambit-declined-classical": {
+    "name": "Gambito do Rei Recusado: Variante Clássica",
+    "family": "Gambito do Rei",
+    "description": "As negras ignoram o gambito e desenvolvem o bispo em c5, dificultando o roque pequeno das brancas.",
+    "ideas": [
+      "Impeça o roque das brancas",
+      "Mantenha o peão de e5",
+      "Pressão na diagonal g1-a7"
+    ],
+    "traps": [
+      "3.fxe5?? Qh4+ 4.g3 Qxe4+ ganha a torre de h1"
+    ]
+  },
+  "sicilian-defense": {
+    "name": "Defesa Siciliana",
+    "family": "Defesa Siciliana",
+    "description": "A resposta mais popular das negras a 1.e4: lutar pela casa d4 com um peão de flanco e criar um jogo desequilibrado.",
+    "ideas": [
+      "Troque o peão c pelo peão d das brancas",
+      "Use a coluna c semiaberta",
+      "Contra-ataque na ala da dama"
+    ],
+    "traps": [
+      "Em muitas linhas as brancas sacrificam em e6, d5 ou b5 — cuidado com sacrifícios de cavalo"
+    ]
+  },
+  "sicilian-old": {
+    "name": "Defesa Siciliana: Siciliana Antiga",
+    "family": "Defesa Siciliana",
+    "description": "As negras desenvolvem o cavalo da dama para lutar por d4. Leva à Sveshnikov, à Clássica, ao Dragão Acelerado ou ao Ataque Rossolimo.",
+    "ideas": [
+      "Controle d4 com uma peça",
+      "Mantenha as opções: ...e5, ...g6, ...d6",
+      "Ordem de lances flexível"
+    ]
+  },
+  "sicilian-modern": {
+    "name": "Defesa Siciliana: Variantes Modernas",
+    "family": "Defesa Siciliana",
+    "description": "A ordem de lances mais comum da Siciliana: ...d6 prepara ...Nf6 e mantém possíveis a Najdorf, o Dragão, a Clássica e a Scheveningen.",
+    "ideas": [
+      "Controle e5",
+      "Prepare ...Nf6 sem que e5 o expulse",
+      "Escolha o sistema depois"
+    ]
+  },
+  "sicilian-french-variation": {
+    "name": "Defesa Siciliana: Variante Francesa",
+    "family": "Defesa Siciliana",
+    "description": "As negras jogam ...e6, rumo à Kan, à Taimanov ou aos Quatro Cavalos da Siciliana. Flexível e sólida.",
+    "ideas": [
+      "Controle d5",
+      "Posicionamento flexível das peças",
+      "A dama muitas vezes vai para c7"
+    ]
+  },
+  "sicilian-open": {
+    "name": "Defesa Siciliana: Variante Aberta",
+    "family": "Defesa Siciliana",
+    "description": "As brancas abrem o centro com d4 e recapturam com o cavalo. As brancas ganham vantagem de desenvolvimento; as negras ficam com a coluna c semiaberta e uma maioria central de peões.",
+    "ideas": [
+      "As brancas atacam na ala do rei",
+      "As negras contra-atacam na ala da dama",
+      "Jogo afiado e de duplo gume"
+    ]
+  },
+  "sicilian-najdorf": {
+    "name": "Defesa Siciliana: Variante Najdorf",
+    "family": "Defesa Siciliana",
+    "description": "A Siciliana mais famosa, jogada por Fischer e Kasparov. O tranquilo ...a6 controla b5 e prepara ...e5 ou ...e6 com contra-ataque na ala da dama.",
+    "ideas": [
+      "...a6 impede Nb5 e Bb5+",
+      "Flexível: ...e5 ou ...e6",
+      "Expansão na ala da dama com ...b5"
+    ],
+    "traps": [
+      "6.Bg5 e6 7.f4 Qb6 é o Peão Envenenado — capturar b2 é arriscado, mas correto",
+      "Cuidado com os sacrifícios Nd5 e Bxe6"
+    ]
+  },
+  "najdorf-english-attack": {
+    "name": "Siciliana Najdorf: Ataque Inglês",
+    "family": "Defesa Siciliana",
+    "description": "As brancas jogam Be3, f3, Qd2 e O-O-O e depois avançam com tudo na ala do rei com g4-g5. Uma arma moderna e agressiva.",
+    "ideas": [
+      "Roques em lados opostos",
+      "Avalanche de peões com g4-g5",
+      "Controle d5"
+    ]
+  },
+  "najdorf-6bg5": {
+    "name": "Siciliana Najdorf: 6.Bg5",
+    "family": "Defesa Siciliana",
+    "description": "O ataque clássico contra a Najdorf. As brancas cravam o cavalo e preparam as rupturas e5 ou f5 com um assalto direto.",
+    "ideas": [
+      "Crave o cavalo de f6",
+      "Avance e5 ou f5 para abrir a posição",
+      "Faça o roque grande e ataque"
+    ],
+    "traps": [
+      "7...Qb6 8.Qd2 Qxb2 é o Peão Envenenado",
+      "7...b5?! 8.e5! dxe5 9.fxe5 Qc7 10.exf6 Qe5+ é a linha Polugaevsky"
+    ]
+  },
+  "najdorf-poisoned-pawn": {
+    "name": "Siciliana Najdorf: Peão Envenenado",
+    "family": "Defesa Siciliana",
+    "description": "A dama negra captura o peão de b2 e precisa sobreviver a um ataque feroz. Uma das linhas mais analisadas do xadrez.",
+    "ideas": [
+      "As negras ganham material e se defendem",
+      "As brancas sacrificam em troca de desenvolvimento",
+      "A dama negra pode ficar presa — são necessários lances precisos"
+    ],
+    "traps": [
+      "9.Rb1 Qa3 10.f5 e 10.e5 são as principais tentativas de ataque das brancas"
+    ]
+  },
+  "najdorf-opocensky": {
+    "name": "Siciliana Najdorf: Variante Opočenský",
+    "family": "Defesa Siciliana",
+    "description": "As brancas jogam o tranquilo 6.Be2 e as negras respondem com ...e5, levando a uma batalha posicional pela casa d5.",
+    "ideas": [
+      "Lute por d5",
+      "O peão atrasado de d6 das negras contra peças ativas",
+      "Esquema com ...Be6, ...Be7, ...O-O"
+    ]
+  },
+  "sicilian-dragon": {
+    "name": "Defesa Siciliana: Variante do Dragão",
+    "family": "Defesa Siciliana",
+    "description": "As negras fazem o fianqueto do bispo do rei, criando um poderoso \"dragão\" na grande diagonal. Leva a batalhas afiadíssimas com roques em lados opostos.",
+    "ideas": [
+      "Bispo em fianqueto em g7",
+      "Ataque na ala da dama com ...Rc8 e ...Qa5",
+      "Sacrifício de qualidade ...Rxc3"
+    ],
+    "traps": [
+      "Cuidado com as trocas com Bh6 — eliminar o bispo de g7 enfraquece o rei",
+      "Os sacrifícios de qualidade com Rxc3 são típicos das negras"
+    ]
+  },
+  "dragon-yugoslav-attack": {
+    "name": "Siciliana Dragão: Ataque Iugoslavo",
+    "family": "Defesa Siciliana",
+    "description": "As brancas fazem o roque grande e avançam h4-h5 para abrir a coluna h contra o rei negro. Uma clássica corrida de ataques.",
+    "ideas": [
+      "Bh6 para trocar o bispo-dragão das negras",
+      "h4-h5 para abrir a coluna h",
+      "Roque grande e ataque rápido"
+    ],
+    "traps": [
+      "O sacrifício de qualidade ...Rxc3 das negras pode destruir a ala da dama das brancas"
+    ]
+  },
+  "sicilian-classical": {
+    "name": "Defesa Siciliana: Variante Clássica",
+    "family": "Defesa Siciliana",
+    "description": "As negras desenvolvem os dois cavalos e mantêm todas as opções em aberto. As brancas escolhem a Richter-Rauzer (Bg5), a Sozin (Bc4) ou linhas mais tranquilas.",
+    "ideas": [
+      "Desenvolvimento natural",
+      "Flexível: ...e6 ou ...g6",
+      "Controle do centro"
+    ]
+  },
+  "sicilian-richter-rauzer": {
+    "name": "Defesa Siciliana: Ataque Richter-Rauzer",
+    "family": "Defesa Siciliana",
+    "description": "As brancas cravam o cavalo de f6 e planejam Qd2 e O-O-O, impedindo o esquema do Dragão e preparando um ataque.",
+    "ideas": [
+      "Crave o cavalo",
+      "Roque grande",
+      "Estrague os peões negros com Bxf6"
+    ]
+  },
+  "sicilian-sozin": {
+    "name": "Defesa Siciliana: Ataque Sozin",
+    "family": "Defesa Siciliana",
+    "description": "As brancas apontam o bispo para e6 e f7, uma das favoritas de Bobby Fischer. Sacrifícios em e6 e d5 são comuns.",
+    "ideas": [
+      "Bispo na diagonal a2-g8",
+      "Sacrifique em e6 ou d5",
+      "f4-f5 para abrir linhas"
+    ]
+  },
+  "sicilian-scheveningen": {
+    "name": "Defesa Siciliana: Variante Scheveningen",
+    "family": "Defesa Siciliana",
+    "description": "As negras montam um \"pequeno centro\" com peões em d6 e e6. Sólida, mas flexível, era uma das favoritas de Kasparov.",
+    "ideas": [
+      "Os peões de d6/e6 controlam o centro",
+      "...a6, ...Qc7, ...Be7, ...O-O",
+      "Espere o momento certo para ...d5 ou ...e5"
+    ],
+    "traps": [
+      "O Ataque Keres 6.g4! é o teste mais afiado"
+    ]
+  },
+  "sicilian-keres-attack": {
+    "name": "Siciliana Scheveningen: Ataque Keres",
+    "family": "Defesa Siciliana",
+    "description": "As brancas lançam o peão g imediatamente para expulsar o cavalo negro e iniciar um ataque na ala do rei.",
+    "ideas": [
+      "Expulse o cavalo de f6 com g5",
+      "Expansão rápida na ala do rei",
+      "Faça o roque grande"
+    ]
+  },
+  "sicilian-sveshnikov": {
+    "name": "Defesa Siciliana: Variante Sveshnikov",
+    "family": "Defesa Siciliana",
+    "description": "As negras aceitam um buraco em d5 e um peão atrasado em troca de jogo dinâmico de peças e do par de bispos. Uma linha principal moderna usada por Carlsen.",
+    "ideas": [
+      "Jogo dinâmico contra o buraco em d5",
+      "Rupturas ...b5 e ...f5",
+      "O par de bispos"
+    ],
+    "traps": [
+      "Depois de 8.Bg5 a6 9.Na3 b5 as negras precisam conhecer os planos com ...f5 e ...Bg7"
+    ]
+  },
+  "sicilian-kalashnikov": {
+    "name": "Defesa Siciliana: Variante Kalashnikov",
+    "family": "Defesa Siciliana",
+    "description": "Uma prima da Sveshnikov: as negras jogam ...e5 antes de ...Nf6, mantendo as opções de ...Be7 e ...f5.",
+    "ideas": [
+      "Aceite o buraco em d5 em troca de atividade",
+      "Ruptura ...f5",
+      "Desenvolvimento flexível na ala do rei"
+    ]
+  },
+  "sicilian-taimanov": {
+    "name": "Defesa Siciliana: Variante Taimanov",
+    "family": "Defesa Siciliana",
+    "description": "Um sistema flexível: as negras desenvolvem o cavalo em c6 e mantêm abertas as opções dos bispos e do peão d. Popular no alto nível.",
+    "ideas": [
+      "Estrutura de peões flexível",
+      "Dama em c7 e ...a6",
+      "Jogo rápido na ala da dama"
+    ],
+    "traps": [
+      "5.Nb5 d6 6.c4 leva a um bloqueio parecido com o Maroczy"
+    ]
+  },
+  "sicilian-taimanov-main": {
+    "name": "Siciliana Taimanov: Linha Principal",
+    "family": "Defesa Siciliana",
+    "description": "A tabiya moderna da Taimanov. As brancas costumam jogar Qd2/Qf3 e O-O-O, enquanto as negras buscam ...Nf6, ...Bb4 ou ...b5.",
+    "ideas": [
+      "A dama em c7 controla e5",
+      "...b5 e ...Bb7",
+      "Pressão sobre c3 e e4"
+    ]
+  },
+  "sicilian-kan": {
+    "name": "Defesa Siciliana: Variante Kan",
+    "family": "Defesa Siciliana",
+    "description": "A Paulsen/Kan: as negras jogam ...a6 cedo para manter a máxima flexibilidade. Muitas vezes surge uma estrutura de ouriço.",
+    "ideas": [
+      "Desenvolvimento flexível",
+      "Esquema de ouriço com ...d6, ...b6",
+      "Dama em c7"
+    ],
+    "traps": [
+      "5.Bd3 e c4 criam um bloqueio Maroczy — as negras precisam encontrar as rupturas ...b5 ou ...d5"
+    ]
+  },
+  "sicilian-four-knights": {
+    "name": "Defesa Siciliana: Variante dos Quatro Cavalos",
+    "family": "Defesa Siciliana",
+    "description": "As negras desenvolvem os dois cavalos e preparam ...Bb4 para pressionar e4. Pode transpor para muitas outras linhas da Siciliana.",
+    "ideas": [
+      "...Bb4 crava e pressiona e4",
+      "Desenvolvimento rápido",
+      "Ruptura ...d5"
+    ],
+    "traps": [
+      "6.Ndb5 Bb4 7.a3 Bxc3+ 8.Nxc3 d5 é a linha principal"
+    ]
+  },
+  "sicilian-accelerated-dragon": {
+    "name": "Defesa Siciliana: Dragão Acelerado",
+    "family": "Defesa Siciliana",
+    "description": "As negras fazem o fianqueto sem ...d6, economizando um tempo e preparando ...d5 de uma só vez. A principal tentativa das brancas é o bloqueio Maroczy com c4.",
+    "ideas": [
+      "O bispo em g7 mira a grande diagonal",
+      "...d5 em um só lance",
+      "Evita o Ataque Iugoslavo"
+    ],
+    "traps": [
+      "5.Nc3 Bg7 6.Be3 Nf6 7.Bc4 O-O 8.Bb3 Na5? 9.e5 Ne8 10.Bxf7+! Kxf7 11.Ne6! ganha a dama"
+    ]
+  },
+  "sicilian-maroczy-bind": {
+    "name": "Defesa Siciliana: Bloqueio Maroczy",
+    "family": "Defesa Siciliana",
+    "description": "As brancas dominam d5 com peões em c4 e e4, limitando o contrajogo das negras. Um esquema estratégico que ganha espaço.",
+    "ideas": [
+      "Controle d5 com peões",
+      "Sufoque a posição das negras",
+      "As negras buscam as rupturas ...b5 ou ...f5"
+    ]
+  },
+  "sicilian-hyper-accelerated-dragon": {
+    "name": "Defesa Siciliana: Dragão Hiperacelerado",
+    "family": "Defesa Siciliana",
+    "description": "As negras fazem o fianqueto já no segundo lance, mantendo a máxima flexibilidade. As brancas podem responder com d4 ou com um c3 precoce.",
+    "ideas": [
+      "Fianqueto precoce",
+      "Flexível: ...Nc6 / ...d6",
+      "Fuja da teoria das linhas principais"
+    ]
+  },
+  "sicilian-alapin": {
+    "name": "Defesa Siciliana: Variante Alapin",
+    "family": "Defesa Siciliana",
+    "description": "As brancas preparam d4 para montar um centro de peões completo, evitando a pesada teoria da Siciliana Aberta. Uma anti-Siciliana favorita em todos os níveis.",
+    "ideas": [
+      "Prepare d4 com c3",
+      "Desenvolvimento simples e por princípios",
+      "Muitas vezes surgem posições com peão isolado da dama"
+    ]
+  },
+  "sicilian-alapin-nf6": {
+    "name": "Siciliana Alapin: 2...Nf6",
+    "family": "Defesa Siciliana",
+    "description": "As negras atacam e4 de imediato; as brancas ganham espaço com e5 e o cavalo encontra uma casa central em d5.",
+    "ideas": [
+      "O cavalo em d5 é forte",
+      "...d6 para desafiar e5",
+      "Posições de peão isolado da dama para as brancas"
+    ]
+  },
+  "sicilian-alapin-d5": {
+    "name": "Siciliana Alapin: 2...d5",
+    "family": "Defesa Siciliana",
+    "description": "As negras capturam em d5 e a dama se centraliza; como c3 tirou a casa do cavalo, a dama fica segura.",
+    "ideas": [
+      "Dama ativa em d5",
+      "...Nf6, ...e6 e ...Nc6",
+      "Combata o peão isolado da dama"
+    ]
+  },
+  "smith-morra-gambit": {
+    "name": "Gambito Smith-Morra",
+    "family": "Defesa Siciliana",
+    "description": "As brancas sacrificam um peão em troca de vantagem de desenvolvimento e das colunas c e d abertas. Muito perigoso em partidas de clube e online.",
+    "ideas": [
+      "Colunas abertas para as torres",
+      "Desenvolvimento rápido: Nc3, Nf3, Bc4, O-O, Qe2, Rd1",
+      "Pressão sobre d6 e f7"
+    ],
+    "traps": [
+      "Armadilha Siberiana: 4.Nxc3 Nc6 5.Nf3 e6 6.Bc4 Qc7 7.O-O Nf6 8.Qe2 Ng4! 9.h3?? Nd4! ganha a dama ou dá mate em h2",
+      "As negras podem recusar com 3...Nf6 ou 3...d3"
+    ]
+  },
+  "smith-morra-accepted": {
+    "name": "Gambito Smith-Morra Aceito",
+    "family": "Defesa Siciliana",
+    "description": "As negras capturam o peão. A vantagem de desenvolvimento das brancas é significativa; as negras precisam se desenvolver com cuidado.",
+    "ideas": [
+      "Bc4, Nf3, O-O, Qe2 e Rd1",
+      "Pressão sobre d6 e a coluna c",
+      "Saltos de cavalo com Nd5 e Nb5"
+    ],
+    "traps": [
+      "Nos esquemas com ...d6, ...Nf6, ...e6, as negras precisam ficar atentas à ruptura e5 e a Nb5"
+    ]
+  },
+  "sicilian-closed": {
+    "name": "Defesa Siciliana: Variante Fechada",
+    "family": "Defesa Siciliana",
+    "description": "As brancas evitam abrir o centro e jogam um esquema lento na ala do rei com g3, Bg2, d3, f4. A favorita de Spassky.",
+    "ideas": [
+      "Fianqueto na ala do rei",
+      "Expansão na ala do rei com f4-f5",
+      "Mantenha o centro fechado"
+    ]
+  },
+  "sicilian-closed-main": {
+    "name": "Siciliana Fechada: Linha Principal",
+    "family": "Defesa Siciliana",
+    "description": "A posição clássica da Siciliana Fechada, com fianquetos dos dois lados. As brancas jogam na ala do rei; as negras, na ala da dama.",
+    "ideas": [
+      "Brancas: Be3, Qd2, f4 e ataque na ala do rei",
+      "Negras: ...Rb8 e ...b5",
+      "Manobras lentas"
+    ]
+  },
+  "sicilian-grand-prix": {
+    "name": "Defesa Siciliana: Ataque Grand Prix",
+    "family": "Defesa Siciliana",
+    "description": "As brancas jogam f4 cedo e desenvolvem o bispo em c4 ou b5, buscando um ataque direto na ala do rei. Popular nos clubes.",
+    "ideas": [
+      "Ataque na ala do rei com f4-f5",
+      "Bc4 ou Bb5",
+      "Ideias de ataque com Qe1-h4"
+    ]
+  },
+  "sicilian-rossolimo": {
+    "name": "Defesa Siciliana: Ataque Rossolimo",
+    "family": "Defesa Siciliana",
+    "description": "As brancas desenvolvem o bispo em b5 para cravar o cavalo e muitas vezes dobram os peões negros com Bxc6. Uma anti-Siciliana sólida.",
+    "ideas": [
+      "Crave e talvez capture em c6",
+      "Roque rápido",
+      "Jogo estratégico contra os peões c dobrados"
+    ]
+  },
+  "sicilian-moscow": {
+    "name": "Defesa Siciliana: Ataque Moscou",
+    "family": "Defesa Siciliana",
+    "description": "As brancas dão xeque com o bispo para simplificar, evitando a Najdorf e o Dragão. Muitas vezes os bispos são trocados em d7.",
+    "ideas": [
+      "Troque os bispos de casas claras",
+      "Centro com c3 e d4",
+      "Jogo sólido e com pouca teoria"
+    ]
+  },
+  "sicilian-okelly": {
+    "name": "Defesa Siciliana: Variante O'Kelly",
+    "family": "Defesa Siciliana",
+    "description": "As negras jogam ...a6 no segundo lance para manter as opções em aberto e armar armadilhas contra lances naturais como 3.d4.",
+    "ideas": [
+      "Depois de 3.d4 cxd4 4.Nxd4 Nf6 as negras atacam e4",
+      "Esquemas flexíveis",
+      "Vale pela surpresa"
+    ],
+    "traps": [
+      "3.c3! é a melhor resposta"
+    ]
+  },
+  "sicilian-nimzowitsch": {
+    "name": "Defesa Siciliana: Variante Nimzowitsch",
+    "family": "Defesa Siciliana",
+    "description": "As negras atacam e4 como na Defesa Alekhine. Depois de 3.e5 Nd5 o jogo lembra uma Alekhine com ...c5 já incluído.",
+    "ideas": [
+      "Provoque e5",
+      "Cavalo em d5",
+      "Mine o centro das brancas"
+    ],
+    "traps": [
+      "3.e5 Nd5 4.Nc3 e6 5.Nxd5 exd5 6.d4 dá às brancas uma boa vantagem"
+    ]
+  },
+  "sicilian-wing-gambit": {
+    "name": "Defesa Siciliana: Gambito da Ala",
+    "family": "Defesa Siciliana",
+    "description": "As brancas sacrificam o peão b para desviar o peão de c5 e montar um centro com d4. Raro e duvidoso.",
+    "ideas": [
+      "Desvie o peão de c5",
+      "Monte um centro d4/e4",
+      "Arma de surpresa"
+    ]
+  },
+  "french-defense": {
+    "name": "Defesa Francesa",
+    "family": "Defesa Francesa",
+    "description": "Uma defesa sólida em que as negras preparam ...d5 e desafiam o centro das brancas. O bispo de casas claras das negras costuma ser uma peça problemática.",
+    "ideas": [
+      "Ataque o centro com ...d5",
+      "Contra-ataque com ...c5 e ...f6",
+      "Cadeia de peões sólida"
+    ],
+    "traps": [
+      "O bispo de casas claras em c8 pode virar um \"bispo ruim\" atrás do peão de e6"
+    ]
+  },
+  "french-kia": {
+    "name": "Defesa Francesa: Ataque Índio do Rei",
+    "family": "Defesa Francesa",
+    "description": "As brancas evitam a teoria da Francesa com um esquema índio do rei: d3, Nd2, Ngf3, g3, Bg2, O-O e um ataque na ala do rei com e5.",
+    "ideas": [
+      "Fianqueto e roque",
+      "Avance e5 para ganhar espaço na ala do rei",
+      "Ataque com h4, Nf1-h2-g4"
+    ]
+  },
+  "french-advance": {
+    "name": "Defesa Francesa: Variante do Avanço",
+    "family": "Defesa Francesa",
+    "description": "As brancas fecham o centro com e5, ganhando espaço na ala do rei. As negras atacam a base da cadeia com ...c5 e ...Qb6.",
+    "ideas": [
+      "Vantagem de espaço com e5",
+      "Defenda d4 com c3 e Nf3",
+      "As negras atacam d4 com ...c5, ...Nc6, ...Qb6"
+    ],
+    "traps": [
+      "Capturar em d4 com a dama negra pode perder para táticas com Bb5+",
+      "O Gambito Milner-Barry sacrifica d4 em troca de desenvolvimento"
+    ]
+  },
+  "french-advance-milner-barry": {
+    "name": "Francesa do Avanço: Gambito Milner-Barry",
+    "family": "Defesa Francesa",
+    "description": "As brancas sacrificam o peão de d4 em troca de desenvolvimento rápido e um ataque perigoso contra o rei negro ainda sem roque.",
+    "ideas": [
+      "Gambiteie d4 em troca de desenvolvimento",
+      "Ataques com Nb5 e Re1",
+      "Mantenha o rei negro no centro"
+    ],
+    "traps": [
+      "10...Qxe5?? 11.Re1 Qb8 12.Nxd5! com um ataque arrasador"
+    ]
+  }
+}
