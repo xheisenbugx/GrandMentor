@@ -380,3 +380,40 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Quick drills
+
+Short, timed board-vision games at `#/drills` (hub) and `#/drills/:drillId` (`web/js/pages/drills.js`,
+styles `web/css/drills.css`, strings `drills.*`). Scores are "higher is better"; the server keeps the personal
+best per drill + variant (`drill_bests`) and a bounded history of 50 runs per drill + variant (`drill_scores`).
+
+| Drill id | Variants (first = default) | Length | Questions |
+|---|---|---|---|
+| `coordinates` | `find-white`, `find-black`, `name-white`, `name-black` | 30 s | client-generated |
+| `hanging` | `standard` | 60 s | server batch |
+| `material` | `standard` | 60 s | server batch |
+| `checks` | `checks`, `captures` | 60 s | server batch |
+| `knight` | `basic`, `advanced` | 60 s | server batch |
+
+**`GET /api/drills`** → `{ "drills": [ { "id": "coordinates", "variants": [ { "id": "find-white", "best": 23|null, "best_at": "ISO"|null, "plays": 4, "recent": [18, 20, 23], "last_accuracy": 95.0|null } ] } ] }`
+(drills in the table order; `recent` = last ≤10 scores, oldest first).
+
+**`GET /api/drills/:id/batch?n=20&variant=`** (`n` clamped to 1..=50; unknown drill → 404, unknown variant or
+`coordinates` → 400) → `{ "drill": "hanging", "variant": "standard", "items": [...] }` where items are:
+- `hanging`: `{ "fen", "hanging": [ { "square": "d5", "piece": "bN" } ] }` — 1..=3 pieces (either colour, never kings) that the
+  other side can capture legally with a positive static exchange; positions where a side is in check are never served.
+- `material`: `{ "fen", "white": 31, "black": 28, "diff": 3, "options": [3, -3, 2, 0] }` — pawns (P1 N3 B3 R5 Q9), `diff = white - black`, four distinct shuffled options.
+- `checks`: `{ "fen", "answers": [ { "uci": "e7g7", "san": "Rg7+" } ] }` — every legal checking move (variant `checks`) or capture (`captures`), 1..=6 answers; the side to move is not in check and has no promotions.
+- `knight`: `{ "fen", "start": "g1", "target": "f2", "min_moves": 2, "blocked": ["a1", ...], "path": ["e2", "f4"] }` — the FEN holds the white knight (and in `advanced` 2..=4 black pieces, no kings); `blocked` = squares occupied or attacked by black pieces; `path` = one shortest route (start excluded).
+
+Positions come from `data/puzzles.json` (start and along the solution line), with random legal positions as a fallback.
+
+**`POST /api/drills/:id/score`** `{ "variant": "find-white", "score": 14, "correct": 14, "total": 16, "duration_ms": 30000 }`
+(`correct <= total <= 10000`, `score <= 10000`) → `{ "score": 14, "best": 14, "previous_best": 12|null, "is_best": true, "plays": 5 }`.
+Logs activity kind `drill` (1 per run).
+
+Store API (`gm_store::drills`): `DRILLS`, `is_known`, `variants_of`, `Store::record_drill(drill, variant, &DrillRun) -> DrillRecordResult`,
+`Store::drill_stats() -> Vec<DrillStats>`. Generators live in `gm-server/src/routes/drills/generate.rs`.
+
+Client preferences (mode / board side / coordinates / variant) are kept per viewer in `localStorage["gm.drills.v1"]`.
+Keyboard: Enter/Space starts; type a square (`e4`) to click it; `1`–`4` pick an answer; in `checks` type a move (`g1f3`) and Enter for the next position.
