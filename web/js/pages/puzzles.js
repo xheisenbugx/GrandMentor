@@ -9,8 +9,9 @@
 
 import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, formatClock, confirmDialog, classificationMeta } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
-import { getSetting } from '../settings.js';
+import { getSetting, reducedMotion } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { playSound } from '../components/sound.js';
 import { Chess } from '../../vendor/chess.js';
 import { t, hasKey, formatDateIntl, formatNumber, getLocale } from '../i18n.js';
@@ -100,7 +101,7 @@ function uciObj(uci) {
 /** Animate a number in `el` from `from` to `to`. Returns a cancel function. */
 function animateNumber(el, from, to, ms = 900) {
   if (!el) return () => {};
-  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const reduce = reducedMotion();
   if (reduce || document.hidden || from === to || !Number.isFinite(from) || !Number.isFinite(to)) { el.textContent = String(Math.round(to)); return () => {}; }
   let id = 0;
   const start = performance.now();
@@ -595,8 +596,11 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
       h('div', { class: 'pz-score' }, h('div', { class: 'stat-label' }, t('puzzles.solver.streak')), h('div', { class: 'pz-score-sm row-sm' }, h('span', { class: 'pz-flame', html: icon('fire') }), streakNum)),
       h('div', { class: 'pz-score' }, h('div', { class: 'stat-label' }, t('puzzles.solver.time')), h('div', { class: 'pz-score-sm row-sm' }, h('span', { class: 'subtle', html: icon('timer') }), timeEl)));
 
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board });
+  bag.add(() => moveInput.destroy());
   const panelBody = h('div', { class: 'panel-body stack' },
-    topCard, status, info,
+    topCard, status, moveInput.el, info,
     isDaily ? null : h('div', { class: 'stack-sm' }, h('div', { class: 'stat-label' }, t('puzzles.solver.theme')), chipsEl),
     isDaily ? null : h('div', { class: 'stack-sm' }, h('div', { class: 'stat-label' }, t('puzzles.solver.thisSession')), historyEl));
 
@@ -613,7 +617,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
   const page = h('div', { class: 'page page-wide pz-page' }, layout);
   root.appendChild(page);
 
-  const board = createBoard(slot, (mv) => runner.handleMove(mv));
+  board = createBoard(slot, (mv) => runner.handleMove(mv));
   bag.add(() => board.destroy());
 
   const runner = new PuzzleRunner(board, {
@@ -719,9 +723,15 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
     if (st.hintMsg && st.feedback === 'ready') { sub = st.hintMsg; }
     if (!st.rated && !isDaily && st.puzzle && st.feedback === 'ready') sub = t('puzzles.solver.practiceSuffix', { text: sub });
     status.className = `pz-status pz-status-${kind}`;
-    status.replaceChildren(
-      h('div', { class: 'pz-status-icon', html: icon(ic) }),
-      h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+    // The status is a live region: only rewrite it when the text changes, so screen readers
+    // don't hear the same message on every re-render.
+    const statusKey = `${ic}|${head}|${sub}`;
+    if (status.dataset.key !== statusKey) {
+      status.dataset.key = statusKey;
+      status.replaceChildren(
+        h('div', { class: 'pz-status-icon', html: icon(ic) }),
+        h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+    }
 
     // Puzzle info (themes only after finishing, to avoid spoilers)
     const p = st.puzzle;
@@ -1102,6 +1112,9 @@ function mountMistakes(root, { bag, signal }) {
     const progress = h('div', { class: 'pz-mx-progress' });
     const context = h('div', { class: 'pz-mx-context' });
     const status = h('div', { class: 'pz-status', 'aria-live': 'polite' });
+    let mxBoard = null;
+    const mxInput = createMoveInput({ board: () => mxBoard });
+    vb.add(() => mxInput.destroy());
     const after = h('div', { class: 'pz-mx-after stack-sm' });
     const actions = h('div', { class: 'pz-actions' });
 
@@ -1109,7 +1122,7 @@ function mountMistakes(root, { bag, signal }) {
       h('div', { class: 'panel-header', html: icon('target') + `<span>${t('puzzles.mistakes.title')}</span>` },
         h('div', { class: 'spacer' }),
         h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })),
-      h('div', { class: 'panel-body stack' }, progress, context, status, after),
+      h('div', { class: 'panel-body stack' }, progress, context, status, mxInput.el, after),
       h('div', { class: 'panel-footer' }, actions));
 
     page.append(h('div', { class: 'game-layout no-eval pz-layout', style: '--board-chrome: 124px' },
@@ -1117,6 +1130,7 @@ function mountMistakes(root, { bag, signal }) {
       h('aside', { class: 'game-panel' }, panel)));
 
     const board = createBoard(slot, (mv) => runner.handleMove(mv));
+    mxBoard = board;
     vb.add(() => board.destroy());
     const runner = new PuzzleRunner(board, {
       onReady() {
@@ -1227,9 +1241,13 @@ function mountMistakes(root, { bag, signal }) {
       }
       if (st.hintMsg && st.feedback === 'ready') sub = st.hintMsg;
       status.className = `pz-status pz-status-${kind}${o?.graduated_now && st.feedback === 'solved' ? ' pz-mx-mastered' : ''}`;
-      status.replaceChildren(
-        h('div', { class: 'pz-status-icon', html: icon(ic) }),
-        h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+      const statusKey = `${ic}|${head}|${sub}`;
+      if (status.dataset.key !== statusKey) {
+        status.dataset.key = statusKey;
+        status.replaceChildren(
+          h('div', { class: 'pz-status-icon', html: icon(ic) }),
+          h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+      }
 
       // After solving: coach, best move, schedule, links
       if (done) {
@@ -1417,6 +1435,9 @@ function mountRush(root, { bag, signal }) {
     const strikesEl = h('div', { class: 'pz-strikes' }, [0, 1, 2].map(() => h('span', { class: 'pz-strike', html: icon('x') })));
     const tilesEl = h('div', { class: 'pz-tiles' });
     const quitBtn = btn(t('puzzles.rush.endRun'), 'flag', 'ghost', () => endRun('quit'));
+    let rushBoard = null;
+    const rushInput = createMoveInput({ board: () => rushBoard });
+    vb.add(() => rushInput.destroy());
 
     const panel = h('div', { class: 'panel grow' },
       h('div', { class: 'panel-header', html: icon('bolt') + `<span>${t('puzzles.rush.panelTitle', { mode: rushText(mode, 'short') })}</span>` }),
@@ -1425,6 +1446,7 @@ function mountRush(root, { bag, signal }) {
           h('div', null, h('div', { class: 'stat-label' }, cfg.ms ? t('puzzles.rush.timeLeft') : t('puzzles.rush.time')), clockEl),
           h('div', { class: 'text-center' }, h('div', { class: 'stat-label' }, t('puzzles.rush.score')), scoreEl)),
         h('div', { class: 'row between' }, h('div', { class: 'stat-label' }, t('puzzles.rush.strikes')), strikesEl),
+        rushInput.el,
         h('div', { class: 'stat-label' }, t('puzzles.rush.results')),
         tilesEl),
       h('div', { class: 'panel-footer' }, quitBtn));
@@ -1435,6 +1457,7 @@ function mountRush(root, { bag, signal }) {
       h('aside', { class: 'game-panel' }, panel)));
 
     const board = createBoard(slot, (mv) => runner.handleMove(mv));
+    rushBoard = board;
     vb.add(() => board.destroy());
     const runner = new PuzzleRunner(board, {
       onReady() {

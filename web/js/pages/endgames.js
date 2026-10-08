@@ -10,8 +10,9 @@
 
 import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, formatSan, loadingBlock } from '../ui.js';
 import { api, isAbort } from '../api.js';
-import { getSetting } from '../settings.js';
+import { getSetting, scrollBehavior } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import {
   ensureLearnCss, chessAt, applyUci, moveUci, sideToMove, fenKey, miniBoardSvg, levelPill, timerSet,
   confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
@@ -275,12 +276,15 @@ async function mountDrill(root, id, bag, signal) {
   const footer = h('div', { class: 'panel-footer' });
   const panel = h('div', { class: 'panel grow' }, panelHeader, body, footer);
   const head = breadcrumbs([{ label: t('endgames.title'), href: '#/endgames' }, { label: catLabel(drill.category) }, { label: drill.title }]);
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board });
+  bag.add(() => moveInput.destroy());
   const layout = h('div', { class: 'game-layout no-eval eg-drill' },
     h('div', { class: 'game-main' }, topBar, boardWrap, bottomBar),
-    h('aside', { class: 'game-panel' }, head, panel));
+    h('aside', { class: 'game-panel' }, head, panel, moveInput.el));
   root.replaceChildren(layout);
 
-  const board = new Board(boardSlot, {
+  board = new Board(boardSlot, {
     fen: startFen, orientation: userColor, interactive: false, movableColor: null,
     onMove: (mv) => onUserMove(mv),
   });
@@ -569,7 +573,7 @@ async function mountDrill(root, id, bag, signal) {
       !won && sans.length ? btn('btn-ghost', 'undo', t('endgames.undoLast'), () => undo()) : null,
       playLink(fenNow),
       h('a', { class: 'btn btn-ghost', href: `#/analysis?fen=${encodeURIComponent(fenNow)}`, html: icon('analysis') + `<span>${escapeHtml(t('endgames.study'))}</span>` }));
-    resultBox.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    resultBox.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
 
     const res = await record(won);
     if (!res || bag.disposed || resultBox.firstChild !== box) return;

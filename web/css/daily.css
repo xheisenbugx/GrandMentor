@@ -33,7 +33,7 @@
   width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
   border: 2px solid var(--border-strong); color: var(--text-subtle); font-size: var(--fs-xs); font-weight: var(--fw-bold);
 }
-.dp-task.done .dp-check { background: var(--primary); border-color: var(--primary); color: var(--primary-contrast); animation: dp-pop 360ms ease-out; }
+.dp-task.done .dp-check { background: var(--primary-fill); border-color: var(--primary); color: var(--primary-contrast); animation: dp-pop 360ms ease-out; }
 .dp-task-icon {
   width: 38px; height: 38px; border-radius: var(--r-md); display: grid; place-items: center; font-size: 20px;
   color: var(--dp-accent, var(--primary)); background: color-mix(in srgb, var(--dp-accent, var(--primary)) 16%, transparent);
@@ -46,7 +46,7 @@
   font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 3px 8px; border-radius: var(--r-full);
   background: var(--surface-3); color: var(--text-muted); white-space: nowrap;
 }
-.dp-task-done { background: var(--primary-soft); color: var(--primary); }
+.dp-task-done { background: var(--primary-soft); color: var(--primary-text); }
 .dp-go { color: var(--text-subtle); display: grid; place-items: center; transition: transform var(--anim-ms) ease, color var(--anim-ms) ease; }
 
 /* ---- side: goal + streak ------------------------------------------------- */
@@ -73,7 +73,7 @@
 .dp-streak { display: flex; flex-direction: column; gap: var(--sp-3); padding-top: var(--sp-4); border-top: 1px solid var(--divider); }
 .dp-streak-head { display: flex; align-items: center; gap: var(--sp-3); }
 .dp-flame { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-3); color: var(--text-subtle); flex: none; }
-.dp-flame.on { background: var(--warning-soft); color: var(--warning); }
+.dp-flame.on { background: var(--warning-soft); color: var(--warning-text); }
 .dp-streak-cur { font-size: var(--fs-xl); font-weight: var(--fw-black); line-height: 1.1; }
 .dp-streak-label { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text-muted); }
 .dp-streak-msg { margin: 0; }
@@ -131,7 +131,7 @@
 .dp-heat-summary:hover { background: var(--surface-hover); }
 .dp-heat-summary:focus-visible { outline: none; box-shadow: var(--ring); }
 .dp-heat-title { display: inline-flex; align-items: center; gap: var(--sp-2); font-weight: var(--fw-semibold); }
-.dp-heat-title svg { width: 18px; height: 18px; color: var(--primary); }
+.dp-heat-title svg { width: 18px; height: 18px; color: var(--primary-text); }
 .dp-heat-meta { flex: 1; text-align: right; }
 .dp-heat-chev { margin-left: auto; display: grid; place-items: center; color: var(--text-subtle); transition: transform var(--anim-ms) ease; }
 .dp-heat-chev svg { width: 18px; height: 18px; }

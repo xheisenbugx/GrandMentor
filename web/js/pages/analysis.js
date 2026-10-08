@@ -10,6 +10,7 @@ import {
 } from '../ui.js';
 import { getSettings, onSettingsChange, pieceUrl } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MentorPanel } from '../components/mentor.js';
 import { ensureAnalysisCss } from '../components/evalgraph.js';
@@ -313,13 +314,16 @@ export async function mount(root, { query = {} } = {}) {
   const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip);
 
   const panel = h('div', { class: 'panel grow an-panel' }, actions, tabs, analysisTab, mentorTab);
-  const aside = h('aside', { class: 'game-panel' }, panel, toolbar);
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board, className: 'an-move-input' });
+  bag.add(() => moveInput.destroy());
+  const aside = h('aside', { class: 'game-panel' }, panel, toolbar, moveInput.el);
   const layout = h('div', { class: 'game-layout analysis-page' + (settings.showEvalBar === false ? ' no-eval' : ''), style: { '--panel-w': '400px' } }, main, aside);
   root.appendChild(layout);
   bag.add(() => layout.remove());
 
   // ---- Components -------------------------------------------------------
-  const board = new Board(boardSlot, {
+  board = new Board(boardSlot, {
     fen: START_FEN,
     orientation: query.orientation === 'black' ? 'black' : 'white',
     interactive: true,

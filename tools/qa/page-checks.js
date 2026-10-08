@@ -2,7 +2,8 @@
 // by Node); it must stay a single self-contained function expression.
 //
 // Input (window.__qaData, injected by the sweep): { keys: [...i18n keys], english: [...phrases] }.
-// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], english[], layerOverlaps[], buttonOverlaps[] }.
+// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], english[], layerOverlaps[], buttonOverlaps[],
+//           a11y: { names[], alt[], hiddenFocus[], dupIds[], contrast[], touch[] } }.
 (() => {
   const data = window.__qaData || { keys: [], english: [] };
   const vw = window.innerWidth;
@@ -152,5 +153,124 @@
     }
   }
 
-  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps };
+  // 6. Accessibility (approximate, no axe-core): names, alt text, hidden focusables, duplicate ids,
+  //    text contrast and touch-target size. Each list is capped at MAX entries.
+  const a11y = { names: [], alt: [], hiddenFocus: [], dupIds: [], contrast: [], touch: [] };
+  const textOf = (el) => (el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '');
+  const accName = (el) => {
+    const label = el.getAttribute('aria-label');
+    if (label && label.trim()) return label.trim();
+    const lb = el.getAttribute('aria-labelledby');
+    if (lb) { const tx = lb.split(/\s+/).map((id) => textOf(document.getElementById(id))).join(' ').trim(); if (tx) return tx; }
+    if (el.matches('input, select, textarea, meter, progress')) {
+      if (el.id) { const l = document.querySelector(`label[for="${CSS.escape(el.id)}"]`); if (l && textOf(l)) return textOf(l); }
+      const wrap = el.closest('label'); if (wrap && textOf(wrap)) return textOf(wrap);
+      if (el.matches('input[type="submit"], input[type="button"], input[type="reset"]') && el.value) return el.value;
+    } else {
+      // Visible text plus alt text of images / labelled SVGs inside.
+      const tx = textOf(el);
+      if (tx) return tx;
+      const img = el.querySelector('img[alt]:not([alt=""]), [role="img"][aria-label]');
+      if (img) return img.getAttribute('alt') || img.getAttribute('aria-label');
+    }
+    const title = el.getAttribute('title');
+    return title && title.trim() ? title.trim() : '';
+  };
+  const hiddenFromAT = (el) => !!el.closest('[aria-hidden="true"], [inert]');
+  const interactiveSel = 'button, a[href], input:not([type="hidden"]), select, textarea, [role="button"], [role="link"], [role="checkbox"], [role="radio"], [role="switch"], [role="tab"], [role="slider"], [role="menuitem"], [role="option"], [role="gridcell"][tabindex="0"]';
+  const interactive = [...document.querySelectorAll(interactiveSel)];
+  for (const el of interactive) {
+    if (a11y.names.length >= MAX) break;
+    if (hiddenFromAT(el)) continue;
+    // Hidden-but-labelled controls (custom switches use a 1px input) still need a name.
+    const isSwitchInput = el.matches('.switch input');
+    if (!isSwitchInput && !visible(el)) continue;
+    if (!accName(el)) a11y.names.push(describe(el));
+  }
+  for (const img of document.querySelectorAll('img')) {
+    if (a11y.alt.length >= MAX) break;
+    if (!img.hasAttribute('alt') && !hiddenFromAT(img) && visible(img)) a11y.alt.push(describe(img) + ` src=${(img.getAttribute('src') || '').slice(0, 60)}`);
+  }
+  for (const el of document.querySelectorAll('svg[role="img"], [role="img"]:not(svg)')) {
+    if (a11y.alt.length >= MAX) break;
+    if (!hiddenFromAT(el) && visible(el) && !accName(el)) a11y.alt.push(describe(el) + ' (role=img without a label)');
+  }
+  const focusSel = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  for (const el of document.querySelectorAll(focusSel)) {
+    if (a11y.hiddenFocus.length >= MAX) break;
+    if (el.closest('[inert]')) continue;
+    if (el.closest('[aria-hidden="true"]') && el.tabIndex >= 0) {
+      const s2 = cs(el);
+      if (s2.display !== 'none' && s2.visibility !== 'hidden') a11y.hiddenFocus.push(describe(el) + ' (inside aria-hidden)');
+    }
+  }
+  const ids = new Map();
+  for (const el of document.querySelectorAll('[id]')) { const id = el.id; if (id) ids.set(id, (ids.get(id) || 0) + 1); }
+  for (const [id, n] of ids) { if (n > 1 && a11y.dupIds.length < MAX) a11y.dupIds.push(`#${id} ×${n}`); }
+
+  // Contrast: text colour vs. the first opaque background up the tree (semi-transparent layers are
+  // blended; background images/gradients make the result unknown and are skipped).
+  const parseColor = (c) => {
+    const m = String(c).match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    const p = m[1].split(/[\s,/]+/).filter(Boolean).map(Number);
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+  };
+  const blend = (top, bottom) => ({ r: top.r * top.a + bottom.r * (1 - top.a), g: top.g * top.a + bottom.g * (1 - top.a), b: top.b * top.a + bottom.b * (1 - top.a), a: 1 });
+  const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const bgOf = (el) => {
+    const layers = [];
+    for (let a = el; a; a = a.parentElement) {
+      const s3 = cs(a);
+      if (s3.backgroundImage && s3.backgroundImage !== 'none') return null;
+      if (parseFloat(s3.opacity) < 1) return null; // faded (usually disabled) content: skip
+      if (s3.filter && s3.filter !== 'none') return null;
+      const c = parseColor(s3.backgroundColor);
+      if (c && c.a > 0) { layers.push(c); if (c.a >= 0.99) break; }
+    }
+    let base = { r: 255, g: 255, b: 255, a: 1 };
+    const root = parseColor(cs(document.body).backgroundColor);
+    if (root && root.a >= 0.99) base = root;
+    for (let i = layers.length - 1; i >= 0; i--) base = layers[i].a >= 0.99 ? layers[i] : blend(layers[i], base);
+    return base;
+  };
+  const seenContrast = new Set();
+  const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = tw.nextNode(); n && a11y.contrast.length < MAX; n = tw.nextNode()) {
+    const el = n.parentElement;
+    if (!el || !n.nodeValue.trim() || seenContrast.has(el)) continue;
+    seenContrast.add(el);
+    // Board and eval bar: text sits on sibling layers (squares, the fill), not on an ancestor background.
+    if (el.closest('.gm-board, .gm-evalbar, [aria-hidden="true"], .sr-only, noscript, [disabled], .btn.loading') || !visible(el)) continue;
+    if (el.closest('button:disabled, [aria-disabled="true"], input:disabled')) continue;
+    const s4 = cs(el);
+    const fg = parseColor(s4.color);
+    if (!fg || fg.a < 0.5) continue;
+    if (s4.webkitTextFillColor && /rgba\(0, 0, 0, 0\)|transparent/.test(s4.webkitTextFillColor)) continue; // gradient text
+    const bg = bgOf(el);
+    if (!bg) continue;
+    const fgc = fg.a < 1 ? blend(fg, bg) : fg;
+    const r = ratio(fgc, bg);
+    const size = parseFloat(s4.fontSize);
+    const bold = Number(s4.fontWeight) >= 700;
+    const large = size >= 24 || (bold && size >= 18.66);
+    const need = large ? 3 : 4.5;
+    if (r + 0.05 < need) a11y.contrast.push({ el: describe(el), ratio: Math.round(r * 100) / 100, need, fg: s4.color, bg: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})` });
+  }
+
+  // Touch targets on phones: buttons and form controls at least 40×40 CSS px (inline text links exempt).
+  if (vw <= 860) {
+    const targets = document.querySelectorAll('button, .btn, [role="button"], input:not([type="hidden"]):not([type="range"]), select, [role="tab"], [role="radio"], [role="checkbox"]');
+    for (const el of targets) {
+      if (a11y.touch.length >= MAX) break;
+      if (hiddenFromAT(el) || el.closest('.gm-board') || el.matches('.switch input')) continue;
+      if (el.matches('input[type="checkbox"], input[type="radio"]') && cs(el).opacity === '0') continue;
+      if (!visible(el)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 39.5 || r.height < 39.5) a11y.touch.push(`${describe(el)} ${Math.round(r.width)}×${Math.round(r.height)}`);
+    }
+  }
+
+  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps, a11y };
 })()

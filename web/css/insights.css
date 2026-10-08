@@ -6,7 +6,7 @@
 /* ---- review banner ---- */
 .ins-banner-slot:empty { display: none; }
 .ins-banner { display: flex; align-items: center; gap: var(--sp-4); padding: var(--sp-4) var(--sp-5); border-color: var(--info-soft); background: linear-gradient(90deg, var(--info-soft), transparent 70%), var(--surface); }
-.ins-banner-icon { color: var(--info); flex: none; display: grid; place-items: center; }
+.ins-banner-icon { color: var(--info-text); flex: none; display: grid; place-items: center; }
 .ins-banner-main { flex: 1; min-width: 0; }
 .ins-banner .progress { max-width: 420px; }
 
@@ -18,12 +18,12 @@
 .ins-empty-actions { justify-content: center; margin-top: var(--sp-3); }
 .ins-steps { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); }
 .ins-step { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: var(--fw-bold); background: var(--surface-3); color: var(--text-muted); border: 2px solid var(--border); }
-.ins-step.done { background: var(--primary); color: var(--primary-contrast); border-color: var(--primary); }
+.ins-step.done { background: var(--primary-fill); color: var(--primary-contrast); border-color: var(--primary); }
 
 /* ---- summary tiles ---- */
 .ins-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-3); }
 .ins-stat { display: flex; flex-direction: row; align-items: center; text-align: left; gap: var(--sp-3); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--sp-4); }
-.ins-stat-icon { width: 40px; height: 40px; flex: none; border-radius: var(--r-md); display: grid; place-items: center; background: var(--primary-soft); color: var(--primary); }
+.ins-stat-icon { width: 40px; height: 40px; flex: none; border-radius: var(--r-md); display: grid; place-items: center; background: var(--primary-soft); color: var(--primary-text); }
 
 /* ---- weaknesses ---- */
 .ins-section-head .section-title { margin-bottom: var(--sp-1); }
@@ -34,7 +34,7 @@
 .ins-weak[data-rank="3"] { border-top-color: var(--cls-inaccuracy); }
 .ins-weak-top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); flex-wrap: wrap; }
 .ins-rank { display: inline-grid; place-items: center; min-width: 34px; height: 28px; padding: 0 var(--sp-2); border-radius: var(--r-full); background: var(--surface-3); font-weight: var(--fw-black); font-size: var(--fs-sm); }
-.ins-weak[data-rank="1"] .ins-rank { background: var(--danger-soft); color: var(--danger); }
+.ins-weak[data-rank="1"] .ins-rank { background: var(--danger-soft); color: var(--danger-text); }
 .ins-rank.sm { min-width: 26px; height: 26px; font-size: var(--fs-xs); }
 .ins-evidence { white-space: normal; text-align: right; }
 .ins-weak-title { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
@@ -141,7 +141,7 @@
 .ins-profile-list { display: flex; flex-direction: column; gap: var(--sp-1); }
 .ins-profile-row { display: grid; grid-template-columns: auto 1fr auto; gap: var(--sp-3); align-items: center; padding: var(--sp-2); border-radius: var(--r-md); color: var(--text); text-decoration: none; }
 .ins-profile-row:hover, .ins-profile-row:focus-visible { background: var(--surface-hover); text-decoration: none; }
-.ins-profile-row:first-child .ins-rank { background: var(--danger-soft); color: var(--danger); }
+.ins-profile-row:first-child .ins-rank { background: var(--danger-soft); color: var(--danger-text); }
 .ins-profile-main { min-width: 0; }
 .ins-profile-drill { display: inline-flex; align-items: center; gap: 4px; color: var(--link); font-weight: var(--fw-semibold); white-space: nowrap; }
 .ins-profile-empty { gap: var(--sp-3); }

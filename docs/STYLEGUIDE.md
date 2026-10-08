@@ -35,11 +35,18 @@ Dark theme is the default. Light theme: `<html data-theme="light">` (set by `set
 `--success` `--success-soft` · `--warning` `--warning-soft` · `--danger` `--danger-hover`
 `--danger-shadow` `--danger-soft` · `--info` `--info-soft` · `--gold`.
 
+**Contrast rules (WCAG AA).** The semantic colours above are for fills, borders, icons and charts. For **text** use the
+text-safe variants `--primary-text`, `--success-text`, `--danger-text`, `--info-text`, `--accent-text`,
+`--warning-text` (≥ 4.5:1 on cards and tinted chips, in both themes). For a **fill behind white text** use
+`--primary-fill` (+ `-hover`, `-edge`) and `--danger-fill` (+ `-hover`): plain `--primary` / `--danger` are too light for
+white text. `--text-subtle` is the lowest-contrast text allowed (≥ 4.5:1 on `--surface`, `--surface-2`, `--surface-3`).
+`--focus` is the focus-ring colour; `--ring` (2px gap + 2px ring) is the standard focus style.
+
 ### Move classifications
 | Token | Color | Symbol (`ui.classificationMeta`) |
 |---|---|---|
 | `--cls-brilliant` | #26c2a3 teal | `!!` |
-| `--cls-great` | #5c8bb0 blue | `!` |
+| `--cls-great` | #6f9fc4 blue | `!` |
 | `--cls-best` | #81b64c green | `★` |
 | `--cls-excellent` | #96bc4b | `👍` |
 | `--cls-good` | #96af8b | `✓` |
@@ -47,11 +54,15 @@ Dark theme is the default. Light theme: `<html data-theme="light">` (set by `set
 | `--cls-inaccuracy` | #f7c631 | `?!` |
 | `--cls-mistake` | #ffa459 | `?` |
 | `--cls-miss` | #ff7769 | `✗` |
-| `--cls-blunder` | #fa412d | `??` |
+| `--cls-blunder` | #ff6a58 | `??` |
 | `--cls-forced` | #96af8b | `→` |
 
 Any element with `data-cls="<classification>"` gets a local `--cls` variable set to its color,
 so you can write `color: var(--cls)` / `background: var(--cls)` in your own CSS.
+The light theme darkens every `--cls-*` (≥ 4.5:1 as text on white) and sets `--cls-fg: #fff` (badge symbol colour; dark
+`#111417` in the dark theme). `<html data-cls-palette="cb">` (setting **Colour-blind friendly colours**) swaps in an
+Okabe–Ito based palette: good moves in blues/teal, bad moves in yellow → orange → purple → vermillion. **Never rely on
+the colour alone**: always show the symbol (`classificationBadge()`, `.gm-ml-dot`) or the label next to it.
 
 ### Board & eval (for `board.css`, `evalbar.js`, etc.)
 `--board-light`, `--board-dark` (set inline on `<html>` from the `boardTheme` setting),
@@ -407,3 +418,31 @@ Settings keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett
 - Prefer verbs and outcomes: "Play a bot", "Review this game", "Try again".
 - Explain chess terms the first time (tooltip or one-line help text).
 - Celebrate progress (toasts, badges) and keep error copy friendly and actionable.
+
+## 9. Accessibility
+
+- **Keyboard.** Everything clickable is a `<button>` or `<a href>` (or has `tabindex="0"` + a role + Enter/Space
+  handling). Never remove the focus style; `:focus-visible` gets `--ring` everywhere (high-contrast mode adds a 3px
+  outline). The board is one tab stop with arrow keys inside (see CONTRACT "Accessibility"). Modals trap focus and give it
+  back on close. The closed mobile "More" sheet is `inert`. The skip link (`.skip-link`) appears on focus and moves focus
+  to the page's `<h1>`.
+- **Names.** Icon-only buttons need `aria-label` (and usually `title`/`data-tooltip`). Inputs need a `<label>` or
+  `aria-label`. Charts are `role="img"` with an `aria-label` that states the numbers; the eval graph is a `slider` with
+  `aria-valuetext` ("12. Nf3, +0.4, Mistake").
+- **Live regions.** Use `announce()` from `components/announcer.js` instead of adding new `aria-live` regions. If a
+  status element must be live, only rewrite it when its text changes (see the puzzle status) so it doesn't repeat.
+- **Touch targets.** Buttons, chips and form controls are at least 40×40 px on phones (≤ 860px wide); `.btn-sm`,
+  `.chip`, `.segmented` buttons, move-list moves grow automatically.
+- **Motion.** Don't check `prefers-reduced-motion` yourself: use `reducedMotion()` / `scrollBehavior()` from
+  `settings.js`, and in CSS `:root[data-motion="reduce"]`. Confetti (`.lrn-confetti`, `.pz-confetti`, `.dp-confetti`) is
+  hidden and every animation/transition is cut to 1 ms when motion is reduced; the board sets its slide time to 0.
+- **High contrast.** `:root[data-contrast="high"]` (dark or light) raises text to AAA (`--text`, `--text-muted`,
+  `--text-subtle` ≥ 7:1), strengthens borders and dividers, outlines active segmented/nav items and underlines links.
+  Build new components from the tokens and they follow automatically.
+- **Board theme `contrast`.** Near-white / slate-blue squares (4.6:1), stronger last-move and selection tints, darker
+  legal-move dots, bold coordinates.
+- **Text size.** `uiScale` sets `<html>` font-size to 100/115/130 %; size text in `rem` tokens (`--fs-*`), not px, so it
+  scales.
+- **Automated checks.** `tools/qa/sweep.mjs` reports `a11y-name`, `a11y-alt`, `a11y-hidden-focus`, `a11y-dup-id`,
+  `contrast`, `touch-target` and `keyboard` issues (see `tools/qa/README.md`). Run it with
+  `QA_SETTINGS='{"theme":"light"}'` and `QA_SETTINGS='{"highContrast":true}'` too when you change colours.

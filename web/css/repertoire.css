@@ -41,8 +41,8 @@
   display: grid; place-items: center; background: var(--surface-2); color: var(--text-muted);
 }
 .rep-stat-icon svg { width: 22px; height: 22px; }
-.rep-stat.is-due .rep-stat-icon { background: var(--warning-soft); color: var(--warning); }
-.rep-stat.is-learned .rep-stat-icon { background: var(--primary-soft); color: var(--primary); }
+.rep-stat.is-due .rep-stat-icon { background: var(--warning-soft); color: var(--warning-text); }
+.rep-stat.is-learned .rep-stat-icon { background: var(--primary-soft); color: var(--primary-text); }
 
 /* ---- starters --------------------------------------------------------- */
 .rep-starters { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sp-3); }
@@ -114,7 +114,7 @@
 .rep-move.mine .rep-san { font-weight: var(--fw-bold); }
 .rep-move.mine:hover { background: color-mix(in srgb, var(--primary) 26%, transparent); }
 .rep-move.selected { background: var(--surface-3); border-color: var(--border-strong); color: var(--text); }
-.rep-move.mine.selected { background: var(--primary); color: var(--primary-contrast); border-color: var(--primary); }
+.rep-move.mine.selected { background: var(--primary-fill); color: var(--primary-contrast); border-color: var(--primary); }
 .rep-move.mine.selected .rep-no { color: inherit; opacity: .8; }
 .rep-move.due::after {
   content: ''; position: absolute; top: -2px; right: -2px; width: 8px; height: 8px;
@@ -136,15 +136,15 @@
 .rep-details-head { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
 .rep-details-move { font-weight: var(--fw-black); font-size: var(--fs-lg); }
 .rep-role { font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--text-subtle); text-transform: uppercase; letter-spacing: .05em; }
-.rep-role.mine { color: var(--primary); }
+.rep-role.mine { color: var(--primary-text); }
 .rep-note { min-height: 44px; resize: vertical; font-size: var(--fs-sm); }
 .rep-details-actions { align-items: center; flex-wrap: wrap; }
 .rep-prompt { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--text-muted); min-width: 0; }
 .rep-prompt svg { width: 16px; height: 16px; flex: none; }
-.rep-prompt.mine svg { color: var(--primary); }
-.rep-prompt.theirs svg { color: var(--info); }
+.rep-prompt.mine svg { color: var(--primary-text); }
+.rep-prompt.theirs svg { color: var(--info-text); }
 .rep-delete { color: var(--text-subtle); }
-.rep-delete:hover { color: var(--danger); }
+.rep-delete:hover { color: var(--danger-text); }
 
 /* ---- add-to-repertoire modal ----------------------------------------- */
 .rep-line-preview {
@@ -159,9 +159,9 @@
 .rep-dev-text { display: flex; gap: 6px; align-items: flex-start; font-size: var(--fs-sm); color: var(--text); line-height: 1.45; }
 .rep-dev-ic { display: inline-flex; flex: none; margin-top: 1px; }
 .rep-dev-ic svg { width: 16px; height: 16px; }
-.rep-dev-ic.warn { color: var(--warning); }
-.rep-dev-ic.new { color: var(--info); }
-.rep-dev-ic.good { color: var(--primary); }
+.rep-dev-ic.warn { color: var(--warning-text); }
+.rep-dev-ic.new { color: var(--info-text); }
+.rep-dev-ic.good { color: var(--primary-text); }
 .rep-dev-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; margin-left: auto; }
 .rep-recent-empty { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
 .rep-recent-empty > div { flex: 1 1 200px; }

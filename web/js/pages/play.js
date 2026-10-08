@@ -14,6 +14,8 @@ import {
 } from '../ui.js';
 import { getSettings } from '../settings.js';
 import { Board } from '../components/board.js';
+import { parseMoveText, looksLikeMove } from '../components/moveinput.js';
+import { announce } from '../components/announcer.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MoveList } from '../components/movelist.js';
 import { ChessClock } from '../components/clock.js';
@@ -153,28 +155,8 @@ function checkCustomFen(raw) {
   return { fen: full, turn: c.turn() };
 }
 
-/** Parse a typed move ("Nf3", "e4", "o-o", "e7e8q", "nf3") in `chess`'s position. */
-function parseTypedMove(chess, text) {
-  const raw = String(text || '').trim().replace(/[!?]+$/, '');
-  if (!raw || raw.length > 12) return null;
-  const variants = [raw];
-  const castle = raw.replace(/0/g, 'O').replace(/o/g, 'O');
-  if (/^O-?O(-?O)?[+#]?$/.test(castle)) variants.push(castle.replace(/^OO/, 'O-O').replace(/^O-OO/, 'O-O-O').replace(/^OOO/, 'O-O-O'));
-  if (/^[nrqk]/.test(raw)) variants.push(raw[0].toUpperCase() + raw.slice(1));
-  if (/^b[a-h]?[1-8]?x?[a-h][1-8]/.test(raw) && !/^b[1-8]/.test(raw)) variants.push('B' + raw.slice(1));
-  variants.push(raw.replace(/=?([qrbn])$/i, (_, p) => '=' + p.toUpperCase()));
-  for (const v of variants) {
-    try {
-      const probe = new Chess(chess.fen());
-      const mv = probe.move(v);
-      if (mv) return { from: mv.from, to: mv.to, promotion: mv.promotion || undefined, san: mv.san };
-    } catch { /* try the next spelling */ }
-  }
-  return null;
-}
-
-/** Looks like move notation at all (so we can tell "not legal" from "not understood"). */
-const looksLikeMove = (s) => /^([KQRBNkqrbn]?[a-h]?[1-8]?x?-?[a-h][1-8](=?[QRBNqrbn])?|[O0o]-?[O0o](-?[O0o])?)[+#]?[!?]*$/.test(String(s || '').trim());
+// Typed moves are parsed by the shared move-input component (SAN or UCI, forgiving about case).
+const parseTypedMove = (chess, text) => parseMoveText(chess, text);
 
 function loadSavedGame() {
   const s = loadJson(SAVE_KEY);
@@ -345,7 +327,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   let previewBoard = null;
   try {
     const s = getSettings();
-    previewBoard = new Board(previewBoardEl, { fen: startFen(), orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs });
+    previewBoard = new Board(previewBoardEl, { fen: startFen(), orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs, keyboard: false, announce: false });
     bag.add(() => previewBoard.destroy());
   } catch (e) { console.warn('[play] preview board unavailable', e); }
 
@@ -1643,6 +1625,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     refreshAll(false);
     const o = userOutcome();
     if (!silent) {
+      announce(o === 'win' ? t(termination === 'checkmate' ? 'a11y.result.youWinMate' : 'a11y.result.youWin') : o === 'loss' ? t('a11y.result.youLose') : t('a11y.result.draw'), { assertive: true });
       playSoundSafe('gameEnd');
       botSay(o === 'win' ? t('play.botChat.userWon') : o === 'loss' ? t('play.botChat.userLost') : t('play.botChat.draw'));
     }

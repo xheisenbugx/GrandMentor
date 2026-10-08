@@ -66,6 +66,13 @@ Each page is checked for:
 | `overflow` | a visible element sticks out of the viewport. Page-level `overflow-x: hidden/clip` does not hide it, but real scroll containers do |
 | `layer-over-board` | a speech bubble, toast, popover or tooltip covers a `.gm-board` |
 | `button-overlap` | two buttons overlap. The check skips nested buttons and buttons in different fixed or sticky layers |
+| `a11y-name` | a visible button, link, form control or ARIA widget without an accessible name (aria-label, labelledby, `<label>`, text, image alt or title) |
+| `a11y-alt` | an `<img>` without `alt`, or a `role="img"` element without a label |
+| `a11y-hidden-focus` | a focusable element inside `aria-hidden="true"` |
+| `a11y-dup-id` | the same `id` used more than once |
+| `contrast` | text below 4.5:1 (3:1 for large text) against the first opaque background up the tree; text over images/gradients, faded (opacity < 1) or disabled content, the board and the eval bar are skipped |
+| `touch-target` | on the mobile viewport, a button, chip or form control smaller than 40×40 px (inline text links are exempt) |
+| `keyboard` | Tab smoke test (`QA_KBD_STEPS`, default 20 stops from the top): focus must move, land on a visible element outside `aria-hidden`, and show a focus indicator |
 
 Output goes to `QA_OUT` (default `target/qa-sweep/`):
 - `report.json`
@@ -85,6 +92,8 @@ Output goes to `QA_OUT` (default `target/qa-sweep/`):
 | `QA_SAMPLE` | `1` | `N` > 1: non-English languages visit only every N-th route (rotating), to save CI time |
 | `QA_SHOTS` | `failures` | `all` or `none` |
 | `QA_SETTLE_MS` | `500` | extra wait after the network goes idle |
+| `QA_SETTINGS` | – | JSON merged into the app settings before the run, e.g. `'{"theme":"light"}'`, `'{"highContrast":true,"cbPalette":true}'` |
+| `QA_KEYBOARD`, `QA_KBD_STEPS` | on, `20` | `QA_KEYBOARD=0` skips the Tab smoke test |
 | `QA_INJECT` | – | JS run in every page, to test the sweep itself: `QA_INJECT="console.error('x')"` must fail every page |
 
 ## `bench-gate.mjs`

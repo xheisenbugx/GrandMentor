@@ -14,6 +14,7 @@ import { h, icon, disposables, pageHeader, emptyState, skeleton } from '../ui.js
 import { api, qs, isAbort } from '../api.js';
 import { t, formatNumber } from '../i18n.js';
 import { Board } from '../components/board.js';
+import { reducedMotion as settingsReducedMotion } from '../settings.js';
 import { playSound } from '../components/sound.js';
 
 export const title = (params) => {
@@ -41,7 +42,7 @@ const COUNTDOWN = 3;
 // ----------------------------------------------------------------------------- small helpers
 
 function reducedMotion() {
-  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+  try { return settingsReducedMotion(); } catch { return false; }
 }
 
 function readPrefs() {

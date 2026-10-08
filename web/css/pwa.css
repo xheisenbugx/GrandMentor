@@ -21,9 +21,9 @@
 }
 .offline-banner[hidden] { display: none; }
 .app.sidebar-collapsed ~ .offline-banner { left: calc(var(--sidebar-w-collapsed) + var(--sp-5)); }
-.offline-banner-icon { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--warning-soft); color: var(--warning); }
+.offline-banner-icon { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--warning-soft); color: var(--warning-text); }
 .offline-banner-icon svg { width: 16px; height: 16px; }
-.offline-banner.online .offline-banner-icon { background: var(--success-soft); color: var(--success); }
+.offline-banner.online .offline-banner-icon { background: var(--success-soft); color: var(--success-text); }
 .offline-banner.online { padding-right: var(--sp-4); }
 .offline-banner-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .offline-banner-short { display: none; }
@@ -60,22 +60,22 @@
 }
 
 /* ---------- Install entry ------------------------------------------------ */
-.sidebar-footer .pwa-install-item { border: 0; background: none; width: 100%; text-align: left; color: var(--primary); font-weight: 700; }
-.sidebar-footer .pwa-install-item:hover { color: var(--primary); }
-.more-sheet .pwa-install-item { border: 0; color: var(--primary); font-weight: 700; }
+.sidebar-footer .pwa-install-item { border: 0; background: none; width: 100%; text-align: left; color: var(--primary-text); font-weight: 700; }
+.sidebar-footer .pwa-install-item:hover { color: var(--primary-text); }
+.more-sheet .pwa-install-item { border: 0; color: var(--primary-text); font-weight: 700; }
 
 /* ---------- Update toast ------------------------------------------------- */
 .pwa-update .toast-msg { display: flex; flex-direction: column; gap: 2px; }
 .pwa-update-title { font-weight: 700; }
 .pwa-update-text { color: var(--text-muted); font-size: var(--fs-sm); }
 .pwa-update-actions { margin-top: var(--sp-2); }
-.pwa-update > svg { color: var(--primary); }
+.pwa-update > svg { color: var(--primary-text); }
 .pwa-update { border-left-color: var(--primary); }
 
 /* ---------- iOS "Add to Home Screen" help -------------------------------- */
 .pwa-ios-steps { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
 .pwa-ios-steps li { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); }
-.pwa-ios-num { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--primary); color: var(--text-inverse); font-weight: 800; font-size: var(--fs-sm); }
-.pwa-ios-icon { display: grid; place-items: center; flex: 0 0 auto; color: var(--info); }
+.pwa-ios-num { display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto; border-radius: var(--r-full); background: var(--primary-fill); color: #fff; font-weight: 800; font-size: var(--fs-sm); }
+.pwa-ios-icon { display: grid; place-items: center; flex: 0 0 auto; color: var(--info-text); }
 .pwa-ios-icon svg { width: 20px; height: 20px; }
 .pwa-ios-text { min-width: 0; }

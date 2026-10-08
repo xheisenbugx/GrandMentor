@@ -12,6 +12,8 @@ import { api, isAbort, EngineClient } from '../api.js';
 import { h, icon, toast, modal, confirmDialog, disposables, emptyState, escapeHtml } from '../ui.js';
 import { getSettings, pieceUrl } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
+import { announce } from '../components/announcer.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MoveList } from '../components/movelist.js';
 import { ChessClock } from '../components/clock.js';
@@ -262,7 +264,7 @@ function renderSetup(host, ctx, { linkFen, onPlay, onResume }) {
   let previewBoard = null;
   try {
     const s = getSettings();
-    previewBoard = new Board(previewBoardEl, { fen: START_FEN, orientation: 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs });
+    previewBoard = new Board(previewBoardEl, { fen: START_FEN, orientation: 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs, keyboard: false, announce: false });
     bag.add(() => previewBoard.destroy());
   } catch (e) { console.warn('[local] preview board unavailable', e); }
 
@@ -540,12 +542,16 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
   const actionsEl = h('div', { class: 'lc-actions' }, ...Object.values(acts));
   const afterEl = h('div', { class: 'lc-after', hidden: true });
 
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board });
+  bag.add(() => moveInput.destroy());
   const panel = h('aside', { class: 'game-panel' },
     turnEl,
     h('div', { class: 'panel grow' },
       h('div', { class: 'panel-header lc-panel-head' }, h('span', { html: icon('list') }), h('span', null, t('local.game.moves')), h('div', { class: 'spacer' }), headBadges),
       moveListEl,
       navBar),
+    moveInput.el,
     afterEl,
     actionsEl);
 
@@ -555,7 +561,7 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
   // ---- Components --------------------------------------------------------
   const initialOrientation = g.opts.autoFlip ? colorName(chess.turn())
     : (resume && resume.orientation === 'black' ? 'black' : 'white');
-  const board = new Board(boardSlot, {
+  board = new Board(boardSlot, {
     fen: chess.fen(),
     orientation: initialOrientation,
     interactive: true,
@@ -996,6 +1002,7 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
     else if (termination === 'checkmate') rememberEval(chess.fen(), { mate: 0 }, { mated: result === '1-0' ? 'black' : 'white' });
     refreshAll(false);
     refreshEval();
+    announce(t(result === '1-0' ? 'a11y.result.whiteWins' : result === '0-1' ? 'a11y.result.blackWins' : 'a11y.result.draw'), { assertive: true });
     playSoundSafe('gameEnd');
     g.savePromise = saveGame();
     renderAfter();

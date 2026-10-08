@@ -95,7 +95,7 @@
 }
 .mt-move:hover { background: var(--surface-hover); }
 .mt-move:focus-visible { outline: none; box-shadow: var(--ring); }
-.mt-move.current { background: var(--primary); color: var(--primary-contrast); }
+.mt-move.current { background: var(--primary-fill); color: var(--primary-contrast); }
 .mt-var {
   --depth: 1;
   margin: 4px 0 6px calc(min(var(--depth), 4) * 10px);
@@ -106,7 +106,7 @@
 .mt-var .mt-move.current { color: var(--primary-contrast); }
 .mt-var .mt-var { background: transparent; }
 .move-tree-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-2); padding: var(--sp-6) var(--sp-3); color: var(--text-muted); font-size: var(--fs-sm); }
-.move-tree-empty-icon { width: 48px; height: 48px; border-radius: var(--r-lg); background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; }
+.move-tree-empty-icon { width: 48px; height: 48px; border-radius: var(--r-lg); background: var(--primary-soft); color: var(--primary-text); display: grid; place-items: center; }
 .move-tree-empty-icon svg { width: 26px; height: 26px; }
 .an-var-actions { flex: none; display: flex; gap: var(--sp-1); padding: var(--sp-1) var(--sp-2); border-top: 1px solid var(--divider); }
 .an-var-actions .btn svg { width: 15px; height: 15px; }
@@ -151,7 +151,7 @@
   transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 .se-tool:hover { background: var(--surface-hover); }
-.se-tool.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.se-tool.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-text); }
 .se-tool img { width: 100%; height: 100%; pointer-events: none; -webkit-user-drag: none; }
 .se-tool svg { width: 20px; height: 20px; }
 .se-ghost { position: fixed; left: 0; top: 0; pointer-events: none; z-index: var(--z-tooltip); filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); will-change: transform; }
@@ -184,7 +184,7 @@
 .mentor-ideas { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; }
 .mentor-ideas p { margin: 0; display: inline; }
 .mentor-source { margin-top: 6px; font-size: var(--fs-xs); color: var(--text-subtle); }
-.mentor-source::before { content: '✦ '; color: var(--accent); }
+.mentor-source::before { content: '✦ '; color: var(--accent-text); }
 .mentor-typing { display: inline-flex; gap: 4px; align-items: center; padding: 14px 16px; }
 .mentor-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--text-subtle); animation: mentor-dot 1.2s infinite var(--ease); }
 .mentor-typing span:nth-child(2) { animation-delay: .15s; }
@@ -323,7 +323,7 @@
 .rv-cls-label { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--cls); min-width: 84px; }
 
 .rv-section-title { display: flex; align-items: center; gap: 6px; font-size: var(--fs-sm); font-weight: var(--fw-bold); margin-bottom: var(--sp-2); }
-.rv-section-title svg { width: 16px; height: 16px; color: var(--warning); }
+.rv-section-title svg { width: 16px; height: 16px; color: var(--warning-text); }
 .rv-key-chip { gap: 6px; }
 
 /* Walk-through card */
@@ -370,11 +370,11 @@
 .rv-actions { gap: var(--sp-2); }
 .rv-actions .btn svg { width: 15px; height: 15px; }
 .rv-retry .rv-retry-icon { display: grid; place-items: center; }
-.rv-retry .rv-retry-icon svg { width: 20px; height: 20px; color: var(--info); }
+.rv-retry .rv-retry-icon svg { width: 20px; height: 20px; color: var(--info-text); }
 .rv-retry.kind-success .bubble { background: var(--success-soft); box-shadow: inset 3px 0 0 var(--success); }
-.rv-retry.kind-success .rv-retry-icon svg { color: var(--success); }
+.rv-retry.kind-success .rv-retry-icon svg { color: var(--success-text); }
 .rv-retry.kind-error .bubble { background: var(--danger-soft); box-shadow: inset 3px 0 0 var(--danger); }
-.rv-retry.kind-error .rv-retry-icon svg { color: var(--danger); }
+.rv-retry.kind-error .rv-retry-icon svg { color: var(--danger-text); }
 .rv-movelist { min-height: 0; }
 .rv-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: var(--sp-2) var(--sp-3) var(--sp-3); }
 
