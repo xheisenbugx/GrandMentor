@@ -361,7 +361,19 @@ async function mountDetail(root, id, query, bag, signal) {
   const tabs = h('div', { class: 'tabs', role: 'tablist', style: 'padding:0 var(--sp-3)' });
   const body = h('div', { class: 'panel-body' });
   const analysisLink = h('a', { class: 'btn btn-secondary btn-block', html: icon('analysis') + `<span>${escapeHtml(t('openings.analyze'))}</span>` });
-  const footer = h('div', { class: 'panel-footer' }, analysisLink);
+  // "Add to my repertoire": the main line (or, in Explore, the line up to the cursor).
+  const repBtn = h('button', {
+    class: 'btn btn-secondary btn-block', type: 'button',
+    html: icon('plus') + `<span>${escapeHtml(t('openings.addToRepertoire'))}</span>`,
+    onClick: () => {
+      const explore = mode === 'explore' && ply > 0;
+      const pick = explore ? { ucis: line.ucis.slice(0, ply), sans: line.sans.slice(0, ply) } : { ucis: main.ucis, sans: main.sans };
+      import('./repertoire.js')
+        .then((m) => { if (!bag.disposed) m.openAddToRepertoire({ ...pick, name: explore ? '' : o.name, side: userSide }); })
+        .catch(() => {});
+    },
+  });
+  const footer = h('div', { class: 'panel-footer', style: 'flex-wrap:wrap' }, repBtn, analysisLink);
   const panel = h('div', { class: 'panel grow' }, tabs, body, footer);
 
   const head = h('div', { class: 'stack-sm' },
