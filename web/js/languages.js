@@ -5,6 +5,9 @@
 export const LANGUAGES = Object.freeze({
   en: Object.freeze({ name: 'English', nativeName: 'English', locale: 'en-US', dir: 'ltr' }),
   es: Object.freeze({ name: 'Spanish', nativeName: 'Español', locale: 'es-ES', dir: 'ltr' }),
+  pt: Object.freeze({ name: 'Portuguese', nativeName: 'Português', locale: 'pt-BR', dir: 'ltr' }),
+  fr: Object.freeze({ name: 'French', nativeName: 'Français', locale: 'fr-FR', dir: 'ltr' }),
+  de: Object.freeze({ name: 'German', nativeName: 'Deutsch', locale: 'de-DE', dir: 'ltr' }),
 });
 
 export const DEFAULT_LANGUAGE = 'en';

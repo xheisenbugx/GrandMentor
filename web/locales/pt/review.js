@@ -1,0 +1,161 @@
+// review — pt strings. See docs/I18N.md.
+export default {
+  title: 'Game Review',
+
+  // Whole sentences: {move} is the move (SAN, possibly with its move number).
+  phrase: {
+    brilliant: '{move} is brilliant',
+    great: '{move} is a great move',
+    best: '{move} is best',
+    excellent: '{move} is excellent',
+    good: '{move} is good',
+    book: '{move} is a book move',
+    inaccuracy: '{move} is an inaccuracy',
+    mistake: '{move} is a mistake',
+    miss: '{move} is a miss',
+    blunder: '{move} is a blunder',
+    forced: '{move} is forced',
+    played: '{move} was played',
+    works: '{move} works',
+    notBest: '{move} is not the best',
+  },
+
+  loading: {
+    game: 'Loading game…',
+    title: 'Analyzing your game…',
+    subtitle: '{white} vs {black} · {moves}',
+    moves: { one: '{count} move', other: '{count} moves' },
+    cancel: 'Cancel',
+    done: 'Done! Preparing your report…',
+    steps: [
+      'Reading the opening…',
+      'Checking every move with the engine…',
+      'Looking for tactics you missed…',
+      'Spotting your best moves…',
+      'Searching for brilliant ideas…',
+      'Writing your coach report…',
+    ],
+    tips: [
+      'Accuracy measures how close your moves were to the engine’s best moves.',
+      'A blunder (??) is a move that throws away a big part of your advantage.',
+      'Brilliant moves (!!) are usually good piece sacrifices that are hard to find.',
+      'Key moments are the turning points of the game — retry them to learn the most.',
+      'Book moves are well-known opening moves played by strong players.',
+      'A “miss” means you overlooked a chance to win material or the game.',
+    ],
+  },
+
+  error: {
+    badLinkTitle: 'We could not find that game',
+    badLinkText: 'The link looks broken. Pick a game from your library to review it.',
+    notFoundTitle: 'Game not found',
+    notFoundText: 'It may have been deleted.',
+    loadTitle: 'Could not load the game',
+    emptyTitle: 'Nothing to review yet',
+    emptyText: 'This game has no moves. Play a few moves and come back for a coach review!',
+    playBot: 'Play a bot',
+    goLibrary: 'Go to library',
+    reviewEmpty: 'The review came back empty.',
+    failedTitle: 'The review could not finish',
+    generic: 'Something went wrong.',
+    tryAgain: 'Try again',
+    openAnalysis: 'Open in analysis',
+  },
+
+  side: {
+    white: 'White',
+    black: 'Black',
+  },
+
+  tabs: {
+    review: 'Review',
+    coach: 'Ask the coach',
+  },
+
+  nav: {
+    first: 'Start (Home)',
+    prev: 'Previous (←)',
+    next: 'Next (→)',
+    last: 'End (End)',
+    flip: 'Flip board',
+    analyse: 'Open in analysis board',
+    analyseTip: 'Analyse this position',
+    playFromHere: 'Play from here vs a bot',
+    playFromHereTip: 'Take over from here: play this position vs a bot',
+  },
+
+  mentor: {
+    greeting: 'Curious about a move? Step to it on the board and ask me — for example *“Why was this a mistake?”*',
+    suggestions: [
+      'Why was this move bad?',
+      'What was the idea of the best move?',
+      'What should I learn from this game?',
+      'What is the plan here?',
+    ],
+  },
+
+  report: {
+    accuracy: 'Accuracy',
+    gameRating: 'Game rating',
+    vs: 'vs',
+    classifications: 'Move classifications',
+    keyMoments: 'Key moments',
+    defaultSummary: "You played with **{accuracy}% accuracy**. Let's walk through the game together and find the key moments.",
+  },
+
+  footer: {
+    start: 'Start Review',
+    backToGame: 'Back to game',
+    backToReport: 'Back to report',
+    prev: 'Prev',
+    next: 'Next',
+  },
+
+  walk: {
+    introTitle: 'Let’s review your game!',
+    intro: 'Press **Next** (or the → key) to step through every move. I’ll point out the best moves, the mistakes and what you could have played instead.\n\nWant to test an idea? **Move any piece on the board** to try your own line — I’ll check it with the engine.',
+    opening: 'Opening: **{name}**',
+    showLine: 'Show line',
+    retry: 'Retry',
+    nextKey: 'Next key moment',
+    keyMoment: 'Key moment',
+    bestWas: 'Best was {move}',
+    evalBefore: '({eval} before your move)',
+    tryTip: 'Move a piece on the board to try your own line from here.',
+    bestLine: 'Best line',
+    stop: 'Stop',
+  },
+
+  retry: {
+    promptWhite: 'Find a better move for **White**. In the game, {played}.',
+    promptBlack: 'Find a better move for **Black**. In the game, {played}.',
+    titleSuccess: 'Well done!',
+    titleError: 'Not quite',
+    titleTurn: 'Your turn — retry',
+    hint: 'Hint',
+    showAnswer: 'Show answer',
+    backToGame: 'Back to game',
+    continue: 'Continue',
+    hintText: 'Look at the highlighted piece — it has a strong move.',
+    answer: 'The best move was **{move}**. Line: {line}',
+    bestFirstTry: '**{move}** is the best move! First try — impressive.',
+    bestLater: '**{move}** is the best move! You got there.',
+    sameAsGame: "That's the move you played in the game ({move}). Look for something better!",
+    alsoGood: '{verdict} too! {explanation}',
+    notGood: '{verdict}. {explanation}',
+    tryAgain: 'Try again!',
+    checkFailed: "I couldn't check that move right now. Try the best move or press *Show answer*.",
+  },
+
+  explore: {
+    thinking: 'Engine is thinking…',
+    depth: '· depth {depth}',
+    checking: 'Checking your move…',
+    title: 'Your own line',
+    notInGame: 'Not in the game',
+    fromStart: 'Branching from the starting position. Keep moving pieces to go deeper, or use ← to step back.',
+    fromMove: 'Branching after {move}. Keep moving pieces to go deeper, or use ← to step back.',
+    undo: 'Undo move',
+    backToGame: 'Back to game',
+  },
+};
