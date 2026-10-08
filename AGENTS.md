@@ -70,10 +70,29 @@ These rules are mandatory.
 - Every move must be legal; `cargo test -p gm-content` must pass and the loader must not drop any entry.
 - Puzzles come from the CC0 Lichess database; keep `data/ATTRIBUTION.md` accurate.
 
+## Quality gate
+
+CI (`.github/workflows/ci.yml`) runs these on every PR to `dev`/`main`. Run them locally before opening a PR
+(details in [`tools/qa/README.md`](tools/qa/README.md)):
+
+```bash
+cargo build --release --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+node tools/qa/check-i18n.mjs     # every language has the same keys/placeholders as English; t() keys exist
+node tools/qa/bench-gate.mjs     # engine speed floor + tactical positions (tools/qa/bench-baseline.json)
+node tools/qa/sweep.mjs          # every route × language × desktop/mobile in headless Chrome, own throwaway DB
+```
+
+The sweep fails on console errors, failed API calls, horizontal scroll, elements sticking out of the viewport,
+raw i18n keys, English text on non-English pages, bubbles/toasts covering the board and overlapping buttons.
+Its report (`target/qa-sweep/report.md` + screenshots) shows what to fix. Intentional exceptions go in
+`tools/qa/allowlist.json`, each with a reason. New routes in `web/js/app.js` are swept automatically.
+
 ## Definition of done
 
 - [ ] `cargo build`, `cargo test --workspace --release` and `cargo clippy` are clean
 - [ ] All `web/js` files pass the module syntax check
+- [ ] `node tools/qa/check-i18n.mjs` and `node tools/qa/sweep.mjs` pass (and `node tools/qa/bench-gate.mjs` for engine changes)
 - [ ] UI changes checked in a real browser (desktop and ~390px mobile), no console errors
 - [ ] `docs/CONTRACT.md` updated if an interface changed
 - [ ] New UI text translated in every language under `web/locales/` (English is the fallback)
