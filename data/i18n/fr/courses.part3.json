@@ -1,0 +1,430 @@
+{
+  "_comment": "French overlay for the Board Vision and Guess the Move courses (see docs/I18N.md).",
+  "board-vision": {
+    "title": "Vision de l'échiquier",
+    "description": "Entraîne ton regard : nomme n'importe quelle case en un éclair, compte le matériel, repère les pièces non défendues et compare les coups candidats.",
+    "lessons": {
+      "bv-coordinates": {
+        "title": "Chaque case a un nom",
+        "summary": "Apprends les colonnes et les rangées, puis trouve les cases rapidement.",
+        "steps": [
+          {
+            "text": "L'échiquier est une grille de **64 cases**. Les lignes verticales s'appellent des **colonnes** et portent les lettres **a** à **h**, de gauche à droite vu du côté des Blancs. Les lignes horizontales s'appellent des **rangées** et sont numérotées de **1** à **8**, en partant du côté des Blancs."
+          },
+          {
+            "text": "Pour nommer une case, donne d'abord sa **colonne, puis sa rangée**. La case en surbrillance est **e4** : colonne *e*, rangée *4*. Tous les coups s'écrivent avec ces noms, alors les connaître par cœur rend tout plus facile."
+          },
+          {
+            "text": "À toi de jouer ! Les lettres et les chiffres au bord de l'échiquier vont t'aider.",
+            "task": {
+              "prompt": "Clique sur chaque case quand elle est annoncée.",
+              "success": "Bon œil ! Tu as trouvé toutes les cases.",
+              "hint": "Repère la lettre de la colonne en bas, puis remonte jusqu'à la rangée."
+            }
+          },
+          {
+            "text": "Un peu plus vite maintenant. Les cases du bord sont piégeuses : **a** et **h** sont les colonnes des côtés, **1** et **8** les rangées du fond.",
+            "task": {
+              "prompt": "Trouve ces cases.",
+              "success": "Parfait ! Tu lis l'échiquier comme une carte."
+            }
+          }
+        ]
+      },
+      "bv-black-side": {
+        "title": "Voir du côté des Noirs",
+        "summary": "Retourne l'échiquier et trouve quand même chaque case.",
+        "steps": [
+          {
+            "text": "Quand tu joues avec les Noirs, l'échiquier est retourné. Tes pièces sont sur les rangées **8** et **7**, en bas, et la **colonne h** est maintenant à ta gauche. Les cases gardent leur nom ; seul ton point de vue change."
+          },
+          {
+            "text": "Entraînons-nous du côté des Noirs.",
+            "task": {
+              "prompt": "Clique sur chaque case quand elle est annoncée.",
+              "success": "Bien joué ! L'échiquier a l'air différent, mais tu t'es repéré.",
+              "hint": "De ce côté, la colonne **a** est à droite et la rangée **1** est en haut."
+            }
+          },
+          {
+            "text": "Deux repères pratiques : la case du coin à ta **droite** est toujours **claire** (« blanche à droite »), et chaque dame commence sur sa couleur : la dame blanche sur la case claire **d1**, la dame noire sur la case foncée **d8**."
+          },
+          {
+            "text": "Place au défi : les coordonnées ont disparu ! Imagine les lettres et les chiffres dans ta tête.",
+            "task": {
+              "prompt": "Trouve ces cases sans les coordonnées.",
+              "success": "Impressionnant ! Ça, c'est une vraie vision de l'échiquier.",
+              "hint": "Sers-toi des rois comme repères : ils sont sur **e1** et **e8**."
+            }
+          },
+          {
+            "text": "Dernier exercice : sans coordonnées, et tu joues avec les Noirs.",
+            "task": {
+              "prompt": "Trouve ces cases du côté des Noirs.",
+              "success": "Fantastique ! Tu trouves n'importe quelle case, des deux côtés.",
+              "hint": "Les rois sont sur **e8** (en bas) et **e1** (en haut)."
+            }
+          }
+        ]
+      },
+      "bv-counting": {
+        "title": "Compter le matériel",
+        "summary": "Additionne la valeur des pièces pour savoir qui mène.",
+        "steps": [
+          {
+            "text": "Les pièces ont une valeur approximative en points : **pion 1**, **cavalier 3**, **fou 3**, **tour 5**, **dame 9**. Le roi n'a pas de prix, alors on ne le compte pas.\n\nAdditionne les points de chaque camp et compare : c'est l'équilibre **matériel**."
+          },
+          {
+            "text": "Compte les pièces des deux camps.",
+            "task": {
+              "prompt": "Qui mène, et de combien ?",
+              "success": "Exact ! Les Blancs ont un cavalier de plus : **+3**.",
+              "hint": "Les pions sont à égalité. Compare les cavaliers."
+            }
+          },
+          {
+            "text": "Des pièces différentes cette fois. Compte bien.",
+            "task": {
+              "prompt": "Qui mène, et de combien ?",
+              "success": "Exactement : deux tours (10) contre une tour et un fou (8), donc **les Noirs sont à +2**. Gagner une tour contre un fou ou un cavalier, ça s'appelle **gagner la qualité**.",
+              "hint": "Une tour vaut 5 et un fou 3."
+            }
+          },
+          {
+            "text": "Une dame contre une équipe de pièces plus petites. Qui en a le plus ?",
+            "task": {
+              "prompt": "Qui mène, et de combien ?",
+              "success": "Égalité ! Une dame (9) vaut à peu près une tour, un fou et un pion (5 + 3 + 1). Des pièces différentes, le même total.",
+              "hint": "Compte aussi les pions : les Noirs en ont un de plus."
+            }
+          },
+          {
+            "text": "Compter après chaque prise t'évite de donner des pièces. Mais souviens-toi : le matériel ne fait pas tout. **L'échec et mat vaut plus que n'importe quelle avance matérielle !**"
+          }
+        ]
+      },
+      "bv-hanging": {
+        "title": "Repère la pièce en prise",
+        "summary": "Trouve les pièces qu'on peut prendre gratuitement.",
+        "steps": [
+          {
+            "text": "Une pièce est **en prise** quand une pièce adverse l'attaque et que rien ne la défend, ou quand une pièce **de moindre valeur** l'attaque. Ici, le cavalier noir en c6 est attaqué par le fou et n'a aucun défenseur.\n\nAvant chaque coup, demande-toi : *quelles pièces sont en prise ?*"
+          },
+          {
+            "text": "La dame noire vient de sauter en b6.",
+            "task": {
+              "prompt": "Clique sur la pièce blanche en prise.",
+              "success": "Oui ! Le **pion b2** est attaqué par la dame et rien ne le défend. Un coup comme **Qb3** ou **Qc2** règle le problème.",
+              "hint": "Suis les lignes de la dame depuis b6."
+            }
+          },
+          {
+            "text": "Les Blancs viennent de prendre en d5 avec le cavalier. Tu joues avec les Noirs.",
+            "task": {
+              "prompt": "Clique sur la pièce blanche en prise.",
+              "success": "Exact ! Rien ne défend le **cavalier en d5**. Ton cavalier f6 semble cloué, mais **Nxd5!** fonctionne : si **Bxd8**, alors **Bb4+** regagne la dame et tu restes avec une pièce de plus. C'est le fameux **piège de l'éléphant**.",
+              "hint": "Quelle pièce blanche se trouve juste à côté de tes pièces ?"
+            }
+          },
+          {
+            "text": "**Vérification anti-gaffe :** avant de jouer, regarde chaque pièce, les tiennes et celles de l'adversaire, et demande-toi ce qu'elle attaque et ce qui la défend. Ça prend quelques secondes et ça sauve bien des parties."
+          }
+        ]
+      },
+      "bv-many-hanging": {
+        "title": "Plus d'une pièce non défendue",
+        "summary": "Trouve toutes les pièces en prise, des deux camps.",
+        "steps": [
+          {
+            "text": "Parfois, **plus d'une** pièce est en prise, et elles peuvent appartenir à l'un ou l'autre camp. Clique sur toutes, puis appuie sur **Vérifier**."
+          },
+          {
+            "text": "Le cavalier noir vient de sauter en f6.",
+            "task": {
+              "prompt": "Trouve les **deux** pièces blanches en prise.",
+              "success": "Exactement : la **dame en h5** et le **pion e4** sont tous les deux attaqués. Mais avant de les sauver, cherche toujours les échecs : ici, **Qxf7#** est échec et mat !",
+              "hint": "Qu'attaque le cavalier en f6 ?"
+            }
+          },
+          {
+            "text": "Les pions sont d'excellents attaquants, parce que ce sont eux qui valent le moins.",
+            "task": {
+              "prompt": "Chaque camp a une pièce attaquée par un pion. Clique sur les deux.",
+              "success": "Bravo ! Le pion e5 attaque le **cavalier en f6**, et le pion d5 attaque le **fou en c4**. Un pion qui attaque une pièce, c'est une grosse menace.",
+              "hint": "Regarde les pions en e5 et d5."
+            }
+          },
+          {
+            "text": "Le cavalier blanc vient d'arriver en d5. Tu joues avec les Noirs.",
+            "task": {
+              "prompt": "Lesquelles de tes pièces sont en prise ? Il y en a deux.",
+              "success": "Bien vu ! Le cavalier attaque ta **dame en f6** et le **pion c7**, et **Nxc7+** ferait en plus une fourchette sur ton roi et ta tour.",
+              "hint": "Le cavalier attaque en forme de L, jusqu'à huit cases."
+            }
+          }
+        ]
+      },
+      "bv-best-plan": {
+        "title": "Choisis le meilleur plan",
+        "summary": "Compare les coups candidats avant de choisir.",
+        "steps": [
+          {
+            "text": "Les bons joueurs comparent quelques **coups candidats** avant de choisir. Chaque option affiche une flèche sur l'échiquier : survole ou touche une option pour la voir, puis choisis la meilleure."
+          },
+          {
+            "text": "Tu te souviens de cette position ? Trait aux Blancs.",
+            "task": {
+              "prompt": "Quel est le meilleur coup ?",
+              "success": "Échec et mat ! Regarde toujours d'abord les **échecs et les prises**.",
+              "options": [
+                {
+                  "text": "Qh3 : sauver la dame",
+                  "explain": "C'est sûr, mais tu as raté un mat en un coup !"
+                },
+                {
+                  "text": "Qxf7# : prendre en f7",
+                  "explain": "Échec et mat ! Seul le roi défendait f7, et le fou en c4 soutient la dame."
+                },
+                {
+                  "text": "Qxe5+ : prendre un pion avec échec",
+                  "explain": "Le cavalier en c6 défend e5 : après **Nxe5**, ta dame est perdue."
+                }
+              ]
+            }
+          },
+          {
+            "text": "La dame noire attaque ton pion b2.",
+            "task": {
+              "prompt": "Quel est ton plan ?",
+              "success": "Bon plan ! D'abord défendre, ensuite continuer à te développer.",
+              "options": [
+                {
+                  "text": "Ne5 : l'ignorer et attaquer",
+                  "explain": "Les Noirs prennent simplement en b2, gagnent un pion et attaquent ta tour."
+                },
+                {
+                  "text": "Bc7 : attaquer la dame",
+                  "explain": "Rien ne défend le fou en c7, alors la dame le prend tout simplement."
+                },
+                {
+                  "text": "Qb3 : défendre b2 et proposer l'échange",
+                  "explain": "Solide : b2 est protégé, et un échange des dames te laisserait une position saine."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Encore le piège de l'éléphant. Tu joues avec les Noirs.",
+            "task": {
+              "prompt": "Ton cavalier f6 est cloué. Peux-tu quand même prendre en d5 ?",
+              "success": "Oui ! Un clouage n'est dangereux que si la pièce derrière peut vraiment être prise gratuitement.",
+              "options": [
+                {
+                  "text": "Nxd5 : prendre le cavalier",
+                  "explain": "Si **Bxd8**, alors **Bb4+** regagne la dame et tu finis avec une pièce de plus."
+                },
+                {
+                  "text": "c6 : chasser le cavalier",
+                  "explain": "C'est jouable, mais tu rates le gain d'un cavalier entier."
+                },
+                {
+                  "text": "Be7 : briser d'abord le clouage",
+                  "explain": "C'est sûr, mais le cavalier offert s'échappe."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Bilan final : compte le matériel.",
+            "task": {
+              "prompt": "Qui mène, et de combien ?",
+              "success": "Exact : les Noirs ont un pion de plus. Tu as maintenant une vraie vision de l'échiquier !"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "guess-the-move": {
+    "title": "Devine le coup : parties de maîtres",
+    "description": "Prends la place d'une légende. Devine le coup suivant dans des parties célèbres : un coup exact rapporte 3 points, une bonne alternative donne des points partiels, et chaque coup est expliqué.",
+    "lessons": {
+      "gtm-legal": {
+        "title": "Le mat de Légal (1750)",
+        "summary": "Un sacrifice de dame qui piège les joueurs depuis des siècles.",
+        "steps": [
+          {
+            "text": "**Légal contre Saint Brie, Paris 1750.** L'un des plus anciens pièges connus. Les Noirs ont cloué le cavalier blanc sur la dame avec **...Bg4**. Le cavalier semble coincé... mais l'est-il vraiment ?"
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Le mat de Légal ! Un clouage ne compte que si bouger la pièce clouée fait vraiment perdre quelque chose.",
+              "hint": "Le cavalier cloué est-il vraiment bloqué ?",
+              "game": "Légal contre Saint Brie, Paris 1750",
+              "notes": [
+                "**Nxe5!** ignore le clouage et offre la dame.",
+                "**Bxf7+** : le fou fait échec et force le roi à avancer.",
+                "**Nd5#** : trois pièces mineures donnent le mat. La dame de plus des Noirs ne sert à rien !"
+              ]
+            }
+          },
+          {
+            "text": "Les Noirs ont été gourmands. Prendre la dame les a menés au mat ; **5...dxe5**, en rendant un pion, était bien meilleur. Vérifie toujours ce que menace ton adversaire avant de prendre du matériel."
+          }
+        ]
+      },
+      "gtm-opera": {
+        "title": "La partie de l'Opéra de Morphy (1858)",
+        "summary": "Un développement rapide et des lignes ouvertes écrasent un roi resté au centre.",
+        "steps": [
+          {
+            "text": "**Paul Morphy contre le duc Charles de Brunswick et le comte Isouard, Paris 1858**, jouée dans une loge de l'Opéra ! Après huit coups, Morphy a une grosse avance de développement, tandis que le roi noir est toujours au centre."
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Superbe jeu d'attaque ! Les Noirs ont répondu **12...Rd8**. À toi de finir le travail.",
+              "hint": "Développe une pièce avec une menace.",
+              "game": "Paul Morphy contre le duc Charles et le comte Isouard, Paris 1858",
+              "notes": [
+                "**Bg5** se développe en clouant le cavalier f6.",
+                "**Nxb5!** sacrifie un cavalier pour ouvrir les lignes vers le roi noir.",
+                "**Bxb5+** : échec, et maintenant le cavalier d7 va être cloué.",
+                "**O-O-O** amène directement la tour sur la colonne d, face au cavalier cloué."
+              ]
+            }
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Brillant ! Un modèle de développement rapide et d'attaque contre un roi non roqué.",
+              "hint": "Le cavalier d7 est cloué. Accumule les attaques dessus.",
+              "game": "Paul Morphy contre le duc Charles et le comte Isouard, Paris 1858",
+              "notes": [
+                "**Rxd7!** donne une tour pour garder l'attaque en marche.",
+                "**Rd1** : la deuxième tour rejoint le clouage sur d7.",
+                "**Bxd7+** élimine un autre défenseur.",
+                "**Qb8+!!** Un sacrifice de dame qui détourne le cavalier de d7.",
+                "**Rd8#** : échec et mat avec les deux dernières pièces, le fou et la tour."
+              ]
+            }
+          },
+          {
+            "text": "Morphy a utilisé toutes ses pièces, et en a donné la plupart, pour mater avec seulement un fou et une tour. **Développe vite, ouvre les lignes et attaque le roi qui n'a pas roqué.**"
+          }
+        ]
+      },
+      "gtm-reti": {
+        "title": "Réti contre Tartakower (1910)",
+        "summary": "Un sacrifice de dame et un échec double terminent la partie en 11 coups.",
+        "steps": [
+          {
+            "text": "**Richard Réti contre Savielly Tartakower, Vienne 1910.** La dame noire a pris un pion en e5, mais le roi noir est toujours au milieu et les pièces blanches sont prêtes à bondir."
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Superbe ! Les échecs doubles sont les coups les plus forcés aux échecs.",
+              "hint": "Mets ton roi à l'abri et ta tour sur la colonne ouverte.",
+              "game": "Richard Réti contre Savielly Tartakower, Vienne 1910",
+              "notes": [
+                "**O-O-O!** roque et place la tour sur la colonne d ouverte. Les Blancs se moquent de perdre le cavalier e4.",
+                "**Qd8+!!** Un sacrifice de dame ! Le roi doit prendre.",
+                "**Bg5+** est un **échec double** : le fou et la tour font échec tous les deux, donc le roi doit bouger.",
+                "**Bd8#** : le fou arrive en d8 et fait mat."
+              ]
+            }
+          },
+          {
+            "text": "Seulement 11 coups ! Tartakower a pris un pion et laissé son roi au centre. **Quand le roi adverse est coincé au milieu, ouvre les lignes, même si ça te coûte ta dame.**"
+          }
+        ]
+      },
+      "gtm-immortal": {
+        "title": "L'Immortelle (1851)",
+        "summary": "Anderssen donne ses deux tours et sa dame, puis fait mat.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen contre Lionel Kieseritzky, Londres 1851.** La dame noire vient de prendre en b2 et attaque maintenant la tour en a1. Les Blancs ont déjà sacrifié un fou. Trouveras-tu les célèbres sacrifices d'Anderssen ?"
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Quelle audace ! Place maintenant au final.",
+              "hint": "Vers quelle case le roi noir aimerait-il fuir ? Enlève-la-lui.",
+              "game": "Adolf Anderssen contre Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Bd6!** ignore les deux tours attaquées et prive le roi noir de la case f8.",
+                "**e5!** bloque la grande diagonale, si bien que la dame noire ne peut plus défendre g7.",
+                "**Ke2** sort de l'échec. Les Blancs ont deux tours de moins, mais les pièces noires sont loin de leur roi."
+              ]
+            }
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Immortelle, vraiment ! Les Blancs ont donné un fou, deux tours et la dame.",
+              "hint": "Commence par un échec.",
+              "game": "Adolf Anderssen contre Lionel Kieseritzky, Londres 1851",
+              "notes": [
+                "**Nxg7+** : échec, qui pousse le roi en d8.",
+                "**Qf6+!!** donne aussi la dame et détourne le cavalier de la défense de e7.",
+                "**Be7#** : les pièces mineures matent un roi entouré du matériel en trop des Noirs."
+              ]
+            }
+          },
+          {
+            "text": "**Ce qui compte, ce sont les pièces qui participent à l'attaque, pas celles du tableau des scores.** Les Noirs avaient une énorme avance matérielle, mais rien ne pouvait défendre leur roi."
+          }
+        ]
+      },
+      "gtm-evergreen": {
+        "title": "La Toujours Jeune (1852)",
+        "summary": "Un coup de tour tranquille, un sacrifice de dame et un échec double.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen contre Jean Dufresne, Berlin 1852.** Les pièces blanches encerclent le roi noir au centre, mais les Noirs menacent **...Qxf3** et **...Rxg2+**. Trait aux Blancs."
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Sans peur ! La colonne d est maintenant prête à servir.",
+              "hint": "Fais entrer ta dernière pièce dans la partie.",
+              "game": "Adolf Anderssen contre Jean Dufresne, Berlin 1852",
+              "notes": [
+                "**Rad1!!** Un coup tranquille qui ignore les menaces noires et amène la dernière pièce à l'attaque.",
+                "**Rxe7+!** élimine un défenseur avec échec."
+              ]
+            }
+          },
+          {
+            "text": "Tu joues avec les Blancs. Cherche d'abord les coups forcés : échecs, prises et menaces.",
+            "task": {
+              "prompt": "Devine le prochain coup des Blancs. Un coup exact rapporte 3 points ; une bonne alternative donne des points partiels.",
+              "success": "Toujours jeune ! Un final qu'on admire encore plus de 170 ans après.",
+              "hint": "Chaque coup est un échec. Commence par le plus gros sacrifice.",
+              "game": "Adolf Anderssen contre Jean Dufresne, Berlin 1852",
+              "notes": [
+                "**Qxd7+!!** Le sacrifice de dame ouvre la colonne d.",
+                "**Bf5+** : un échec double du fou et de la tour en d1.",
+                "**Bd7+** continue les échecs et ne laisse aucune issue au roi.",
+                "**Bxe7#** : mat ! L'un des plus beaux finals jamais joués."
+              ]
+            }
+          },
+          {
+            "text": "**Fais entrer toutes tes pièces dans l'attaque avant de porter le coup final.** Le tranquille **Rad1** a rendu possible tout ce feu d'artifice."
+          }
+        ]
+      }
+    }
+  }
+}
