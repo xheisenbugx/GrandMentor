@@ -2,10 +2,12 @@
 // Flow: load game → POST /api/review {game_id} (animated coach loading state) → report
 // (summary, accuracy, estimated Elo, classification table, eval graph, key moments) →
 // "Start Review" walk-through (badges, best-move arrows, Show line, Retry, synced eval bar).
+// Explore: move any piece on the board to try your own line from that point; the engine
+// and coach evaluate it live, and ← / "Back to game" return to the real game.
 // Every listener, timer, request and component is released by the returned cleanup.
 
 import { Chess } from '../../vendor/chess.js';
-import { api, isAbort } from '../api.js';
+import { api, isAbort, EngineClient } from '../api.js';
 import {
   h, icon, formatScore, disposables, classificationMeta, classificationBadge, mdLite, emptyState, formatSan,
 } from '../ui.js';
@@ -188,6 +190,7 @@ export async function mount(root, { params = {} } = {}) {
     const st = {
       ply: 0, mode: 'report', tab: 'review', orientation,
       lineTimer: 0, lineActive: false, retry: null,
+      explore: null, // { basePly, line: [{uci, san, from, to, fen, before, cls, expl, best}], idx, info }
     };
 
     // ---- player bars ----
@@ -254,7 +257,7 @@ export async function mount(root, { params = {} } = {}) {
     const board = new Board(boardSlot, {
       fen: startFen, orientation, interactive: false, movableColor: null,
       showCoords: settings.showCoords, showLegal: settings.showLegal, animationMs: settings.animationMs, sounds: settings.sounds,
-      onMove: (m) => onRetryMove(m),
+      onMove: (m) => (st.retry ? onRetryMove(m) : onExploreMove(m)),
     });
     bag.add(() => board.destroy());
     const evalBar = new EvalBar(evalSlot, { orientation });
@@ -268,6 +271,18 @@ export async function mount(root, { params = {} } = {}) {
       { startColor: ply0 % 2 ? 'black' : 'white', startMoveNumber: Math.floor(ply0 / 2) + 1 });
     const mentor = new MentorPanel(chatHost, {
       getContext: () => {
+        const ex = st.explore;
+        if (ex) {
+          const cur = ex.line[ex.idx - 1];
+          const lines = [];
+          const top = ex.info?.lines?.[0];
+          if (top) lines.push(`${formatScore(top.score)}: ${(top.san || []).slice(0, 8).join(' ')}`);
+          return {
+            fen: cur ? cur.fen : exploreBaseFen(ex),
+            moves_san: moves.slice(0, ex.basePly).map((x) => x.san).concat(ex.line.slice(0, ex.idx).map((x) => x.san)),
+            engine_lines: lines,
+          };
+        }
         const p = st.ply;
         const fen = p === 0 ? startFen : moves[p - 1].fen_after;
         const m = p > 0 ? moves[p - 1] : null;
@@ -364,9 +379,11 @@ export async function mount(root, { params = {} } = {}) {
         footer.replaceChildren(h('button', { class: 'btn btn-primary btn-lg btn-block rv-start', type: 'button', dataset: { act: 'start' }, html: icon('play') + '<span>Start Review</span>' }));
       } else {
         footer.replaceChildren(
-          h('button', { class: 'btn btn-ghost btn-icon', type: 'button', dataset: { act: 'report' }, 'aria-label': 'Back to report', 'data-tooltip': 'Back to report', html: icon('chart') }),
-          h('button', { class: 'btn btn-secondary rv-nav-btn', type: 'button', dataset: { act: 'prev' }, disabled: st.ply <= 0, html: icon('chevron-left') + '<span>Prev</span>' }),
-          h('button', { class: 'btn btn-primary rv-nav-btn', type: 'button', dataset: { act: 'next' }, disabled: st.ply >= n, html: '<span>Next</span>' + icon('chevron-right') }));
+          st.explore
+            ? h('button', { class: 'btn btn-ghost btn-icon rv-back-game', type: 'button', dataset: { act: 'explore-exit' }, 'aria-label': 'Back to game', 'data-tooltip': 'Back to game', html: icon('undo') })
+            : h('button', { class: 'btn btn-ghost btn-icon', type: 'button', dataset: { act: 'report' }, 'aria-label': 'Back to report', 'data-tooltip': 'Back to report', html: icon('chart') }),
+          h('button', { class: 'btn btn-secondary rv-nav-btn', type: 'button', dataset: { act: 'prev' }, disabled: !st.explore && st.ply <= 0, html: icon('chevron-left') + '<span>Prev</span>' }),
+          h('button', { class: 'btn btn-primary rv-nav-btn', type: 'button', dataset: { act: 'next' }, disabled: st.explore ? st.explore.idx >= st.explore.line.length : st.ply >= n, html: '<span>Next</span>' + icon('chevron-right') }));
       }
     }
     bag.on(footer, 'click', (e) => {
@@ -375,8 +392,9 @@ export async function mount(root, { params = {} } = {}) {
       const a = b.dataset.act;
       if (a === 'start') { setMode('walk'); goTo(st.ply === n ? 0 : st.ply); }
       else if (a === 'report') setMode('report');
-      else if (a === 'prev') goTo(st.ply - 1);
-      else if (a === 'next') goTo(st.ply + 1);
+      else if (a === 'explore-exit') goTo(st.explore ? st.explore.basePly : st.ply);
+      else if (a === 'prev') stepBack();
+      else if (a === 'next') stepForward();
     });
 
     // ---- navigation ----
@@ -399,7 +417,8 @@ export async function mount(root, { params = {} } = {}) {
 
     function showPly(p, animate) {
       const m = p > 0 ? moves[p - 1] : null;
-      board.setInteractive(false, null);
+      // The board is always "live": moving a piece starts exploring a new line from here.
+      board.setInteractive(true, 'both');
       board.setPosition(m ? m.fen_after : startFen, { animate, lastMove: m ? uciSquares(m.uci) : null });
       board.clearBadges();
       board.clearHighlights();
@@ -413,6 +432,7 @@ export async function mount(root, { params = {} } = {}) {
       p = Math.max(0, Math.min(n, Number(p) || 0));
       stopLine();
       endRetry();
+      endExplore();
       const animate = Math.abs(p - st.ply) === 1;
       st.ply = p;
       showPly(p, animate);
@@ -430,7 +450,7 @@ export async function mount(root, { params = {} } = {}) {
         walkCard.replaceChildren(h('div', { class: 'mentor-row rv-coach' }, coachAvatar('avatar-lg'),
           h('div', { class: 'bubble bubble-mentor' },
             h('div', { class: 'rv-walk-head' }, h('strong', null, 'Let’s review your game!')),
-            h('div', { class: 'md', html: mdLite(`Press **Next** (or the → key) to step through every move. I’ll point out the best moves, the mistakes and what you could have played instead.${opening ? `\n\nOpening: **${escapeMd(opening)}**` : ''}`) }))));
+            h('div', { class: 'md', html: mdLite(`Press **Next** (or the → key) to step through every move. I’ll point out the best moves, the mistakes and what you could have played instead.\n\nWant to test an idea? **Move any piece on the board** to try your own line — I’ll check it with the engine.${opening ? `\n\nOpening: **${escapeMd(opening)}**` : ''}`) }))));
         return;
       }
       const m = moves[p - 1];
@@ -461,7 +481,8 @@ export async function mount(root, { params = {} } = {}) {
             m.classification === 'book' && m.opening_name ? h('div', { class: 'rv-book', html: icon('book') + '<span></span>' }) : null,
             showBest ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), 'Best was ', h('strong', null, formatSan(m.best_move_san, getSettings().moveNotation)),
               h('span', { class: 'subtle' }, ` (${formatScore(rv.evals[p - 1])} before your move)`)) : null,
-            actions.length ? h('div', { class: 'row-wrap rv-actions' }, actions) : null)));
+            actions.length ? h('div', { class: 'row-wrap rv-actions' }, actions) : null,
+            h('div', { class: 'rv-try-tip subtle text-xs', html: icon('hint') + '<span>Move a piece on the board to try your own line from here.</span>' }))));
       const bk = walkCard.querySelector('.rv-book span');
       if (bk) bk.textContent = m.opening_name;
     }
@@ -476,6 +497,9 @@ export async function mount(root, { params = {} } = {}) {
       else if (a === 'answer') retryAnswer();
       else if (a === 'stop-retry') goTo(st.ply);
       else if (a === 'stop-line') { stopLine(); showPly(st.ply, false); }
+      else if (a === 'explore-go') exploreGo(Number(b.dataset.i));
+      else if (a === 'explore-undo') exploreUndo();
+      else if (a === 'explore-exit') goTo(st.explore ? st.explore.basePly : st.ply);
     });
 
     // ---- show line ----
@@ -494,6 +518,7 @@ export async function mount(root, { params = {} } = {}) {
       const c = new Chess(m.fen_before);
       const sans = m.best_line_san.slice(0, 10);
       st.lineActive = true;
+      board.setInteractive(false, null);
       board.clearBadges();
       board.clearArrows();
       board.setPosition(m.fen_before, { animate: false, lastMove: null });
@@ -642,6 +667,188 @@ export async function mount(root, { params = {} } = {}) {
       }, 1100);
     }
 
+
+    // ---- explore your own lines ----
+    let engine = null;
+    bag.add(() => { engine?.close(); engine = null; });
+    let exploreCtrl = null;
+    bag.add(() => exploreCtrl?.abort());
+
+    function exploreBaseFen(ex) { return ex.basePly === 0 ? startFen : moves[ex.basePly - 1].fen_after; }
+
+    function stepBack() {
+      const ex = st.explore;
+      if (!ex) { goTo(st.ply - 1); return; }
+      if (ex.idx > 1) exploreGo(ex.idx - 1);
+      else goTo(ex.basePly); // first move of the line undone: back on the real game
+    }
+
+    function stepForward() {
+      const ex = st.explore;
+      if (!ex) { if (st.mode === 'report') setMode('walk'); goTo(st.ply + 1); return; }
+      if (ex.idx < ex.line.length) exploreGo(ex.idx + 1);
+    }
+
+    function endExplore() {
+      if (!st.explore) return;
+      st.explore = null;
+      exploreCtrl?.abort();
+      exploreCtrl = null;
+      engine?.stop();
+      walkView.classList.remove('exploring');
+      renderFooter();
+    }
+
+    function onExploreMove(mv) {
+      const uci = mv.uci || (mv.from + mv.to + (mv.promotion || ''));
+      if (st.mode === 'report') setMode('walk');
+      stopLine();
+      if (!st.explore) {
+        // Playing the game's own next move simply follows the game.
+        const next = moves[st.ply];
+        if (next && next.uci === uci) {
+          queueMicrotask(() => { if (!bag.disposed) goTo(st.ply + 1); });
+          return true;
+        }
+        st.explore = { basePly: st.ply, line: [], idx: 0, info: null };
+        walkView.classList.add('exploring');
+      }
+      const ex = st.explore;
+      if (ex.idx < ex.line.length) {
+        if (ex.line[ex.idx].uci === uci) { queueMicrotask(() => exploreGo(ex.idx + 1, false)); return true; }
+        ex.line = ex.line.slice(0, ex.idx); // a new move replaces the rest of the line
+      }
+      const entry = { uci, san: mv.san, from: mv.from, to: mv.to, fen: mv.fen, before: mv.before, cls: null, expl: '', best: '', pending: true };
+      ex.line.push(entry);
+      ex.idx = ex.line.length;
+      queueMicrotask(() => { if (st.explore === ex) exploreShow(false); });
+      judge(entry, ex);
+      return true;
+    }
+
+    /** Ask the coach how good an explored move is (badge + explanation). */
+    function judge(entry, ex) {
+      exploreCtrl?.abort();
+      exploreCtrl = new AbortController();
+      api.post('/api/mentor/explain', { fen: entry.before, move_uci: entry.uci }, { signal: exploreCtrl.signal, timeout: 30000 })
+        .then((res) => {
+          entry.pending = false;
+          entry.cls = String(res?.classification || '') || null;
+          entry.expl = String(res?.explanation || '');
+          entry.best = res?.best_move_san && res.best_move_san !== entry.san ? String(res.best_move_san) : '';
+          if (bag.disposed || st.explore !== ex || ex.line[ex.idx - 1] !== entry) return;
+          if (entry.cls) board.setBadge(entry.to, entry.cls);
+          renderExploreCard();
+        })
+        .catch((e) => {
+          entry.pending = false;
+          if (isAbort(e) || bag.disposed || st.explore !== ex) return;
+          renderExploreCard();
+        });
+    }
+
+    function exploreGo(i, animate = true) {
+      const ex = st.explore;
+      if (!ex) return;
+      ex.idx = Math.max(1, Math.min(ex.line.length, i));
+      exploreShow(animate);
+      const cur = ex.line[ex.idx - 1];
+      if (cur.cls === null && !cur.pending) { cur.pending = true; judge(cur, ex); }
+    }
+
+    function exploreShow(animate) {
+      const ex = st.explore;
+      const cur = ex.line[ex.idx - 1];
+      board.setInteractive(true, 'both');
+      board.setPosition(cur.fen, { animate, lastMove: [cur.from, cur.to] });
+      board.clearBadges();
+      board.clearArrows();
+      board.clearHighlights();
+      if (cur.cls) board.setBadge(cur.to, cur.cls);
+      moveList.setCurrent(ex.basePly);
+      graph.setCurrent(ex.basePly);
+      bAnalyze.href = `#/analysis?fen=${encodeURIComponent(cur.fen)}`;
+      ex.info = null;
+      renderExploreCard();
+      renderFooter();
+      analyse(cur.fen, ex);
+    }
+
+    /** Live engine evaluation of the explored position: eval bar, best-move arrow, top line. */
+    function analyse(fen, ex) {
+      let over = false;
+      try { over = new Chess(fen).isGameOver(); } catch { over = true; }
+      if (over) { engine?.stop(); evalBar.set({ mate: 0 }, { fen }); return; }
+      if (!engine) engine = new EngineClient();
+      engine.analyze(fen, { multipv: 1, movetime_ms: 2500 }, (info) => {
+        if (bag.disposed || st.explore !== ex || ex.line[ex.idx - 1]?.fen !== fen) return;
+        const top = info?.lines?.[0];
+        if (!top) return;
+        ex.info = info;
+        evalBar.set(top.score, { fen });
+        const sq = uciSquares(top.moves?.[0]);
+        if (sq && !st.retry) board.setArrows([{ from: sq[0], to: sq[1], color: 'blue' }]);
+        const eng = walkCard.querySelector('.rv-explore-engine');
+        if (eng) eng.replaceChildren(...engineLineNodes(info, ex));
+      }, () => {});
+    }
+
+    function engineLineNodes(info, ex) {
+      const top = info?.lines?.[0];
+      if (!top) return [h('span', { class: 'spinner spinner-sm' }), h('span', { class: 'subtle' }, ' Engine is thinking…')];
+      const absPly = ply0 + ex.basePly + ex.idx;
+      return [
+        h('span', { class: 'engine-score' + (isNegScore(top.score) ? ' neg' : '') }, formatScore(top.score)),
+        h('span', { class: 'rv-explore-pv' }, numberedLine(top.san || [], absPly, getSettings().moveNotation, 8)),
+        h('span', { class: 'subtle text-xs' }, ` · depth ${info.depth}`),
+      ];
+    }
+
+    function renderExploreCard() {
+      const ex = st.explore;
+      if (!ex) return;
+      const cur = ex.line[ex.idx - 1];
+      const notation = getSettings().moveNotation;
+      const chips = [];
+      ex.line.forEach((m, i) => {
+        const abs = ply0 + ex.basePly + i;
+        if (abs % 2 === 0 || i === 0) chips.push(h('span', { class: 'rv-line-num' }, `${Math.floor(abs / 2) + 1}${abs % 2 === 0 ? '.' : '…'}`));
+        chips.push(h('button', { class: 'rv-ex-move' + (i === ex.idx - 1 ? ' on' : ''), type: 'button', dataset: { act: 'explore-go', i: i + 1, cls: m.cls || '' } },
+          m.cls ? classificationBadge(m.cls) : null, formatSan(m.san, notation)));
+      });
+      const verdict = cur.pending
+        ? h('div', { class: 'rv-expl subtle' }, h('span', { class: 'spinner spinner-sm' }), ' Checking your move…')
+        : cur.cls
+          ? h('div', null,
+            h('div', { class: 'rv-walk-head' }, classificationBadge(cur.cls, { large: true }),
+              h('span', { class: 'rv-walk-title' }, h('strong', null, formatSan(cur.san, notation)), ` ${PHRASE[cur.cls] || ''}`)),
+            cur.expl ? h('div', { class: 'md rv-expl', html: mdLite(escapeMdKeep(cur.expl)) }) : null,
+            cur.best && !GOOD_RETRY.has(cur.cls) && cur.cls !== 'book' && cur.cls !== 'forced'
+              ? h('div', { class: 'rv-best' }, h('span', { class: 'rv-best-dot' }), 'Best was ', h('strong', null, formatSan(cur.best, notation))) : null)
+          : null;
+      const fromLabel = ex.basePly === 0 ? 'the starting position' : `after ${moveLabel(ex.basePly, formatSan(moves[ex.basePly - 1].san, notation))}`;
+      walkCard.replaceChildren(h('div', { class: 'mentor-row rv-coach rv-explore pop-in' }, coachAvatar('avatar-lg'),
+        h('div', { class: 'bubble bubble-mentor rv-bubble' },
+          h('div', { class: 'rv-walk-head' }, h('span', { class: 'rv-explore-icon', html: icon('analysis') }),
+            h('strong', null, 'Your own line'), h('span', { class: 'spacer' }),
+            h('span', { class: 'badge rv-explore-tag' }, 'Not in the game')),
+          h('div', { class: 'subtle text-xs rv-explore-from' }, `Branching from ${fromLabel}. Keep moving pieces to go deeper, or use ← to step back.`),
+          h('div', { class: 'rv-explore-line' }, chips),
+          verdict,
+          h('div', { class: 'rv-explore-engine' }, ...engineLineNodes(ex.info, ex)),
+          h('div', { class: 'row-wrap rv-actions' },
+            h('button', { class: 'btn btn-secondary btn-sm', type: 'button', dataset: { act: 'explore-undo' }, html: icon('undo') + '<span>Undo move</span>' }),
+            h('button', { class: 'btn btn-primary btn-sm', type: 'button', dataset: { act: 'explore-exit' }, html: icon('arrow-left') + '<span>Back to game</span>' })))));
+    }
+
+    function exploreUndo() {
+      const ex = st.explore;
+      if (!ex) return;
+      ex.line = ex.line.slice(0, ex.idx - 1);
+      if (!ex.line.length) { goTo(ex.basePly); return; }
+      exploreGo(ex.line.length, true);
+    }
+
     // ---- toolbar & keyboard ----
     const flip = () => {
       st.orientation = st.orientation === 'white' ? 'black' : 'white';
@@ -650,8 +857,8 @@ export async function mount(root, { params = {} } = {}) {
       renderBars();
     };
     bag.on(bFirst, 'click', () => goTo(0));
-    bag.on(bPrev, 'click', () => goTo(st.ply - 1));
-    bag.on(bNext, 'click', () => { if (st.mode === 'report') setMode('walk'); goTo(st.ply + 1); });
+    bag.on(bPrev, 'click', () => stepBack());
+    bag.on(bNext, 'click', () => stepForward());
     bag.on(bLast, 'click', () => goTo(n));
     bag.on(bFlip, 'click', flip);
     bag.on(window, 'keydown', (e) => {
@@ -659,8 +866,8 @@ export async function mount(root, { params = {} } = {}) {
       const t = e.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
       if (document.querySelector('.modal-backdrop')) return;
-      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(st.ply - 1); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); if (st.mode === 'report') setMode('walk'); goTo(st.ply + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); stepBack(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); stepForward(); }
       else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
       else if (e.key === 'End') { e.preventDefault(); goTo(n); }
       else if (e.key === 'f' || e.key === 'F') flip();
