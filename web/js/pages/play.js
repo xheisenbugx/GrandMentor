@@ -29,6 +29,7 @@ const PREFS_KEY = 'grandmentor.play.prefs.v1';
 const SAVE_KEY = 'grandmentor.play.current.v1';
 const MAX_THINK_MS = 6000;
 const BOT_CHAT_MS = 4500;
+const MAX_EVALS = 600;            // bounded eval cache (positions per game)
 const DRAW_OFFER_COOLDOWN_PLIES = 10;
 
 // Labels are resolved at render time with t() (see tcLabel / tcSpeed / docs/I18N.md).
@@ -556,6 +557,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   let openingAc = null;
   let hint = { fen: null, stage: 0, move: null, loading: false };
   let analysis = { fen: null, best: null, score: null, depth: 0 };
+  const evals = new Map();       // fen -> { score, opts } so browsing back and forth redraws the eval bar instantly
   let gameOverModal = null;
   let ended = false;
   let discarded = false;
@@ -575,8 +577,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       h('div', { style: 'min-width:0' },
         h('div', { class: 'player-name' }, name, ' ', rating ? h('span', { class: 'player-rating' }, rating) : null, thinking),
         captures),
-      clockSlot,
-      chat);
+      chat,
+      clockSlot);
     return { el, captures, thinking, chat, clockSlot };
   };
   const bars = { [userC]: mkBar(userC), [botC]: mkBar(botC) };
@@ -856,6 +858,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const chat = bars[botC].chat;
     if (!chat || !text) return;
     chat.textContent = String(text);
+    chat.title = String(text);
     chat.hidden = false;
     chat.classList.remove('pop-in'); void chat.offsetWidth; chat.classList.add('pop-in');
     if (chatTimer) clearTimeout(chatTimer);
@@ -868,19 +871,59 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   // ---- Engine (eval bar) -------------------------------------------------
+  function rememberEval(fen, score, opts) {
+    if (!fen || !score) return;
+    evals.delete(fen);
+    evals.set(fen, { score, opts: opts || null });
+    if (evals.size > MAX_EVALS) evals.delete(evals.keys().next().value);
+  }
+
+  /** Show the cached eval of the position on the board (live or browsed). */
+  function showEval(fen) {
+    const hit = evalbar && evals.get(fen);
+    if (hit) evalbar.set(hit.score, hit.opts || undefined);
+    return !!hit;
+  }
+
   function analyzeLive() {
     if (!engine || g.result) return;
+    if (!isLive()) { analyzeViewed(); return; }
     if (!userToMove()) { engine.stop(); return; }
     const fen = chess.fen();
+    showEval(fen);
     try {
       engine.analyze(fen, { multipv: 1, movetime_ms: 3000 }, (info) => {
         if (fen !== chess.fen() || g.result) return;
         const line = info && info.lines && info.lines[0];
         if (!line || !line.score) return;
         analysis = { fen, best: (line.moves && line.moves[0]) || analysis.best, score: line.score, depth: info.depth || 0 };
-        if (evalbar) evalbar.set(line.score);
+        rememberEval(fen, line.score);
+        if (evalbar && isLive()) evalbar.set(line.score);
       }, () => { /* engine hiccup: the bar just stays where it was */ });
     } catch (e) { console.warn('[play] engine', e); }
+  }
+
+  /** Eval bar for a position the engine isn't following live (browsing, bot's turn, game over). */
+  function analyzeViewed() {
+    if (!evalbar) return;
+    const fen = g.fens[currentPly()];
+    if (showEval(fen)) { if (engine) engine.stop(); return; }
+    if (!engine) return;
+    try {
+      engine.analyze(fen, { multipv: 1, movetime_ms: 1500 }, (info) => {
+        const line = info && info.lines && info.lines[0];
+        if (!line || !line.score) return;
+        rememberEval(fen, line.score);
+        if (g.fens[currentPly()] === fen) evalbar.set(line.score);
+      }, () => { /* engine hiccup: keep the cached value */ });
+    } catch (e) { console.warn('[play] engine', e); }
+  }
+
+  /** Called whenever the viewed ply changes. */
+  function refreshEval() {
+    if (!evalbar) return;
+    if (isLive() && !g.result && !botPending && userToMove()) analyzeLive();
+    else analyzeViewed();
   }
 
   async function bestMoveFor(fen) {
@@ -1024,7 +1067,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
         text += '\n\n' + t('play.coach.betterWas', { san: r.best_move_san });
       }
       coachSay(text, cls);
-      if (evalbar && r.eval_after && plies() === ply && !g.result) evalbar.set(r.eval_after);
+      if (r.eval_after) rememberEval(g.fens[ply], r.eval_after);
+      if (evalbar && r.eval_after && plies() === ply && isLive() && !g.result) evalbar.set(r.eval_after);
       persist();
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
@@ -1139,6 +1183,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     if (nextView === viewPly) return;
     viewPly = nextView;
     syncBoard(true);
+    refreshEval();
   }
 
   bag.on(window, 'keydown', (e) => {
@@ -1260,8 +1305,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     clearHint();
     viewPly = null;
     removeKey(SAVE_KEY);
-    if (evalbar && result === '1/2-1/2') evalbar.set({ cp: 0 });
-    else if (evalbar && termination === 'checkmate') evalbar.set({ mate: 0 }, { mated: result === '1-0' ? 'black' : 'white' });
+    if (result === '1/2-1/2') rememberEval(chess.fen(), { cp: 0 });
+    else if (termination === 'checkmate') rememberEval(chess.fen(), { mate: 0 }, { mated: result === '1-0' ? 'black' : 'white' });
+    showEval(chess.fen());
     refreshAll(false);
     const o = userOutcome();
     if (!silent) {
