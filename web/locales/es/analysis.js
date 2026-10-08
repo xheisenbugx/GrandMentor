@@ -61,6 +61,8 @@ export default {
     save: 'Guardar',
     saveTip: 'Guardar en tu biblioteca',
     review: 'Revisión',
+    playBot: 'Jugar vs bot',
+    playBotTip: 'Jugar contra un bot desde esta posición',
   },
 
   nav: {

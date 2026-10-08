@@ -1,0 +1,959 @@
+{
+  "chess-basics": {
+    "title": "Schach-Grundlagen",
+    "description": "Noch nie gespielt? Fang hier an. Lerne das Brett kennen, wie jede Figur zieht, Schach und Schachmatt, die Rochade, das Schlagen en passant, die Umwandlung und wie eine Partie remis enden kann.",
+    "lessons": {
+      "the-board": {
+        "title": "Das Brett und die Figuren",
+        "summary": "Lerne die 64 Felder und die 32 Figuren kennen.",
+        "steps": [
+          {
+            "text": "Willkommen beim Schach! Gespielt wird auf einem Brett mit **64 Feldern**, abwechselnd hell und dunkel. Jeder Spieler beginnt mit **16 Figuren**: einem König, einer Dame, zwei Türmen, zwei Läufern, zwei Springern und acht Bauern.\n\n**Weiß zieht immer zuerst**, danach ziehen die Spieler abwechselnd."
+          },
+          {
+            "text": "Die senkrechten Spalten heißen **Linien** und werden mit den Buchstaben *a* bis *h* bezeichnet. Die waagerechten Zeilen heißen **Reihen** und sind von *1* bis *8* nummeriert.\n\nJedes Feld hat einen Namen aus Linie und Reihe. Das markierte Feld ist **e4**: Linie *e*, Reihe 4."
+          },
+          {
+            "text": "Tipp zum Aufbauen: Unten rechts ist immer ein **helles Feld in der Ecke** (h1 für Weiß).\n\nDie Damen beginnen auf ihrer eigenen Farbe: die weiße Dame auf dem hellen Feld d1, die schwarze Dame auf dem dunklen Feld d8. Die Könige stehen direkt daneben."
+          },
+          {
+            "text": "Jede Figur hat einen Wert, der dir hilft zu entscheiden, welche Abtausche gut sind:\n\n**Bauer = 1**, **Springer = 3**, **Läufer = 3**, **Turm = 5**, **Dame = 9**.\n\nDer König hat keinen Wert: Er kann nie geschlagen werden. Wenn dein König gefangen ist, verlierst du!"
+          },
+          {
+            "text": "Zeit für deinen allerersten Zug! Bauern ziehen geradeaus nach vorn. Beim ersten Zug darf ein Bauer **zwei Felder** vorrücken.",
+            "task": {
+              "prompt": "Ziehe den e-Bauern zwei Felder vor nach e4.",
+              "hint": "Zieh den Bauern vor deinem König von e2 nach e4.",
+              "success": "Toller Start! 1.e4 ist der beliebteste erste Zug in der Geschichte des Schachs."
+            }
+          }
+        ]
+      },
+      "rook-bishop-queen": {
+        "title": "Turm, Läufer und Dame",
+        "summary": "Die langschrittigen Figuren, die über das Brett gleiten.",
+        "steps": [
+          {
+            "text": "Der **Turm** zieht beliebig viele Felder in gerader Linie: nach oben, unten, links oder rechts. Er kann nicht über andere Figuren springen.\n\nEin Turm ist **5 Punkte** wert."
+          },
+          {
+            "text": "Du bist am Zug. Der schwarze Springer auf a7 ist ungedeckt.",
+            "task": {
+              "prompt": "Schlag den Springer mit deinem Turm.",
+              "hint": "Der Turm gleitet die a-Linie gerade hinauf.",
+              "success": "Schön geschlagen! Du hast gerade 3 Punkte Material gewonnen."
+            }
+          },
+          {
+            "text": "Der **Läufer** zieht beliebig viele Felder diagonal. Deshalb bleibt ein Läufer immer auf der **gleichen Farbe**, auf der er begonnen hat.\n\nEin Läufer ist **3 Punkte** wert."
+          },
+          {
+            "text": "Läufer lieben lange, offene Diagonalen.",
+            "task": {
+              "prompt": "Schlag den Turm auf h6 mit deinem Läufer.",
+              "hint": "Folge der Diagonale von c1 hinauf bis h6.",
+              "success": "Gut gemacht! So fegen Läufer die ganze Partie über die Diagonalen."
+            }
+          },
+          {
+            "text": "Die **Dame** vereint Turm und Läufer: Sie zieht beliebig viele Felder in jede gerade Richtung oder diagonal. Sie ist die stärkste Figur und **9 Punkte** wert."
+          },
+          {
+            "text": "Suche ein Schlagen, das **zugleich den König angreift**.",
+            "task": {
+              "prompt": "Gewinne den Turm mit deiner Dame.",
+              "hint": "Die Dame kann diagonal von d1 nach a4 ziehen.",
+              "success": "Hervorragend! Du hast den Turm geschlagen und gleichzeitig **Schach** gegeben."
+            }
+          }
+        ]
+      },
+      "knight-king-pawn": {
+        "title": "Springer, König und Bauer",
+        "summary": "Der springende Springer, der kostbare König und der bescheidene Bauer.",
+        "steps": [
+          {
+            "text": "Der **Springer** zieht in **L-Form**: zwei Felder in eine Richtung und dann ein Feld zur Seite. Er ist die einzige Figur, die andere Figuren **überspringen** kann.\n\nEin Springer ist **3 Punkte** wert. Vom Zentrum aus erreicht er 8 Felder!"
+          },
+          {
+            "text": "Springer sind trickreich: Sie greifen Felder in einem Muster an, das Anfänger oft übersehen.",
+            "task": {
+              "prompt": "Schlag die schwarze Dame mit deinem Springer.",
+              "hint": "Von d3 aus zwei Felder nach oben und eins nach links landest du auf c5.",
+              "success": "Fantastisch! Ein Springer umsonst ist gut, eine Dame umsonst ist ein Geschenk!"
+            }
+          },
+          {
+            "text": "Der **König** zieht nur **ein Feld** in jede Richtung. Er darf nie auf ein Feld ziehen, das von einer gegnerischen Figur angegriffen wird.\n\nSchütze deinen König: Wenn er gefangen ist, ist die Partie vorbei."
+          },
+          {
+            "text": "**Bauern** ziehen ein Feld geradeaus nach vorn (oder zwei von ihrem Startfeld), aber sie **schlagen diagonal**, ein Feld nach vorn.\n\nBauern können niemals rückwärts ziehen."
+          },
+          {
+            "text": "Der Bauer auf e4 greift den schwarzen Bauern auf d5 an.",
+            "task": {
+              "prompt": "Schlag den Bauern auf d5.",
+              "hint": "Bauern schlagen diagonal nach vorn.",
+              "success": "Richtig! Bauern schlagen diagonal, obwohl sie geradeaus ziehen."
+            }
+          }
+        ]
+      },
+      "check-and-checkmate": {
+        "title": "Schach und Schachmatt",
+        "summary": "Greif den König an, entkomme dem Schach und gewinne die Partie.",
+        "steps": [
+          {
+            "text": "Wird ein König angegriffen, steht er im **Schach**. Hier greift der weiße Turm den schwarzen König entlang der e-Linie an.\n\nWer im Schach steht, **muss** es mit dem nächsten Zug sofort aufheben."
+          },
+          {
+            "text": "Es gibt drei Wege, dem Schach zu entkommen:\n\n1. Den König auf ein sicheres Feld **ziehen**.\n2. Das Schach **blockieren**, indem du eine Figur dazwischenstellst.\n3. Die angreifende Figur **schlagen**.\n\nPrüfe immer alle drei!"
+          },
+          {
+            "text": "Der Turm auf e5 gibt dir Schach. Der beste Ausweg gewinnt Material.",
+            "task": {
+              "prompt": "Entkomme dem Schach, indem du den Angreifer schlägst.",
+              "hint": "Dein Läufer auf c3 erreicht e5 diagonal.",
+              "success": "Perfekt! Den Angreifer zu schlagen ist oft der beste Ausweg."
+            }
+          },
+          {
+            "text": "Jetzt gibt der Turm Schach auf deiner Grundreihe, und dein König ist von seinen eigenen Bauern eingesperrt.",
+            "task": {
+              "prompt": "Blockiere das Schach mit deinem Läufer.",
+              "hint": "Dein König kann nicht ziehen und nichts kann den Turm schlagen. Stell den Läufer auf f1 dazwischen – dein König deckt dieses Feld.",
+              "success": "Starke Verteidigung! Der Läufer auf f1 wird von deinem König gedeckt."
+            }
+          },
+          {
+            "text": "**Schachmatt** heißt: Der König steht im Schach und hat **keinen Ausweg**. Schachmatt beendet die Partie sofort – wer mattsetzt, gewinnt!\n\nHier ist der schwarze König schachmatt: Der Turm greift ihn an und seine eigenen Bauern versperren jeden Fluchtweg."
+          },
+          {
+            "text": "Jetzt bist du dran, Schachmatt zu setzen.",
+            "task": {
+              "prompt": "Setze in einem Zug matt.",
+              "hint": "Der schwarze König steckt hinter seinen eigenen Bauern fest. Greif ihn entlang der 8. Reihe an.",
+              "success": "Schachmatt! Das nennt man ein **Grundreihenmatt**."
+            }
+          },
+          {
+            "text": "Dame und König im Zusammenspiel sind tödlich.",
+            "task": {
+              "prompt": "Setze in einem Zug matt.",
+              "hint": "Dein König deckt bereits f7, g7 und h7. Greif mit der Dame entlang der Grundreihe an.",
+              "success": "Schachmatt! Die Dame beherrscht die 8. Reihe und der König deckt den Rest."
+            }
+          }
+        ]
+      },
+      "castling": {
+        "title": "Die Rochade",
+        "summary": "Der Sonderzug, der deinen König in Sicherheit bringt.",
+        "steps": [
+          {
+            "text": "Die **Rochade** ist ein Sonderzug, der zwei Dinge auf einmal erledigt: Sie bringt deinen König in Sicherheit und einen Turm ins Spiel.\n\nZieh den König **zwei Felder** in Richtung eines Turms, und der Turm springt auf das Feld auf der anderen Seite des Königs."
+          },
+          {
+            "text": "Die Rochade auf der Königsseite heißt **kurze Rochade** (geschrieben **O-O**).",
+            "task": {
+              "prompt": "Rochiere kurz: Zieh deinen König von e1 nach g1.",
+              "hint": "Zieh den König zwei Felder nach rechts. Der Turm springt automatisch darüber.",
+              "success": "Du hast rochiert! Dein König steht sicher hinter seinen Bauern und dein Turm ist bereit für den Kampf."
+            }
+          },
+          {
+            "text": "Du darfst nur rochieren, wenn:\n\n- weder der König noch dieser Turm schon gezogen haben,\n- die Felder dazwischen frei sind,\n- dein König **nicht im Schach** steht und kein angegriffenes Feld **überquert** oder darauf landet."
+          },
+          {
+            "text": "Der schwarze Läufer greift f1 an, deshalb kannst du gerade nicht kurz rochieren.",
+            "task": {
+              "prompt": "Rochiere zur anderen Seite: die lange Rochade (O-O-O).",
+              "hint": "Zieh den König zwei Felder nach links, von e1 nach c1.",
+              "success": "Gut gemacht! Die lange Rochade hat deinen Turm direkt auf die d-Linie gebracht."
+            }
+          }
+        ]
+      },
+      "en-passant-promotion": {
+        "title": "En passant und Umwandlung",
+        "summary": "Zwei besondere Bauernzüge, die jeder kennen muss.",
+        "steps": [
+          {
+            "text": "**En passant** (französisch für „im Vorbeigehen“): Zieht ein gegnerischer Bauer zwei Felder vor und landet direkt **neben** deinem Bauern, darfst du ihn schlagen, als wäre er nur ein Feld gezogen.\n\nDas musst du **sofort** tun, sonst ist die Chance vorbei."
+          },
+          {
+            "text": "Schwarz hat gerade ...d7-d5 gespielt und ist neben deinem Bauern auf e5 gelandet.",
+            "task": {
+              "prompt": "Schlag den Bauern auf d5 en passant.",
+              "hint": "Zieh deinen Bauern von e5 diagonal nach d6 – der Bauer auf d5 verschwindet.",
+              "success": "Das ist en passant! Sieht seltsam aus, ist aber ein völlig regelgerechtes Schlagen."
+            }
+          },
+          {
+            "text": "**Umwandlung**: Erreicht ein Bauer die letzte Reihe, verwandelt er sich in eine Dame, einen Turm, einen Läufer oder einen Springer – fast immer in eine **Dame**.\n\nDeshalb sind Freibauern so gefährlich!"
+          },
+          {
+            "text": "Dein Bauer ist nur noch einen Schritt davon entfernt, eine Dame zu werden.",
+            "task": {
+              "prompt": "Wandle deinen Bauern in eine Dame um.",
+              "hint": "Zieh den Bauern nach b8 und wähle die Dame.",
+              "success": "Eine nagelneue Dame – und sie gibt sogar Schach!"
+            }
+          },
+          {
+            "text": "Bauern können auch auf die letzte Reihe schlagen und sich dabei umwandeln.",
+            "task": {
+              "prompt": "Schlag den Turm und wandle in eine Dame um.",
+              "hint": "Bauern schlagen diagonal – auch bei der Umwandlung.",
+              "success": "Doppelter Gewinn: Du hast den Turm beseitigt und eine neue Dame mit Schach bekommen!"
+            }
+          }
+        ]
+      },
+      "draws": {
+        "title": "Patt und Remis",
+        "summary": "Nicht jede Partie hat einen Sieger. Lerne, wie eine Partie remis endet.",
+        "steps": [
+          {
+            "text": "**Patt**: Der Spieler am Zug steht **nicht** im Schach, hat aber **keinen legalen Zug**. Die Partie endet sofort **remis**!\n\nHier ist Schwarz am Zug: Der König auf h8 wird nicht angegriffen, aber jedes Feld um ihn herum schon. Patt."
+          },
+          {
+            "text": "Wenn du auf Gewinn stehst, **pass auf das Patt auf**! Lass dem gegnerischen König ein Feld frei – oder setze matt.\n\nHier wäre **Qf7??** Patt.",
+            "task": {
+              "prompt": "Finde das Matt (und vermeide das Patt!).",
+              "hint": "Gib dem König Schach entlang der 8. Reihe. Dein König deckt g7 und h7.",
+              "success": "Schachmatt! Du bist der Pattfalle ausgewichen."
+            }
+          },
+          {
+            "text": "Weitere Wege zum Remis:\n\n- **Ungenügendes Material** – z. B. König und Läufer gegen König können nie mattsetzen.\n- **Dreifache Stellungswiederholung** – dieselbe Stellung kommt dreimal vor.\n- **50-Züge-Regel** – 50 Züge pro Seite ohne Schlagen und ohne Bauernzug.\n- **Einigung** – beide Spieler vereinbaren ein Remis."
+          },
+          {
+            "text": "Wenn du auf **Verlust** stehst, kann dich ein Patt retten! Hier hat Schwarz nur noch den nackten König, und trotzdem ist es remis: Schwarz ist am Zug, der König steht nicht im Schach, und g8, g7 und h7 sind alle gedeckt. **Patt.**\n\nEndspiele mit Randbauern enden oft so – denk daran, wenn du verteidigst."
+          }
+        ]
+      },
+      "piece-values": {
+        "title": "Figurenwerte und gute Abtausche",
+        "summary": "Nutze die Punktwerte, um das beste Schlagen zu wählen.",
+        "steps": [
+          {
+            "text": "Merk dir die Werte: **Bauer 1, Springer 3, Läufer 3, Turm 5, Dame 9**.\n\nWenn du mehrere Figuren schlagen kannst, nimm die **wertvollste** – solange das sicher ist!"
+          },
+          {
+            "text": "Dein Läufer greift einen Springer und einen Turm an.",
+            "task": {
+              "prompt": "Schlag die wertvollste Figur.",
+              "hint": "Ein Turm ist 5 wert, ein Springer nur 3.",
+              "success": "Richtig! Der Turm ist mehr wert als der Springer."
+            }
+          },
+          {
+            "text": "Schlagen ist nur gut, wenn deine Figur nicht sofort zurückgeschlagen wird. Hier ist der Springer auf d5 vom Bauern auf e6 **gedeckt**, aber der Läufer auf a5 ist überhaupt nicht gedeckt – und er greift sogar deine Dame an."
+          },
+          {
+            "text": "Welche Figur kannst du umsonst schlagen?",
+            "task": {
+              "prompt": "Gewinne sicher Material.",
+              "hint": "Nach Qxd5 verlierst du deine Dame an den Bauern auf e6. Suche eine ungedeckte Figur.",
+              "success": "Clever! Prüfe immer, ob die Figur, die du schlägst, gedeckt ist."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "checkmate-patterns": {
+    "title": "Mattbilder",
+    "description": "Erkenne die klassischen Mattnetze – Grundreihenmatt, ersticktes Matt, Anastasia-Matt, Arabisches Matt und die Treppe – und lerne, mit König und Dame oder König und Turm mattzusetzen.",
+    "lessons": {
+      "back-rank-mate": {
+        "title": "Grundreihenmatt",
+        "summary": "Der König gefangen hinter seinen eigenen Bauern.",
+        "steps": [
+          {
+            "text": "Ein rochierter König steht oft hinter drei Bauern. Wenn keine Figur die **Grundreihe** deckt, kann ein einzelner Turm oder eine Dame dort mattsetzen.\n\nDas ist das häufigste Matt in Partien von Anfängern und Vereinsspielern."
+          },
+          {
+            "text": "Der schwarze König hat keine Fluchtfelder.",
+            "task": {
+              "prompt": "Setze auf der Grundreihe matt.",
+              "hint": "Zieh den Turm die d-Linie ganz hinauf.",
+              "success": "Schachmatt! Die Bauern auf f7, g7 und h7 wurden zum Gefängnis."
+            }
+          },
+          {
+            "text": "Schwarz deckt e8 mit Turm und Dame. Aber du hast **zwei** Angreifer – eine Turmbatterie auf der e-Linie."
+          },
+          {
+            "text": "Zähle Angreifer und Verteidiger, dann schlag zu.",
+            "task": {
+              "prompt": "Matt in 2: Brich auf der Grundreihe durch.",
+              "hint": "Schlag auf e8 mit Schach. Nachdem Schwarz zurückgeschlagen hat, vollendet dein zweiter Turm das Werk.",
+              "success": "Schachmatt! Zwei Angreifer schlagen zwei Verteidiger, wenn du mit Schach schlägst."
+            }
+          },
+          {
+            "text": "**So verteidigst du dich**: Verschaffe deinem König ein Fluchtfeld („Luft“) mit einem Zug wie **h3** oder **g3**, oder lass einen Turm auf der Grundreihe.\n\nHier hat Schwarz vorher ...h6 gespielt, deshalb ist Rd8+ kein Matt mehr: Der König entkommt nach h7."
+          }
+        ]
+      },
+      "smothered-mate": {
+        "title": "Ersticktes Matt",
+        "summary": "Wenn der König von seinen eigenen Figuren erstickt wird.",
+        "steps": [
+          {
+            "text": "Ein **ersticktes Matt** entsteht, wenn der König komplett von seinen eigenen Figuren umringt ist und ein Springer Schach gibt. Das Schach eines Springers kann man nicht blockieren!"
+          },
+          {
+            "text": "Der König auf h8 ist von seinem eigenen Turm und seinen Bauern eingemauert.",
+            "task": {
+              "prompt": "Setze ersticktes Matt.",
+              "hint": "Welcher Springersprung greift h8 an?",
+              "success": "Erstickt! Die schwarzen Figuren haben ihrem eigenen König die Luft genommen."
+            }
+          },
+          {
+            "text": "**Philidors Vermächtnis** ist das berühmteste erstickte Matt. Ein Damenopfer zwingt eine schwarze Figur nach g8:\n\n1. **Nf7+** Kg8 2. **Nh6+** (Doppelschach) Kh8 3. **Qg8+!!** Rxg8 4. **Nf7#**"
+          },
+          {
+            "text": "Dein Läufer auf a3 hindert den König daran, nach f8 zu flüchten. Spiel die ganze Kombination!",
+            "task": {
+              "prompt": "Matt in 4 mit Philidors Vermächtnis.",
+              "hint": "Beginne mit einem Springerschach auf f7, dann ein Doppelschach von h6 aus.",
+              "success": "Philidors Vermächtnis! Eines der schönsten Muster im Schach."
+            }
+          }
+        ]
+      },
+      "anastasia-arabian": {
+        "title": "Anastasia-Matt und Arabisches Matt",
+        "summary": "Springer und Turm im Teamwork am Brettrand.",
+        "steps": [
+          {
+            "text": "**Anastasia-Matt**: Ein Springer auf e7 deckt g8 und g6, der eigene Bauer auf g7 versperrt den König, und ein Turm oder eine Dame setzt auf der **h-Linie** matt."
+          },
+          {
+            "text": "Hier springt zuerst der Springer mit Schach hinein, dann wird die Dame geopfert, um die h-Linie zu öffnen."
+          },
+          {
+            "text": "Finde die ganze Kombination.",
+            "task": {
+              "prompt": "Matt in 3 (Anastasia-Matt).",
+              "hint": "Gib zuerst mit dem Springer Schach. Dann opfere die Dame auf h7, damit dein Turm auf der h-Linie mattsetzen kann.",
+              "success": "Anastasia-Matt! Der Springer auf e7 und der Turm haben die ganze Arbeit erledigt."
+            }
+          },
+          {
+            "text": "**Arabisches Matt**: Ein Turm und ein Springer fangen den König in der Ecke. Der Springer deckt den Turm und das Fluchtfeld.\n\nDas ist eines der ältesten bekannten Mattbilder."
+          },
+          {
+            "text": "Der Springer auf f6 deckt h7 und g8.",
+            "task": {
+              "prompt": "Setze das Arabische Matt.",
+              "hint": "Stell den Turm direkt neben den König, gedeckt vom Springer.",
+              "success": "Arabisches Matt! Ein Muster, das seit über tausend Jahren bekannt ist."
+            }
+          }
+        ]
+      },
+      "ladder-mate": {
+        "title": "Die Treppe (zwei Türme)",
+        "summary": "Zwei Schwerfiguren treiben den König an den Rand.",
+        "steps": [
+          {
+            "text": "Mit zwei Türmen (oder Turm und Dame) kannst du **ohne deinen König** mattsetzen. Ein Turm schneidet den König entlang einer Reihe ab, der andere gibt auf der nächsten Reihe Schach, und sie überholen sich abwechselnd wie die Stufen einer **Treppe**."
+          },
+          {
+            "text": "Der Turm auf a7 beherrscht die 7. Reihe. Der König steht am Rand.",
+            "task": {
+              "prompt": "Vollende die Treppe: Matt in einem Zug.",
+              "hint": "Gib mit dem anderen Turm Schach entlang der 8. Reihe.",
+              "success": "Schachmatt! Die beiden Türme haben beide Reihen abgedeckt."
+            }
+          },
+          {
+            "text": "Manchmal braucht die Treppe zuerst einen **stillen Zug**: Zieh einen Turm, um den König abzuschneiden, dann setze matt.",
+            "task": {
+              "prompt": "Matt in 2 mit deinen beiden Türmen.",
+              "hint": "Nimm zuerst mit dem h-Turm die 7. Reihe weg. Dann setzt der andere Turm auf der Grundreihe matt.",
+              "success": "Hervorragend! Abschneiden, dann matt – das ist die Treppe."
+            }
+          },
+          {
+            "text": "**Tipp**: Halte deine Türme **weit weg** vom gegnerischen König, sonst kann er sie angreifen. Kommt der König einem Turm zu nahe, zieh diesen Turm entlang seiner Reihe auf die andere Seite des Bretts."
+          }
+        ]
+      },
+      "king-queen-mate": {
+        "title": "König und Dame gegen König",
+        "summary": "Das wichtigste Grundmatt.",
+        "steps": [
+          {
+            "text": "Mit König und Dame gegen den nackten König gewinnst du immer. Der Plan:\n\n1. Benutze die Dame, um **den Käfig zu verkleinern**, in dem der gegnerische König steht (einen Springerzug Abstand zu halten ist ein praktischer Trick).\n2. Treib den König an den **Rand**.\n3. Bring **deinen König** heran und setze matt."
+          },
+          {
+            "text": "Die Dame steht einen Springerzug vom König entfernt und spiegelt seine Bewegungen. Beachte, dass der schwarze König auf das Rechteck oben rechts beschränkt ist."
+          },
+          {
+            "text": "Der schwarze König steht am Rand. Dein König deckt g7.",
+            "task": {
+              "prompt": "Setze in einem Zug matt.",
+              "hint": "Stell die Dame direkt neben den schwarzen König, wo dein König sie deckt.",
+              "success": "Schachmatt! Die Dame wird von deinem König gedeckt."
+            }
+          },
+          {
+            "text": "Manchmal brauchst du vor dem Matt **einen stillen Königszug**. Vorsicht – kein Patt!",
+            "task": {
+              "prompt": "Matt in 2.",
+              "hint": "Die Dame hält den König schon auf der Grundreihe fest. Bring deinen König näher, damit er die Dame auf g7 decken kann.",
+              "success": "Perfekte Technik: Die Dame schränkt ein, der König kommt heran, dann matt."
+            }
+          },
+          {
+            "text": "**Pass auf das Patt auf!** Wenn der gegnerische König nur noch sehr wenige Felder hat, prüfe immer, ob er nach deinem Zug noch einen legalen Zug hat (außer dein Zug ist Schachmatt)."
+          }
+        ]
+      },
+      "king-rook-mate": {
+        "title": "König und Turm gegen König",
+        "summary": "Sperr den König ein und nutze die Opposition.",
+        "steps": [
+          {
+            "text": "König und Turm gegen König ist ein erzwungener Gewinn, aber der König muss mithelfen. Der Plan:\n\n1. Schneide den König mit dem Turm entlang einer Reihe oder Linie **ab**.\n2. Führe deinen König heran, bis sich die beiden Könige **direkt gegenüberstehen** (die Opposition).\n3. Gib am Rand Schach, wenn sich die Könige gegenüberstehen."
+          },
+          {
+            "text": "Matt entsteht, wenn sich die Könige gegenüberstehen und der Turm am Rand Schach gibt.",
+            "task": {
+              "prompt": "Setze in einem Zug matt.",
+              "hint": "Dein König deckt f7, g7 und h7. Der Turm gibt auf der 8. Reihe Schach.",
+              "success": "Schachmatt! König und Turm in perfekter Harmonie."
+            }
+          },
+          {
+            "text": "Ein **Wartezug** kann den König auf das richtige Feld zwingen.",
+            "task": {
+              "prompt": "Matt in 2.",
+              "hint": "Schneide den König von der d-Linie ab. Sein einziger Zug läuft direkt in die Opposition.",
+              "success": "Wunderbar gemacht. Abschneiden, warten, dann matt!"
+            }
+          },
+          {
+            "text": "Hier kann der schwarze König nur zwischen g8 und h8 hin- und herpendeln. Nimm ihm mit deinem König ein Feld weg.",
+            "task": {
+              "prompt": "Matt in 2.",
+              "hint": "Zieh deinen König nach g6, damit sich die Könige gegenüberstehen.",
+              "success": "Das ist die Technik! Die Opposition hat das Matt möglich gemacht."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tactics-fundamentals": {
+    "title": "Taktik-Grundlagen",
+    "description": "„Schach ist zu 99 % Taktik.“ Meistere Gabeln, Fesselungen, Spieße, Abzugsangriffe, Ablenkungen, Hinlenkungen und Zwischenzüge, die Partien gewinnen.",
+    "lessons": {
+      "forks": {
+        "title": "Gabeln",
+        "summary": "Eine Figur greift zwei Ziele gleichzeitig an.",
+        "steps": [
+          {
+            "text": "Eine **Gabel** ist ein einziger Zug, der **zwei oder mehr** gegnerische Figuren gleichzeitig angreift. Dein Gegner kann meist nur eine davon retten.\n\nSpringer sind die Gabel-Meister, weil ihr L-förmiger Angriff schwer zu sehen ist."
+          },
+          {
+            "text": "Eine Gabel mit **Schach** ist die stärkste Sorte – der König muss ziehen, und die andere Figur fällt.",
+            "task": {
+              "prompt": "Gabel König und Turm.",
+              "hint": "Finde einen Springersprung, der e8 und a8 gleichzeitig angreift.",
+              "success": "Eine königliche Gabel! Du hast den Turm gewonnen."
+            }
+          },
+          {
+            "text": "**Auch Bauern gabeln!** Hier hat Schwarz einen berühmten Trick, den *Gabeltrick*: ...Nxe4!, Nxe4, und jetzt greift ein Bauernzug Läufer und Springer zugleich an."
+          },
+          {
+            "text": "Weiß hat gerade auf e4 geschlagen. Schlag mit der Bauerngabel zurück.",
+            "task": {
+              "prompt": "Spiel die Bauerngabel.",
+              "hint": "Zieh einen Bauern zwei Felder vor, sodass er c4 und e4 angreift.",
+              "success": "Hervorragend! Der Bauer greift zwei Figuren an und Schwarz gewinnt die Figur zurück."
+            }
+          },
+          {
+            "text": "Die **Dame** kann in acht Richtungen gabeln. Schach plus Angriff auf eine ungedeckte Figur ist ein klassischer Weg, Material zu gewinnen."
+          },
+          {
+            "text": "Der Turm auf a8 ist ungedeckt.",
+            "task": {
+              "prompt": "Gabel König und Turm mit deiner Dame.",
+              "hint": "Schau entlang der Diagonalen: Von einem Zentrumsfeld aus sieht man g8 und a8.",
+              "success": "Tolle Gabel! Achte immer auf ungedeckte Figuren – **ungedeckte Figuren fallen**."
+            }
+          }
+        ]
+      },
+      "pins": {
+        "title": "Fesselungen",
+        "summary": "Friere eine gegnerische Figur vor einer wertvolleren ein.",
+        "steps": [
+          {
+            "text": "Eine **Fesselung** greift eine Figur an, die nicht ziehen kann, ohne eine wertvollere Figur hinter sich preiszugeben.\n\n- **Absolute Fesselung**: Dahinter steht der **König** – die gefesselte Figur darf regelgemäß gar nicht ziehen.\n- **Relative Fesselung**: Dahinter steht eine wertvolle Figur (etwa die Dame), daher wäre Wegziehen teuer."
+          },
+          {
+            "text": "Der Springer auf c6 ist an den König gefesselt. **Greif die gefesselte Figur an!** Sie kann nicht weglaufen.",
+            "task": {
+              "prompt": "Gewinne den gefesselten Springer.",
+              "hint": "Ein Bauer ist der billigste Angreifer. Zieh deinen d-Bauern vor.",
+              "success": "Der Springer kann dem Bauern nicht entkommen. Greif gefesselte Figuren immer wieder an!"
+            }
+          },
+          {
+            "text": "Fesselungen auf einer Diagonale können sogar eine Dame fangen. Die Dame auf e6 steht auf derselben Diagonale wie der schwarze König auf g8."
+          },
+          {
+            "text": "Finde die Fesselung, die die Dame gewinnt.",
+            "task": {
+              "prompt": "Fessle die Dame an den König.",
+              "hint": "Stell den Läufer auf die Diagonale a2–g8, gedeckt von einem Bauern.",
+              "success": "Die Dame ist gefesselt und verloren – sie kann nur den Läufer schlagen, und der b-Bauer schlägt zurück."
+            }
+          },
+          {
+            "text": "**Gegen Fesselungen verteidigen**: Löse die Fesselung, indem du die Figur dahinter (oft den König) wegziehst, indem du blockierst oder indem du die fesselnde Figur mit einem Bauern angreifst („...a6, ...h6“ sind typisch)."
+          }
+        ]
+      },
+      "skewers": {
+        "title": "Spieße",
+        "summary": "Eine umgekehrte Fesselung: Die große Figur steht vorn.",
+        "steps": [
+          {
+            "text": "Ein **Spieß** greift eine wertvolle Figur an; zieht sie weg, wird die Figur **dahinter** geschlagen. Das ist wie eine Fesselung, nur steht die wertvollere Figur vorn.\n\nSpieße mit **Schach** sind am häufigsten."
+          },
+          {
+            "text": "Der schwarze König und die Dame stehen auf derselben Linie.",
+            "task": {
+              "prompt": "Spieße König und Dame auf.",
+              "hint": "Gib dem König entlang der e-Linie Schach. Wenn er zur Seite geht, ist die Dame ungeschützt.",
+              "success": "Ein Spieß gewinnt die Dame für den Turm … und hier sogar umsonst!"
+            }
+          },
+          {
+            "text": "Diagonale Spieße sind eine Spezialität der Läufer.",
+            "task": {
+              "prompt": "Spieße den König und den Turm auf h8 auf.",
+              "hint": "Gib Schach auf der langen Diagonale, sodass der Turm auf h8 hinter dem König steht.",
+              "success": "Aufgespießt! Der Turm auf h8 stand hinter dem König."
+            }
+          },
+          {
+            "text": "**Spieße vermeiden**: Stell König und Dame (oder König und Turm) nicht auf dieselbe Linie, wenn gegnerische langschrittige Figuren in der Nähe sind."
+          }
+        ]
+      },
+      "discovered-attacks": {
+        "title": "Abzugsangriffe und Doppelschach",
+        "summary": "Entfessle einen versteckten Angreifer, indem du die Figur davor wegziehst.",
+        "steps": [
+          {
+            "text": "Ein **Abzugsangriff** entsteht, wenn du eine Figur aus dem Weg ziehst und dadurch den Angriff einer anderen Figur dahinter **aufdeckst**. Jetzt passieren zwei Dinge auf einmal: Die ziehende Figur stellt ihre eigene Drohung auf, und die versteckte Figur greift ebenfalls an."
+          },
+          {
+            "text": "Ist der aufgedeckte Angriff ein Schach, nennt man das **Abzugsschach** – die ziehende Figur kann überallhin und sich etwas schnappen.",
+            "task": {
+              "prompt": "Gewinne die Dame mit einem Abzugsschach.",
+              "hint": "Zieh den Springer auf ein Feld, das die Dame angreift. Der Turm gibt das Schach!",
+              "success": "Abzugsschach! Der Turm gab Schach und der Springer schlug die Dame."
+            }
+          },
+          {
+            "text": "Eine berühmte Eröffnungsfalle. Nach 1.e4 e5 2.Nf3 Nf6 3.Nxe5 Nxe4? 4.Qe2 Nf6?? stehen Dame und König auf der e-Linie, nur dein Springer steht dazwischen."
+          },
+          {
+            "text": "Deck den Angriff der Dame auf den König auf.",
+            "task": {
+              "prompt": "Gewinne die schwarze Dame.",
+              "hint": "Zieh den Springer mit Abzugsschach auf ein Feld, das d8 angreift.",
+              "success": "Autsch! In diese Falle sind in der Russischen Verteidigung schon Tausende Spieler getappt."
+            }
+          },
+          {
+            "text": "Ein **Doppelschach** ist ein Abzugsschach, bei dem die ziehende Figur **ebenfalls** Schach gibt. Die einzige Verteidigung ist ein Königszug – Blockieren oder Schlagen kann nicht zwei Schachs auf einmal aufhalten."
+          },
+          {
+            "text": "Der schwarze König ist von seinen eigenen Figuren umgeben.",
+            "task": {
+              "prompt": "Setze mit einem Doppelschach matt.",
+              "hint": "Zieh den Läufer so, dass er selbst Schach gibt und dabei den Turm aufdeckt.",
+              "success": "Doppelschach und matt! Keines der beiden Schachs ließ sich blockieren."
+            }
+          }
+        ]
+      },
+      "deflection-decoy": {
+        "title": "Ablenkung und Hinlenkung",
+        "summary": "Locke gegnerische Figuren auf die falschen Felder.",
+        "steps": [
+          {
+            "text": "Eine **Hinlenkung** zwingt eine gegnerische Figur – oft den König – **auf** ein Feld, auf dem sie von einer Taktik getroffen wird.\n\nEine **Ablenkung** zwingt eine verteidigende Figur **weg** von ihrer Aufgabe.\n\nBeide beginnen oft mit einem Opfer."
+          },
+          {
+            "text": "Stünde der schwarze König auf f8, könnte der Springer ihn von d7 aus zusammen mit der Dame gabeln. Kannst du den König dorthin zwingen?",
+            "task": {
+              "prompt": "Lenk den König hin, dann gabeln.",
+              "hint": "Opfere den Turm auf f8, damit der König dort zurückschlagen muss.",
+              "success": "Hinlenkung + Gabel! Du hast einen Turm gegeben, um die Dame zu gewinnen."
+            }
+          },
+          {
+            "text": "Eine **überlastete** Figur hat zu viele Aufgaben. Hier ist die schwarze Dame die einzige Figur, die den Turm auf e8 deckt – und die ganze Grundreihe. Zieh sie nach e8, und die Grundreihe ist schutzlos."
+          },
+          {
+            "text": "Schau dir das Feld e8 an: zwei weiße Angreifer, zwei schwarze Verteidiger.",
+            "task": {
+              "prompt": "Lenk die Dame ab und setze matt.",
+              "hint": "Schlag mit Schach. Die Dame muss zurückschlagen und überlässt die Grundreihe deinem zweiten Turm.",
+              "success": "Der Verteidiger wurde abgelenkt und die Grundreihe ist gefallen."
+            }
+          }
+        ]
+      },
+      "removing-the-defender": {
+        "title": "Beseitigung des Verteidigers",
+        "summary": "Schlag oder vertreibe die Figur, die alles zusammenhält.",
+        "steps": [
+          {
+            "text": "Wird ein wichtiges Feld nur von **einer** gegnerischen Figur gedeckt, beseitige diesen Verteidiger, und das Feld fällt.\n\nHier ist der Springer auf f6 die einzige Figur, die h7 gegen deine Batterie aus Dame und Läufer verteidigt."
+          },
+          {
+            "text": "Beseitige den Verteidiger, dann schlag zu.",
+            "task": {
+              "prompt": "Beseitige den Verteidiger von h7 und setze matt.",
+              "hint": "Schlag zuerst den Springer auf f6. Dann hat h7 keinen Verteidiger mehr.",
+              "success": "Schachmatt! (Schlägt Schwarz nicht zurück, hast du mit Bxd8 einfach die Dame gewonnen.)"
+            }
+          },
+          {
+            "text": "Verteidiger kann man auch mit Tempo **vertreiben**, zum Beispiel durch einen Bauernangriff, oder durch ein Schlagen **weglocken**."
+          }
+        ]
+      },
+      "zwischenzug": {
+        "title": "Zwischenzug",
+        "summary": "Schlag nicht automatisch zurück!",
+        "steps": [
+          {
+            "text": "Ein **Zwischenzug** (international unter seinem deutschen Namen *Zwischenzug* bekannt) ist ein forcierender Zug – meist ein Schach oder eine große Drohung –, der **vor** dem erwarteten Zurückschlagen gespielt wird.\n\nFrag dich immer: *Habe ich etwas Besseres als Zurückschlagen?*"
+          },
+          {
+            "text": "Die **Elefantenfalle** im Damengambit: Weiß hat gerade 6.Nxd5?? gespielt und einen Bauern geschnappt. Es sieht so aus, als verliere ...Nxd5 die Dame nach Bxd8, aber Schwarz hat ein Zwischenschach!"
+          },
+          {
+            "text": "Lass die Elefantenfalle zuschnappen.",
+            "task": {
+              "prompt": "Gewinne eine Figur mit einem Zwischenzug.",
+              "hint": "Schlag zuerst auf d5. Nach Bxd8 gib mit deinem Läufer Schach, bevor du den Läufer zurückschlägst.",
+              "success": "Brillant! Weiß muss mit Qd2 blockieren, dann ...Kxd8 (oder zuerst ...Bxd2+), und du hast eine ganze Figur mehr."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "opening-principles": {
+    "title": "Eröffnungsprinzipien",
+    "description": "Du musst keine Tausende von Zügen auswendig lernen. Lerne die goldenen Regeln – kontrolliere das Zentrum, entwickle schnell, rochiere früh, bring die Dame nicht zu früh heraus – und vermeide die klassischen Anfängerfallen.",
+    "lessons": {
+      "control-the-center": {
+        "title": "Kontrolliere das Zentrum",
+        "summary": "Warum d4, e4, d5 und e5 die wichtigsten Felder sind.",
+        "steps": [
+          {
+            "text": "Die vier Zentrumsfelder – **d4, e4, d5, e5** – sind das Herz des Bretts. Figuren, die im Zentrum stehen oder darauf zielen, kontrollieren mehr Felder und können schnell zwischen beiden Brettseiten wechseln."
+          },
+          {
+            "text": "Ein Bauer auf e4 kontrolliert d5 und f5 und öffnet Linien für die Dame und den weißfeldrigen Läufer."
+          },
+          {
+            "text": "Du bist am Zug! Besetze das Zentrum und entwickle dann einen Springer, der den schwarzen Zentrumsbauern angreift.",
+            "task": {
+              "prompt": "Spiel 1.e4 und nach der Antwort von Schwarz 2.Nf3.",
+              "hint": "Zieh zuerst den Königsbauern zwei Felder vor. Dann springt der Springer von g1 nach f3.",
+              "success": "Perfekt! Der Springer auf f3 ist entwickelt **und** greift den Bauern auf e5 an."
+            }
+          },
+          {
+            "text": "Auch Schwarz sollte um das Zentrum kämpfen. Gegen 1.d4 ist die klassische Antwort ein Bauer auf d5, damit Weiß nicht das ganze Zentrum bekommt."
+          },
+          {
+            "text": "Kämpfe mit Schwarz um das Zentrum.",
+            "task": {
+              "prompt": "Antworte auf 1.d4 mit ...d5 und entwickle nach 2.c4 deinen Königsspringer.",
+              "hint": "Zieh deinen d-Bauern zwei Felder vor. Dann geht der Springer von g8 nach f6.",
+              "success": "Gut gespielt – ein solider Zentrumsbauer und ein entwickelter Springer."
+            }
+          }
+        ]
+      },
+      "develop-your-pieces": {
+        "title": "Entwickle deine Figuren",
+        "summary": "Bring jede Figur schnell ins Spiel.",
+        "steps": [
+          {
+            "text": "**Entwicklung** bedeutet, deine Figuren von der Grundreihe auf aktive Felder zu bringen. Die goldenen Regeln:\n\n- **Springer vor Läufern** (wo die Springer hingehören, wissen wir meist zuerst).\n- Zieh in der Eröffnung **jede Figur nur einmal**.\n- Richte die Figuren auf das **Zentrum**.\n- Verbinde deine Türme."
+          },
+          {
+            "text": "Entwickle mit einem Ziel.",
+            "task": {
+              "prompt": "Entwickle: zuerst Nf3, dann Bc4, dann rochieren.",
+              "hint": "Springer nach f3, Läufer nach c4, dann rochiere, indem du den König zwei Felder nach rechts ziehst.",
+              "success": "Wie aus dem Lehrbuch! In nur drei Zügen hast du zwei Figuren entwickelt und deinen König in Sicherheit gebracht."
+            }
+          },
+          {
+            "text": "**Verschwende keine Zeit.** Hier hat Weiß die Randbauern vorgezogen und den Turm früh herausgebracht. Schwarz hat zwei Figuren entwickelt und das Zentrum – und steht schon klar besser."
+          },
+          {
+            "text": "Entwickle **und** verteidige gleichzeitig. Der weiße Springer greift e5 an.",
+            "task": {
+              "prompt": "Decke den Bauern auf e5 mit einem Entwicklungszug.",
+              "hint": "Welcher Springer kann e5 decken und dabei ins Spiel kommen?",
+              "success": "Super! Nc6 entwickelt eine Figur und deckt den Bauern in einem Zug."
+            }
+          }
+        ]
+      },
+      "king-safety": {
+        "title": "Königssicherheit und Rochade",
+        "summary": "Bring deinen König aus dem Zentrum, bevor der Kampf beginnt.",
+        "steps": [
+          {
+            "text": "In der Eröffnung öffnet sich das Zentrum oft schnell. Ein König, der auf e1/e8 bleibt, kann von Schachs entlang der e-Linie und der Diagonalen getroffen werden.\n\n**Rochiere früh**, meist innerhalb der ersten 10 Züge, und am besten auf der Seite, auf der du deine Bauern nicht vorgezogen hast."
+          },
+          {
+            "text": "Beide Seiten haben entwickelt. Zeit, den König in Sicherheit zu bringen.",
+            "task": {
+              "prompt": "Rochiere kurz.",
+              "hint": "Zieh den König von e1 nach g1.",
+              "success": "Sicherer König, aktiver Turm. Jetzt bist du bereit für das Mittelspiel."
+            }
+          },
+          {
+            "text": "**Das Feld f7** ist zu Beginn der schwächste Punkt von Schwarz: Nur der König deckt es. Der weiße Läufer und der Springer zielen mit Ng5 bereits darauf."
+          },
+          {
+            "text": "Verteidige dich gegen den Doppelangriff auf f7.",
+            "task": {
+              "prompt": "Blockiere die Diagonale des Läufers mit deinem d-Bauern.",
+              "hint": "Ein Bauer auf d5 schneidet den Läufer auf c4 von f7 ab.",
+              "success": "Richtig! ...d5 ist die Hauptvariante im Zweispringerspiel im Nachzuge."
+            }
+          },
+          {
+            "text": "**Behalte nach der Rochade deinen Bauernschild.** Wenn du die Bauern vor deinem rochierten König vorziehst (g4, h4 …), entstehen Löcher, die gegnerische Figuren nutzen können. Tu das nur, wenn du angreifst!"
+          }
+        ]
+      },
+      "early-queen": {
+        "title": "Bring die Dame nicht zu früh heraus",
+        "summary": "Die Dame ist stark – und ein leichtes Ziel.",
+        "steps": [
+          {
+            "text": "Bringst du die Dame früh heraus, kann dein Gegner sie **mit Entwicklungszügen angreifen** und Zeit gewinnen (**Tempo**), während deine Dame ständig flüchten muss.\n\nHier spielt Weiß nach 1.e4 d5 2.exd5 Qxd5 **Nc3** und entwickelt mit Angriff auf die Dame."
+          },
+          {
+            "text": "Gewinne ein Tempo gegen die früh herausgebrachte Dame.",
+            "task": {
+              "prompt": "Entwickle mit Angriff auf die Dame.",
+              "hint": "Welcher Springerzug trifft d5?",
+              "success": "So bestrafst du eine frühe Dame: entwickeln und gleichzeitig angreifen."
+            }
+          },
+          {
+            "text": "Das **Schäfermatt**: Weiß richtet Dame und Läufer auf f7. Bemerkt Schwarz das nicht, ist Qxf7 schon nach vier Zügen Schachmatt!"
+          },
+          {
+            "text": "Jetzt spielst du Schwarz, und Weiß versucht das Schäfermatt. Verteidige dich ruhig – und entwickle!",
+            "task": {
+              "prompt": "Blockiere die Dame mit ...g6 und entwickle dann mit ...Nf6, wenn Weiß den Angriff auf f7 erneuert.",
+              "hint": "Zuerst blockiert ...g6 die Diagonale h5–f7. Nach Qf3 blockiert der Springer auf f6 die f-Linie.",
+              "success": "Gut verteidigt! Die weiße Dame hat Zeit verschwendet und du bist gut entwickelt."
+            }
+          },
+          {
+            "text": "Die schwarzen Figuren werden die weiße Dame bald wieder jagen, mit ...Nd4 oder ...d6 und ...Bg4. Jeder Damenzug ist ein Zug, der nicht der Entwicklung dient."
+          }
+        ]
+      },
+      "opening-traps": {
+        "title": "Klassische Eröffnungsfallen",
+        "summary": "Lerne die Fallen, damit du nie hineintappst – und sie bestrafen kannst.",
+        "steps": [
+          {
+            "text": "Das **Narrenmatt** ist das schnellstmögliche Schachmatt. Weiß hat mit f3 und g4 die Diagonale zum König geschwächt."
+          },
+          {
+            "text": "Bestrafe die schwächenden Bauernzüge von Weiß.",
+            "task": {
+              "prompt": "Setze in einem Zug matt.",
+              "hint": "Die Diagonale e1–h4 ist weit offen.",
+              "success": "Narrenmatt! Schwäche niemals früh die Diagonale e1–h4 (oder e8–h5)."
+            }
+          },
+          {
+            "text": "**Seekadettenmatt (Légal-Matt)**: Schwarz hat den Springer mit ...Bg4 gefesselt und glaubt, er könne nicht ziehen. Aber eine Fesselung an die Dame ist nur eine *relative* Fesselung!"
+          },
+          {
+            "text": "Löse die Fesselung mit einem Damenopfer.",
+            "task": {
+              "prompt": "Lass die Légal-Falle zuschnappen.",
+              "hint": "Ignoriere die Fesselung: Schlag mit dem Springer auf e5. Nimmt Schwarz deine Dame, gib Schach auf f7.",
+              "success": "Seekadettenmatt! Drei Leichtfiguren haben den König mattgesetzt."
+            }
+          },
+          {
+            "text": "**Die goldenen Regeln der Eröffnung**\n\n1. Kontrolliere das Zentrum mit Bauern und Figuren.\n2. Entwickle Springer und Läufer schnell.\n3. Rochiere früh.\n4. Zieh dieselbe Figur nicht ohne Grund zweimal.\n5. Bring die Dame nicht zu früh heraus.\n6. Verbinde deine Türme.\n7. Prüfe bei jedem Zug, was dein Gegner droht!"
+          }
+        ]
+      }
+    }
+  },
+  "openings-for-white": {
+    "title": "Beliebte Eröffnungen für Weiß",
+    "description": "Ein komplettes Repertoire für Weiß vom Anfänger bis zum Vereinsspieler: die Italienische Partie und die Spanische Partie nach 1.e4, dazu das Damengambit und das leicht zu lernende Londoner System nach 1.d4 – mit den wichtigsten Ideen, Plänen und Fallen.",
+    "lessons": {
+      "italian-game": {
+        "title": "Die Italienische Partie",
+        "summary": "Ziele auf f7 und baue das ideale Zentrum auf.",
+        "steps": [
+          {
+            "text": "Die **Italienische Partie** (1.e4 e5 2.Nf3 Nc6 3.Bc4) ist eine der ältesten Eröffnungen. Weiß entwickelt schnell und richtet den Läufer auf das schwächste Feld von Schwarz, **f7**."
+          },
+          {
+            "text": "Spiel die Eröffnungszüge.",
+            "task": {
+              "prompt": "Spiel die Italienische Partie: 1.e4, 2.Nf3 und 3.Bc4.",
+              "hint": "Bauer nach e4, Springer nach f3, dann der weißfeldrige Läufer nach c4.",
+              "success": "Das ist die Italienische Partie! Dein Läufer zielt auf f7 und du bist bereit zu rochieren."
+            }
+          },
+          {
+            "text": "**Plan 1 – Giuoco Piano**: Nach 3...Bc5 spielst du **c3** und **d4**, um ein großes Bauernzentrum aufzubauen und die schwarzen Figuren zurückzudrängen."
+          },
+          {
+            "text": "Baue das ideale Zentrum auf.",
+            "task": {
+              "prompt": "Bereite d4 mit c3 vor und zieh dann d4, nachdem Schwarz entwickelt hat.",
+              "hint": "Zuerst den c-Bauern ein Feld, dann den d-Bauern zwei Felder.",
+              "success": "Zwei Bauern nebeneinander im Zentrum – der Traumaufbau!"
+            }
+          },
+          {
+            "text": "**Plan 2 – Giuoco Pianissimo** („ganz ruhiges Spiel“): c3, d3, O-O, Re1, dann Nbd2–f1–g3. Ein langsamer Aufbau, den moderne Großmeister lieben."
+          },
+          {
+            "text": "**Der Fegatello-Angriff (Fried-Liver-Angriff).** Antwortet Schwarz auf 3...Nf6 4.Ng5 d5 5.exd5 mit dem natürlichen 5...Nxd5?, kann Weiß auf f7 opfern und den König ins Freie ziehen."
+          },
+          {
+            "text": "Starte den Fegatello-Angriff.",
+            "task": {
+              "prompt": "Opfere auf f7 und setze mit einem Damenschach fort.",
+              "hint": "Springer schlägt f7! Nach Kxf7 gibt die Dame auf f3 Schach und greift auch den Springer auf d5 an.",
+              "success": "Der König steht offen und der Springer auf d5 ist gefesselt. Der weiße Angriff ist sehr stark."
+            }
+          }
+        ]
+      },
+      "ruy-lopez": {
+        "title": "Die Spanische Partie",
+        "summary": "Die „spanische Folter“: langfristiger Druck auf e5.",
+        "steps": [
+          {
+            "text": "Die **Spanische Partie** (auch Ruy Lopez) 1.e4 e5 2.Nf3 Nc6 3.Bb5 greift den Springer an, der e5 deckt. Sie ist bei Weltmeistern beliebt, weil der Druck bis tief ins Mittelspiel anhält."
+          },
+          {
+            "text": "Spiel die Hauptvariante.",
+            "task": {
+              "prompt": "Spiel die Spanische Partie: 1.e4, 2.Nf3, 3.Bb5 und zieh dich nach ...a6 mit 4.Ba4 zurück.",
+              "hint": "Nach ...a6 bleib mit dem Läufer auf der Diagonale, indem du nach a4 zurückziehst.",
+              "success": "Gut gemacht! Der Läufer hält den fesselungsähnlichen Druck auf c6 aufrecht."
+            }
+          },
+          {
+            "text": "Nach 4...Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 erreichen wir die **Geschlossene Spanische Partie**. Weiß bereitet d4 vor, und der Springer wandert oft über **Nbd2–f1–g3** Richtung Königsflügel."
+          },
+          {
+            "text": "**Achtung, Falle – die Arche Noah:** Schnappt Weiß sich unvorsichtig einen Bauern im Zentrum, kann Schwarz den Läufer auf b3 mit ...c5–c4 fangen. Lass deinem Läufer immer ein Fluchtfeld (darum ist c3 so nützlich: Bc2)."
+          },
+          {
+            "text": "**Die Abtauschvariante** – 4.Bxc6 dxc6 – gibt Schwarz das Läuferpaar, beschädigt aber seine Bauernstruktur. Der Plan von Weiß ist d4 und ein gewonnenes Bauernendspiel dank der **gesunden Mehrheit am Königsflügel**."
+          }
+        ]
+      },
+      "queens-gambit": {
+        "title": "Das Damengambit",
+        "summary": "Biete einen Bauern an, um das Zentrum zu gewinnen.",
+        "steps": [
+          {
+            "text": "Das **Damengambit** 1.d4 d5 2.c4 bietet den c-Bauern an, um den schwarzen Bauern auf d5 vom Zentrum abzulenken. Es ist kein echtes Gambit: Weiß kann den Bauern fast immer zurückgewinnen."
+          },
+          {
+            "text": "Spiel die Hauptvariante des abgelehnten Damengambits.",
+            "task": {
+              "prompt": "Spiel 1.d4, 2.c4, 3.Nc3 und 4.Bg5.",
+              "hint": "Damenbauer, dann der c-Bauer, dann Springer nach c3 und mit Bg5 den Springer auf f6 fesseln.",
+              "success": "Klassische Entwicklung: Der Springer auf f6 ist gefesselt und d5 steht unter Druck."
+            }
+          },
+          {
+            "text": "**Angenommenes Damengambit:** Nach 2...dxc4 spielt Weiß meist **e3** und **Bxc4** und bekommt ein schönes Zentrum. Den Bauern mit ...b5 halten zu wollen, ist ein Fehler."
+          },
+          {
+            "text": "Bestrafe die Gier von Schwarz.",
+            "task": {
+              "prompt": "Untergrabe die Bauern mit a4 und greif dann mit deiner Dame den Turm auf a8 an.",
+              "hint": "Greif b5 mit dem a-Bauern an. Nach dem Abtausch öffnet sich die lange Diagonale f3–a8.",
+              "success": "Der Turm auf a8 und der Springer auf b8 hängen – Weiß gewinnt Material."
+            }
+          },
+          {
+            "text": "**Der Minoritätsangriff** ist der klassische Plan von Weiß in der Abtauschvariante: Zieh den b-Bauern nach b5, um einen schwachen Bauern auf c6 zu erzeugen."
+          }
+        ]
+      },
+      "london-system": {
+        "title": "Das Londoner System",
+        "summary": "Ein Aufbau gegen alles.",
+        "steps": [
+          {
+            "text": "Das **Londoner System** ist perfekt für Spieler mit wenig Zeit: Weiß spielt gegen fast alles denselben Aufbau – **d4, Bf4, e3, Nf3, c3, Bd3, Nbd2** – und bildet eine solide Bauernpyramide."
+          },
+          {
+            "text": "Stell das Londoner System auf.",
+            "task": {
+              "prompt": "Spiel 1.d4 und 2.Bf4, dann 3.e3.",
+              "hint": "Entwickle den schwarzfeldrigen Läufer nach f4, **bevor** du e3 spielst, damit er nicht eingesperrt wird.",
+              "success": "Gute Gewohnheit! Der Läufer steht außerhalb der Bauernkette."
+            }
+          },
+          {
+            "text": "Typische Pläne: ein Springersprung nach **e5**, gestützt von f4, ein Königsangriff mit **Qf3–h3** oder **g4** und die Diagonale **Bd3–h7**, die auf den rochierten König zielt."
+          },
+          {
+            "text": "**...Bf5 bestrafen:** Kopiert Schwarz mit ...Bf5, ist der Bauer auf b7 oft schwach. **Qb3** greift b7 und d5 gleichzeitig an."
+          },
+          {
+            "text": "Nutze die Schwäche auf b7.",
+            "task": {
+              "prompt": "Greif b7 mit deiner Dame an.",
+              "hint": "Die Dame geht nach b3 und greift b7 an.",
+              "success": "Schwarz muss einen Zug für ...Qb6 oder ...Qc8 aufwenden. Weiß hat Zeit gewonnen."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -5,9 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>GrandMentor — Learn chess the friendly way</title>
   <meta name="description" content="Play bots, review your games with a coach, solve puzzles, and learn openings, tactics, middlegames and endgames.">
-  <meta name="theme-color" content="#1b1e21">
+  <meta name="theme-color" content="#1b1e21" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="color-scheme" content="dark light">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/img/icons/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/img/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="GrandMentor">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="GrandMentor">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
@@ -19,6 +29,13 @@
         var r = document.documentElement;
         if (s.theme === 'light' || s.theme === 'dark') r.setAttribute('data-theme', s.theme);
         if (typeof s.boardTheme === 'string') r.setAttribute('data-board-theme', s.boardTheme);
+        // Accessibility settings (see web/js/settings.js) before first paint: no flash or motion.
+        if (s.highContrast === true) r.setAttribute('data-contrast', 'high');
+        if (s.cbPalette === true) r.setAttribute('data-cls-palette', 'cb');
+        var rm = false;
+        try { rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e2) { /* old browser */ }
+        r.setAttribute('data-motion', s.motion === 'reduce' || (s.motion !== 'full' && rm) ? 'reduce' : 'full');
+        if (s.uiScale === 115 || s.uiScale === 130) r.style.fontSize = s.uiScale + '%';
       } catch (e) { /* storage unavailable */ }
     })();
   </script>
@@ -29,13 +46,16 @@
   <link rel="stylesheet" href="/css/learn.css" data-gm-css="learn">
   <link rel="stylesheet" href="/css/puzzles.css" data-page-css="puzzles">
   <link rel="stylesheet" href="/css/hub.css" data-hub-css>
+  <link rel="stylesheet" href="/css/pwa.css">
+  <link rel="stylesheet" href="/css/insights.css" data-page-css="insights">
+  <link rel="stylesheet" href="/css/drills.css" data-page-css="drills">
   <link rel="modulepreload" href="/js/ui.js">
   <link rel="modulepreload" href="/js/api.js">
   <link rel="modulepreload" href="/js/settings.js">
   <script type="module" src="/js/app.js"></script>
 </head>
 <body>
-  <a class="sr-only" href="#view">Skip to content</a>
+  <a class="skip-link" href="#view">Skip to content</a>
   <div class="route-progress" id="route-progress" aria-hidden="true"></div>
 
   <div class="app" id="app">
@@ -52,7 +72,8 @@
 
   <nav class="bottombar" id="bottombar" aria-label="Main navigation"></nav>
   <div class="more-sheet" id="more-sheet" aria-hidden="true"></div>
-  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <div class="offline-banner" id="offline-banner" role="status" aria-live="polite" hidden></div>
+  <div class="toasts" id="toasts"></div>
 
   <noscript>
     <div style="max-width:520px;margin:15vh auto;padding:24px;text-align:center;font-family:system-ui,sans-serif;color:#eceef1;">

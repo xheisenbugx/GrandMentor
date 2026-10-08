@@ -10,6 +10,7 @@ import {
 } from '../ui.js';
 import { getSettings, onSettingsChange, pieceUrl } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MentorPanel } from '../components/mentor.js';
 import { ensureAnalysisCss } from '../components/evalgraph.js';
@@ -301,7 +302,8 @@ export async function mount(root, { query = {} } = {}) {
   const bCopy = actBtn('copy', t('analysis.actions.copy'), t('analysis.actions.copyTip'));
   const bSave = actBtn('save', t('analysis.actions.save'), t('analysis.actions.saveTip'));
   const reviewLink = h('a', { class: 'btn btn-ghost btn-sm an-act', hidden: true, html: icon('chart') + spanHtml(t('analysis.actions.review')) });
-  const actions = h('div', { class: 'an-actions' }, bNew, bLoad, bSetup, bCopy, bSave, reviewLink);
+  const bPlayBot = actBtn('robot', t('analysis.actions.playBot'), t('analysis.actions.playBotTip'));
+  const actions = h('div', { class: 'an-actions' }, bNew, bLoad, bSetup, bCopy, bSave, bPlayBot, reviewLink);
 
   const nav = (ic, label) => h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': label, 'data-tooltip': label, html: icon(ic) });
   const bFirst = nav('first', t('analysis.nav.first'));
@@ -312,13 +314,16 @@ export async function mount(root, { query = {} } = {}) {
   const toolbar = h('div', { class: 'toolbar' }, bFirst, bPrev, bNext, bLast, bFlip);
 
   const panel = h('div', { class: 'panel grow an-panel' }, actions, tabs, analysisTab, mentorTab);
-  const aside = h('aside', { class: 'game-panel' }, panel, toolbar);
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board, className: 'an-move-input' });
+  bag.add(() => moveInput.destroy());
+  const aside = h('aside', { class: 'game-panel' }, panel, toolbar, moveInput.el);
   const layout = h('div', { class: 'game-layout analysis-page' + (settings.showEvalBar === false ? ' no-eval' : ''), style: { '--panel-w': '400px' } }, main, aside);
   root.appendChild(layout);
   bag.add(() => layout.remove());
 
   // ---- Components -------------------------------------------------------
-  const board = new Board(boardSlot, {
+  board = new Board(boardSlot, {
     fen: START_FEN,
     orientation: query.orientation === 'black' ? 'black' : 'white',
     interactive: true,
@@ -1040,6 +1045,8 @@ export async function mount(root, { query = {} } = {}) {
   });
   bag.on(bLoad, 'click', openLoadModal);
   bag.on(bCopy, 'click', openCopyMenu);
+  // "Play vs bot from here" (CONTRACT: #/play?fen=...; the side to move plays first).
+  bag.on(bPlayBot, 'click', () => { location.hash = `#/play?fen=${encodeURIComponent(state.cur.fen)}`; });
   bag.on(bSave, 'click', () => {
     if (!state.tree.root.children.length) { toast(t('analysis.save.makeMovesFirst'), 'info'); return; }
     openSaveModal();

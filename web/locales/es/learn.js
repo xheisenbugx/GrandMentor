@@ -23,6 +23,21 @@ export default {
     coursesFinished: 'Cursos terminados',
     overall: 'Progreso total',
   },
+  practice: {
+    aria: 'Práctica',
+    drills: {
+      title: 'Ejercicios rápidos',
+      text: 'Entrenamientos cortos para afinar tu táctica, tu visión y tu cálculo.',
+      cta: 'Empezar un ejercicio',
+      tags: ['Sesiones cortas', 'Práctica diaria'],
+    },
+    classics: {
+      title: 'Partidas clásicas',
+      text: 'Reproduce partidas legendarias jugada a jugada y descubre cómo ganaban los maestros.',
+      cta: 'Ver partidas',
+      tags: ['Partidas famosas', 'Jugada a jugada'],
+    },
+  },
   filterAria: 'Filtrar por categoría',
   all: 'Todos',
   moreCourses: 'Más cursos',

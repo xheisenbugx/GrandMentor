@@ -1,0 +1,707 @@
+{
+  "openings-for-black": {
+    "title": "Ouvertures populaires avec les Noirs",
+    "description": "Riposte dès le premier coup. Apprends la sicilienne et la Caro-Kann contre 1.e4, le classique 1...e5, ainsi que la dynamique défense est-indienne et le solide gambit dame refusé contre 1.d4.",
+    "lessons": {
+      "sicilian-defense": {
+        "title": "La défense sicilienne",
+        "summary": "La réponse la plus populaire et la plus combative à 1.e4.",
+        "steps": [
+          {
+            "text": "**1...c5**, la **défense sicilienne**, lutte pour d4 avec un pion de l'aile. La position devient déséquilibrée : les Blancs attaquent généralement à l'aile roi, les Noirs contre-attaquent à l'aile dame et sur la **colonne c** semi-ouverte."
+          },
+          {
+            "text": "Joue la sicilienne ouverte, variante Najdorf : le choix de Fischer et de Kasparov.",
+            "task": {
+              "prompt": "Joue ...c5, ...d6, ...cxd4, ...Nf6 et ...a6.",
+              "hint": "c5, puis d6, prends en d4 avec le pion c, développe le cavalier en f6 et termine par le souple ...a6.",
+              "success": "La Najdorf ! ...a6 contrôle b5 et prépare ...e5 ou ...b5."
+            }
+          },
+          {
+            "text": "**Le Dragon** : les Noirs développent le fou en fianchetto en g7, d'où il crache du feu le long de la grande diagonale vers l'aile dame blanche."
+          },
+          {
+            "text": "**Les idées clés des Noirs dans la sicilienne :**\n\n- La rupture **...d5** libère le jeu des Noirs.\n- Exploite la **colonne c** avec une tour en c8.\n- L'échange en c3 (...Rxc3!) est un sacrifice de qualité typique pour démolir le roque blanc.\n- N'ouvre pas le centre tant que ton roi n'a pas roqué."
+          },
+          {
+            "text": "**Contre l'Alapine (2.c3)**, frappe le centre tout de suite avec ...d5 ou ...Nf6.",
+            "task": {
+              "prompt": "Frappe au centre avec ton pion d.",
+              "hint": "Avance le pion d de deux cases pour contester e4 immédiatement.",
+              "success": "Exact ! Après exd5 Qxd5, les Blancs ne peuvent pas jouer Nc3 pour chasser ta dame, car le pion c3 les en empêche."
+            }
+          }
+        ]
+      },
+      "caro-kann": {
+        "title": "La défense Caro-Kann",
+        "summary": "Une structure solide comme le roc avec un jeu de pièces actif.",
+        "steps": [
+          {
+            "text": "**1...c6** prépare **...d5** avec le soutien d'un pion. La Caro-Kann est solide comme la défense française, mais le fou de cases blanches des Noirs sort avant ...e6."
+          },
+          {
+            "text": "Joue la variante classique.",
+            "task": {
+              "prompt": "Joue ...c6, ...d5, ...dxe4 et ...Bf5.",
+              "hint": "D'abord c6, puis d5. Prends en e4 et développe le fou en f5 en gagnant un temps sur le cavalier.",
+              "success": "La Caro-Kann classique ! Le fou est actif et la position noire est très solide."
+            }
+          },
+          {
+            "text": "**La variante d'avance** (3.e5) gagne de l'espace. Les Noirs développent le fou en **f5** puis frappent la chaîne blanche avec **...c5**."
+          },
+          {
+            "text": "**Attention au piège du mat à l'étouffée !** Après 4...Nd7 5.Qe2, le naturel 5...Ngf6?? tombe dans 6.Nd6# : le pion e7 ne peut pas prendre, car il est cloué par la dame."
+          },
+          {
+            "text": "Évite le piège de la Caro-Kann.",
+            "task": {
+              "prompt": "Amène un cavalier en f6 sans permettre Nd6# : joue ...Ndf6.",
+              "hint": "Déplace le cavalier de d7 en f6. Ainsi, d6 reste couverte par le pion e7 : pas de mat à l'étouffée !",
+              "success": "Sain et sauf. Le pion e7 surveille toujours d6, donc Nd6# est impossible."
+            }
+          }
+        ]
+      },
+      "open-games-black": {
+        "title": "Répondre à 1.e4 par 1...e5",
+        "summary": "Classique, fidèle aux principes et pleine de pièges.",
+        "steps": [
+          {
+            "text": "**1...e5** est la réponse la plus classique. Elle lutte pour le centre et ouvre des lignes pour la dame et le fou. Tu dois savoir affronter la partie italienne, la partie espagnole et les gambits."
+          },
+          {
+            "text": "Choisis l'active **défense des deux cavaliers** contre la partie italienne.",
+            "task": {
+              "prompt": "Joue ...e5, ...Nc6 et ...Nf6.",
+              "hint": "Le pion central, puis les deux cavaliers.",
+              "success": "Les deux cavaliers ! Tu contre-attaques e4 au lieu de te défendre passivement."
+            }
+          },
+          {
+            "text": "Après 4.Ng5 d5 5.exd5, **ne reprends pas** par 5...Nxd5? (l'attaque Fegatello !). La ligne principale est **5...Na5**, qui attaque le fou c4."
+          },
+          {
+            "text": "Évite l'attaque Fegatello.",
+            "task": {
+              "prompt": "Attaque le fou avec ton cavalier c6.",
+              "hint": "Ton cavalier saute sur le bord : ici, c'est justifié, car il attaque le fou c4.",
+              "success": "Exact ! Les Noirs donnent un pion contre un développement rapide et l'initiative."
+            }
+          },
+          {
+            "text": "Contre la partie espagnole, la **défense berlinoise** (3...Nf6) et la **défense Morphy** (3...a6) sont les réponses les plus fiables. Dans la finale berlinoise, les dames s'échangent tôt et les Noirs sont incroyablement solides."
+          }
+        ]
+      },
+      "kings-indian": {
+        "title": "La défense est-indienne",
+        "summary": "Laisse les Blancs bâtir un centre… puis fais-le exploser.",
+        "steps": [
+          {
+            "text": "Dans la **défense est-indienne**, les Noirs laissent aux Blancs un grand centre, roquent vite derrière un fou en fianchetto, puis attaquent le centre avec **...e5** ou **...c5**."
+          },
+          {
+            "text": "Mets en place l'est-indienne.",
+            "task": {
+              "prompt": "Joue ...Nf6, ...g6, ...Bg7, ...d6 et roque.",
+              "hint": "Cavalier en f6, fianchetto avec ...g6 et ...Bg7, puis ...d6 et petit roque.",
+              "success": "Un dispositif est-indien parfait. Maintenant, il est temps de frapper le centre."
+            }
+          },
+          {
+            "text": "Frappe le centre.",
+            "task": {
+              "prompt": "Conteste le centre blanc avec ton pion e.",
+              "hint": "Avance le pion e de deux cases pour attaquer d4.",
+              "success": "C'est la ligne principale ! La bataille pour le centre commence."
+            }
+          },
+          {
+            "text": "**Le plan Mar del Plata** : après d5, le centre se ferme. Les Noirs écartent le cavalier et poussent **...f5–f4** et **...g5–g4**, lançant une avalanche de pions contre le roi blanc pendant que les Blancs attaquent à l'aile dame."
+          }
+        ]
+      },
+      "queens-gambit-declined": {
+        "title": "Le gambit dame refusé",
+        "summary": "La réponse la plus solide à 1.d4.",
+        "steps": [
+          {
+            "text": "**1.d4 d5 2.c4 e6** refuse le gambit et garde un pion fort en d5. Le principal problème des Noirs est le fou de cases blanches en c8, bloqué par e6. Des plans comme **...b6 + ...Bb7** ou les ruptures **...c5 / ...e5** le résolvent."
+          },
+          {
+            "text": "Joue le gambit dame refusé classique.",
+            "task": {
+              "prompt": "Joue ...d5, ...e6, ...Nf6, ...Be7 et roque.",
+              "hint": "d5, e6, cavalier en f6, décloue avec Be7, puis roque.",
+              "success": "Solide comme le roc. Le roi noir est en sécurité et d5 tient bon."
+            }
+          },
+          {
+            "text": "**Manœuvre libératrice :** ...Ne4 échange des pièces pour soulager la pression (la défense Lasker).",
+            "task": {
+              "prompt": "Échange des pièces avec la manœuvre Lasker.",
+              "hint": "Fais sauter le cavalier de f6 en e4.",
+              "success": "Après Bxe7 Qxe7, les Noirs ont échangé deux paires de pièces mineures et sont très à l'aise."
+            }
+          },
+          {
+            "text": "Souviens-toi du **piège de l'éléphant** vu dans le cours de tactique : si les Blancs prennent le pion d5 avec Nxd5 alors que le cavalier f6 est cloué, ...Nxd5! gagne une pièce."
+          }
+        ]
+      }
+    }
+  },
+  "middlegame-strategy": {
+    "title": "Stratégie du milieu de partie",
+    "description": "Que faire quand il n'y a pas de tactique ? Comprends les structures de pions, les avant-postes et les cases faibles, les colonnes ouvertes, les bons et les mauvais fous, l'activité des pièces, et apprends à établir un plan.",
+    "lessons": {
+      "pawn-structure": {
+        "title": "La structure de pions",
+        "summary": "Les pions sont l'âme des échecs.",
+        "steps": [
+          {
+            "text": "« Les pions sont l'âme des échecs » — Philidor. Les pions ne peuvent pas reculer, donc chaque coup de pion crée des forces et des faiblesses **permanentes**. Apprends à reconnaître :\n\n- **Les pions isolés** (aucun pion ami sur les colonnes voisines)\n- **Les pions doublés** (deux pions sur la même colonne)\n- **Les pions arriérés** (ils ne peuvent pas être soutenus par d'autres pions)\n- **Les pions passés** (aucun pion adverse ne peut les arrêter)"
+          },
+          {
+            "text": "**Le pion dame isolé.** Le pion d4 des Blancs n'a pas de voisins. Il donne aux Blancs de l'espace et des pièces actives (avant-postes en e5 et c5), mais en finale, il devient une faiblesse.\n\nLa case **devant** un pion isolé est un refuge parfait pour une pièce adverse : rien ne peut l'en chasser."
+          },
+          {
+            "text": "Lutte contre le pion isolé.",
+            "task": {
+              "prompt": "Bloque le pion isolé : place un cavalier sur la case devant lui.",
+              "hint": "Le cavalier f6 peut sauter en d5.",
+              "success": "Un blocus solide comme le roc ! Aucun pion blanc ne pourra jamais attaquer ton cavalier en d5."
+            }
+          },
+          {
+            "text": "**Les pions passés doivent avancer !** (Nimzowitsch). Un pion passé immobilise des pièces adverses, et plus il avance, plus il devient fort. Un pion passé **protégé** (défendu par un autre pion) est particulièrement fort."
+          },
+          {
+            "text": "Utilise tes pions passés.",
+            "task": {
+              "prompt": "Pousse tes pions passés liés : joue c6, puis d6.",
+              "hint": "Pousse d'abord le pion c, puis amène le pion d à sa hauteur. Côte à côte, ils se protègent mutuellement.",
+              "success": "Les pions passés liés avancent ensemble comme un rouleau compresseur. Le roi noir ne peut pas arrêter les deux !"
+            }
+          }
+        ]
+      },
+      "outposts-weak-squares": {
+        "title": "Avant-postes et cases faibles",
+        "summary": "Trouve les trous dans le camp adverse et occupe-les.",
+        "steps": [
+          {
+            "text": "Une **case faible** (ou **trou**) est une case qui ne peut plus être défendue par un pion. Un **avant-poste** est une case faible dans le camp adverse, idéalement protégée par l'un de tes pions, d'où ta pièce ne peut pas être chassée.\n\nLes cavaliers adorent les avant-postes !"
+          },
+          {
+            "text": "Dans cette sicilienne Najdorf, le coup ...e5 des Noirs a laissé un trou en **d5**. Les pièces blanches veulent l'occuper.",
+            "task": {
+              "prompt": "Occupe l'avant-poste en d5.",
+              "hint": "Quel cavalier peut atteindre d5 en un seul saut ?",
+              "success": "Un cavalier monstrueux en d5 ! Si les Noirs le prennent, les Blancs reprennent avec le pion e et obtiennent un pion passé protégé."
+            }
+          },
+          {
+            "text": "**Créer des cases faibles** : chaque avance de pion abandonne le contrôle de certaines cases. Après ...g6, les cases foncées **f6** et **h6** autour du roi noir deviennent faibles, surtout quand le fou g7 est échangé."
+          },
+          {
+            "text": "**Règle d'or** : ne pousse pas tes pions sans bonne raison. Chaque coup de pion est définitif : assure-toi que les cases qu'il laisse derrière lui ne seront pas utiles à l'adversaire."
+          }
+        ]
+      },
+      "open-files": {
+        "title": "Les colonnes ouvertes et la septième rangée",
+        "summary": "Là où les tours deviennent des monstres.",
+        "steps": [
+          {
+            "text": "Une **colonne ouverte** ne contient aucun pion. Les tours ont leur place sur les colonnes ouvertes, d'où elles peuvent pénétrer dans la position adverse. **Doubler les tours** sur une colonne ouverte les rend encore plus fortes.\n\nUne colonne **semi-ouverte** ne contient que des pions adverses : elle aussi est excellente pour les tours."
+          },
+          {
+            "text": "La colonne d est la seule colonne ouverte.",
+            "task": {
+              "prompt": "Place ta tour a1 sur la colonne d ouverte.",
+              "hint": "Fais glisser la tour a1 en d1.",
+              "success": "Bien ! La tour f1 pourra ensuite la rejoindre sur la colonne d ou soutenir e4."
+            }
+          },
+          {
+            "text": "Une tour sur la **septième rangée** (la 7e pour les Blancs, la 2e pour les Noirs) attaque des pions qui ne peuvent être défendus que par des pièces, et coupe le roi adverse. Deux tours sur la septième sont souvent décisives."
+          },
+          {
+            "text": "La tour noire est passive en c8. La colonne d est à toi.",
+            "task": {
+              "prompt": "Envahis la septième rangée avec ta tour.",
+              "hint": "Utilise la colonne d ouverte pour atteindre d7.",
+              "success": "La tour en d7 attaque a7 et f7 et paralyse les Noirs. Voilà la puissance de la septième rangée !"
+            }
+          }
+        ]
+      },
+      "bishops": {
+        "title": "Bons fous, mauvais fous et paire de fous",
+        "summary": "Tous les fous ne se valent pas.",
+        "steps": [
+          {
+            "text": "Un **mauvais fou** est bloqué par ses propres pions placés sur des cases de sa couleur. Un **bon fou** a ses pions sur des cases de la couleur opposée et circule librement.\n\nDans la défense française, le fou de cases blanches des Noirs en c8 est souvent mauvais : les pions e6 et d5 le bloquent."
+          },
+          {
+            "text": "**La solution** : échange le mauvais fou ! Les Noirs préparent ...b6 et ...Ba6 pour l'échanger contre le bon fou blanc.",
+            "task": {
+              "prompt": "Propose l'échange de ton mauvais fou avec ...Ba6.",
+              "hint": "Le fou c8 va en a6, où il fait face au fou f1 des Blancs.",
+              "success": "Malin : les Noirs échangent leur mauvais fou contre le bon fou blanc."
+            }
+          },
+          {
+            "text": "**La paire de fous** — deux fous contre fou + cavalier ou deux cavaliers — est un vrai avantage dans les positions **ouvertes**. Ensemble, ils couvrent les deux couleurs et balaient l'échiquier.\n\nSi tu as la paire de fous, ouvre la position. Si tu y fais face, garde-la fermée."
+          },
+          {
+            "text": "**Cavaliers contre fous** : les cavaliers sont meilleurs dans les positions **fermées**, avec des chaînes de pions bloquées et des avant-postes. Les fous préfèrent les positions ouvertes avec des pions sur les deux ailes.\n\nIci, le fou de cases blanches des Noirs est **mauvais** : ses propres pions en d5, e6 et f5 le bloquent. Le cavalier blanc se dirige vers l'avant-poste c5 et domine."
+          }
+        ]
+      },
+      "piece-activity": {
+        "title": "L'activité des pièces",
+        "summary": "Améliore ta plus mauvaise pièce.",
+        "steps": [
+          {
+            "text": "Quand tu ne sais pas quoi faire, trouve ta **pièce la plus mal placée** et améliore-la. Une pièce passive sur le bord, c'est comme jouer avec une pièce de moins.\n\nIci, le cavalier blanc en a4 ne fait rien. Son itinéraire **a4–c3–e2–f4** ou **–d5** le ramène dans la partie."
+          },
+          {
+            "text": "Améliore ta plus mauvaise pièce.",
+            "task": {
+              "prompt": "Ramène le cavalier du bord vers le centre.",
+              "hint": "« Cavalier au bord, cavalier mort. » Ramène-le en c3.",
+              "success": "Bien mieux. Le cavalier vise maintenant d5, e4 et b5."
+            }
+          },
+          {
+            "text": "**Active tes tours** : relie-les (rien entre elles sur la dernière rangée), puis place-les sur des colonnes ouvertes ou semi-ouvertes. Les **transferts** de tour (Re3–g3, Rd3–h3) amènent les tours dans l'attaque."
+          },
+          {
+            "text": "**Échange tes mauvaises pièces, garde les bonnes.** Échange les pièces qui défendent bien l'adversaire (comme un cavalier fort sur un avant-poste), et garde sur l'échiquier tes pièces les plus actives."
+          }
+        ]
+      },
+      "planning": {
+        "title": "Comment établir un plan",
+        "summary": "Transforme ta compréhension en stratégie.",
+        "steps": [
+          {
+            "text": "Une méthode simple pour planifier dans n'importe quelle position :\n\n1. **La sécurité d'abord** : y a-t-il des menaces ? (échecs, prises, menaces)\n2. **Regarde les pions** : sur quelle aile dois-je jouer ? Quelle rupture de pions est-ce que je veux ?\n3. **Trouve les faiblesses** : pions faibles, trous, roi exposé.\n4. **Améliore tes pièces** : la plus mauvaise d'abord.\n5. **Puis passe à l'action** : ouvre la position là où tu es le plus fort."
+          },
+          {
+            "text": "**Les ruptures de pions** sont le principal moyen d'ouvrir des lignes. Dans la française, variante d'avance, les Noirs attaquent la base de la chaîne de pions blanche avec ...c5 (et plus tard ...f6)."
+          },
+          {
+            "text": "Trouve la bonne rupture de pions.",
+            "task": {
+              "prompt": "Frappe la base de la chaîne de pions blanche.",
+              "hint": "La base de la chaîne est d4. Quel pion peut l'attaquer ?",
+              "success": "Exactement : attaque la base de la chaîne ! ...c5 est le coup principal dans la française, variante d'avance."
+            }
+          },
+          {
+            "text": "**Joue sur l'aile où tu as le plus d'espace.** Les chaînes de pions montrent la voie : dans l'est-indienne, la chaîne blanche (d5–e4) pointe vers l'aile dame, donc les Blancs y attaquent avec c5. La chaîne noire (e5–d6) pointe vers l'aile roi, donc les Noirs attaquent avec ...f5."
+          },
+          {
+            "text": "**L'attaque de minorité** : dans la structure Carlsbad, les Blancs poussent deux pions de l'aile dame (b4–b5) contre trois pour créer une faiblesse en c6 — un plan utilisé par les champions depuis 100 ans."
+          }
+        ]
+      }
+    }
+  },
+  "attack-and-defense": {
+    "title": "Attaque du roi et défense",
+    "description": "Apprends à attaquer le roi roqué — le sacrifice grec, les batteries, les avalanches de pions et les roques opposés — et à défendre grâce à la prophylaxie : toujours te demander ce que veut ton adversaire.",
+    "lessons": {
+      "attack-principles": {
+        "title": "Les principes de l'attaque",
+        "summary": "Quand et comment partir à l'assaut du roi.",
+        "steps": [
+          {
+            "text": "Une attaque sur le roi réussit quand tu as **plus d'attaquants que l'adversaire n'a de défenseurs** dans ce secteur. Avant d'attaquer, vérifie :\n\n- Ai-je une **avance de développement** ?\n- Le centre est-il **fermé ou stable** ? (Les attaques sur l'aile échouent si le centre s'ouvre.)\n- Y a-t-il des **cibles** : des pions affaiblis, des défenseurs absents comme le cavalier f6 ?"
+          },
+          {
+            "text": "**Les batteries** : aligne deux pièces sur la même diagonale ou la même colonne. Dame devant et fou derrière — ou fou devant et dame derrière — braqués sur h7 ou h2 : c'est un schéma de mat classique."
+          },
+          {
+            "text": "Le cavalier f6, le meilleur défenseur de h7, a disparu.",
+            "task": {
+              "prompt": "Mat en un coup avec la batterie dame et fou.",
+              "hint": "Prends en h7 avec la dame. Le fou en d3 la protège.",
+              "success": "Échec et mat ! La batterie dame + fou est mortelle."
+            }
+          }
+        ]
+      },
+      "greek-gift": {
+        "title": "Le sacrifice grec",
+        "summary": "Bxh7+! — le sacrifice d'attaque le plus célèbre.",
+        "steps": [
+          {
+            "text": "Le **sacrifice grec** est un sacrifice de fou en h7 (ou h2). Les ingrédients :\n\n- Un fou en d3 qui vise h7\n- Un cavalier qui peut sauter en **g5**\n- Une dame qui peut atteindre **h5** (ou la colonne h)\n- Pas de cavalier noir en f6 (souvent chassé par un pion en e5)"
+          },
+          {
+            "text": "Tous les ingrédients sont réunis. Lance l'attaque !",
+            "task": {
+              "prompt": "Sacrifie le fou en h7, puis enchaîne avec un échec de cavalier.",
+              "hint": "Prends en h7 avec échec. Quand le roi reprend, le cavalier saute en g5 avec échec.",
+              "success": "Le roi est exposé. Maintenant, la dame rejoint l'attaque…"
+            }
+          },
+          {
+            "text": "Les Noirs ont reculé avec ...Kg8. Fais entrer l'artillerie lourde.",
+            "task": {
+              "prompt": "Amène ta dame dans l'attaque avec une menace de mat.",
+              "hint": "La dame menace mat en h7.",
+              "success": "Qh5 menace Qh7#. Les Noirs doivent sacrifier leur dame avec ...Qxg5 : le sacrifice grec a payé."
+            }
+          },
+          {
+            "text": "**Quand échoue-t-il ?** Si les Noirs peuvent défendre h7 avec un cavalier (…Nf6/…Nf8), ou si le roi peut s'enfuir sans danger en g6/h6 sans que les Blancs aient de suite, le sacrifice n'est qu'une pièce perdue. Calcule toujours la marche du roi ...Kg6!"
+          }
+        ]
+      },
+      "opposite-castling": {
+        "title": "Roques opposés et avalanches de pions",
+        "summary": "Une course : le premier qui ouvre des lignes gagne.",
+        "steps": [
+          {
+            "text": "Quand les rois ont roqué **de côtés opposés**, les deux joueurs peuvent lancer leurs pions contre le roi adverse sans affaiblir le leur. Cela devient une **course** : la vitesse compte plus que le matériel.\n\nDans l'attaque yougoslave, les Blancs jouent **h4–h5**, échangent le fou g7 avec **Bh6**, et matent sur la colonne h."
+          },
+          {
+            "text": "**Ouvrir la colonne h** : sacrifier un pion (g4!), voire la qualité, pour ouvrir les colonnes devant le roi est typique.\n\nLes Noirs ripostent avec ...Rxc3! et des avalanches de pions à l'aile dame."
+          },
+          {
+            "text": "**Échange le défenseur clé.** Dans le Dragon, le fou g7 protège les cases foncées autour du roi noir.",
+            "task": {
+              "prompt": "Mets la pression sur le cavalier f6, le défenseur clé : joue Bg5.",
+              "hint": "Déplace le fou e3 en g5 pour mettre la pression sur f6.",
+              "success": "Bg5 est une ligne principale : il cloue/attaque le cavalier f6 et soutient les plans f4-f5 ou g4."
+            }
+          }
+        ]
+      },
+      "prophylaxis": {
+        "title": "Prophylaxie et défense",
+        "summary": "Demande-toi : que veut mon adversaire ?",
+        "steps": [
+          {
+            "text": "La **prophylaxie** consiste à empêcher les idées de ton adversaire *avant* qu'elles ne se réalisent. Avant chaque coup, demande-toi : **« Que veut faire mon adversaire ? »**\n\nSouvent, la meilleure défense est un coup qui stoppe son plan et améliore ta position en même temps."
+          },
+          {
+            "text": "Les Blancs menacent **Qxh7#**. Plusieurs coups l'empêchent, mais un seul attaque en même temps.",
+            "task": {
+              "prompt": "Pare la menace de mat en gagnant un temps.",
+              "hint": "Quelle pièce peut défendre h7 et attaquer la dame en même temps ?",
+              "success": "Excellente défense ! Le cavalier couvre h7 et attaque la dame."
+            }
+          },
+          {
+            "text": "**La « luft »** (« de l'air ») : un petit coup de pion comme **h3/h6** donne une case de fuite à ton roi et élimine les mats du couloir pour le reste de la partie. Un coup comme **...h6** empêche aussi les idées Ng5 et Bg5."
+          },
+          {
+            "text": "**Principes de défense :**\n\n- Échange les pièces d'attaque (surtout le meilleur attaquant adverse).\n- Garde un cavalier en f6 (f3) : c'est le meilleur défenseur du roi.\n- Contre-attaque au centre : la meilleure réponse à une attaque sur l'aile est une action au centre.\n- Ne panique pas : rends du matériel si cela brise l'attaque."
+          }
+        ]
+      }
+    }
+  },
+  "endgame-essentials": {
+    "title": "Les finales essentielles",
+    "description": "« Pour progresser, étudiez d'abord les finales » — Capablanca. Maîtrise l'opposition, les cases clés, la règle du carré, la triangulation, les pions passés éloignés et les finales de tours incontournables : Lucena et Philidor.",
+    "lessons": {
+      "king-activity": {
+        "title": "Le roi actif",
+        "summary": "En finale, le roi devient une pièce de combat.",
+        "steps": [
+          {
+            "text": "Avec moins de pièces sur l'échiquier, il n'y a plus de danger de mat. Le roi devient une **pièce d'attaque puissante** qui vaut environ 4 pions. Règle numéro un de la finale : **active ton roi !**\n\nAmène-le vers le centre ou vers les pions importants."
+          },
+          {
+            "text": "**Le roi devant les pions.** Dans les finales de roi et pion, le roi attaquant doit se placer **devant** son pion, pas derrière. Le roi défenseur veut se placer **juste devant** le pion adverse."
+          },
+          {
+            "text": "Ton roi est à côté de son pion. Passe devant !",
+            "task": {
+              "prompt": "Trouve le seul coup gagnant.",
+              "hint": "Place ton roi juste devant le pion, sur la 6e rangée.",
+              "success": "Avec le roi sur la 6e rangée devant son pion, les Blancs gagnent toujours (sauf avec un pion tour)."
+            }
+          }
+        ]
+      },
+      "opposition": {
+        "title": "L'opposition",
+        "summary": "L'idée la plus importante des finales de roi et pions.",
+        "steps": [
+          {
+            "text": "Deux rois sur la même colonne (ou la même rangée) avec **une case entre eux** sont en **opposition**. Le joueur qui **n'a pas** le trait « a l'opposition » : l'autre roi doit céder le passage.\n\nIci, les rois se font face. Celui qui joue doit s'écarter."
+          },
+          {
+            "text": "Prends l'opposition pour gagner.",
+            "task": {
+              "prompt": "Prends l'opposition.",
+              "hint": "Place ton roi sur la même colonne que le roi noir, avec une case entre eux.",
+              "success": "Tu as l'opposition ! Les Noirs doivent céder le passage et ton roi avance vers les cases clés."
+            }
+          },
+          {
+            "text": "Le roi noir est coincé près du coin. Utilise l'opposition pour escorter le pion.",
+            "task": {
+              "prompt": "Trouve le seul coup gagnant.",
+              "hint": "Fais face au roi noir avec une case entre vous.",
+              "success": "Opposition ! Les Noirs doivent s'écarter, et ton roi accompagne le pion jusqu'à sa case de promotion."
+            }
+          }
+        ]
+      },
+      "key-squares": {
+        "title": "Les cases clés",
+        "summary": "Atteins-les et le pion ira à dame.",
+        "steps": [
+          {
+            "text": "Pour chaque pion, il existe des **cases clés** : si le roi attaquant atteint l'une d'elles, le pion va à dame quoi qu'il arrive.\n\nPour un pion sur la 2e, 3e ou 4e rangée, les cases clés sont les trois cases situées **deux rangées devant** lui. Pour un pion sur la 5e ou la 6e rangée, il y a six cases clés."
+          },
+          {
+            "text": "Les cases clés du pion d3 sont c5, d5 et e5. Le roi noir les surveille. Utilise l'opposition pour te frayer un chemin.",
+            "task": {
+              "prompt": "Trouve le seul coup gagnant.",
+              "hint": "Prends l'opposition sur la colonne c.",
+              "success": "Grâce à l'opposition, ton roi atteindra une case clé et le pion ira à dame."
+            }
+          },
+          {
+            "text": "**Les pions tour sont spéciaux.** Avec un pion a ou h, le roi défenseur dans le coin ne peut pas être délogé : ces finales sont presque toujours **nulles**. Souviens-t'en quand tu simplifies vers une finale de pions !"
+          }
+        ]
+      },
+      "square-of-the-pawn": {
+        "title": "La règle du carré",
+        "summary": "Le roi peut-il rattraper le pion ? Compte avec un carré.",
+        "steps": [
+          {
+            "text": "Pour savoir si un roi peut rattraper un pion passé sans aide, imagine un **carré** dont un côté va du pion jusqu'à sa case de promotion.\n\nSi le roi défenseur peut entrer **dans le carré** à son coup, il rattrape le pion. Sinon, le pion va à dame.\n\n(Si le pion est sur sa rangée de départ, compte à partir de la case devant lui : il peut avancer de deux cases.)"
+          },
+          {
+            "text": "Les Noirs jouent. Le roi blanc est loin. Peux-tu rattraper le pion ?",
+            "task": {
+              "prompt": "Entre dans le carré du pion.",
+              "hint": "Après la prochaine poussée du pion blanc, le carré rétrécit. Déplace-toi en diagonale vers le chemin du pion.",
+              "success": "Tu es dans le carré : le pion ne peut pas échapper à ton roi. Nulle !"
+            }
+          },
+          {
+            "text": "Se déplacer en diagonale est aussi rapide que se déplacer en ligne droite. Un roi peut donc **poursuivre** un pion et **se rapprocher** d'une autre cible en même temps : la célèbre **manœuvre de Réti** (Réti, 1921) utilise exactement cette idée pour sauver une position qui semblait perdue."
+          }
+        ]
+      },
+      "triangulation": {
+        "title": "La triangulation",
+        "summary": "Perds un temps exprès pour mettre ton adversaire en zugzwang.",
+        "steps": [
+          {
+            "text": "**Zugzwang** signifie que n'importe quel coup aggrave ta position. Ici, **si les Noirs ont le trait**, ils perdent : le roi doit abandonner soit le pion b7, soit les cases de la colonne d.\n\nMais c'est aux **Blancs** de jouer. Les Blancs doivent passer le trait aux Noirs, et un roi ne peut pas passer son tour."
+          },
+          {
+            "text": "**La triangulation** : le roi blanc fait le tour d'un triangle de trois cases (d5–e5–d4–d5), tandis que le roi noir ne peut faire que des allers-retours entre deux cases (d7 et c6). Après trois coups, la même position réapparaît, mais avec le trait aux Noirs !"
+          },
+          {
+            "text": "Perds un temps avec ton roi.",
+            "task": {
+              "prompt": "Triangule : joue Ke5, Kd4 puis reviens avec Kd5.",
+              "hint": "Fais faire au roi le tour du triangle e5–d4–d5. Le roi noir ne peut pas t'imiter.",
+              "success": "Même position, mais maintenant les Noirs doivent jouer et perdre ! Après ...Kc8, Ke6–d6–e7–d7 gagne."
+            }
+          }
+        ]
+      },
+      "outside-passed-pawn": {
+        "title": "Le pion passé éloigné",
+        "summary": "Un leurre qui attire le roi adverse au loin.",
+        "steps": [
+          {
+            "text": "Un **pion passé éloigné** est un pion passé situé loin des autres pions. Il sert de **leurre** : le roi adverse doit courir pour l'arrêter, puis ton roi se régale des pions restés sans protection."
+          },
+          {
+            "text": "Utilise ton pion passé éloigné.",
+            "task": {
+              "prompt": "Pousse le pion passé éloigné pour attirer le roi noir au loin.",
+              "hint": "Avance le pion a. Le roi noir doit le poursuivre.",
+              "success": "Le roi noir doit aller à l'aile dame, et le roi blanc va gagner les pions de l'aile roi."
+            }
+          },
+          {
+            "text": "**Les majorités de pions** : si tu as plus de pions sur une aile, tu peux généralement y créer un pion passé. Une **majorité saine à l'aile dame** est souvent un atout gagnant en finale, car le pion passé qu'elle crée est loin des deux rois."
+          }
+        ]
+      },
+      "rook-endgame-basics": {
+        "title": "Les bases des finales de tours",
+        "summary": "Tours actives, rois coupés, tours derrière les pions passés.",
+        "steps": [
+          {
+            "text": "Les finales de tours sont les finales **les plus fréquentes** aux échecs. Les règles d'or :\n\n1. **Active ta tour** : une tour active vaut un pion.\n2. **Coupe le roi adverse** avec ta tour le long d'une rangée ou d'une colonne.\n3. **Les tours se placent derrière les pions passés**, les tiens comme ceux de l'adversaire (règle de Tarrasch)."
+          },
+          {
+            "text": "Ton pion passé a a besoin de soutien. La tour noire se trouve devant lui.",
+            "task": {
+              "prompt": "Place ta tour derrière ton pion passé.",
+              "hint": "Fais glisser la tour le long de la première rangée jusqu'en a1.",
+              "success": "Derrière le pion, ta tour devient plus forte à chaque poussée, tandis que la tour noire devient de plus en plus passive."
+            }
+          },
+          {
+            "text": "**Couper le roi** : une tour sur une colonne peut tenir le roi adverse éloigné de ton pion. Chaque colonne qui sépare le roi défenseur compte énormément."
+          }
+        ]
+      },
+      "lucena-position": {
+        "title": "La position de Lucena",
+        "summary": "Construire un pont : comment gagner tour + pion contre tour.",
+        "steps": [
+          {
+            "text": "La **position de Lucena** : ton pion est sur la 7e rangée, ton roi est devant lui, et le roi adverse est **coupé** par ta tour. La tour noire empêche ton roi de sortir du coin.\n\nLa technique gagnante s'appelle **construire un pont**."
+          },
+          {
+            "text": "Étape 1 : amène ta tour sur la **4e rangée**. Plus tard, elle bloquera les échecs de la tour adverse.",
+            "task": {
+              "prompt": "Construis le pont : monte ta tour en d4.",
+              "hint": "La tour sur la 4e rangée (d4).",
+              "success": "Exactement. Maintenant, le roi peut sortir, et quand les échecs s'épuiseront, la tour s'interposera."
+            }
+          },
+          {
+            "text": "Après 1.Rd4 Rc1 2.Ka7 Ra1+ 3.Kb6 Rb1+ 4.Kc6 Rc1+ 5.Kb5 Rb1+, le roi est sorti. Il est temps d'achever le pont.",
+            "task": {
+              "prompt": "Pare l'échec et termine le pont.",
+              "hint": "Interpose ta tour en b4. Les échecs sont terminés.",
+              "success": "Le pont est construit ! Le pion va se promouvoir. C'est la technique de Lucena."
+            }
+          }
+        ]
+      },
+      "philidor-position": {
+        "title": "La position de Philidor",
+        "summary": "Comment annuler une finale de tours avec un pion de moins.",
+        "steps": [
+          {
+            "text": "La **position de Philidor** est le dispositif défensif clé quand tu as un pion de moins dans une finale de tours et que ton roi est devant le pion.\n\n**Étape 1** : garde ta tour sur ta **3e rangée** (la 6e rangée pour les Noirs) pour que le roi blanc ne puisse pas avancer."
+          },
+          {
+            "text": "**Étape 2** : dès que les Blancs poussent le pion sur la 6e rangée, le roi blanc perd son abri. Descends ta tour sur la **première rangée** et donne des échecs **par derrière**. Le roi ne peut jamais y échapper."
+          },
+          {
+            "text": "Les Blancs viennent de jouer e5–e6. Place à l'étape 2.",
+            "task": {
+              "prompt": "Recule ta tour jusqu'en b1.",
+              "hint": "Va à l'autre bout de l'échiquier pour pouvoir faire échec au roi par derrière.",
+              "success": "Défense Philidor parfaite. Tu feras échec au roi par derrière indéfiniment : c'est nulle."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "calculation-and-thinking": {
+    "title": "Calcul et réflexion",
+    "description": "Pense comme un maître. Construis une routine de réflexion fiable : passe en revue les échecs, les prises et les menaces, choisis des coups candidats, calcule les variantes forcées et fais une vérification anti-gaffe avant chaque coup.",
+    "lessons": {
+      "checks-captures-threats": {
+        "title": "Échecs, prises, menaces",
+        "summary": "Le réflexe EPM qui fait trouver les tactiques.",
+        "steps": [
+          {
+            "text": "Les joueurs forts regardent **d'abord les coups forçants**, dans cet ordre :\n\n1. **Les échecs** : l'adversaire doit y répondre.\n2. **Les prises** : elles changent le matériel et forcent souvent des reprises.\n3. **Les menaces** : des attaques auxquelles l'adversaire doit répondre.\n\nPasse-les en revue pour **les deux camps** à chaque coup. La plupart des tactiques se cachent parmi les coups forçants."
+          },
+          {
+            "text": "Voici la fin de la célèbre **partie de l'Opéra** de Paul Morphy (Paris, 1858). Examine d'abord les échecs, même les plus « fous ».",
+            "task": {
+              "prompt": "Mat en 2 : vérifie chaque échec !",
+              "hint": "Regarde chaque échec de la dame. Si le cavalier d7 est obligé de prendre, qui reste-t-il pour garder d8 ?",
+              "success": "La finale immortelle de Morphy ! Un sacrifice de dame que seul le réflexe EPM permet de trouver."
+            }
+          },
+          {
+            "text": "**Ne t'arrête pas au premier bon coup.** Un échec forçant peut être encore plus fort qu'une grosse prise. Demande-toi toujours : *après mon échec, que peut faire l'adversaire ?* Si la réponse est « presque rien », calcule jusqu'au bout."
+          },
+          {
+            "text": "Réti contre Tartakower, Vienne 1910 : l'une des plus courtes parties brillantes jamais jouées.",
+            "task": {
+              "prompt": "Mat en 3 : commence par un sacrifice de dame.",
+              "hint": "Sacrifie la dame en d8 avec échec. Puis un échec double avec le fou !",
+              "success": "Brillant ! Sacrifice de dame, échec double et mat."
+            }
+          }
+        ]
+      },
+      "candidate-moves": {
+        "title": "Les coups candidats",
+        "summary": "Fais la liste de tes options avant de calculer.",
+        "steps": [
+          {
+            "text": "Avant de calculer, dresse une courte liste de **coups candidats** (2 à 4 options sérieuses). Ensuite, calcule chacun d'eux et compare. Cela t'évite de tomber amoureux de ta première idée.\n\nDe bons candidats : les coups forçants, les coups qui utilisent tes pièces les plus actives et les coups qui stoppent le plan adverse."
+          },
+          {
+            "text": "Morphy, partie de l'Opéra, 13e coup. Candidats : Rxd7, Bxf6, Rhe1... Lequel est le plus fort ?",
+            "task": {
+              "prompt": "Trouve le candidat le plus forçant.",
+              "hint": "Une prise qui maintient le clouage en d7.",
+              "success": "Morphy a choisi le coup le plus forçant : Rxd7! Les pièces noires sont clouées et paralysées."
+            }
+          },
+          {
+            "text": "Après 13.Rxd7 Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7, Morphy avait tout calculé jusqu'au bout : le sacrifice de dame que tu as trouvé dans la leçon précédente."
+          }
+        ]
+      },
+      "blunder-check": {
+        "title": "La vérification anti-gaffe",
+        "summary": "Avant de toucher une pièce, regarde l'échiquier du point de vue de ton adversaire.",
+        "steps": [
+          {
+            "text": "La plupart des parties entre débutants se jouent sur des **gaffes**, pas sur des combinaisons brillantes. Avant chaque coup, fais une **vérification anti-gaffe** :\n\n1. Que **menace** le dernier coup de mon adversaire ?\n2. Après le coup que je prévois, quels sont **ses** échecs, prises et menaces ?\n3. L'une de mes pièces est-elle **non défendue** ?"
+          },
+          {
+            "text": "**Compter ne suffit pas.** Ici, 1.Nxe5? Nxe5 2.Rxe5?? semble gagner un pion (deux attaquants contre un défenseur), mais une fois la tour partie, **...Bxf2+** gagne la tour. La case f2 n'était défendue que par le roi !"
+          },
+          {
+            "text": "**Le gambit Blackburne Shilling** : les Blancs ont pris goulûment le pion e5 et n'ont pas vu la menace noire. Punis-les !"
+          },
+          {
+            "text": "Trouve les coups qui punissent la gourmandise des Blancs.",
+            "task": {
+              "prompt": "Attaque deux cibles à la fois avec ta dame, et continue d'attaquer.",
+              "hint": "La dame en g5 attaque g2 et e5. Après Nxf7, prends g2, puis fais échec en e4 — et termine avec un cavalier.",
+              "success": "À l'étouffée ! Le célèbre piège Blackburne Shilling. Les Blancs ont oublié la vérification anti-gaffe."
+            }
+          }
+        ]
+      },
+      "forcing-sequences": {
+        "title": "Calculer les variantes forcées",
+        "summary": "Les échecs, les prises et les menaces limitent les choix de ton adversaire : tu peux donc calculer loin.",
+        "steps": [
+          {
+            "text": "Plus tes coups sont **forçants**, **moins il y a de réponses** à calculer. Une suite d'échecs peut se calculer sur 5 à 10 coups, car l'adversaire n'a qu'une ou deux réponses à chaque fois.\n\nAstuce : **visualise** la position finale. Où sont les pièces après la séquence ?"
+          },
+          {
+            "text": "Calcule toute la séquence forcée avant de jouer. (Tu l'as déjà vue dans le cours sur les schémas de mat !)",
+            "task": {
+              "prompt": "Mat en 4 uniquement avec des échecs.",
+              "hint": "Échec de cavalier, échec double, sacrifice de dame, mat à l'étouffée.",
+              "success": "Chaque coup était un échec : c'est pour ça que tu as pu calculer jusqu'au bout."
+            }
+          },
+          {
+            "text": "**Liste de contrôle du calcul :**\n\n- Commence par le candidat le plus forçant.\n- Pour chaque coup, trouve la **meilleure** réponse de l'adversaire, pas celle que tu espères.\n- Compte le matériel à la fin de la variante.\n- Avant de jouer, revérifie le **premier coup** pour éviter une gaffe simple."
+          }
+        ]
+      }
+    }
+  }
+}

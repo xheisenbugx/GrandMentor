@@ -1,0 +1,959 @@
+{
+  "chess-basics": {
+    "title": "Fundamentos do xadrez",
+    "description": "Nunca jogou? Comece aqui. Conheça o tabuleiro, como cada peça se move, o xeque e o xeque-mate, o roque, a captura en passant, a promoção e as formas de uma partida terminar empatada.",
+    "lessons": {
+      "the-board": {
+        "title": "O tabuleiro e as peças",
+        "summary": "Conheça as 64 casas e as 32 peças.",
+        "steps": [
+          {
+            "text": "Bem-vindo ao xadrez! O jogo é disputado em um tabuleiro de **64 casas**, alternando claras e escuras. Cada jogador começa com **16 peças**: um rei, uma dama, duas torres, dois bispos, dois cavalos e oito peões.\n\n**As brancas sempre jogam primeiro**, e depois os jogadores se alternam."
+          },
+          {
+            "text": "As linhas verticais se chamam **colunas** e recebem letras de *a* a *h*. As horizontais se chamam **fileiras** e são numeradas de *1* a *8*.\n\nCada casa tem um nome formado pela sua coluna e fileira. A casa destacada é **e4**: coluna *e*, fileira 4."
+          },
+          {
+            "text": "Dica para montar o tabuleiro: sempre há uma **casa clara no canto inferior direito** (h1 para as brancas).\n\nAs damas começam na casa da sua própria cor: a dama branca na casa clara d1 e a dama negra na casa escura d8. Os reis ficam bem ao lado delas."
+          },
+          {
+            "text": "Cada peça tem um valor que ajuda você a decidir quais trocas são boas:\n\n**Peão = 1**, **Cavalo = 3**, **Bispo = 3**, **Torre = 5**, **Dama = 9**.\n\nO rei não tem valor: ele nunca pode ser capturado. Se o seu rei ficar encurralado, você perde!"
+          },
+          {
+            "text": "Hora do seu primeiro lance! Os peões andam em linha reta para a frente. No primeiro movimento, um peão pode avançar **duas casas**.",
+            "task": {
+              "prompt": "Avance o peão e duas casas, até e4.",
+              "hint": "Arraste o peão que está na frente do seu rei de e2 para e4.",
+              "success": "Ótimo começo! 1.e4 é o primeiro lance mais popular da história do xadrez."
+            }
+          }
+        ]
+      },
+      "rook-bishop-queen": {
+        "title": "Torre, bispo e dama",
+        "summary": "As peças de longo alcance que deslizam pelo tabuleiro.",
+        "steps": [
+          {
+            "text": "A **torre** se move quantas casas quiser em linha reta: para cima, para baixo, para a esquerda ou para a direita. Ela não pode pular outras peças.\n\nUma torre vale **5 pontos**."
+          },
+          {
+            "text": "Sua vez. O cavalo negro em a7 está sem proteção.",
+            "task": {
+              "prompt": "Capture o cavalo com a sua torre.",
+              "hint": "A torre sobe em linha reta pela coluna a.",
+              "success": "Bela captura! Você acabou de ganhar 3 pontos de material."
+            }
+          },
+          {
+            "text": "O **bispo** se move quantas casas quiser na diagonal. Por isso, um bispo sempre fica na **mesma cor** em que começou.\n\nUm bispo vale **3 pontos**."
+          },
+          {
+            "text": "Os bispos adoram diagonais longas e abertas.",
+            "task": {
+              "prompt": "Capture a torre em h6 com o seu bispo.",
+              "hint": "Siga a diagonal de c1 até h6.",
+              "success": "Muito bem! Os bispos varrem as diagonais assim durante toda a partida."
+            }
+          },
+          {
+            "text": "A **dama** combina a torre e o bispo: ela se move quantas casas quiser em qualquer linha reta ou diagonal. É a peça mais poderosa, e vale **9 pontos**."
+          },
+          {
+            "text": "Procure uma captura que **também ataque o rei**.",
+            "task": {
+              "prompt": "Ganhe a torre com a sua dama.",
+              "hint": "A dama pode ir na diagonal de d1 até a4.",
+              "success": "Excelente! Você capturou a torre e deu **xeque** ao mesmo tempo."
+            }
+          }
+        ]
+      },
+      "knight-king-pawn": {
+        "title": "Cavalo, rei e peão",
+        "summary": "O cavalo saltador, o precioso rei e o humilde peão.",
+        "steps": [
+          {
+            "text": "O **cavalo** se move em **L**: duas casas em uma direção e depois uma casa para o lado. É a única peça que pode **pular** outras peças.\n\nUm cavalo vale **3 pontos**. Do centro, ele alcança 8 casas!"
+          },
+          {
+            "text": "Os cavalos são traiçoeiros: eles atacam casas com um padrão que os iniciantes costumam não ver.",
+            "task": {
+              "prompt": "Capture a dama negra com o seu cavalo.",
+              "hint": "De d3, duas casas para cima e uma para a esquerda: você chega a c5.",
+              "success": "Fantástico! Um cavalo de graça já é bom; uma dama de graça é um presente!"
+            }
+          },
+          {
+            "text": "O **rei** se move apenas **uma casa** em qualquer direção. Ele nunca pode ir para uma casa atacada por uma peça inimiga.\n\nProteja o seu rei: se ele ficar encurralado, a partida acaba."
+          },
+          {
+            "text": "Os **peões** andam para a frente uma casa (ou duas a partir da casa inicial), mas **capturam na diagonal**, uma casa à frente.\n\nOs peões nunca podem andar para trás."
+          },
+          {
+            "text": "O peão de e4 está atacando o peão negro em d5.",
+            "task": {
+              "prompt": "Capture o peão em d5.",
+              "hint": "Os peões capturam na diagonal, para a frente.",
+              "success": "Correto! Os peões capturam na diagonal, embora andem em linha reta."
+            }
+          }
+        ]
+      },
+      "check-and-checkmate": {
+        "title": "Xeque e xeque-mate",
+        "summary": "Ataque o rei, saia do xeque e vença a partida.",
+        "steps": [
+          {
+            "text": "Quando um rei é atacado, ele está em **xeque**. Aqui a torre branca ataca o rei negro pela coluna e.\n\nQuem está em xeque **precisa** sair dele logo no lance seguinte."
+          },
+          {
+            "text": "Há três maneiras de sair do xeque:\n\n1. **Mover** o rei para uma casa segura.\n2. **Bloquear** o xeque colocando uma peça no meio.\n3. **Capturar** a peça atacante.\n\nSempre olhe as três!"
+          },
+          {
+            "text": "Você está em xeque pela torre de e5. A melhor saída ganha material.",
+            "task": {
+              "prompt": "Saia do xeque capturando a peça atacante.",
+              "hint": "Seu bispo em c3 pode chegar a e5 pela diagonal.",
+              "success": "Perfeito! Capturar a peça atacante costuma ser a melhor saída."
+            }
+          },
+          {
+            "text": "Agora a torre dá xeque pela sua última fileira, e o seu rei está preso pelos próprios peões.",
+            "task": {
+              "prompt": "Bloqueie o xeque com o seu bispo.",
+              "hint": "Seu rei não pode se mover e nada pode capturar a torre. Coloque o bispo entre eles, em f1 — o seu rei protege essa casa.",
+              "success": "Ótima defesa! O bispo em f1 está protegido pelo seu rei."
+            }
+          },
+          {
+            "text": "**Xeque-mate** significa que o rei está em xeque e **não tem como escapar**. O xeque-mate encerra a partida na hora — quem dá o xeque-mate vence!\n\nAqui o rei negro levou xeque-mate: a torre o ataca e os próprios peões bloqueiam todas as fugas."
+          },
+          {
+            "text": "Agora é a sua vez de dar xeque-mate.",
+            "task": {
+              "prompt": "Dê xeque-mate em um lance.",
+              "hint": "O rei negro está preso atrás dos próprios peões. Ataque-o pela 8ª fileira.",
+              "success": "Xeque-mate! Isso se chama **mate do corredor**."
+            }
+          },
+          {
+            "text": "Dama e rei trabalhando juntos são mortais.",
+            "task": {
+              "prompt": "Dê xeque-mate em um lance.",
+              "hint": "Seu rei já cobre f7, g7 e h7. Use a dama para atacar pela última fileira.",
+              "success": "Xeque-mate! A dama controla a 8ª fileira e o rei cobre o resto."
+            }
+          }
+        ]
+      },
+      "castling": {
+        "title": "O roque",
+        "summary": "O lance especial que deixa o seu rei em segurança.",
+        "steps": [
+          {
+            "text": "O **roque** é um lance especial que faz duas coisas de uma vez: coloca o seu rei em segurança e põe uma torre em jogo.\n\nMova o rei **duas casas** em direção a uma torre, e a torre salta para a casa do outro lado do rei."
+          },
+          {
+            "text": "O roque do lado do rei se chama **roque pequeno** (escrito **O-O**).",
+            "task": {
+              "prompt": "Faça o roque pequeno: mova o seu rei de e1 para g1.",
+              "hint": "Arraste o rei duas casas para a direita. A torre salta por cima automaticamente.",
+              "success": "Você rocou! Seu rei está seguro atrás dos peões e sua torre está pronta para entrar na luta."
+            }
+          },
+          {
+            "text": "Você só pode fazer o roque se:\n\n- nem o rei nem aquela torre se moveram ainda,\n- as casas entre eles estão vazias,\n- o seu rei **não está em xeque** e não **passa por** nem para em uma casa atacada."
+          },
+          {
+            "text": "O bispo negro ataca f1, então você não pode fazer o roque pequeno agora.",
+            "task": {
+              "prompt": "Faça o roque do outro lado: o roque grande (O-O-O).",
+              "hint": "Mova o rei duas casas para a esquerda, de e1 para c1.",
+              "success": "Muito bem! O roque grande colocou sua torre direto na coluna d."
+            }
+          }
+        ]
+      },
+      "en-passant-promotion": {
+        "title": "En passant e promoção",
+        "summary": "Dois lances especiais de peão que todo jogador precisa conhecer.",
+        "steps": [
+          {
+            "text": "**En passant** (do francês, \"de passagem\"): se um peão inimigo avança duas casas e para bem **ao lado** do seu peão, você pode capturá-lo como se ele tivesse andado só uma casa.\n\nVocê precisa fazer isso **imediatamente**, senão a chance passa."
+          },
+          {
+            "text": "As negras acabaram de jogar ...d7-d5, parando ao lado do seu peão em e5.",
+            "task": {
+              "prompt": "Capture o peão de d5 en passant.",
+              "hint": "Mova o seu peão de e5 na diagonal para d6 — o peão de d5 desaparece.",
+              "success": "Isso é en passant! Parece estranho, mas é uma captura totalmente legal."
+            }
+          },
+          {
+            "text": "**Promoção**: quando um peão chega à última fileira, ele se transforma em dama, torre, bispo ou cavalo — quase sempre em **dama**.\n\nÉ por isso que os peões passados são tão perigosos!"
+          },
+          {
+            "text": "Seu peão está a um passo de virar dama.",
+            "task": {
+              "prompt": "Promova o seu peão a dama.",
+              "hint": "Avance o peão até b8 e escolha a dama.",
+              "success": "Uma dama novinha em folha — e ainda dá xeque!"
+            }
+          },
+          {
+            "text": "Os peões também podem capturar chegando à última fileira e promover.",
+            "task": {
+              "prompt": "Capture a torre e promova a dama.",
+              "hint": "Os peões capturam na diagonal — mesmo ao promover.",
+              "success": "Vitória dupla: você eliminou a torre e fez uma dama nova com xeque!"
+            }
+          }
+        ]
+      },
+      "draws": {
+        "title": "Afogamento e empates",
+        "summary": "Nem toda partida tem um vencedor. Aprenda as formas de empatar.",
+        "steps": [
+          {
+            "text": "**Afogamento**: o jogador da vez **não** está em xeque, mas **não tem nenhum lance legal**. A partida termina na hora em **empate**!\n\nAqui as negras jogam: o rei em h8 não está atacado, mas todas as casas ao redor estão. Rei afogado."
+          },
+          {
+            "text": "Quando estiver ganhando, **cuidado com o afogamento**! Deixe uma casa livre para o rei inimigo — ou dê xeque-mate.\n\nAqui **Qf7??** seria afogamento.",
+            "task": {
+              "prompt": "Encontre o xeque-mate (e evite o afogamento!).",
+              "hint": "Dê xeque no rei pela 8ª fileira. Seu rei protege g7 e h7.",
+              "success": "Xeque-mate! Você escapou da armadilha do afogamento."
+            }
+          },
+          {
+            "text": "Outras formas de uma partida terminar empatada:\n\n- **Material insuficiente** — por exemplo, rei e bispo contra rei nunca conseguem dar mate.\n- **Tripla repetição** — a mesma posição aparece três vezes.\n- **Regra dos 50 lances** — 50 lances de cada lado sem captura e sem movimento de peão.\n- **Acordo** — os dois jogadores combinam o empate."
+          },
+          {
+            "text": "Quando você está **perdendo**, o afogamento pode salvar você! Aqui as negras têm só o rei, e mesmo assim é empate: as negras jogam, o rei não está em xeque, e g8, g7 e h7 estão todas cobertas. **Afogamento.**\n\nFinais de peão de torre costumam terminar assim — lembre-se disso quando estiver defendendo."
+          }
+        ]
+      },
+      "piece-values": {
+        "title": "Valor das peças e boas trocas",
+        "summary": "Use o valor em pontos para escolher a melhor captura.",
+        "steps": [
+          {
+            "text": "Lembre os valores: **peão 1, cavalo 3, bispo 3, torre 5, dama 9**.\n\nQuando puder escolher entre capturas, pegue a peça **mais valiosa** — desde que seja seguro!"
+          },
+          {
+            "text": "Seu bispo ataca um cavalo e uma torre.",
+            "task": {
+              "prompt": "Faça a captura mais valiosa.",
+              "hint": "Uma torre vale 5; um cavalo, só 3.",
+              "success": "Isso! A torre vale mais do que o cavalo."
+            }
+          },
+          {
+            "text": "Uma captura só é boa se você não perder a sua peça logo em seguida. Aqui o cavalo em d5 está **protegido** pelo peão de e6, mas o bispo em a5 não tem proteção nenhuma — e ainda está atacando a sua dama."
+          },
+          {
+            "text": "Qual peça você pode pegar de graça?",
+            "task": {
+              "prompt": "Ganhe material com segurança.",
+              "hint": "Qxd5 perde a sua dama para o peão de e6. Procure uma peça sem proteção.",
+              "success": "Esperto! Sempre confira se a peça que você captura está protegida."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "checkmate-patterns": {
+    "title": "Padrões de xeque-mate",
+    "description": "Reconheça as redes de mate clássicas — mate do corredor, mate sufocado, mate de Anastasia, mate árabe e a escada — e aprenda a dar mate com rei e dama ou rei e torre.",
+    "lessons": {
+      "back-rank-mate": {
+        "title": "Mate do corredor",
+        "summary": "O rei preso atrás dos próprios peões.",
+        "steps": [
+          {
+            "text": "Um rei que fez o roque costuma ficar atrás de três peões. Se nenhuma peça protege a **última fileira**, uma única torre ou dama pode dar xeque-mate por ela.\n\nEste é o xeque-mate mais comum nas partidas de iniciantes e de clube."
+          },
+          {
+            "text": "O rei negro não tem casas de fuga.",
+            "task": {
+              "prompt": "Dê o mate do corredor.",
+              "hint": "Leve a torre até o fim da coluna d.",
+              "success": "Xeque-mate! Os peões de f7, g7 e h7 viraram uma prisão."
+            }
+          },
+          {
+            "text": "As negras defendem e8 com a torre e com a dama. Mas você tem **dois** atacantes — uma bateria de torres na coluna e."
+          },
+          {
+            "text": "Conte atacantes e defensores e depois ataque.",
+            "task": {
+              "prompt": "Mate em 2: rompa a última fileira.",
+              "hint": "Capture em e8 com xeque. Depois que as negras recapturarem, sua segunda torre termina o serviço.",
+              "success": "Xeque-mate! Dois atacantes vencem dois defensores quando você captura com xeque."
+            }
+          },
+          {
+            "text": "**Como se defender**: dê ao seu rei uma casa de fuga (\"luft\") com um lance como **h3** ou **g3**, ou mantenha uma torre na última fileira.\n\nAqui as negras jogaram ...h6 antes, então Rd8+ já não é mate: o rei escapa para h7."
+          }
+        ]
+      },
+      "smothered-mate": {
+        "title": "Mate sufocado",
+        "summary": "Quando o rei é sufocado pelas próprias peças.",
+        "steps": [
+          {
+            "text": "O **mate sufocado** acontece quando o rei está totalmente cercado pelas próprias peças e um cavalo dá xeque. Nenhuma peça pode bloquear o xeque de um cavalo!"
+          },
+          {
+            "text": "O rei em h8 está encaixotado pela própria torre e pelos peões.",
+            "task": {
+              "prompt": "Dê o mate sufocado.",
+              "hint": "Qual salto de cavalo ataca h8?",
+              "success": "Sufocado! As peças negras sufocaram o próprio rei."
+            }
+          },
+          {
+            "text": "O **Legado de Philidor** é o mate sufocado mais famoso. Ele usa um sacrifício de dama para forçar uma peça negra a ir para g8:\n\n1. **Nf7+** Kg8 2. **Nh6+** (xeque duplo) Kh8 3. **Qg8+!!** Rxg8 4. **Nf7#**"
+          },
+          {
+            "text": "Seu bispo em a3 impede o rei de fugir para f8. Jogue a combinação inteira!",
+            "task": {
+              "prompt": "Mate em 4 com o Legado de Philidor.",
+              "hint": "Comece com um xeque de cavalo em f7 e depois um xeque duplo de h6.",
+              "success": "Legado de Philidor! Um dos padrões mais bonitos do xadrez."
+            }
+          }
+        ]
+      },
+      "anastasia-arabian": {
+        "title": "Mate de Anastasia e mate árabe",
+        "summary": "Cavalo e torre trabalhando juntos perto da borda.",
+        "steps": [
+          {
+            "text": "**Mate de Anastasia**: um cavalo em e7 cobre g8 e g6, o próprio peão do rei em g7 o bloqueia, e uma torre ou dama dá mate pela **coluna h**."
+          },
+          {
+            "text": "Aqui o cavalo entra primeiro com xeque, e depois a dama é sacrificada para abrir a coluna h."
+          },
+          {
+            "text": "Encontre a combinação completa.",
+            "task": {
+              "prompt": "Mate em 3 (mate de Anastasia).",
+              "hint": "Primeiro dê xeque com o cavalo. Depois sacrifique a dama em h7 para que sua torre possa dar mate pela coluna h.",
+              "success": "Mate de Anastasia! O cavalo em e7 e a torre fizeram todo o trabalho."
+            }
+          },
+          {
+            "text": "**Mate árabe**: uma torre e um cavalo prendem o rei no canto. O cavalo protege a torre e cobre a casa de fuga.\n\nEste é um dos padrões de xeque-mate mais antigos que se conhecem."
+          },
+          {
+            "text": "O cavalo em f6 protege h7 e g8.",
+            "task": {
+              "prompt": "Dê o mate árabe.",
+              "hint": "Coloque a torre bem ao lado do rei, protegida pelo cavalo.",
+              "success": "Mate árabe! Um padrão conhecido há mais de mil anos."
+            }
+          }
+        ]
+      },
+      "ladder-mate": {
+        "title": "A escada (duas torres)",
+        "summary": "Duas peças pesadas empurram o rei até a borda.",
+        "steps": [
+          {
+            "text": "Com duas torres (ou uma torre e uma dama) você pode dar xeque-mate **sem o seu rei**. Uma torre corta o rei ao longo de uma fileira, a outra dá xeque na fileira seguinte, e elas vão se alternando como os degraus de uma **escada**."
+          },
+          {
+            "text": "A torre em a7 controla a 7ª fileira. O rei está na borda.",
+            "task": {
+              "prompt": "Termine a escada: xeque-mate em um lance.",
+              "hint": "Dê xeque pela 8ª fileira com a outra torre.",
+              "success": "Xeque-mate! As duas torres cobriram as duas fileiras."
+            }
+          },
+          {
+            "text": "Às vezes a escada precisa primeiro de um **lance tranquilo**: mova uma torre para cortar o rei e depois dê mate.",
+            "task": {
+              "prompt": "Mate em 2 com as suas duas torres.",
+              "hint": "Primeiro tire a 7ª fileira com a torre de h. Depois a outra torre dá mate na última fileira.",
+              "success": "Excelente! Cortar e depois dar mate — essa é a escada."
+            }
+          },
+          {
+            "text": "**Dica**: mantenha suas torres **bem longe** do rei inimigo, senão ele pode atacá-las. Se o rei se aproximar de uma torre, leve essa torre para o outro lado do tabuleiro pela mesma fileira."
+          }
+        ]
+      },
+      "king-queen-mate": {
+        "title": "Rei e dama contra rei",
+        "summary": "O xeque-mate básico mais importante.",
+        "steps": [
+          {
+            "text": "Com rei e dama contra um rei sozinho, você sempre pode vencer. O plano:\n\n1. Use a dama para **diminuir a caixa** onde o rei inimigo está (ficar a um salto de cavalo dele é um truque útil).\n2. Empurre o rei até a **borda**.\n3. Aproxime **o seu rei** e dê mate."
+          },
+          {
+            "text": "A dama fica a um salto de cavalo do rei e o acompanha como um espelho. Repare que o rei negro está confinado na caixa do canto superior direito."
+          },
+          {
+            "text": "O rei negro está na borda. Seu rei protege g7.",
+            "task": {
+              "prompt": "Xeque-mate em um lance.",
+              "hint": "Coloque a dama bem ao lado do rei negro, numa casa protegida pelo seu rei.",
+              "success": "Xeque-mate! A dama está protegida pelo seu rei."
+            }
+          },
+          {
+            "text": "Às vezes você precisa de **um lance tranquilo de rei** antes do mate. Cuidado — nada de afogamento!",
+            "task": {
+              "prompt": "Mate em 2.",
+              "hint": "A dama já mantém o rei na última fileira. Aproxime o seu rei para que ele possa proteger a dama em g7.",
+              "success": "Técnica perfeita: a dama restringe, o rei se aproxima, e depois vem o mate."
+            }
+          },
+          {
+            "text": "**Cuidado com o afogamento!** Quando o rei inimigo tiver pouquíssimas casas, sempre confira se ele ainda tem um lance legal depois do seu (a menos que o seu lance seja xeque-mate)."
+          }
+        ]
+      },
+      "king-rook-mate": {
+        "title": "Rei e torre contra rei",
+        "summary": "Encurrale o rei e use a oposição.",
+        "steps": [
+          {
+            "text": "Rei e torre contra rei é vitória forçada, mas o rei precisa ajudar. O plano:\n\n1. **Corte** o rei com a torre ao longo de uma fileira ou coluna.\n2. Avance o seu rei até que os dois reis fiquem **frente a frente** (a oposição).\n3. Dê xeque pela borda quando os reis estiverem frente a frente."
+          },
+          {
+            "text": "O xeque-mate acontece quando os reis estão frente a frente e a torre dá xeque pela borda.",
+            "task": {
+              "prompt": "Xeque-mate em um lance.",
+              "hint": "Seu rei cobre f7, g7 e h7. A torre dá xeque pela 8ª fileira.",
+              "success": "Xeque-mate! Rei e torre em perfeita harmonia."
+            }
+          },
+          {
+            "text": "Um **lance de espera** pode forçar o rei a ir para o lugar certo.",
+            "task": {
+              "prompt": "Mate em 2.",
+              "hint": "Corte o rei da coluna d. O único lance dele cai na oposição.",
+              "success": "Muito bem feito. Cortar, esperar e depois dar mate!"
+            }
+          },
+          {
+            "text": "Aqui o rei negro só pode ir e voltar entre g8 e h8. Use o seu rei para tirar uma casa dele.",
+            "task": {
+              "prompt": "Mate em 2.",
+              "hint": "Avance o seu rei até g6 para que os reis fiquem frente a frente.",
+              "success": "Essa é a técnica! A oposição tornou o mate possível."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tactics-fundamentals": {
+    "title": "Fundamentos de tática",
+    "description": "\"O xadrez é 99% tática.\" Domine os garfos, as cravadas, os espetos, os ataques descobertos, os desvios, as atrações e os lances intermediários que vencem partidas.",
+    "lessons": {
+      "forks": {
+        "title": "Garfos",
+        "summary": "Uma peça ataca dois alvos ao mesmo tempo.",
+        "steps": [
+          {
+            "text": "Um **garfo** (ou ataque duplo) é um único lance que ataca **duas ou mais** peças inimigas ao mesmo tempo. Normalmente o adversário só consegue salvar uma delas.\n\nOs cavalos são os campeões do garfo, porque o ataque em L é difícil de enxergar."
+          },
+          {
+            "text": "Um garfo que inclui um **xeque** é o mais forte de todos — o rei precisa se mover, e a outra peça cai.",
+            "task": {
+              "prompt": "Dê um garfo no rei e na torre.",
+              "hint": "Encontre um salto de cavalo que ataque e8 e a8 ao mesmo tempo.",
+              "success": "Um garfo real! Você ganhou a torre."
+            }
+          },
+          {
+            "text": "**Os peões também dão garfo!** Aqui as negras têm um truque famoso chamado *truque do garfo*: ...Nxe4!, Nxe4 e agora um lance de peão ataca o bispo e o cavalo juntos."
+          },
+          {
+            "text": "As brancas acabaram de capturar em e4. Responda com o garfo de peão.",
+            "task": {
+              "prompt": "Jogue o garfo de peão.",
+              "hint": "Avance um peão duas casas para que ele ataque c4 e e4 ao mesmo tempo.",
+              "success": "Excelente! O peão ataca duas peças e as negras recuperam a peça."
+            }
+          },
+          {
+            "text": "A **dama** pode dar garfo em oito direções. Um xeque somado a um ataque a uma peça sem proteção é uma forma clássica de ganhar material."
+          },
+          {
+            "text": "A torre em a8 está sem defesa.",
+            "task": {
+              "prompt": "Dê um garfo no rei e na torre com a sua dama.",
+              "hint": "Olhe as diagonais: uma casa central enxerga g8 e a8 ao mesmo tempo.",
+              "success": "Ótimo garfo! Sempre procure peças soltas: **peças soltas caem**."
+            }
+          }
+        ]
+      },
+      "pins": {
+        "title": "Cravadas",
+        "summary": "Congele uma peça inimiga na frente de outra mais valiosa.",
+        "steps": [
+          {
+            "text": "Uma **cravada** ataca uma peça que não pode se mover sem expor uma peça mais valiosa atrás dela.\n\n- **Cravada absoluta**: a peça de trás é o **rei** — a peça cravada não pode se mover legalmente.\n- **Cravada relativa**: a peça de trás é valiosa (como a dama), então mover-se sairia caro."
+          },
+          {
+            "text": "O cavalo em c6 está cravado no rei. **Ataque a peça cravada!** Ela não pode fugir.",
+            "task": {
+              "prompt": "Ganhe o cavalo cravado.",
+              "hint": "Um peão é o atacante mais barato. Avance o seu peão d.",
+              "success": "O cavalo não consegue escapar do peão. Acumule ataques sobre as peças cravadas!"
+            }
+          },
+          {
+            "text": "Cravadas na diagonal podem prender até uma dama. A dama em e6 está na mesma diagonal que o rei negro em g8."
+          },
+          {
+            "text": "Encontre a cravada que ganha a dama.",
+            "task": {
+              "prompt": "Crave a dama no rei.",
+              "hint": "Coloque o bispo na diagonal a2–g8, protegido por um peão.",
+              "success": "A dama está cravada e perdida — ela só pode capturar o bispo, e o peão b recaptura."
+            }
+          },
+          {
+            "text": "**Como se defender de cravadas**: desfaça a cravada movendo a peça de trás (muitas vezes o rei), bloqueando, ou atacando a peça que crava com um peão (\"...a6, ...h6\" são típicos)."
+          }
+        ]
+      },
+      "skewers": {
+        "title": "Espetos",
+        "summary": "Uma cravada ao contrário: a peça grande está na frente.",
+        "steps": [
+          {
+            "text": "Um **espeto** ataca uma peça valiosa; quando ela sai, a peça **de trás** é capturada. É como uma cravada, mas a peça mais valiosa está na frente.\n\nOs espetos com **xeque** são os mais comuns."
+          },
+          {
+            "text": "O rei e a dama negros estão na mesma coluna.",
+            "task": {
+              "prompt": "Dê um espeto no rei e na dama.",
+              "hint": "Dê xeque no rei pela coluna e. Quando ele sair, a dama fica exposta.",
+              "success": "Um espeto ganha a dama pela torre... e aqui até de graça!"
+            }
+          },
+          {
+            "text": "Os espetos na diagonal são a especialidade dos bispos.",
+            "task": {
+              "prompt": "Dê um espeto no rei e na torre de h8.",
+              "hint": "Dê xeque pela diagonal longa, de modo que a torre de h8 fique atrás do rei.",
+              "success": "Espetado! A torre de h8 estava atrás do rei."
+            }
+          },
+          {
+            "text": "**Evite espetos**: não alinhe o seu rei e a sua dama (ou rei e torre) na mesma linha quando houver peças inimigas de longo alcance por perto."
+          }
+        ]
+      },
+      "discovered-attacks": {
+        "title": "Ataques descobertos e xeque duplo",
+        "summary": "Libere um atacante escondido movendo a peça da frente.",
+        "steps": [
+          {
+            "text": "Um **ataque descoberto** acontece quando você tira uma peça do caminho e **revela** o ataque de outra peça que estava atrás dela. Agora duas coisas acontecem ao mesmo tempo: a peça que se move cria a sua própria ameaça, e a peça escondida também ataca."
+          },
+          {
+            "text": "Se o ataque revelado for um xeque, é um **xeque descoberto** — a peça que se move pode ir para qualquer lugar e pegar alguma coisa.",
+            "task": {
+              "prompt": "Ganhe a dama com um xeque descoberto.",
+              "hint": "Mova o cavalo para uma casa que ataque a dama. Quem dá o xeque é a torre!",
+              "success": "Xeque descoberto! A torre deu xeque e o cavalo capturou a dama."
+            }
+          },
+          {
+            "text": "Uma armadilha de abertura famosa. Depois de 1.e4 e5 2.Nf3 Nf6 3.Nxe5 Nxe4? 4.Qe2 Nf6??, a dama e o rei ficam na coluna e com apenas o seu cavalo no meio."
+          },
+          {
+            "text": "Revele o ataque da dama contra o rei.",
+            "task": {
+              "prompt": "Ganhe a dama negra.",
+              "hint": "Mova o cavalo com xeque descoberto para uma casa que ataque d8.",
+              "success": "Ai! Essa armadilha já pegou milhares de jogadores na Defesa Petrov."
+            }
+          },
+          {
+            "text": "Um **xeque duplo** é um xeque descoberto em que a peça que se move **também** dá xeque. A única defesa é mover o rei — bloquear ou capturar não detém dois xeques ao mesmo tempo."
+          },
+          {
+            "text": "O rei negro está cercado pelas próprias peças.",
+            "task": {
+              "prompt": "Dê xeque-mate com um xeque duplo.",
+              "hint": "Mova o bispo de modo que ele mesmo dê xeque enquanto revela a torre.",
+              "success": "Xeque duplo e mate! Nenhum dos xeques podia ser bloqueado."
+            }
+          }
+        ]
+      },
+      "deflection-decoy": {
+        "title": "Desvio e atração",
+        "summary": "Atraia as peças inimigas para as casas erradas.",
+        "steps": [
+          {
+            "text": "Uma **atração** força uma peça inimiga — muitas vezes o rei — a ir **para** uma casa onde ela sofre uma tática.\n\nUm **desvio** força uma peça defensora a **abandonar** a sua função.\n\nAs duas costumam começar com um sacrifício."
+          },
+          {
+            "text": "Se o rei negro estivesse em f8, o cavalo poderia dar um garfo nele e na dama a partir de d7. Você consegue forçar o rei a ir para lá?",
+            "task": {
+              "prompt": "Atraia o rei e depois dê o garfo.",
+              "hint": "Sacrifique a torre em f8 para que o rei seja obrigado a recapturar ali.",
+              "success": "Atração + garfo! Você entregou uma torre para ganhar a dama."
+            }
+          },
+          {
+            "text": "Uma peça **sobrecarregada** tem tarefas demais. Aqui a dama negra é a única peça que protege a torre em e8 — e toda a última fileira. Atraia-a para e8 e a última fileira fica sem defesa."
+          },
+          {
+            "text": "Olhe para a casa e8: dois atacantes brancos, dois defensores negros.",
+            "task": {
+              "prompt": "Desvie a dama e dê mate.",
+              "hint": "Capture com xeque. A dama é obrigada a recapturar e deixa a última fileira para a sua segunda torre.",
+              "success": "O defensor foi desviado e a última fileira caiu."
+            }
+          }
+        ]
+      },
+      "removing-the-defender": {
+        "title": "Eliminação do defensor",
+        "summary": "Capture ou expulse a peça que sustenta tudo.",
+        "steps": [
+          {
+            "text": "Se uma casa importante é protegida por apenas **uma** peça inimiga, elimine esse defensor e a casa cai.\n\nAqui o cavalo em f6 é a única peça que protege h7 contra a sua bateria de dama e bispo."
+          },
+          {
+            "text": "Elimine o defensor e depois ataque.",
+            "task": {
+              "prompt": "Elimine o defensor de h7 e dê mate.",
+              "hint": "Primeiro capture o cavalo em f6. Aí h7 fica sem defensor.",
+              "success": "Xeque-mate! (Se as negras não recapturarem, você simplesmente ganhou a dama com Bxd8.)"
+            }
+          },
+          {
+            "text": "Os defensores também podem ser **expulsos** ganhando tempo, por exemplo com um ataque de peão, ou **atraídos para longe** com uma captura."
+          }
+        ]
+      },
+      "zwischenzug": {
+        "title": "Zwischenzug (lance intermediário)",
+        "summary": "Não recapture no piloto automático!",
+        "steps": [
+          {
+            "text": "Um **zwischenzug** (\"lance intermediário\", em alemão) é um lance forçante — normalmente um xeque ou uma grande ameaça — jogado **antes** da recaptura esperada.\n\nSempre pergunte: *Tenho algo melhor do que recapturar?*"
+          },
+          {
+            "text": "A **Armadilha do Elefante** no Gambito da Dama: as brancas acabaram de jogar 6.Nxd5?? para ganhar um peão. Parece que ...Nxd5 perde a dama para Bxd8, mas as negras têm um xeque intermediário!"
+          },
+          {
+            "text": "Arme a Armadilha do Elefante.",
+            "task": {
+              "prompt": "Ganhe uma peça com um zwischenzug.",
+              "hint": "Primeiro capture em d5. Depois de Bxd8, dê xeque com o seu bispo antes de recapturar o bispo.",
+              "success": "Brilhante! As brancas precisam bloquear com Qd2, depois vem ...Kxd8 (ou antes ...Bxd2+) e você fica com uma peça inteira a mais."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "opening-principles": {
+    "title": "Princípios de abertura",
+    "description": "Você não precisa decorar milhares de lances. Aprenda as regras de ouro — controle o centro, desenvolva rápido, faça o roque cedo, não tire a dama cedo demais — e evite as armadilhas clássicas de iniciante.",
+    "lessons": {
+      "control-the-center": {
+        "title": "Controle o centro",
+        "summary": "Por que d4, e4, d5 e e5 são as casas mais importantes.",
+        "steps": [
+          {
+            "text": "As quatro casas centrais — **d4, e4, d5, e5** — são o coração do tabuleiro. Peças colocadas no centro ou apontadas para ele controlam mais casas e conseguem passar rapidamente de um lado do tabuleiro para o outro."
+          },
+          {
+            "text": "Um peão em e4 controla d5 e f5, e abre linhas para a dama e para o bispo de casas claras."
+          },
+          {
+            "text": "Sua vez! Ocupe o centro e depois desenvolva um cavalo que ataque o peão central das negras.",
+            "task": {
+              "prompt": "Jogue 1.e4 e depois 2.Nf3, após a resposta das negras.",
+              "hint": "Primeiro avance o peão do rei duas casas. Depois salte com o cavalo de g1 para f3.",
+              "success": "Perfeito! O cavalo em f3 se desenvolve **e** ataca o peão de e5."
+            }
+          },
+          {
+            "text": "As negras também devem lutar pelo centro. Contra 1.d4, a resposta clássica é colocar um peão em d5 para que as brancas não fiquem com o centro inteiro."
+          },
+          {
+            "text": "Lute pelo centro com as negras.",
+            "task": {
+              "prompt": "Responda a 1.d4 com ...d5 e depois desenvolva o cavalo do rei após 2.c4.",
+              "hint": "Avance o seu peão d duas casas. Depois o cavalo de g8 vai para f6.",
+              "success": "Bem jogado — um peão central sólido e um cavalo desenvolvido."
+            }
+          }
+        ]
+      },
+      "develop-your-pieces": {
+        "title": "Desenvolva suas peças",
+        "summary": "Coloque todas as peças em jogo rapidamente.",
+        "steps": [
+          {
+            "text": "**Desenvolvimento** significa tirar as peças da última fileira e levá-las a casas ativas. As regras de ouro:\n\n- **Cavalos antes dos bispos** (geralmente sabemos antes onde os cavalos devem ficar).\n- Mova **cada peça uma vez** na abertura.\n- Aponte as peças para o **centro**.\n- Conecte as suas torres."
+          },
+          {
+            "text": "Desenvolva com um objetivo.",
+            "task": {
+              "prompt": "Desenvolva: primeiro Nf3, depois Bc4 e então faça o roque.",
+              "hint": "Cavalo para f3, bispo para c4 e depois o roque, movendo o rei duas casas para a direita.",
+              "success": "De manual! Em apenas três lances você desenvolveu duas peças e deixou o rei em segurança."
+            }
+          },
+          {
+            "text": "**Não perca tempo.** Aqui as brancas avançaram os peões de torre e tiraram a torre cedo. As negras já têm duas peças em jogo e o centro — e já estão claramente melhor."
+          },
+          {
+            "text": "Desenvolva **e** defenda ao mesmo tempo. O cavalo branco ataca e5.",
+            "task": {
+              "prompt": "Defenda o peão de e5 com um lance de desenvolvimento.",
+              "hint": "Qual cavalo pode proteger e5 enquanto entra em jogo?",
+              "success": "Ótimo! Nc6 desenvolve uma peça e defende o peão em um só lance."
+            }
+          }
+        ]
+      },
+      "king-safety": {
+        "title": "Segurança do rei e roque",
+        "summary": "Tire o seu rei do centro antes que a luta comece.",
+        "steps": [
+          {
+            "text": "Na abertura, o centro costuma se abrir rapidamente. Um rei deixado em e1/e8 pode levar xeques pela coluna e e pelas diagonais.\n\n**Faça o roque cedo**, normalmente nos 10 primeiros lances, e de preferência do lado em que você não avançou os peões."
+          },
+          {
+            "text": "Os dois lados já se desenvolveram. Hora de guardar o rei.",
+            "task": {
+              "prompt": "Faça o roque pequeno.",
+              "hint": "Arraste o rei de e1 para g1.",
+              "success": "Rei seguro, torre ativa. Agora você está pronto para o meio-jogo."
+            }
+          },
+          {
+            "text": "**A casa f7** é o ponto mais fraco das negras no início: só o rei a defende. O bispo e o cavalo brancos já estão mirando nela com Ng5."
+          },
+          {
+            "text": "Defenda-se do ataque duplo sobre f7.",
+            "task": {
+              "prompt": "Bloqueie a diagonal do bispo com o seu peão d.",
+              "hint": "Um peão em d5 corta a ligação do bispo de c4 com f7.",
+              "success": "Correto! ...d5 é a linha principal da Defesa dos Dois Cavalos."
+            }
+          },
+          {
+            "text": "**Depois do roque, preserve o escudo de peões.** Avançar os peões na frente do rei rocado (g4, h4...) cria buracos que as peças inimigas podem usar. Só faça isso quando estiver atacando!"
+          }
+        ]
+      },
+      "early-queen": {
+        "title": "Não tire a dama cedo demais",
+        "summary": "A dama é poderosa — e um alvo fácil.",
+        "steps": [
+          {
+            "text": "Se você tirar a dama cedo, o adversário pode **atacá-la com lances de desenvolvimento**, ganhando tempo (**tempo**) enquanto a sua dama fica fugindo.\n\nAqui, depois de 1.e4 d5 2.exd5 Qxd5, as brancas jogam **Nc3**, desenvolvendo com ataque à dama."
+          },
+          {
+            "text": "Ganhe um tempo contra a dama que saiu cedo.",
+            "task": {
+              "prompt": "Desenvolva atacando a dama.",
+              "hint": "Qual lance de cavalo ataca d5?",
+              "success": "É assim que se castiga uma dama que sai cedo: desenvolvendo e atacando ao mesmo tempo."
+            }
+          },
+          {
+            "text": "O **Mate do Pastor**: as brancas apontam a dama e o bispo para f7. Se as negras não perceberem, Qxf7 é xeque-mate em apenas quatro lances!"
+          },
+          {
+            "text": "Agora você está com as negras e as brancas tentam o Mate do Pastor. Defenda com calma — e desenvolva!",
+            "task": {
+              "prompt": "Bloqueie a dama com ...g6 e depois desenvolva com ...Nf6 quando as brancas renovarem o ataque a f7.",
+              "hint": "Primeiro ...g6 bloqueia a diagonal h5–f7. Depois de Qf3, o cavalo em f6 bloqueia a coluna f.",
+              "success": "Bem defendido! A dama branca perdeu tempo e você está bem desenvolvido."
+            }
+          },
+          {
+            "text": "As peças negras logo vão perseguir a dama branca de novo com ...Nd4 ou ...d6 e ...Bg4. Cada lance de dama é um lance a menos de desenvolvimento."
+          }
+        ]
+      },
+      "opening-traps": {
+        "title": "Armadilhas clássicas de abertura",
+        "summary": "Conheça as armadilhas para nunca cair nelas — e para castigá-las.",
+        "steps": [
+          {
+            "text": "O **Mate do Louco** é o xeque-mate mais rápido possível. As brancas enfraqueceram a diagonal do rei com f3 e g4."
+          },
+          {
+            "text": "Castigue os lances de peão que enfraqueceram as brancas.",
+            "task": {
+              "prompt": "Xeque-mate em um lance.",
+              "hint": "A diagonal e1–h4 está escancarada.",
+              "success": "Mate do Louco! Nunca enfraqueça cedo a diagonal e1–h4 (ou e8–h5)."
+            }
+          },
+          {
+            "text": "**Mate de Légal**: as negras cravaram o cavalo com ...Bg4 e acham que ele não pode se mover. Mas uma cravada contra a dama é apenas uma cravada *relativa*!"
+          },
+          {
+            "text": "Desfaça a cravada com um sacrifício de dama.",
+            "task": {
+              "prompt": "Arme a armadilha de Légal.",
+              "hint": "Ignore a cravada: capture em e5 com o cavalo. Se as negras pegarem a sua dama, dê xeque em f7.",
+              "success": "Mate de Légal! Três peças menores deram xeque-mate no rei."
+            }
+          },
+          {
+            "text": "**As regras de ouro da abertura**\n\n1. Controle o centro com peões e peças.\n2. Desenvolva cavalos e bispos rapidamente.\n3. Faça o roque cedo.\n4. Não mova a mesma peça duas vezes sem motivo.\n5. Não tire a dama cedo demais.\n6. Conecte as suas torres.\n7. A cada lance: veja o que o seu adversário está ameaçando!"
+          }
+        ]
+      }
+    }
+  },
+  "openings-for-white": {
+    "title": "Aberturas populares com as brancas",
+    "description": "Um repertório completo com as brancas, do iniciante ao jogador de clube: a Abertura Italiana e a Ruy López depois de 1.e4, além do Gambito da Dama e do Sistema Londres, fácil de aprender, depois de 1.d4 — com as ideias, os planos e as armadilhas principais.",
+    "lessons": {
+      "italian-game": {
+        "title": "A Abertura Italiana",
+        "summary": "Mire em f7 e monte o centro ideal.",
+        "steps": [
+          {
+            "text": "A **Abertura Italiana** (1.e4 e5 2.Nf3 Nc6 3.Bc4) é uma das aberturas mais antigas. As brancas se desenvolvem rápido e apontam o bispo para a casa mais fraca das negras, **f7**."
+          },
+          {
+            "text": "Jogue os lances iniciais.",
+            "task": {
+              "prompt": "Jogue a Abertura Italiana: 1.e4, 2.Nf3 e 3.Bc4.",
+              "hint": "Peão para e4, cavalo para f3 e depois o bispo de casas claras para c4.",
+              "success": "Essa é a Abertura Italiana! Seu bispo mira f7 e você está pronto para fazer o roque."
+            }
+          },
+          {
+            "text": "**Plano 1 — Giuoco Piano**: depois de 3...Bc5, jogue **c3** e **d4** para montar um grande centro de peões e empurrar as peças negras para trás."
+          },
+          {
+            "text": "Monte o centro ideal.",
+            "task": {
+              "prompt": "Prepare d4 com c3 e depois avance d4 quando as negras se desenvolverem.",
+              "hint": "Primeiro o peão c uma casa, depois o peão d duas casas.",
+              "success": "Dois peões lado a lado no centro — a formação dos sonhos!"
+            }
+          },
+          {
+            "text": "**Plano 2 — Giuoco Pianissimo** (\"jogo muito tranquilo\"): c3, d3, O-O, Re1 e depois Nbd2–f1–g3. Uma construção lenta adorada pelos grandes mestres modernos."
+          },
+          {
+            "text": "**O Ataque Fegatello (Fried Liver).** Se as negras responderem a 3...Nf6 4.Ng5 d5 5.exd5 com o natural 5...Nxd5?, as brancas podem sacrificar em f7 e arrastar o rei para o campo aberto."
+          },
+          {
+            "text": "Lance o Ataque Fegatello.",
+            "task": {
+              "prompt": "Sacrifique em f7 e continue com um xeque de dama.",
+              "hint": "Cavalo captura f7! Depois de Kxf7, a dama dá xeque em f3, atacando também o cavalo de d5.",
+              "success": "O rei está exposto e o cavalo de d5 está cravado. O ataque das brancas é muito forte."
+            }
+          }
+        ]
+      },
+      "ruy-lopez": {
+        "title": "A Ruy López",
+        "summary": "A \"tortura espanhola\": pressão duradoura sobre e5.",
+        "steps": [
+          {
+            "text": "A **Ruy López** (ou Abertura Espanhola) 1.e4 e5 2.Nf3 Nc6 3.Bb5 ataca o cavalo que defende e5. É uma das favoritas dos campeões mundiais, porque a pressão dura até bem dentro do meio-jogo."
+          },
+          {
+            "text": "Jogue a linha principal.",
+            "task": {
+              "prompt": "Jogue a Ruy López: 1.e4, 2.Nf3, 3.Bb5 e depois recue com 4.Ba4 após ...a6.",
+              "hint": "Depois de ...a6, mantenha o bispo na diagonal recuando para a4.",
+              "success": "Muito bem! O bispo mantém sobre c6 uma pressão parecida com uma cravada."
+            }
+          },
+          {
+            "text": "Depois de 4...Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 chegamos à **Ruy López Fechada**. As brancas preparam d4, e o cavalo costuma viajar **Nbd2–f1–g3** em direção à ala do rei."
+          },
+          {
+            "text": "**Cuidado com a armadilha — a Arca de Noé:** se as brancas pegarem um peão no centro sem cuidado, as negras podem prender o bispo em b3 com ...c5–c4. Sempre deixe uma casa de fuga para o seu bispo (é por isso que c3 é tão útil: Bc2)."
+          },
+          {
+            "text": "**A Variante das Trocas** — 4.Bxc6 dxc6 — dá às negras o par de bispos, mas estraga a estrutura de peões delas. O plano das brancas é d4 e um final de rei e peões vencedor graças à **maioria sadia na ala do rei**."
+          }
+        ]
+      },
+      "queens-gambit": {
+        "title": "O Gambito da Dama",
+        "summary": "Ofereça um peão para ganhar o centro.",
+        "steps": [
+          {
+            "text": "O **Gambito da Dama** 1.d4 d5 2.c4 oferece o peão c para desviar o peão de d5 das negras do centro. Não é um gambito de verdade: as brancas quase sempre conseguem recuperar o peão."
+          },
+          {
+            "text": "Jogue a linha principal do Gambito da Dama Recusado.",
+            "task": {
+              "prompt": "Jogue 1.d4, 2.c4, 3.Nc3 e 4.Bg5.",
+              "hint": "Peão da dama, depois o peão c, depois o cavalo para c3, e crave o cavalo de f6 com Bg5.",
+              "success": "Desenvolvimento clássico: o cavalo de f6 está cravado e d5 está sob pressão."
+            }
+          },
+          {
+            "text": "**Gambito da Dama Aceito:** depois de 2...dxc4, as brancas normalmente jogam **e3** e **Bxc4**, ficando com um belo centro. Tentar segurar o peão com ...b5 é um erro."
+          },
+          {
+            "text": "Castigue a ganância das negras.",
+            "task": {
+              "prompt": "Mine os peões com a4 e depois ataque a torre em a8 com a sua dama.",
+              "hint": "Ataque b5 com o peão a. Depois da troca, a diagonal longa f3–a8 se abre.",
+              "success": "A torre em a8 e o cavalo em b8 estão pendurados — as brancas ganham material."
+            }
+          },
+          {
+            "text": "**O ataque de minoria** é o plano clássico das brancas na Variante das Trocas: avançar o peão b até b5 para criar um peão fraco em c6."
+          }
+        ]
+      },
+      "london-system": {
+        "title": "O Sistema Londres",
+        "summary": "Uma formação contra tudo.",
+        "steps": [
+          {
+            "text": "O **Sistema Londres** é perfeito para quem tem pouco tempo: as brancas jogam a mesma formação contra quase tudo — **d4, Bf4, e3, Nf3, c3, Bd3, Nbd2** — formando uma pirâmide de peões sólida."
+          },
+          {
+            "text": "Monte o Londres.",
+            "task": {
+              "prompt": "Jogue 1.d4 e 2.Bf4, e depois 3.e3.",
+              "hint": "Desenvolva o bispo de casas escuras para f4 **antes** de jogar e3, para que ele não fique preso.",
+              "success": "Bom hábito! O bispo está fora da cadeia de peões."
+            }
+          },
+          {
+            "text": "Planos típicos: um salto de cavalo para **e5** apoiado por f4, um ataque na ala do rei com **Qf3–h3** ou **g4**, e a diagonal **Bd3–h7** mirando o rei rocado."
+          },
+          {
+            "text": "**Castigando ...Bf5:** se as negras copiarem com ...Bf5, o peão de b7 costuma ficar fraco. **Qb3** ataca b7 e d5 ao mesmo tempo."
+          },
+          {
+            "text": "Aproveite o buraco em b7.",
+            "task": {
+              "prompt": "Ataque b7 com a sua dama.",
+              "hint": "A dama vai para b3, atacando b7.",
+              "success": "As negras precisam gastar um lance com ...Qb6 ou ...Qc8. As brancas ganharam tempo."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

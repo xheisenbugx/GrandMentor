@@ -15,6 +15,14 @@ import endgames from './endgames.js';
 import library from './library.js';
 import profile from './profile.js';
 import settings from './settings.js';
+import insights from './insights.js';
+import repertoire from './repertoire.js';
+import local from './local.js';
+import drills from './drills.js';
+import classics from './classics.js';
+import pwa from './pwa.js';
+import daily from './daily.js';
+import a11y from './a11y.js';
 
 export default {
   common,
@@ -33,4 +41,12 @@ export default {
   library,
   profile,
   settings,
+  insights,
+  repertoire,
+  local,
+  drills,
+  classics,
+  pwa,
+  daily,
+  a11y,
 };

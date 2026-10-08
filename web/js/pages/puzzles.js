@@ -1,20 +1,23 @@
 // GrandMentor — Puzzles page.
 // Routes (see app.js): #/puzzles (hub), #/puzzles?play=1[&theme=fork] (rated solver),
-// #/puzzles/rush (params.mode = 'rush'), #/puzzles/daily (params.mode = 'daily').
+// #/puzzles/rush (params.mode = 'rush'), #/puzzles/daily (params.mode = 'daily'),
+// #/puzzles/mistakes (params.mode = 'mistakes': spaced-repetition cards from the user's own games).
 // Contract: docs/CONTRACT.md §4 (puzzle API) and §5 (Board, sound); UX: docs/FEATURES.md §3.5–3.6.
 //
 // Memory hygiene: every view owns a `disposables()` bag; every puzzle runner owns a timer set that is
 // cleared on each new puzzle and on destroy; all fetches share an AbortController aborted on unmount.
 
-import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, formatClock } from '../ui.js';
+import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, formatClock, confirmDialog, classificationMeta } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
-import { getSetting } from '../settings.js';
+import { getSetting, reducedMotion } from '../settings.js';
 import { Board } from '../components/board.js';
+import { createMoveInput } from '../components/moveinput.js';
 import { playSound } from '../components/sound.js';
 import { Chess } from '../../vendor/chess.js';
-import { t, hasKey, formatDateIntl, formatNumber } from '../i18n.js';
+import { t, hasKey, formatDateIntl, formatNumber, getLocale } from '../i18n.js';
 
-export const title = (params) => t(params?.mode === 'rush' ? 'puzzles.rushTitle' : params?.mode === 'daily' ? 'puzzles.dailyTitle' : 'puzzles.title');
+const TITLE_KEYS = { rush: 'puzzles.rushTitle', daily: 'puzzles.dailyTitle', mistakes: 'puzzles.mistakes.title' };
+export const title = (params) => t(TITLE_KEYS[params?.mode] || 'puzzles.title');
 
 // ---------------------------------------------------------------------------
 // Small helpers
@@ -70,12 +73,17 @@ function themeLabel(id) {
 // Themes that describe length / evaluation are noise as filters for beginners.
 const HIDDEN_FILTER_THEMES = new Set(['short', 'long', 'veryLong', 'oneMove', 'crushing', 'advantage', 'equality', 'master', 'masterVsMaster', 'superGM']);
 
+/**
+ * A puzzle normally starts with the opponent's set-up move (`moves[0]`). With `userFirst: true`
+ * (mistake cards without a previous move) the solver moves first from `fen`.
+ */
 function validPuzzle(p) {
-  return p && typeof p.id === 'string' && typeof p.fen === 'string' && Array.isArray(p.moves) && p.moves.length >= 2;
+  return p && typeof p.id === 'string' && typeof p.fen === 'string' && Array.isArray(p.moves) && p.moves.length >= (p.userFirst ? 1 : 2);
 }
 
 /** FEN of the position the user has to solve (after the opponent's set-up move). */
 function solveFen(p) {
+  if (p.userFirst) return p.fen;
   try {
     const c = new Chess(p.fen);
     const m = p.moves[0];
@@ -93,7 +101,7 @@ function uciObj(uci) {
 /** Animate a number in `el` from `from` to `to`. Returns a cancel function. */
 function animateNumber(el, from, to, ms = 900) {
   if (!el) return () => {};
-  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const reduce = reducedMotion();
   if (reduce || document.hidden || from === to || !Number.isFinite(from) || !Number.isFinite(to)) { el.textContent = String(Math.round(to)); return () => {}; }
   let id = 0;
   const start = performance.now();
@@ -180,11 +188,17 @@ export class PuzzleRunner {
     this.hintStage = 0;
     this.lastMove = null;
     this.state = 'intro';
-    // The opponent moves first, so the solver plays the side NOT to move in the FEN.
-    this.userColor = chess.turn() === 'w' ? 'black' : 'white';
+    // The opponent moves first, so the solver plays the side NOT to move in the FEN
+    // (unless the puzzle starts with the solver's own move).
+    const userTurn = chess.turn() === 'w' ? 'white' : 'black';
+    this.userColor = puzzle.userFirst ? userTurn : (userTurn === 'white' ? 'black' : 'white');
     this.board.setInteractive(false, null);
     if (this.board.orientation !== this.userColor) this.board.setOrientation(this.userColor);
     this.board.setPosition(puzzle.fen, { animate: false });
+    if (puzzle.userFirst) {
+      this.timers.later(() => { if (this.state === 'intro') this._toUser(); }, 120);
+      return true;
+    }
     this.timers.later(() => {
       if (this.state !== 'intro') return;
       if (!this._playScripted()) return;
@@ -315,7 +329,7 @@ export class PuzzleRunner {
     if (!this.puzzle || ['solution', 'shown', 'broken', 'dead', 'idle'].includes(this.state)) return;
     this.timers.clear();
     this._clearMarks();
-    if (this.state === 'intro') {
+    if (this.state === 'intro' && !this.puzzle.userFirst) {
       if (!this._playScripted()) return;
     }
     this.state = 'solution';
@@ -328,7 +342,7 @@ export class PuzzleRunner {
         this.hooks.onSolutionDone?.();
         return;
       }
-      const isUser = this.idx % 2 === 1;
+      const isUser = (this.idx % 2 === 1) !== !!this.puzzle.userFirst;
       if (!this._playScripted()) return;
       this._clearMarks();
       if (isUser) {
@@ -385,6 +399,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
   const ctx = { bag, signal: ctrl.signal };
 
   if (params.mode === 'rush') mountRush(root, ctx);
+  else if (params.mode === 'mistakes') mountMistakes(root, ctx);
   else if (params.mode === 'daily') mountSolver(root, ctx, { mode: 'daily' });
   else if (query.play || query.theme) mountSolver(root, ctx, { mode: 'rated', theme: query.theme || '' });
   else await mountHub(root, ctx);
@@ -406,9 +421,10 @@ async function mountHub(root, { bag, signal }) {
   page.appendChild(body);
   root.appendChild(page);
 
-  const [profile, themes] = await Promise.all([
+  const [profile, themes, mistakes] = await Promise.all([
     api.get('/api/profile', { signal }).catch((e) => (isAbort(e) ? null : null)),
     api.get('/api/puzzles/themes', { signal }).catch(() => []),
+    api.get('/api/mistakes/summary', { signal }).catch(() => null),
   ]);
   if (bag.disposed) return;
 
@@ -452,6 +468,11 @@ async function mountHub(root, { bag, signal }) {
     h('span', { class: `btn ${dailyDone ? 'btn-ghost' : 'btn-secondary'} btn-lg btn-block mt-3`, html: icon(dailyDone ? 'check' : 'calendar') + `<span>${dailyDone ? t('puzzles.hub.daily.solvedAgain') : t('puzzles.hub.daily.cta')}</span>` }));
 
   const content = [h('div', { class: 'grid-3 pz-modes' }, rated, rush, daily)];
+  // "Learn from your mistakes": first when something is due, otherwise right after the modes.
+  if (mistakes && Number.isFinite(mistakes.total)) {
+    const entry = mistakesEntry(mistakes);
+    if ((mistakes.due | 0) > 0) content.unshift(entry); else content.push(entry);
+  }
 
   const list = Array.isArray(themes) ? themes.filter((x) => x && x.theme && !HIDDEN_FILTER_THEMES.has(x.theme)) : [];
   list.sort((a, b) => (b.count || 0) - (a.count || 0));
@@ -474,6 +495,32 @@ async function mountHub(root, { bag, signal }) {
       howto('3', t('puzzles.hub.how3Title'), t('puzzles.hub.how3Text')))));
 
   body.replaceChildren(...content);
+}
+
+/** Hub banner for "Learn from your mistakes" with the due-count badge. */
+function mistakesEntry(sum) {
+  const due = sum.due | 0;
+  const total = sum.total | 0;
+  const mastered = sum.graduated | 0;
+  const desc = total ? t('puzzles.hub.mistakes.desc') : t('puzzles.hub.mistakes.descEmpty');
+  const stats = total
+    ? h('div', { class: 'row-sm subtle text-sm pz-mx-entry-stats' },
+      h('span', null, t('puzzles.mistakes.inDeck', { count: total })), h('span', { class: 'dot-sep' }),
+      h('span', null, t('puzzles.mistakes.mastered', { count: mastered })))
+    : null;
+  const cta = due
+    ? t('puzzles.hub.mistakes.ctaDue', { count: due })
+    : total ? t('puzzles.hub.mistakes.ctaPractice') : t('puzzles.hub.mistakes.ctaEmpty');
+  return h('a', { class: 'card card-link pz-mx-entry', href: '#/puzzles/mistakes' },
+    h('div', { class: 'pz-mode-icon pz-mx-icon', html: icon('target') },
+      due ? h('span', { class: 'pz-mx-badge tabular', 'aria-label': t('puzzles.mistakes.dueToday', { count: due }) }, due > 99 ? '99+' : String(due)) : null),
+    h('div', { class: 'pz-mx-entry-main' },
+      h('div', { class: 'row-sm' },
+        h('span', { class: 'pz-mode-title' }, t('puzzles.hub.mistakes.title')),
+        due ? h('span', { class: 'badge pz-mx-due-chip' }, t('puzzles.mistakes.dueToday', { count: due })) : null),
+      h('p', { class: 'muted' }, desc),
+      stats),
+    h('span', { class: `btn ${due ? 'btn-primary' : 'btn-secondary'} pz-mx-entry-cta`, html: icon(due ? 'play' : 'arrow-right') + `<span>${cta}</span>` }));
 }
 
 function howto(n, heading, text) {
@@ -549,8 +596,11 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
       h('div', { class: 'pz-score' }, h('div', { class: 'stat-label' }, t('puzzles.solver.streak')), h('div', { class: 'pz-score-sm row-sm' }, h('span', { class: 'pz-flame', html: icon('fire') }), streakNum)),
       h('div', { class: 'pz-score' }, h('div', { class: 'stat-label' }, t('puzzles.solver.time')), h('div', { class: 'pz-score-sm row-sm' }, h('span', { class: 'subtle', html: icon('timer') }), timeEl)));
 
+  let board = null;
+  const moveInput = createMoveInput({ board: () => board });
+  bag.add(() => moveInput.destroy());
   const panelBody = h('div', { class: 'panel-body stack' },
-    topCard, status, info,
+    topCard, status, moveInput.el, info,
     isDaily ? null : h('div', { class: 'stack-sm' }, h('div', { class: 'stat-label' }, t('puzzles.solver.theme')), chipsEl),
     isDaily ? null : h('div', { class: 'stack-sm' }, h('div', { class: 'stat-label' }, t('puzzles.solver.thisSession')), historyEl));
 
@@ -567,7 +617,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
   const page = h('div', { class: 'page page-wide pz-page' }, layout);
   root.appendChild(page);
 
-  const board = createBoard(slot, (mv) => runner.handleMove(mv));
+  board = createBoard(slot, (mv) => runner.handleMove(mv));
   bag.add(() => board.destroy());
 
   const runner = new PuzzleRunner(board, {
@@ -673,9 +723,15 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
     if (st.hintMsg && st.feedback === 'ready') { sub = st.hintMsg; }
     if (!st.rated && !isDaily && st.puzzle && st.feedback === 'ready') sub = t('puzzles.solver.practiceSuffix', { text: sub });
     status.className = `pz-status pz-status-${kind}`;
-    status.replaceChildren(
-      h('div', { class: 'pz-status-icon', html: icon(ic) }),
-      h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+    // The status is a live region: only rewrite it when the text changes, so screen readers
+    // don't hear the same message on every re-render.
+    const statusKey = `${ic}|${head}|${sub}`;
+    if (status.dataset.key !== statusKey) {
+      status.dataset.key = statusKey;
+      status.replaceChildren(
+        h('div', { class: 'pz-status-icon', html: icon(ic) }),
+        h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+    }
 
     // Puzzle info (themes only after finishing, to avoid spoilers)
     const p = st.puzzle;
@@ -713,7 +769,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
     }
     actions.replaceChildren(...list);
 
-    themeLink.textContent = st.theme ? themeLabel(st.theme) : '';
+    themeLink.textContent = st.theme ? t('puzzles.solver.currentTheme', { theme: themeLabel(st.theme) }) : '';
   }
 
   function renderHistory() {
@@ -881,6 +937,426 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
 }
 
 // ---------------------------------------------------------------------------
+// My mistakes: spaced-repetition cards built from the user's own reviewed games
+// (API: /api/mistakes*, see docs/CONTRACT.md "Learn from your mistakes").
+// ---------------------------------------------------------------------------
+
+const MASTERY_STEPS = 3;
+
+/** Localized "in 3 hours" for a number of seconds from now. */
+function relTime(secs) {
+  const s = Math.max(0, Number(secs) || 0);
+  if (s < 60) return t('puzzles.mistakes.inAMoment');
+  let rtf;
+  try { rtf = new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }); } catch { return ''; }
+  if (s < 3600) return rtf.format(Math.round(s / 60), 'minute');
+  if (s < 86400) return rtf.format(Math.round(s / 3600), 'hour');
+  return rtf.format(Math.round(s / 86400), 'day');
+}
+
+function sanSuffix(cls) { return cls === 'blunder' ? '??' : (cls === 'mistake' || cls === 'miss') ? '?' : ''; }
+
+/** Turn a mistake card into a PuzzleRunner puzzle. */
+function cardPuzzle(card) {
+  const sol = Array.isArray(card.solution) && card.solution.length ? card.solution.slice() : [card.best_uci];
+  if (card.prev_fen && card.prev_uci) return { id: `mistake-${card.id}`, fen: card.prev_fen, moves: [card.prev_uci, ...sol] };
+  return { id: `mistake-${card.id}`, fen: card.fen, moves: sol, userFirst: true };
+}
+
+function confettiBurst(count = 36) {
+  return h('div', { class: 'pz-confetti', 'aria-hidden': 'true' },
+    Array.from({ length: count }, (_, i) => h('span', {
+      style: { '--x': `${(i * 37) % 100}%`, '--d': `${(i % 9) * 70}ms`, '--r': `${(i * 53) % 360}deg`, '--c': `var(--${['primary', 'gold', 'info', 'accent', 'cls-brilliant'][i % 5]})` },
+    })));
+}
+
+function masteryPips(streak) {
+  const n = Math.max(0, Math.min(MASTERY_STEPS, streak | 0));
+  return h('div', { class: 'pz-mx-pips', role: 'img', 'aria-label': t('puzzles.mistakes.masteryAria', { n, total: MASTERY_STEPS }), title: t('puzzles.mistakes.masteryAria', { n, total: MASTERY_STEPS }) },
+    Array.from({ length: MASTERY_STEPS }, (_, i) => h('span', { class: `pz-mx-pip${i < n ? ' on' : ''}` })));
+}
+
+function mountMistakes(root, { bag, signal }) {
+  const page = h('div', { class: 'page page-wide pz-page pz-mx' });
+  root.appendChild(page);
+  let viewBag = null;
+  const swap = () => {
+    if (viewBag) viewBag.dispose();
+    viewBag = disposables();
+    page.replaceChildren();
+    return viewBag;
+  };
+  bag.add(() => { if (viewBag) viewBag.dispose(); viewBag = null; });
+
+  let summary = null;
+  let lastId = null;
+  let practiceMode = false;
+  let loadSeq = 0;
+
+  const header = (subtitle) => pageHeader({
+    title: t('puzzles.mistakes.title'), icon: 'target', subtitle,
+    breadcrumbs: [{ label: t('puzzles.title'), href: '#/puzzles' }, { label: t('puzzles.mistakes.title') }],
+  });
+
+  function statsRow() {
+    const s = summary || {};
+    const stat = (value, label, cls = '') => h('div', { class: `pz-score pz-mx-stat ${cls}` },
+      h('div', { class: 'pz-mx-stat-num tabular' }, formatNumber(value | 0)), h('div', { class: 'stat-label' }, label));
+    return h('div', { class: 'pz-scoreboard pz-mx-scoreboard' },
+      stat(s.due, t('puzzles.mistakes.statDue'), (s.due | 0) ? 'is-due' : ''),
+      stat(s.total, t('puzzles.mistakes.statDeck')),
+      stat(s.graduated, t('puzzles.mistakes.statMastered'), 'is-mastered'));
+  }
+
+  // ----- Boot: backfill from reviewed games (bounded per call), then the first card -----
+  async function boot() {
+    const vb = swap();
+    page.append(h('div', { class: 'page' }, header(t('puzzles.mistakes.subtitle')), loadingBlock(t('puzzles.mistakes.loading'))));
+    for (let i = 0; i < 3; i++) {
+      try {
+        const r = await api.post('/api/mistakes/sync', {}, { signal });
+        if (vb.disposed) return;
+        if (r?.summary) summary = r.summary;
+        if (r?.added) toast(t('puzzles.mistakes.addedToast', { count: r.added }), 'success');
+        if (!r?.more) break;
+      } catch (e) {
+        if (isAbort(e) || vb.disposed) return;
+        break;
+      }
+    }
+    loadNext();
+  }
+
+  async function loadNext() {
+    const seq = ++loadSeq;
+    let res;
+    try {
+      res = await api.get('/api/mistakes/next' + qs({ exclude: lastId }), { signal });
+    } catch (e) {
+      if (isAbort(e) || bag.disposed || seq !== loadSeq) return;
+      showError(e.status === 404 ? t('puzzles.mistakes.unavailable') : e.message);
+      return;
+    }
+    if (bag.disposed || seq !== loadSeq) return;
+    summary = res?.summary || summary;
+    const card = res?.card;
+    if (!card) { showEmpty(); return; }
+    if (!res.due && !practiceMode) { showCaughtUp(card); return; }
+    showCard(card, { practice: !res.due });
+  }
+
+  function showError(msg) {
+    swap();
+    page.append(h('div', { class: 'page' }, header(),
+      emptyState({ icon: 'alert', title: t('puzzles.mistakes.errorTitle'), text: msg, action: { label: t('puzzles.solver.buttons.reload'), icon: 'refresh', onClick: () => boot() } })));
+  }
+
+  // ----- Nothing in the deck (or everything mastered) -----
+  function showEmpty() {
+    const vb = swap();
+    const s = summary || {};
+    const allMastered = (s.total | 0) > 0;
+    const card = h('div', { class: 'card pz-mx-done' },
+      allMastered ? confettiBurst() : null,
+      h('div', { class: 'pz-mx-done-emoji', 'aria-hidden': 'true' }, allMastered ? '🏆' : '🌱'),
+      h('h2', { class: 'pz-mx-done-title' }, t(allMastered ? 'puzzles.mistakes.allMasteredTitle' : 'puzzles.mistakes.emptyTitle')),
+      h('p', { class: 'muted pz-mx-done-text' }, t(allMastered ? 'puzzles.mistakes.allMasteredText' : 'puzzles.mistakes.emptyText')),
+      allMastered ? statsRow() : h('ol', { class: 'pz-mx-steps' },
+        h('li', null, t('puzzles.mistakes.emptyStep1')),
+        h('li', null, t('puzzles.mistakes.emptyStep2')),
+        h('li', null, t('puzzles.mistakes.emptyStep3'))),
+      h('div', { class: 'row row-wrap pz-mx-done-actions' },
+        h('a', { class: 'btn btn-primary btn-lg', href: '#/play', html: icon('play') + `<span>${t('puzzles.mistakes.playBot')}</span>` }),
+        h('a', { class: 'btn btn-secondary', href: '#/library', html: icon('library') + `<span>${t('puzzles.mistakes.reviewGame')}</span>` }),
+        h('a', { class: 'btn btn-ghost', href: '#/puzzles?play=1', html: icon('puzzle') + `<span>${t('puzzles.mistakes.ratedPuzzles')}</span>` })));
+    page.append(h('div', { class: 'page' }, header(t('puzzles.mistakes.subtitle')), card));
+    if (allMastered) vb.timeout(() => card.querySelector('.pz-confetti')?.remove(), 4000);
+  }
+
+  // ----- Everything due is done: celebrate, show when the next one is due -----
+  function showCaughtUp(nextCard) {
+    const vb = swap();
+    const s = summary || {};
+    const secs = Number.isFinite(s.next_due_in_secs) ? s.next_due_in_secs : nextCard?.due_in_secs;
+    const card = h('div', { class: 'card pz-mx-done' },
+      confettiBurst(),
+      h('div', { class: 'pz-mx-done-emoji', 'aria-hidden': 'true' }, '🎉'),
+      h('h2', { class: 'pz-mx-done-title' }, t('puzzles.mistakes.caughtUpTitle')),
+      h('p', { class: 'muted pz-mx-done-text' }, t('puzzles.mistakes.caughtUpText')),
+      Number.isFinite(secs) ? h('div', { class: 'pz-mx-next-due' }, h('span', { html: icon('clock') }), h('span', null, t('puzzles.mistakes.nextDue', { when: relTime(secs) }))) : null,
+      statsRow(),
+      h('div', { class: 'row row-wrap pz-mx-done-actions' },
+        h('a', { class: 'btn btn-primary btn-lg', href: '#/puzzles?play=1', html: icon('puzzle') + `<span>${t('puzzles.mistakes.ratedPuzzles')}</span>` }),
+        btn(t('puzzles.mistakes.practiceAnyway'), 'refresh', 'secondary', () => { practiceMode = true; showCard(nextCard, { practice: true }); }),
+        h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })));
+    page.append(h('div', { class: 'page' }, header(t('puzzles.mistakes.subtitle')), card));
+    vb.timeout(() => card.querySelector('.pz-confetti')?.remove(), 4000);
+  }
+
+  // ----- Solve one card -----
+  function showCard(card, { practice }) {
+    const vb = swap();
+    lastId = card.id;
+    const st = { card, practice, feedback: 'loading', failed: false, recorded: false, hintMsg: '', outcome: null, saving: false };
+
+    const slot = h('div', { class: 'board-slot' });
+    const turnBar = h('div', { class: 'pz-turnbar' });
+    const flipBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-icon', 'aria-label': t('puzzles.solver.flipBoard'), 'data-tooltip': t('puzzles.solver.flipBoard'), html: icon('flip') });
+    const analyzeLink = h('a', { class: 'btn btn-ghost btn-sm', href: `#/analysis?fen=${encodeURIComponent(card.fen)}`, html: icon('analysis') + `<span>${t('puzzles.solver.analyze')}</span>` });
+    const timeEl = h('span', { class: 'tabular' }, '0:00');
+    const stopwatch = new Stopwatch(timeEl);
+    vb.add(() => stopwatch.destroy());
+    const toolbar = h('div', { class: 'toolbar pz-toolbar' }, flipBtn, h('div', { class: 'spacer' }),
+      h('span', { class: 'row-sm subtle text-sm' }, h('span', { html: icon('timer') }), timeEl), analyzeLink);
+
+    const progress = h('div', { class: 'pz-mx-progress' });
+    const context = h('div', { class: 'pz-mx-context' });
+    const status = h('div', { class: 'pz-status', 'aria-live': 'polite' });
+    let mxBoard = null;
+    const mxInput = createMoveInput({ board: () => mxBoard });
+    vb.add(() => mxInput.destroy());
+    const after = h('div', { class: 'pz-mx-after stack-sm' });
+    const actions = h('div', { class: 'pz-actions' });
+
+    const panel = h('div', { class: 'panel grow' },
+      h('div', { class: 'panel-header', html: icon('target') + `<span>${t('puzzles.mistakes.title')}</span>` },
+        h('div', { class: 'spacer' }),
+        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })),
+      h('div', { class: 'panel-body stack' }, progress, context, status, mxInput.el, after),
+      h('div', { class: 'panel-footer' }, actions));
+
+    page.append(h('div', { class: 'game-layout no-eval pz-layout', style: '--board-chrome: 124px' },
+      h('div', { class: 'game-main' }, turnBar, h('div', { class: 'board-row' }, slot), toolbar),
+      h('aside', { class: 'game-panel' }, panel)));
+
+    const board = createBoard(slot, (mv) => runner.handleMove(mv));
+    mxBoard = board;
+    vb.add(() => board.destroy());
+    const runner = new PuzzleRunner(board, {
+      onReady() {
+        stopwatch.run();
+        if (st.feedback === 'loading') st.feedback = 'ready';
+        render();
+      },
+      onCorrect() { st.feedback = 'correct'; st.hintMsg = ''; render(); },
+      onWrong() {
+        st.feedback = 'wrong';
+        st.hintMsg = '';
+        markFailed();
+        render();
+        slot.classList.remove('shake'); void slot.offsetWidth; slot.classList.add('shake');
+      },
+      onSolved() {
+        stopwatch.stop();
+        st.feedback = st.failed ? 'solvedLate' : 'solved';
+        if (!st.failed) record(true);
+        render();
+      },
+      onSolutionDone() { st.feedback = 'solution'; render(); },
+      onError(msg) { stopwatch.stop(); st.feedback = 'error'; st.hintMsg = msg; render(); },
+    });
+    vb.add(() => runner.destroy());
+
+    function markFailed() {
+      if (st.failed) return;
+      st.failed = true;
+      record(false);
+    }
+
+    async function record(solved) {
+      if (st.recorded) return;
+      st.recorded = true;
+      st.saving = true;
+      try {
+        const res = await api.post(`/api/mistakes/${encodeURIComponent(card.id)}/attempt`, { solved, time_ms: Math.round(stopwatch.ms) }, { signal });
+        if (vb.disposed || !res) return;
+        st.outcome = { ...res, solved };
+        if (res.summary) summary = res.summary;
+        if (res.graduated_now) sound('gameEnd');
+      } catch (e) {
+        if (isAbort(e) || vb.disposed) return;
+        toast(t('puzzles.errors.saveFailed', { message: e.message }), 'warning');
+      } finally {
+        st.saving = false;
+      }
+      if (!vb.disposed) render();
+    }
+
+    function renderContext() {
+      const meta = classificationMeta(card.classification);
+      const opp = String(card.opponent || '').trim();
+      const fromLine = [
+        opp ? t('puzzles.mistakes.fromGame', { opponent: opp }) : t('puzzles.mistakes.fromAGame'),
+        card.move_number ? t('puzzles.mistakes.moveN', { n: card.move_number }).replace(/ /g, '\u00a0') : null,
+      ].filter(Boolean).join(' · ');
+      const streak = st.outcome?.card?.streak ?? card.streak;
+      context.replaceChildren(
+        h('div', { class: 'pz-mx-from' },
+          h('div', { class: 'pz-mx-from-icon', html: icon(card.bot_id ? 'robot' : 'swords') }),
+          h('div', { class: 'pz-mx-from-main' },
+            h('div', { class: 'pz-mx-from-line subtle text-sm' }, fromLine),
+            h('div', { class: 'pz-mx-played' },
+              h('span', null, t('puzzles.mistakes.youPlayed')),
+              h('span', { class: 'pz-mx-san', style: { color: meta.cssVar } }, `${card.played_san || card.played_uci}${sanSuffix(card.classification)}`),
+              h('span', { class: 'badge pz-mx-cls', style: { '--cls': meta.cssVar } }, meta.label))),
+          masteryPips(streak)),
+        h('div', { class: 'row-sm pz-mx-tags' },
+          card.phase ? h('span', { class: 'badge' }, t(`puzzles.mistakes.phase.${['opening', 'middlegame', 'endgame'].includes(card.phase) ? card.phase : 'middlegame'}`)) : null,
+          st.practice ? h('span', { class: 'badge pz-mx-practice' }, t('puzzles.mistakes.practiceBadge')) : null));
+    }
+
+    function render() {
+      const color = runner.userColor;
+      const done = ['solved', 'solvedLate', 'solution'].includes(st.feedback);
+      progress.replaceChildren(statsRow());
+      renderContext();
+
+      // Turn banner
+      let bar;
+      if (st.feedback === 'loading') bar = [h('span', { class: 'spinner' }), h('span', null, t('puzzles.mistakes.bar.loading'))];
+      else if (st.feedback === 'error') bar = [h('span', { html: icon('alert') }), h('span', null, t('puzzles.solver.bar.error'))];
+      else if (st.feedback === 'solved' || st.feedback === 'solvedLate') bar = [h('span', { class: 'pz-turn-ok', html: icon('check') }), h('span', null, t('puzzles.mistakes.bar.solved'))];
+      else if (st.feedback === 'solution') bar = [h('span', { html: icon('eye') }), h('span', null, t('puzzles.solver.bar.solution'))];
+      else bar = [h('span', { class: `pz-side pz-side-${color}` }), h('span', null, t('puzzles.mistakes.bar.find', { side: sideLabel(color) }))];
+      turnBar.className = `pz-turnbar state-${st.feedback}`;
+      turnBar.replaceChildren(...bar);
+
+      // Status card
+      const o = st.outcome;
+      let kind = 'neutral', ic = 'target', head = '', sub = '';
+      switch (st.feedback) {
+        case 'loading': ic = 'clock'; head = t('puzzles.solver.status.loadingHead'); sub = t('puzzles.mistakes.status.loadingSub'); break;
+        case 'ready': head = t('puzzles.mistakes.status.readyHead'); sub = t('puzzles.mistakes.status.readySub', { side: sideLabel(color) }); break;
+        case 'correct': kind = 'good'; ic = 'check-circle'; head = t('puzzles.solver.status.correctHead'); sub = t('puzzles.solver.status.correctSub'); break;
+        case 'wrong': kind = 'bad'; ic = 'x-circle'; head = t('puzzles.solver.status.wrongHead'); sub = t('puzzles.mistakes.status.wrongSub'); break;
+        case 'solved':
+          kind = 'good'; ic = 'trophy';
+          head = o?.graduated_now ? t('puzzles.mistakes.status.masteredHead') : t('puzzles.mistakes.status.solvedHead');
+          sub = o?.graduated_now ? t('puzzles.mistakes.status.masteredSub') : t('puzzles.mistakes.status.solvedSub');
+          break;
+        case 'solvedLate': kind = 'good'; ic = 'check-circle'; head = t('puzzles.mistakes.status.lateHead'); sub = t('puzzles.mistakes.status.lateSub'); break;
+        case 'solution': ic = 'eye'; head = t('puzzles.mistakes.status.solutionHead'); sub = t('puzzles.mistakes.status.solutionSub'); break;
+        case 'error': kind = 'bad'; ic = 'alert'; head = t('puzzles.solver.status.errorHead'); sub = st.hintMsg || t('puzzles.solver.status.errorSub'); break;
+        default: break;
+      }
+      if (st.hintMsg && st.feedback === 'ready') sub = st.hintMsg;
+      status.className = `pz-status pz-status-${kind}${o?.graduated_now && st.feedback === 'solved' ? ' pz-mx-mastered' : ''}`;
+      const statusKey = `${ic}|${head}|${sub}`;
+      if (status.dataset.key !== statusKey) {
+        status.dataset.key = statusKey;
+        status.replaceChildren(
+          h('div', { class: 'pz-status-icon', html: icon(ic) }),
+          h('div', { class: 'pz-status-text' }, h('div', { class: 'pz-status-head' }, head), h('div', { class: 'pz-status-sub' }, sub)));
+      }
+
+      // After solving: coach, best move, schedule, links
+      if (done) {
+        const next = o?.card;
+        let schedule = '';
+        if (st.saving) schedule = t('puzzles.mistakes.saving');
+        else if (o && !o.solved) schedule = t('puzzles.mistakes.schedule.again', { when: relTime(next?.due_in_secs) });
+        else if (o?.graduated_now) schedule = t('puzzles.mistakes.schedule.graduated');
+        else if (o && !o.counted) schedule = t('puzzles.mistakes.schedule.practice');
+        else if (next) schedule = t('puzzles.mistakes.schedule.next', { when: relTime(next.due_in_secs) });
+        const explanation = String(card.explanation || '').trim();
+        after.replaceChildren(...[
+          h('div', { class: 'pz-mx-best' },
+            h('span', { class: 'pz-mx-best-icon', html: icon('star') }),
+            h('span', null, t('puzzles.mistakes.bestWas')), h('strong', { class: 'pz-mx-san' }, card.best_san || card.best_uci),
+            h('span', { class: 'subtle' }, t('puzzles.mistakes.insteadOf', { san: card.played_san || card.played_uci }))),
+          explanation ? h('div', { class: 'pz-mx-coach' },
+            h('div', { class: 'pz-mx-coach-icon', html: icon('mentor') }),
+            h('div', { class: 'pz-mx-coach-body' },
+              h('div', { class: 'stat-label' }, t('puzzles.mistakes.coachSays')),
+              h('p', null, explanation))) : null,
+          schedule ? h('div', { class: 'pz-mx-schedule subtle text-sm' }, h('span', { html: icon('calendar') }), h('span', null, schedule)) : null,
+          card.game_id ? h('a', { class: 'btn btn-ghost btn-sm pz-mx-review-link', href: `#/review/${encodeURIComponent(card.game_id)}`, html: icon('analysis') + `<span>${t('puzzles.mistakes.openReview')}</span>` }) : null,
+        ].filter(Boolean));
+      } else {
+        after.replaceChildren();
+      }
+
+      // Actions
+      const list = [];
+      if (st.feedback === 'loading') {
+        list.push(btn(t('puzzles.solver.buttons.hint'), 'hint', 'secondary', null, { cls: 'pz-grow' }), btn(t('puzzles.solver.buttons.solution'), 'eye', 'ghost', null));
+        list.forEach((b) => { b.disabled = true; });
+      } else if (st.feedback === 'error') {
+        list.push(btn(t('puzzles.mistakes.buttons.remove'), 'trash', 'ghost', () => removeCard()));
+        list.push(btn(t('puzzles.mistakes.buttons.skip'), 'arrow-right', 'primary', () => loadNext(), { cls: 'pz-grow' }));
+      } else if (done) {
+        list.push(btn(t('puzzles.solver.buttons.retry'), 'refresh', 'ghost', () => retry(), { key: 'r' }));
+        list.push(btn(t('puzzles.mistakes.buttons.remove'), 'trash', 'ghost', () => removeCard(), { title: t('puzzles.mistakes.removeTitle') }));
+        list.push(btn(t('puzzles.mistakes.buttons.next'), 'arrow-right', 'primary', () => loadNext(), { key: 'n', cls: 'pz-grow' }));
+      } else {
+        list.push(btn(t('puzzles.solver.buttons.hint'), 'hint', 'secondary', () => doHint(), { key: 'h', cls: 'pz-grow' }));
+        list.push(btn(t('puzzles.solver.buttons.solution'), 'eye', 'ghost', () => doSolution()));
+      }
+      actions.replaceChildren(...list);
+    }
+
+    function doHint() {
+      const stage = runner.hint();
+      if (!stage) return;
+      markFailed();
+      st.hintMsg = stage === 1 ? t('puzzles.solver.hintPiece', { piece: runner.hintPieceName() }) : t('puzzles.solver.hintArrow');
+      render();
+    }
+
+    function doSolution() {
+      markFailed();
+      stopwatch.stop();
+      st.hintMsg = '';
+      runner.showSolution();
+      st.feedback = 'solution';
+      render();
+    }
+
+    function retry() {
+      st.feedback = 'loading';
+      st.hintMsg = '';
+      render();
+      runner.retry();
+    }
+
+    async function removeCard() {
+      const ok = await confirmDialog({ title: t('puzzles.mistakes.removeTitle'), message: t('puzzles.mistakes.removeText'), confirmLabel: t('puzzles.mistakes.removeConfirm'), danger: true });
+      if (!ok || vb.disposed) return;
+      try {
+        const res = await api.del(`/api/mistakes/${encodeURIComponent(card.id)}`, { signal });
+        if (vb.disposed) return;
+        if (res?.summary) summary = res.summary;
+        toast(t('puzzles.mistakes.removedToast'), 'info');
+        lastId = null;
+        loadNext();
+      } catch (e) {
+        if (!isAbort(e) && !vb.disposed) toast(e.message, 'error');
+      }
+    }
+
+    // ----- Events -----
+    vb.on(flipBtn, 'click', () => board.flip());
+    vb.on(window, 'keydown', (e) => {
+      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+      const tg = e.target;
+      if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
+      if (document.querySelector('.modal-backdrop')) return;
+      const k = e.key.toLowerCase();
+      const done = ['solved', 'solvedLate', 'solution'].includes(st.feedback);
+      if (k === 'f') { board.flip(); e.preventDefault(); }
+      else if (k === 'h' && !done && st.feedback !== 'loading') { doHint(); e.preventDefault(); }
+      else if (k === 'r' && done) { retry(); e.preventDefault(); }
+      else if ((k === 'n' || k === 'arrowright') && done) { e.preventDefault(); loadNext(); }
+    });
+
+    render();
+    if (!runner.load(cardPuzzle(card))) render();
+  }
+
+  boot();
+}
+
+// ---------------------------------------------------------------------------
 // Puzzle Rush
 // ---------------------------------------------------------------------------
 
@@ -959,6 +1435,9 @@ function mountRush(root, { bag, signal }) {
     const strikesEl = h('div', { class: 'pz-strikes' }, [0, 1, 2].map(() => h('span', { class: 'pz-strike', html: icon('x') })));
     const tilesEl = h('div', { class: 'pz-tiles' });
     const quitBtn = btn(t('puzzles.rush.endRun'), 'flag', 'ghost', () => endRun('quit'));
+    let rushBoard = null;
+    const rushInput = createMoveInput({ board: () => rushBoard });
+    vb.add(() => rushInput.destroy());
 
     const panel = h('div', { class: 'panel grow' },
       h('div', { class: 'panel-header', html: icon('bolt') + `<span>${t('puzzles.rush.panelTitle', { mode: rushText(mode, 'short') })}</span>` }),
@@ -967,6 +1446,7 @@ function mountRush(root, { bag, signal }) {
           h('div', null, h('div', { class: 'stat-label' }, cfg.ms ? t('puzzles.rush.timeLeft') : t('puzzles.rush.time')), clockEl),
           h('div', { class: 'text-center' }, h('div', { class: 'stat-label' }, t('puzzles.rush.score')), scoreEl)),
         h('div', { class: 'row between' }, h('div', { class: 'stat-label' }, t('puzzles.rush.strikes')), strikesEl),
+        rushInput.el,
         h('div', { class: 'stat-label' }, t('puzzles.rush.results')),
         tilesEl),
       h('div', { class: 'panel-footer' }, quitBtn));
@@ -977,6 +1457,7 @@ function mountRush(root, { bag, signal }) {
       h('aside', { class: 'game-panel' }, panel)));
 
     const board = createBoard(slot, (mv) => runner.handleMove(mv));
+    rushBoard = board;
     vb.add(() => board.destroy());
     const runner = new PuzzleRunner(board, {
       onReady() {

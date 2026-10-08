@@ -1,0 +1,49 @@
+/* Endgame theory: mastery progress, lesson steps and practice feedback.
+   Base drill styles (.eg-grid, .eg-card, .eg-banner, ...) live in learn.css. */
+
+/* Mastery dots ●●○ */
+.eg-dots { display: inline-flex; gap: 4px; align-items: center; flex: none; }
+.eg-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--border); display: block; transition: background var(--dur) var(--ease); }
+.eg-dots i.on { background: var(--primary); box-shadow: none; }
+.eg-dots.mastered i.on { background: var(--gold); }
+
+.eg-mastered { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 9px; border-radius: var(--r-full); font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--gold); background: color-mix(in srgb, var(--gold) 16%, transparent); border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); white-space: nowrap; }
+
+/* Cards */
+.eg-card-progress { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-top: auto; padding-top: var(--sp-2); border-top: 1px solid var(--divider); }
+.eg-card.is-mastered { border-color: color-mix(in srgb, var(--gold) 45%, var(--border)); }
+.eg-card .eg-card-medal { background: var(--gold); color: var(--text-inverse); }
+
+/* Group headers with mastery progress */
+.eg-group-head { flex-wrap: wrap; }
+.eg-group-text { flex: 1 1 220px; min-width: 0; }
+.eg-group-text h2 { margin: 0; }
+.eg-group-progress { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: 0 0 160px; color: var(--text-muted); }
+.eg-group-progress .progress { width: 100%; }
+
+.eg-note { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); background: var(--warning-soft); color: var(--text); font-size: var(--fs-sm); }
+
+/* Drill panel */
+.eg-drill .panel-footer { flex-wrap: wrap; align-items: center; }
+.eg-drill .panel-footer .btn:not(.btn-icon) { padding-inline: var(--sp-3); }
+.eg-drill .panel-footer .btn-icon { flex: none; }
+.eg-drill .panel-footer .eg-push { margin-left: auto; }
+.eg-mastery { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-3); }
+.eg-phase { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-4); }
+.eg-phase-kicker { font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary-text); }
+.eg-steps { display: flex; gap: 6px; margin: var(--sp-2) 0 var(--sp-4); }
+.eg-steps i { flex: 1; height: 4px; border-radius: var(--r-full); background: var(--surface-3); display: block; transition: background var(--dur) var(--ease); }
+.eg-steps i.on { background: var(--primary); }
+.eg-desc { margin: var(--sp-3) 0 0; }
+
+.eg-pitfall { width: 100%; text-align: left; padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
+.eg-pitfall-title { display: flex; align-items: center; gap: 6px; font-weight: var(--fw-bold); font-size: var(--fs-sm); color: var(--danger-text); }
+.eg-pitfall p { margin: 4px 0 0; font-size: var(--fs-sm); }
+.eg-streak-note { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 0; font-weight: var(--fw-medium); }
+
+@media (max-width: 640px) {
+  .eg-group-progress { flex-basis: 100%; align-items: stretch; }
+  .eg-card-progress { flex-wrap: wrap; }
+}
+.eg-links { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-4); }
+.eg-links .btn { padding-inline: var(--sp-2); }

@@ -5,9 +5,11 @@
 //! vocabulary helpers in [`words`], and the translation overlays in `data/i18n/<lang>/`
 //! (see [`Content::localized`] and `docs/I18N.md`).
 
+pub mod classics;
 mod lang;
 mod openings;
 pub mod overlay;
+pub mod steps;
 pub mod words;
 
 use std::path::Path;
@@ -20,6 +22,7 @@ use shakmaty::{Chess, Position};
 
 use gm_engine::{move_to_uci, parse_fen, san_to_move, to_fen, uci_to_move};
 
+pub use classics::{Classic, ClassicNote, ClassicQuestion, ClassicSummary};
 pub use lang::Lang;
 pub use openings::{start_name, OpeningBook, OpeningIndex, START_ID, START_NAME};
 pub use overlay::{Overlay, OverlayStats};
@@ -113,13 +116,16 @@ pub struct Arrow {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[serde(default)]
 pub struct Task {
-    /// "moves"
+    /// "moves" | "guess" | "count" | "hanging" | "choice" | "square" (see [`steps`])
     pub kind: String,
     pub prompt: String,
     /// UCI, alternating: user, reply, user, ... from step.fen
     pub solution: Vec<String>,
     pub hint: Option<String>,
     pub success: String,
+    /// Fields of the interactive kinds (guess, count, hanging, choice, square): see [`steps`].
+    #[serde(flatten)]
+    pub extra: steps::TaskExtra,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -136,7 +142,29 @@ pub struct EndgameDrill {
     pub description: String,
     pub hint: String,
     pub technique: Vec<String>,
+    /// Extra starting positions for practice (same side to move and goal as `fen`).
+    pub variants: Vec<String>,
+    /// Short "key idea" lesson shown before practice (2–5 steps; `fen` defaults to the drill's).
+    pub lesson: Vec<Step>,
+    /// When a practice attempt counts as a success (see [`DrillSuccess`]).
+    pub success: DrillSuccess,
+    /// What usually goes wrong; shown after a failed attempt.
+    pub pitfall: String,
 }
+
+/// Success condition of an endgame drill.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[serde(default)]
+pub struct DrillSuccess {
+    /// `mate` | `promote` (safe promotion) | `bare_king` (opponent left with a lone king) |
+    /// `hold` (draw goal: reach a drawn result or survive `moves` moves).
+    pub kind: String,
+    /// `hold`: own moves to survive; other kinds: move limit before the attempt fails.
+    pub moves: u32,
+}
+
+/// Valid [`DrillSuccess::kind`] values.
+pub const DRILL_SUCCESS_KINDS: [&str; 4] = ["mate", "promote", "bare_king", "hold"];
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[serde(default)]
@@ -170,6 +198,8 @@ pub struct Content {
     pub puzzles: Vec<Puzzle>,
     pub courses: Vec<Course>,
     pub endgames: Vec<EndgameDrill>,
+    /// Annotated classic games (`classics.json`).
+    pub classics: Vec<Classic>,
     /// Opening book index over `openings` (not serialized; see `rebuild_opening_index`).
     #[serde(skip)]
     pub opening_index: OpeningIndex,
@@ -329,25 +359,74 @@ fn validate_step(s: &mut Step) -> Result<(), String> {
         }
         None => None,
     };
-    if let Some(t) = &s.task {
-        let p = pos.ok_or("task without fen")?;
-        if t.solution.is_empty() {
-            return Err("task without solution".into());
-        }
-        replay_uci(&p, &t.solution)?;
+    if let Some(t) = &mut s.task {
+        steps::validate_task(t, pos.as_ref())?;
     }
     Ok(())
 }
 
+fn is_square(s: &str) -> bool {
+    let b = s.as_bytes();
+    b.len() == 2 && (b'a'..=b'h').contains(&b[0]) && (b'1'..=b'8').contains(&b[1])
+}
+
+/// Most practice variants a drill may carry.
+const MAX_DRILL_VARIANTS: usize = 8;
+
 fn validate_endgame(d: &mut EndgameDrill) -> Result<(), String> {
     if d.id.is_empty() {
         return Err("missing id".into());
+    }
+    if d.goal != "win" && d.goal != "draw" {
+        return Err(format!("bad goal {:?}", d.goal));
     }
     let p = parse_fen(&d.fen)?;
     if p.is_game_over() {
         return Err("position is already game over".into());
     }
     d.fen = to_fen(&p);
+    if d.variants.len() > MAX_DRILL_VARIANTS {
+        return Err("too many variants".into());
+    }
+    for v in d.variants.iter_mut() {
+        let vp = parse_fen(v).map_err(|e| format!("variant {v:?}: {e}"))?;
+        if vp.is_game_over() {
+            return Err(format!("variant {v:?} is already game over"));
+        }
+        if vp.turn() != p.turn() {
+            return Err(format!("variant {v:?}: different side to move"));
+        }
+        *v = to_fen(&vp);
+    }
+    // Defaults keep older drill files valid: mate for "win", hold for "draw".
+    if d.success.kind.is_empty() {
+        d.success.kind = if d.goal == "win" { "mate" } else { "hold" }.into();
+    }
+    if !DRILL_SUCCESS_KINDS.contains(&d.success.kind.as_str()) {
+        return Err(format!("bad success kind {:?}", d.success.kind));
+    }
+    if (d.success.kind == "hold") != (d.goal == "draw") {
+        return Err("success kind \"hold\" goes with goal \"draw\" (and only with it)".into());
+    }
+    if d.success.moves == 0 {
+        d.success.moves = if d.goal == "win" { 50 } else { 30 };
+    }
+    if d.success.moves > 100 {
+        return Err("success.moves must be at most 100".into());
+    }
+    if d.lesson.len() > 8 {
+        return Err("lesson has too many steps".into());
+    }
+    for (i, s) in d.lesson.iter_mut().enumerate() {
+        if s.task.is_some() {
+            return Err(format!("lesson step {}: tasks are not supported", i + 1));
+        }
+        validate_step(s).map_err(|e| format!("lesson step {}: {e}", i + 1))?;
+        let arrows = s.arrows.iter().flat_map(|a| [a.from.as_str(), a.to.as_str()]);
+        if let Some(bad) = arrows.chain(s.highlights.iter().map(String::as_str)).find(|q| !is_square(q)) {
+            return Err(format!("lesson step {}: bad square {bad:?}", i + 1));
+        }
+    }
     Ok(())
 }
 
@@ -403,12 +482,19 @@ impl Content {
             |d| &d.id,
             validate_endgame,
         );
+        let classics = retain_valid(
+            "classic",
+            read_list::<Classic>(&dir.join("classics.json"))?,
+            |g| &g.id,
+            classics::validate_classic,
+        );
         tracing::info!(
-            "content loaded: {} openings, {} puzzles, {} courses, {} endgames",
+            "content loaded: {} openings, {} puzzles, {} courses, {} endgames, {} classics",
             openings.len(),
             puzzles.len(),
             courses.len(),
-            endgames.len()
+            endgames.len(),
+            classics.len()
         );
         let opening_index = OpeningIndex::build(&openings);
         let i18n_dir = dir.join("i18n");
@@ -427,6 +513,7 @@ impl Content {
             puzzles,
             courses,
             endgames,
+            classics,
             opening_index,
             lang: Lang::En,
             views: LocalizedViews::with_overlays(overlays),
@@ -480,6 +567,7 @@ impl Content {
                     puzzles: self.puzzles.clone(),
                     courses: self.courses.clone(),
                     endgames: self.endgames.clone(),
+                    classics: self.classics.clone(),
                     opening_index: OpeningIndex::default(),
                     lang,
                     views: LocalizedViews { own: None, parent: Arc::downgrade(slots) },
@@ -546,6 +634,9 @@ impl Content {
     pub fn endgame(&self, id: &str) -> Option<&EndgameDrill> {
         self.endgames.iter().find(|d| d.id == id)
     }
+    pub fn classic(&self, id: &str) -> Option<&Classic> {
+        self.classics.iter().find(|g| g.id == id)
+    }
 }
 
 #[cfg(test)]
@@ -599,10 +690,55 @@ mod tests {
         let endgames: Vec<EndgameDrill> = raw("endgames.json");
         assert_eq!(c.endgames.len(), endgames.len(), "some endgames were invalid or duplicated");
         for d in &endgames {
-            let p = parse_fen(&d.fen).unwrap_or_else(|e| panic!("endgame {}: {e}", d.id));
-            assert!(!p.is_game_over(), "endgame {}: game over", d.id);
-            assert!(d.goal == "win" || d.goal == "draw", "endgame {}: bad goal", d.id);
+            let mut v = d.clone();
+            validate_endgame(&mut v).unwrap_or_else(|e| panic!("endgame {}: {e}", d.id));
+            // Theory drills: each ships a short lesson, a pitfall, practice variants and an
+            // explicit success condition.
+            assert!((2..=5).contains(&d.lesson.len()), "endgame {}: lesson needs 2-5 steps", d.id);
+            assert!(!d.pitfall.is_empty(), "endgame {}: missing pitfall", d.id);
+            assert!(!d.variants.is_empty(), "endgame {}: needs at least one variant", d.id);
+            assert!(!d.success.kind.is_empty() && d.success.moves > 0, "endgame {}: explicit success", d.id);
+            let mut fens: Vec<&str> = std::iter::once(d.fen.as_str()).chain(d.variants.iter().map(String::as_str)).collect();
+            fens.sort_unstable();
+            fens.dedup();
+            assert_eq!(fens.len(), d.variants.len() + 1, "endgame {}: duplicate variant", d.id);
         }
+        for cat in ["basic", "pawn", "rook", "minor", "queen"] {
+            assert!(c.endgames.iter().any(|d| d.category == cat), "no {cat} endgames");
+        }
+    }
+
+    #[test]
+    fn endgame_validation_rejects_bad_drills() {
+        let base = EndgameDrill {
+            id: "x".into(),
+            goal: "win".into(),
+            fen: "4k3/8/8/8/8/8/8/R3K3 w - - 0 1".into(),
+            ..Default::default()
+        };
+        let mut ok = base.clone();
+        validate_endgame(&mut ok).unwrap();
+        assert_eq!(ok.success, DrillSuccess { kind: "mate".into(), moves: 50 });
+
+        let mut bad = base.clone();
+        bad.variants = vec!["4k3/8/8/8/8/8/8/R3K3 b - - 0 1".into()];
+        assert!(validate_endgame(&mut bad).is_err(), "variant with the other side to move");
+        let mut bad = base.clone();
+        bad.success.kind = "hold".into();
+        assert!(validate_endgame(&mut bad).is_err(), "hold on a win drill");
+        let mut bad = base.clone();
+        bad.success.kind = "fly".into();
+        assert!(validate_endgame(&mut bad).is_err());
+        let mut bad = base.clone();
+        bad.lesson = vec![Step {
+            text: "x".into(),
+            arrows: vec![Arrow { from: "a1".into(), to: "i9".into(), color: "green".into() }],
+            ..Default::default()
+        }];
+        assert!(validate_endgame(&mut bad).is_err(), "bad arrow square");
+        let mut bad = base;
+        bad.goal = "lose".into();
+        assert!(validate_endgame(&mut bad).is_err());
     }
 
     #[test]

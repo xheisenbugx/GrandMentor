@@ -1,0 +1,1482 @@
+{
+  "french-exchange": {
+    "name": "Französische Verteidigung: Abtauschvariante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß löst die Spannung auf und es entsteht eine symmetrische Bauernstruktur. Einfach und solide, aber oft remislich.",
+    "ideas": [
+      "Symmetrische Struktur",
+      "Freie Entwicklung für beide Läufer",
+      "Kampf um die offene e-Linie"
+    ]
+  },
+  "french-tarrasch": {
+    "name": "Französische Verteidigung: Tarrasch-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß entwickelt den Springer nach d2 und umgeht so die Fesselung der Winawer-Variante. Schwarz antwortet meist mit ...c5 oder ...Nf6.",
+    "ideas": [
+      "Die Fesselung ...Bb4 vermeiden",
+      "Das Feld c3 für den Bauern freihalten",
+      "Solide Kontrolle des Zentrums"
+    ]
+  },
+  "french-tarrasch-open": {
+    "name": "Französisch-Tarrasch: Offene Variante",
+    "family": "Französische Verteidigung",
+    "description": "Schwarz greift d4 sofort an und nimmt oft einen isolierten Damenbauern in Kauf – dafür bekommt er aktive Figuren.",
+    "ideas": [
+      "d4 mit ...c5 angreifen",
+      "Stellungen mit Isolani",
+      "Aktive Figuren gleichen die Struktur aus"
+    ]
+  },
+  "french-tarrasch-closed": {
+    "name": "Französisch-Tarrasch: Geschlossene Variante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß gewinnt mit e5 Raum und stützt d4 mit c3. Schwarz greift die Kette mit ...c5 und ...f6 an.",
+    "ideas": [
+      "Kampf gegen die Bauernkette",
+      "Hebel mit ...c5 und ...f6",
+      "Raum am Königsflügel für Weiß"
+    ]
+  },
+  "french-rubinstein": {
+    "name": "Französische Verteidigung: Rubinstein-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Schwarz gibt das Zentrum auf, um sich frei zu entwickeln. Solide, aber passiv – Weiß behält einen kleinen, dauerhaften Vorteil.",
+    "ideas": [
+      "Die Figuren befreien",
+      "...Nd7 und ...Ngf6",
+      "Solide, aber passiv"
+    ]
+  },
+  "french-paulsen": {
+    "name": "Französische Verteidigung: Paulsen-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Der Hauptzug: Weiß deckt e4 mit dem Springer. Schwarz wählt zwischen Winawer (...Bb4), Klassisch (...Nf6) und Rubinstein (...dxe4).",
+    "ideas": [
+      "e4 mit einer Figur decken",
+      "Schnelle Entwicklung",
+      "e5 vorbereiten"
+    ]
+  },
+  "french-winawer": {
+    "name": "Französische Verteidigung: Winawer-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Schwarz fesselt den Springer auf c3 und gibt oft den Läufer für ihn her, um die weißen Bauern zu schwächen. Sehr scharf und strategisch anspruchsvoll.",
+    "ideas": [
+      "Den Springer auf c3 fesseln",
+      "Weiß Doppelbauern auf der c-Linie verschaffen",
+      "Gegenangriff mit ...c5 und ...Qc7"
+    ],
+    "traps": [
+      "Nach 7.Qg4 muss Schwarz zwischen ...O-O und dem scharfen Bauernopfer mit ...Qc7 wählen"
+    ]
+  },
+  "french-winawer-main": {
+    "name": "Französisch-Winawer: Hauptvariante",
+    "family": "Französische Verteidigung",
+    "description": "Die typische Winawer-Struktur: Weiß hat das Läuferpaar und Raum am Königsflügel, Schwarz die bessere Struktur und Spiel am Damenflügel.",
+    "ideas": [
+      "Weiß greift mit Qg4 an",
+      "Schwarz spielt ...Ne7, ...Qc7, ...Qa5",
+      "Läuferpaar gegen Bauernstruktur"
+    ]
+  },
+  "french-classical": {
+    "name": "Französische Verteidigung: Klassische Variante",
+    "family": "Französische Verteidigung",
+    "description": "Schwarz entwickelt den Springer und greift e4 an. Weiß wählt Bg5 (klassisch), e5 (Steinitz) oder andere Pläne.",
+    "ideas": [
+      "Druck auf e4",
+      "Natürliche Entwicklung",
+      "Hebel mit ...c5 und ...f6 nach e5"
+    ]
+  },
+  "french-steinitz": {
+    "name": "Französische Verteidigung: Steinitz-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß gewinnt mit e5 Raum und stützt den Bauern mit f4. So entsteht eine breite Bauernkette, die einen Angriff am Königsflügel vorbereitet.",
+    "ideas": [
+      "Große Bauernkette e5/f4/d4",
+      "Angriff am Königsflügel",
+      "Schwarz kontert mit ...c5, ...Nc6, ...Qb6"
+    ]
+  },
+  "french-mccutcheon": {
+    "name": "Französische Verteidigung: MacCutcheon-Variante",
+    "family": "Französische Verteidigung",
+    "description": "Statt die Fesselung aufzuheben, fesselt Schwarz seinerseits den Springer auf c3. Das führt zu scharfem, unausgeglichenem Spiel.",
+    "ideas": [
+      "Gegenfesselung mit ...Bb4",
+      "Scharfes taktisches Spiel",
+      "Die weiße Bauernstruktur beschädigen"
+    ]
+  },
+  "french-classical-main": {
+    "name": "Französisch-Klassisch: Hauptvariante",
+    "family": "Französische Verteidigung",
+    "description": "Weiß tauscht die schwarzfeldrigen Läufer und behält den Raumvorteil durch e5. Schwarz spielt ...c5 und ...a6 für Spiel am Damenflügel.",
+    "ideas": [
+      "Den guten schwarzfeldrigen Läufer tauschen",
+      "f4 und Nf3 stützen e5",
+      "Schwarzes Gegenspiel am Damenflügel"
+    ]
+  },
+  "caro-kann-defense": {
+    "name": "Caro-Kann-Verteidigung",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Eine felsenfeste Verteidigung: Schwarz bereitet ...d5 vor und hält dabei den weißfeldrigen Läufer frei. Ideal, wenn du sichere, klar strukturierte Stellungen magst.",
+    "ideas": [
+      "...d5 mit ...c6 vorbereiten",
+      "Den Läufer vor der Bauernkette entwickeln",
+      "Solide Struktur und gute Endspiele"
+    ],
+    "traps": [
+      "Ersticktes Matt: 3.Nc3 dxe4 4.Nxe4 Nd7 5.Qe2 Ngf6?? 6.Nd6#"
+    ]
+  },
+  "caro-kann-advance": {
+    "name": "Caro-Kann: Vorstoßvariante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Weiß gewinnt mit e5 Raum. Schwarz entwickelt den Läufer nach f5 und greift die Kette mit ...c5 oder mit ...e6 und ...c5 an.",
+    "ideas": [
+      "Raum für Weiß am Königsflügel",
+      "Schwarzer Aufbau mit ...Bf5 und ...e6",
+      "Hebel ...c5 gegen d4"
+    ]
+  },
+  "caro-kann-advance-short": {
+    "name": "Caro-Kann-Vorstoß: Short-Variante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Das ruhige System von Nigel Short: Weiß entwickelt sich in Ruhe, rochiert und spielt auf c4 oder langsamen Druck. Wenig Risiko, stabiler Vorteil.",
+    "ideas": [
+      "Ruhige Entwicklung und Rochade",
+      "Pläne mit c4 oder Nbd2-b3",
+      "Raumvorteil"
+    ]
+  },
+  "caro-kann-classical": {
+    "name": "Caro-Kann: Klassische Variante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Schwarz entwickelt den Läufer mit Tempo gegen den Springer. Eine klassische, sehr solide Hauptvariante, die auch über 3.Nd2 entsteht.",
+    "ideas": [
+      "Läuferentwicklung mit Tempo",
+      "Solider Aufbau mit ...e6/...Ngf6/...Nbd7",
+      "Manchmal lange Rochade"
+    ],
+    "traps": [
+      "Nach 6.Ng3 Bg6 7.h4 spielt Schwarz 7...h6, damit der Läufer nach h7 ausweichen kann, wenn h5 kommt"
+    ]
+  },
+  "caro-kann-classical-main": {
+    "name": "Caro-Kann-Klassisch: Hauptvariante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Die klassische Tabiya: Der weiße Bauer auf h5 sichert Raum am Königsflügel, während Schwarz eine gesunde Struktur hat.",
+    "ideas": [
+      "Weiß rochiert lang",
+      "Schwarz rochiert lang oder kurz",
+      "Kampf um e5 und e4"
+    ]
+  },
+  "caro-kann-karpov": {
+    "name": "Caro-Kann: Karpow-Variante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Schwarz bereitet ...Ngf6 vor, damit der Springer auf e4 ohne Doppelbauern getauscht werden kann. Sehr solide – Karpows Lieblingsvariante.",
+    "ideas": [
+      "...Ngf6 vorbereiten",
+      "Eine gesunde Struktur behalten",
+      "Langsames, solides Spiel"
+    ],
+    "traps": [
+      "5.Qe2 Ngf6?? 6.Nd6# – das berühmte erstickte Matt",
+      "5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6? 8.Nxe6! ist ein bekanntes Opfer"
+    ]
+  },
+  "caro-kann-bronstein-larsen": {
+    "name": "Caro-Kann: Bronstein-Larsen-Variante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Schwarz nimmt Doppelbauern in Kauf, um die g-Linie für Angriffschancen zu öffnen. Dynamisch und riskant.",
+    "ideas": [
+      "Offene g-Linie",
+      "Dynamik des Läuferpaars",
+      "Aggressives Spiel am Königsflügel"
+    ]
+  },
+  "caro-kann-exchange": {
+    "name": "Caro-Kann: Abtauschvariante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Weiß tauscht auf d5 und entwickelt den Läufer nach d3 für Spiel am Königsflügel. Ähnelt der Abtauschvariante des abgelehnten Damengambits mit vertauschten Farben.",
+    "ideas": [
+      "Aufbau mit c3 und Bf4",
+      "Minoritätsangriff für Schwarz",
+      "Einfaches, strategisches Spiel"
+    ]
+  },
+  "caro-kann-panov": {
+    "name": "Caro-Kann: Panow-Botwinnik-Angriff",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Weiß greift d5 mit c4 an. Oft entstehen Stellungen mit isoliertem Damenbauern und aktivem Figurenspiel.",
+    "ideas": [
+      "Isolani und aktive Figuren",
+      "Angriffschancen am Königsflügel",
+      "Druck auf d5"
+    ]
+  },
+  "caro-kann-two-knights": {
+    "name": "Caro-Kann: Zweispringervariante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Weiß entwickelt beide Springer vor d4. So bleibt er flexibel und weicht den Hauptvarianten aus.",
+    "ideas": [
+      "Flexible Entwicklung",
+      "Die Fesselung ...Bg4 ist häufig",
+      "Theorie umgehen"
+    ]
+  },
+  "caro-kann-fantasy": {
+    "name": "Caro-Kann: Fantasy-Variante",
+    "family": "Caro-Kann-Verteidigung",
+    "description": "Weiß stützt e4 mit dem f-Bauern, behält ein großes Zentrum und spielt manchmal ein Gambit. Scharf und abseits der Hauptwege.",
+    "ideas": [
+      "Ein großes Bauernzentrum behalten",
+      "Schnelle Entwicklung",
+      "Scharfes Spiel"
+    ]
+  },
+  "scandinavian-defense": {
+    "name": "Skandinavische Verteidigung",
+    "family": "Skandinavische Verteidigung",
+    "description": "Schwarz greift e4 sofort an. Die Dame schlägt früh auf d5 zurück, aber die einfache Struktur macht die Eröffnung leicht erlernbar.",
+    "ideas": [
+      "Sofortiger Angriff aufs Zentrum",
+      "Einfache Entwicklung: ...Nf6, ...Bf5, ...e6, ...c6",
+      "Wenig Theorie"
+    ],
+    "traps": [
+      "Nach 2...Qxd5 3.Nc3 muss die Dame unter Tempoverlust ziehen – wähle ein sicheres Feld"
+    ]
+  },
+  "scandinavian-qa5": {
+    "name": "Skandinavische Verteidigung: Hauptvariante (Qa5)",
+    "family": "Skandinavische Verteidigung",
+    "description": "Die klassische Skandinavische: Die Dame geht nach a5, fesselt den Springer auf c3 und bleibt aktiv.",
+    "ideas": [
+      "Den Springer auf c3 von a5 aus fesseln",
+      "...Nf6, ...Bf5, ...c6, ...e6",
+      "Solide Struktur wie in der Caro-Kann"
+    ],
+    "traps": [
+      "Achte auf Abzugsangriffe mit Bd2 und Nd5 gegen die Dame auf a5",
+      "Mit Tricks rund um b4 kann die Dame gefangen werden"
+    ]
+  },
+  "scandinavian-qd6": {
+    "name": "Skandinavische Verteidigung: Gubinsky-Melts-Variante (Qd6)",
+    "family": "Skandinavische Verteidigung",
+    "description": "Ein modernes Damenfeld: Auf d6 steht die Dame zentral und unterstützt Aufbauten mit ...a6 und ...Nf6.",
+    "ideas": [
+      "Die Dame auf d6 kontrolliert Zentrumsfelder",
+      "Aufbauten mit ...a6, ...Nf6, ...g6",
+      "Verhindern, dass die Dame gejagt wird"
+    ],
+    "traps": [
+      "Nb5 greift die Dame und c7 an – oft ist ...a6 oder ...c6 nötig"
+    ]
+  },
+  "scandinavian-qd8": {
+    "name": "Skandinavische Verteidigung: Qd8-Variante",
+    "family": "Skandinavische Verteidigung",
+    "description": "Die Dame zieht sich nach Hause zurück – auf das sicherste Feld. Schwarz steht solide, aber etwas passiv.",
+    "ideas": [
+      "Maximale Sicherheit für die Dame",
+      "...Nf6, ...g6 oder ...c6",
+      "Solide Struktur"
+    ]
+  },
+  "scandinavian-modern": {
+    "name": "Skandinavische Verteidigung: Moderne Variante",
+    "family": "Skandinavische Verteidigung",
+    "description": "Schwarz schlägt mit dem Springer statt mit der Dame zurück oder opfert den Bauern für Entwicklung.",
+    "ideas": [
+      "Mit dem Springer zurückschlagen",
+      "Frühe Damenzüge vermeiden",
+      "Gambit-Möglichkeiten"
+    ]
+  },
+  "scandinavian-portuguese": {
+    "name": "Skandinavische Verteidigung: Portugiesisches Gambit",
+    "family": "Skandinavische Verteidigung",
+    "description": "Schwarz gibt den Bauern auf d5 her – für schnelle Entwicklung und Angriffschancen gegen den weißen Damenflügel.",
+    "ideas": [
+      "Gambit für Entwicklung",
+      "Fesselung mit ...Bg4",
+      "Aggressives Figurenspiel"
+    ]
+  },
+  "scandinavian-icelandic": {
+    "name": "Skandinavische Verteidigung: Isländisches Gambit (Palme-Gambit)",
+    "family": "Skandinavische Verteidigung",
+    "description": "Schwarz opfert einen Bauern für einen großen Entwicklungsvorsprung. Scharf und aggressiv.",
+    "ideas": [
+      "Gambit für offene Linien",
+      "Schnelle Entwicklung",
+      "Den weißen König angreifen"
+    ]
+  },
+  "pirc-defense": {
+    "name": "Pirc-Verteidigung",
+    "family": "Pirc-Verteidigung",
+    "description": "Eine hypermoderne Verteidigung: Schwarz lässt Weiß ein großes Zentrum bauen und greift es dann mit Figuren und ...e5 oder ...c5 an.",
+    "ideas": [
+      "Den Königsläufer fianchettieren",
+      "Das Zentrum später mit ...e5/...c5 angreifen",
+      "Flexibles Konterspiel"
+    ],
+    "traps": [
+      "Der 150-Angriff (Be3, Qd2, Bh6) ist ein gefährlicher Plan für Weiß"
+    ]
+  },
+  "pirc-austrian": {
+    "name": "Pirc-Verteidigung: Österreichischer Angriff",
+    "family": "Pirc-Verteidigung",
+    "description": "Weiß baut mit f4 ein mächtiges Zentrum und zielt auf e5 und einen Angriff am Königsflügel. Die schärfste Antwort auf die Pirc.",
+    "ideas": [
+      "Riesiges Bauernzentrum",
+      "Mit e5 den Springer von f6 vertreiben",
+      "Angriff am Königsflügel"
+    ]
+  },
+  "pirc-classical": {
+    "name": "Pirc-Verteidigung: Klassische Variante",
+    "family": "Pirc-Verteidigung",
+    "description": "Weiß entwickelt sich natürlich und rochiert. Spiel mit wenig Risiko und einem dauerhaften Vorteil im Zentrum.",
+    "ideas": [
+      "Natürliche Entwicklung",
+      "Die Kontrolle im Zentrum behalten",
+      "Langsame Pläne mit h3/a4"
+    ]
+  },
+  "pirc-150-attack": {
+    "name": "Pirc-Verteidigung: 150-Angriff",
+    "family": "Pirc-Verteidigung",
+    "description": "Weiß spielt Be3, Qd2, Bh6 und h4-h5 – ein einfacher, aggressiver Plan, den man leicht lernt.",
+    "ideas": [
+      "Den Läufer auf g7 mit Bh6 tauschen",
+      "Bauernsturm mit h4-h5",
+      "Lang rochieren"
+    ]
+  },
+  "modern-defense": {
+    "name": "Moderne Verteidigung",
+    "family": "Moderne Verteidigung",
+    "description": "Schwarz fianchettiert sofort und entwickelt den Springer erst später nach f6. Sehr flexibel und hypermodern.",
+    "ideas": [
+      "Frühes Fianchetto",
+      "Den Springer flexibel halten",
+      "Das Zentrum später angreifen"
+    ]
+  },
+  "modern-defense-standard": {
+    "name": "Moderne Verteidigung: Standardvariante",
+    "family": "Moderne Verteidigung",
+    "description": "Der typische Aufbau der Modernen: Schwarz erlaubt ein breites Zentrum und wartet auf den richtigen Gegenangriff mit ...c6, ...b5 oder ...e5.",
+    "ideas": [
+      "Expansion am Damenflügel mit ...c6 und ...b5",
+      "Zentrumshebel ...e5 oder ...c5",
+      "Flexibler Königsflügel"
+    ]
+  },
+  "alekhine-defense": {
+    "name": "Aljechin-Verteidigung",
+    "family": "Aljechin-Verteidigung",
+    "description": "Schwarz lockt die weißen Bauern nach vorne, um sie später anzugreifen. Eine provokante, hypermoderne Verteidigung.",
+    "ideas": [
+      "e5 und Überdehnung provozieren",
+      "Das Zentrum mit ...d6 untergraben",
+      "Figurendruck auf e5"
+    ],
+    "traps": [
+      "Der Vierbauernangriff kann Schwarz überrollen, wenn er unvorsichtig spielt"
+    ]
+  },
+  "alekhine-four-pawns": {
+    "name": "Aljechin-Verteidigung: Vierbauernangriff",
+    "family": "Aljechin-Verteidigung",
+    "description": "Weiß besetzt das ganze Zentrum mit vier Bauern. Hält es, wird Schwarz erdrückt – wenn nicht, wird es zur Zielscheibe.",
+    "ideas": [
+      "Maximales Zentrum",
+      "Raum, der den Gegner einengt",
+      "Schwarz muss schnell mit ...dxe5, ...Nc6, ...Bf5 zuschlagen"
+    ]
+  },
+  "alekhine-exchange": {
+    "name": "Aljechin-Verteidigung: Abtauschvariante",
+    "family": "Aljechin-Verteidigung",
+    "description": "Weiß löst die Spannung mit exd6 auf. Das führt zu einer ruhigeren Partie mit einem kleinen Raumvorteil.",
+    "ideas": [
+      "Das Zentrum vereinfachen",
+      "Raumvorteil durch c4/d4",
+      "Spiel mit wenig Risiko"
+    ]
+  },
+  "alekhine-modern": {
+    "name": "Aljechin-Verteidigung: Moderne Variante",
+    "family": "Aljechin-Verteidigung",
+    "description": "Weiß entwickelt sich normal, statt den Springer zu jagen. Eine solide Hauptvariante mit dauerhaftem Raumvorteil.",
+    "ideas": [
+      "Ruhig entwickeln",
+      "Den Bauern auf e5 halten",
+      "Überdehnung vermeiden"
+    ]
+  },
+  "nimzowitsch-defense": {
+    "name": "Nimzowitsch-Verteidigung",
+    "family": "Seltene Verteidigung",
+    "description": "Schwarz entwickelt den Damenspringer und greift d4 und e5 an. Das lädt zu Zugumstellungen nach 1.e4 e5 oder zu ungewöhnlichen Strukturen ein.",
+    "ideas": [
+      "Druck auf d4",
+      "Fortsetzung mit ...d5 oder ...e5",
+      "Ungewöhnliche Stellungen"
+    ]
+  },
+  "owens-defense": {
+    "name": "Owen-Verteidigung",
+    "family": "Seltene Verteidigung",
+    "description": "Schwarz fianchettiert den Damenläufer, um e4 aus der Ferne unter Druck zu setzen.",
+    "ideas": [
+      "Druck auf e4 über die lange Diagonale",
+      "Ideen mit ...e6 und ...Bb4",
+      "Flexibel"
+    ]
+  },
+  "st-george-defense": {
+    "name": "St.-Georgs-Verteidigung",
+    "family": "Seltene Verteidigung",
+    "description": "Schwarz spielt früh ...a6 und ...b5. Berühmt wurde sie 1980, als Tony Miles damit Weltmeister Karpow besiegte.",
+    "ideas": [
+      "Expansion am Damenflügel mit ...b5",
+      "...Bb7 gegen e4",
+      "Überraschungswaffe"
+    ]
+  },
+  "borg-defense": {
+    "name": "Borg-Verteidigung",
+    "family": "Seltene Verteidigung",
+    "description": "Eine bizarre Antwort („Grob“ rückwärts), die den schwarzen Königsflügel für ein Fianchetto schwächt.",
+    "ideas": [
+      "Druck mit ...Bg7 auf der langen Diagonale",
+      "Überraschungseffekt",
+      "Sehr riskant"
+    ],
+    "traps": [
+      "2.d4 h6 3.h4! untergräbt den Bauern auf g5"
+    ]
+  },
+  "queens-pawn-game": {
+    "name": "Damenbauernspiel",
+    "family": "Damenbauernspiel",
+    "description": "Schwarz spiegelt Weiß und hält das Zentrum fest im Griff. Die klassischste Antwort auf 1.d4.",
+    "ideas": [
+      "Das Zentrum beanspruchen",
+      "Entwicklung mit ...Nf6, ...e6 oder ...c6",
+      "Sich darauf vorbereiten, c4 solide zu begegnen"
+    ]
+  },
+  "queens-pawn-zukertort": {
+    "name": "Damenbauernspiel: Zukertort-Variante",
+    "family": "Damenbauernspiel",
+    "description": "Weiß entwickelt zuerst den Springer und hält sich Systeme mit c4, Bf4 oder e3 offen.",
+    "ideas": [
+      "Flexible Entwicklung",
+      "Optionen mit c4/Bf4/e3 offenhalten",
+      "Solide Kontrolle von e5"
+    ]
+  },
+  "london-system": {
+    "name": "Londoner System",
+    "family": "Londoner System",
+    "description": "Ein solides System: Weiß spielt gegen fast alles d4, Bf4, e3, Nf3, c3 und Bd3. Leicht zu lernen und online sehr beliebt.",
+    "ideas": [
+      "In jeder Partie derselbe Aufbau",
+      "Läufer nach f4 vor e3",
+      "Ideen mit Ne5 und Angriff am Königsflügel"
+    ],
+    "traps": [
+      "Der kritische Test ist ...c5 und ...Qb6 mit Angriff auf b2",
+      "Achte nach Bd3 auf ...Nh5, um den Läufer auf f4 zu tauschen"
+    ]
+  },
+  "london-system-indian": {
+    "name": "Londoner System gegen ...Nf6",
+    "family": "Londoner System",
+    "description": "Der Londoner Aufbau gegen die indischen Verteidigungen. Weiß entwickelt den Läufer schnell, bevor er e3 spielt.",
+    "ideas": [
+      "Bf4, e3, Nf3, c3, Bd3",
+      "Solide Struktur",
+      "Hauptvarianten-Theorie umgehen"
+    ]
+  },
+  "jobava-london": {
+    "name": "Jobava-London",
+    "family": "Londoner System",
+    "description": "Ein aggressives Londoner System: Der Springer geht nach c3 und bereitet Nb5, e3 und manchmal die lange Rochade vor.",
+    "ideas": [
+      "Nb5 mit Angriff auf c7",
+      "Lange Rochade und Angriff am Königsflügel",
+      "Aggressives Londoner System"
+    ],
+    "traps": [
+      "Oft ist ...a6 nötig, um Tricks mit Nb5 gegen c7 zu verhindern"
+    ]
+  },
+  "colle-system": {
+    "name": "Colle-System",
+    "family": "Colle-System",
+    "description": "Ein einfaches System: Weiß spielt e3, Bd3, Nbd2, c3, O-O und bereitet e4 vor, um das Zentrum für einen Angriff am Königsflügel zu öffnen.",
+    "ideas": [
+      "Den Hebel e4 vorbereiten",
+      "Der Läufer auf d3 zielt auf h7",
+      "Ideen mit dem klassischen Opfer Bxh7+"
+    ],
+    "traps": [
+      "Das klassische Läuferopfer Bxh7+ („griechisches Geschenk“) ist ein typisches Angriffsmuster im Colle"
+    ]
+  },
+  "colle-zukertort": {
+    "name": "Colle-Zukertort-System",
+    "family": "Colle-System",
+    "description": "Weiß fianchettiert den Damenläufer nach b2 und behält das Colle-Zentrum. Der Läufer zielt über die lange Diagonale auf den schwarzen König.",
+    "ideas": [
+      "Bb2 auf der langen Diagonale",
+      "Ne5, gestützt durch f4",
+      "Angriff am Königsflügel"
+    ]
+  },
+  "stonewall-attack": {
+    "name": "Stonewall-Angriff",
+    "family": "Damenbauernspiel",
+    "description": "Weiß stellt Bauern auf d4, e3, f4 und c3 und greift dann mit Ne5 und Qf3/Rf3 am Königsflügel an.",
+    "ideas": [
+      "Bauern auf c3, d4, e3, f4",
+      "Vorposten auf e5 (Ne5)",
+      "Angriff am Königsflügel"
+    ]
+  },
+  "blackmar-diemer-gambit": {
+    "name": "Blackmar-Diemer-Gambit",
+    "family": "Damenbauernspiel",
+    "description": "Weiß opfert einen Bauern, um die f-Linie zu öffnen und die Entwicklung zu beschleunigen. Ein Liebling angriffslustiger Vereinsspieler.",
+    "ideas": [
+      "Offene f-Linie",
+      "Schnelle Entwicklung: Nf3, Bd3, O-O, Qe1-h4",
+      "Angriff am Königsflügel"
+    ]
+  },
+  "veresov-attack": {
+    "name": "Richter-Veresov-Angriff",
+    "family": "Damenbauernspiel",
+    "description": "Weiß entwickelt sich schnell mit Nc3 und Bg5 und zielt auf f3 und e4. Ungewöhnlich, aggressiv und mit wenig Theorie.",
+    "ideas": [
+      "Den Springer auf f6 fesseln",
+      "e4 vorbereiten",
+      "Lange Rochade möglich"
+    ]
+  },
+  "queens-gambit": {
+    "name": "Damengambit",
+    "family": "Damengambit",
+    "description": "Weiß bietet den c-Bauern an, um den schwarzen Bauern auf d5 vom Zentrum abzulenken. Kein echtes Gambit: Schwarz kann den Bauern selten behalten.",
+    "ideas": [
+      "d5 mit c4 angreifen",
+      "Ein Zentrum mit e4 oder e3 aufbauen",
+      "Entwicklung mit Nc3, Nf3, Bg5"
+    ],
+    "traps": [
+      "Im angenommenen Damengambit verliert der Versuch, den Bauern c4 mit ...b5 zu halten, oft gegen a4 und Taktiken mit Qf3"
+    ]
+  },
+  "queens-gambit-accepted": {
+    "name": "Angenommenes Damengambit",
+    "family": "Damengambit",
+    "description": "Schwarz nimmt den Bauern auf c4, gibt das Zentrum vorübergehend auf und schlägt dann mit ...c5 und ...e6 zurück.",
+    "ideas": [
+      "Nicht versuchen, den Bauern zu behalten",
+      "Mit ...c5 kontern",
+      "Freie Entwicklung"
+    ],
+    "traps": [
+      "3.e3 b5? 4.a4 c6 5.axb5 cxb5 6.Qf3! greift den Turm auf a8 über die lange Diagonale an und gewinnt Material"
+    ]
+  },
+  "qga-classical": {
+    "name": "Angenommenes Damengambit: Klassische Variante",
+    "family": "Damengambit",
+    "description": "Die Hauptvariante: Schwarz lässt Weiß zurückschlagen und greift d4 mit ...c5 an. Stellungen mit Isolani sind häufig.",
+    "ideas": [
+      "...c5 gegen das weiße Zentrum",
+      "Expansion mit ...a6 und ...b5",
+      "Kampf um den isolierten d-Bauern"
+    ]
+  },
+  "qga-central": {
+    "name": "Angenommenes Damengambit: Zentrumsvariante",
+    "family": "Damengambit",
+    "description": "Weiß baut sofort das volle Zentrum mit e4/d4 auf und holt dann c4 zurück. Schwarz kontert mit ...e5, ...Nf6 oder ...c5.",
+    "ideas": [
+      "Großes Zentrum",
+      "c4 mit Bxc4 zurückgewinnen",
+      "Raumvorteil"
+    ]
+  },
+  "queens-gambit-declined": {
+    "name": "Abgelehntes Damengambit",
+    "family": "Damengambit",
+    "description": "Schwarz deckt d5 solide mit ...e6. Eine der angesehensten Verteidigungen im Schach, gespielt in vielen WM-Kämpfen.",
+    "ideas": [
+      "d5 mit ...e6 halten",
+      "...Be7, ...Nf6, ...O-O",
+      "Befreiung mit ...c5 oder ...dxc4 und ...e5"
+    ],
+    "traps": [
+      "Die Elefantenfalle: 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5! 7.Bxd8 Bb4+ 8.Qd2 Bxd2+ 9.Kxd2 Kxd8 gewinnt eine Figur"
+    ]
+  },
+  "qgd-normal": {
+    "name": "Abgelehntes Damengambit: Normalvariante",
+    "family": "Damengambit",
+    "description": "Die klassische Stellung des abgelehnten Damengambits mit beiden Springern entwickelt. Weiß wählt Systeme mit Bg5, Bf4, cxd5 oder Nf3.",
+    "ideas": [
+      "d5 solide decken",
+      "Entwickeln und rochieren",
+      "...c5 oder ...dxc4 vorbereiten"
+    ],
+    "traps": [
+      "Elefantenfalle nach 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5!"
+    ]
+  },
+  "qgd-exchange": {
+    "name": "Abgelehntes Damengambit: Abtauschvariante",
+    "family": "Damengambit",
+    "description": "Weiß tauscht auf d5, um die schwarze Struktur festzulegen, und spielt dann den berühmten Minoritätsangriff mit b4-b5.",
+    "ideas": [
+      "Minoritätsangriff b4-b5",
+      "Druck auf c6 und d5",
+      "Schwarz spielt am Königsflügel"
+    ]
+  },
+  "qgd-orthodox": {
+    "name": "Abgelehntes Damengambit: Orthodoxe Verteidigung",
+    "family": "Damengambit",
+    "description": "Die klassische Hauptvariante des abgelehnten Damengambits: solide, aber etwas passiv. Schwarz wartet auf die Befreiung mit ...c5 oder ...dxc4 und ...e5.",
+    "ideas": [
+      "Solide, aber beengt",
+      "Befreiungsmanöver ...dxc4, ...Nd5",
+      "Langsamer strategischer Kampf"
+    ]
+  },
+  "qgd-tartakower": {
+    "name": "Abgelehntes Damengambit: Tartakower-Variante",
+    "family": "Damengambit",
+    "description": "Schwarz fianchettiert den Damenläufer und löst so das klassische Problemfigur-Thema des abgelehnten Damengambits. Gespielt von Kasparow und Karpow.",
+    "ideas": [
+      "...b6 und ...Bb7",
+      "Das Problem des weißfeldrigen Läufers lösen",
+      "Strukturen mit hängenden Bauern"
+    ]
+  },
+  "qgd-lasker": {
+    "name": "Abgelehntes Damengambit: Lasker-Verteidigung",
+    "family": "Damengambit",
+    "description": "Schwarz tauscht mit ...Ne4 Figuren ab, um die beengte Stellung zu entlasten. Sehr solide und remislich.",
+    "ideas": [
+      "Figuren tauschen, um die Stellung zu befreien",
+      "Solide Struktur",
+      "Sicher ausgleichen"
+    ]
+  },
+  "qgd-cambridge-springs": {
+    "name": "Abgelehntes Damengambit: Cambridge-Springs-Variante",
+    "family": "Damengambit",
+    "description": "Die schwarze Dame greift den gefesselten Springer auf c3 und den Läufer auf g5 an. Fallenreich und aktiv.",
+    "ideas": [
+      "Druck auf den gefesselten Springer auf c3",
+      "Ideen mit ...Bb4 und ...Ne4",
+      "Das Fehlen des Läufers von Bg5 ausnutzen"
+    ],
+    "traps": [
+      "Spielt Weiß unvorsichtig, verliert er durch ...dxc4 und ...Ne4 eine Figur",
+      "Schon früher ist die Elefantenfalle möglich"
+    ]
+  },
+  "qgd-ragozin": {
+    "name": "Abgelehntes Damengambit: Ragosin-Variante",
+    "family": "Damengambit",
+    "description": "Ein Aufbau wie in der Nimzowitsch-Indischen innerhalb des abgelehnten Damengambits: Schwarz fesselt den Springer auf c3 für aktives Figurenspiel.",
+    "ideas": [
+      "Den Springer auf c3 fesseln",
+      "Aktive Figuren",
+      "Flexible Struktur"
+    ]
+  },
+  "qgd-tarrasch": {
+    "name": "Tarrasch-Verteidigung",
+    "family": "Damengambit",
+    "description": "Schwarz nimmt einen isolierten Damenbauern für freies Figurenspiel in Kauf. Dr. Tarrasch hielt sie für die einzig richtige Verteidigung.",
+    "ideas": [
+      "Einen Isolani akzeptieren",
+      "Aktive Entwicklung",
+      "Figurenaktivität vor Struktur"
+    ]
+  },
+  "semi-tarrasch": {
+    "name": "Halb-Tarrasch-Verteidigung",
+    "family": "Damengambit",
+    "description": "Schwarz schlägt mit dem Springer zurück, um den Isolani zu vermeiden. Weiß bekommt oft ein bewegliches Zentrum mit e4.",
+    "ideas": [
+      "Den Isolani vermeiden",
+      "Druck auf das weiße Zentrum",
+      "Solide Entwicklung"
+    ]
+  },
+  "qgd-bf4": {
+    "name": "Abgelehntes Damengambit: 5.Bf4",
+    "family": "Damengambit",
+    "description": "Das moderne System mit Bf4: Weiß entwickelt den Läufer vor die Bauernkette und spielt oft e3 und c5 oder baut langsam auf.",
+    "ideas": [
+      "Läufer außerhalb der Kette",
+      "Manchmal Raum mit c5",
+      "Druck auf c7 und den Damenflügel"
+    ]
+  },
+  "qgd-alatortsev": {
+    "name": "Abgelehntes Damengambit: Alatorzew-Variante",
+    "family": "Damengambit",
+    "description": "Schwarz zögert ...Nf6 hinaus, um der Abtauschvariante mit Nge2-Aufbauten auszuweichen. Feines Spiel mit der Zugreihenfolge.",
+    "ideas": [
+      "Finessen der Zugreihenfolge",
+      "Bestimmten Abtauschvarianten ausweichen",
+      "Solide Strukturen des abgelehnten Damengambits"
+    ]
+  },
+  "albin-countergambit": {
+    "name": "Albins Gegengambit",
+    "family": "Damengambit",
+    "description": "Schwarz opfert den e-Bauern für einen einengenden Bauern auf d4 und schnelle Entwicklung. Fallenreich und aggressiv.",
+    "ideas": [
+      "Einengender Bauer auf d4",
+      "Schnelle Entwicklung",
+      "Lange Rochade und Angriff"
+    ],
+    "traps": [
+      "Die Lasker-Falle: 3.dxe5 d4 4.e3? Bb4+ 5.Bd2 dxe3! 6.Bxb4?? exf2+ 7.Ke2 fxg1=N+! gewinnt"
+    ]
+  },
+  "chigorin-defense": {
+    "name": "Tschigorin-Verteidigung",
+    "family": "Damengambit",
+    "description": "Schwarz entwickelt seine Figuren aggressiv, statt eine Bauernstruktur aufzubauen, und setzt d4 mit Figuren unter Druck.",
+    "ideas": [
+      "Figurendruck auf d4",
+      "...Bg4 und ...e5",
+      "Unausgeglichene Stellungen"
+    ]
+  },
+  "baltic-defense": {
+    "name": "Baltische Verteidigung",
+    "family": "Damengambit",
+    "description": "Schwarz entwickelt den weißfeldrigen Läufer vor ...e6 und löst so die klassische Problemfigur des abgelehnten Damengambits.",
+    "ideas": [
+      "Den Läufer von c8 früh entwickeln",
+      "Danach ...e6 und ...c6",
+      "Auf die Schwäche b7 achten"
+    ],
+    "traps": [
+      "4.Qb3 mit Angriff auf b7 ist ein direkter Test"
+    ]
+  },
+  "slav-defense": {
+    "name": "Slawische Verteidigung",
+    "family": "Slawische Verteidigung",
+    "description": "Schwarz deckt d5 mit ...c6 und hält den Läufer auf c8 frei. Solide und dynamisch, gespielt von vielen Weltmeistern.",
+    "ideas": [
+      "d5 mit ...c6 stützen",
+      "Den Läufer nach f5 oder g4 entwickeln",
+      "Ideen mit ...dxc4 und ...b5"
+    ]
+  },
+  "slav-exchange": {
+    "name": "Slawische Verteidigung: Abtauschvariante",
+    "family": "Slawische Verteidigung",
+    "description": "Weiß vereinfacht zu einer symmetrischen Struktur. Solide und remislich, aber Weiß behält eine kleine Initiative.",
+    "ideas": [
+      "Symmetrische Struktur",
+      "Aufbau mit Bf4, e3, Nc3",
+      "Das Mehrtempo nutzen"
+    ]
+  },
+  "slav-czech": {
+    "name": "Slawische Verteidigung: Tschechische Variante",
+    "family": "Slawische Verteidigung",
+    "description": "Schwarz schlägt auf c4 und entwickelt den Läufer nach f5. Weiß gewinnt den Bauern zurück und kämpft um e4.",
+    "ideas": [
+      "Auf c4 schlagen, dann entwickeln",
+      "Läufer auf f5",
+      "Kampf um e4"
+    ]
+  },
+  "slav-chebanenko": {
+    "name": "Slawische Verteidigung: Tschebanenko-Variante",
+    "family": "Slawische Verteidigung",
+    "description": "Die flexible Slawische mit ...a6: Schwarz bereitet ...b5 vor, um Raum am Damenflügel zu gewinnen, und hält sich viele Optionen offen.",
+    "ideas": [
+      "...b5 vorbereiten",
+      "Flexible Entwicklung",
+      "Raum am Damenflügel"
+    ]
+  },
+  "semi-slav": {
+    "name": "Halbslawische Verteidigung",
+    "family": "Slawische Verteidigung",
+    "description": "Mit ...c6 und ...e6 baut Schwarz ein solides Dreieck. Daraus entstehen einige der schärfsten Varianten im Schach (Meraner, Botwinnik).",
+    "ideas": [
+      "Solide Stütze für d5",
+      "Ideen mit ...dxc4 und ...b5",
+      "Scharfes Gegenspiel"
+    ]
+  },
+  "semi-slav-meran": {
+    "name": "Halbslawisch: Meraner Variante",
+    "family": "Slawische Verteidigung",
+    "description": "Schwarz schlägt auf c4 und expandiert mit ...b5. So gewinnt er Zeit und Raum am Damenflügel. Reiche, dynamische Theorie.",
+    "ideas": [
+      "Expansion am Damenflügel",
+      "...Bb7 und ...c5",
+      "Kampf gegen e4-e5"
+    ]
+  },
+  "semi-slav-botvinnik": {
+    "name": "Halbslawisch: Botwinnik-System",
+    "family": "Slawische Verteidigung",
+    "description": "Eine der schärfsten Eröffnungen im Schach: Schwarz behält den Mehrbauern, während Weiß mit e5 angreift. Bis in die Tiefe analysiert.",
+    "ideas": [
+      "Den Bauern auf c4 halten",
+      "Komplexe Taktik",
+      "Gegenseitige Angriffe"
+    ]
+  },
+  "semi-slav-moscow": {
+    "name": "Halbslawisch: Moskauer Variante",
+    "family": "Slawische Verteidigung",
+    "description": "Schwarz stellt den Läufer sofort zur Rede. Nach Bxf6 hat Schwarz das Läuferpaar und eine solide Stellung.",
+    "ideas": [
+      "Das Läuferpaar gewinnen",
+      "Solide Struktur",
+      "Dem Botwinnik-System ausweichen"
+    ]
+  },
+  "semi-slav-marshall-gambit": {
+    "name": "Halbslawisch: Marshall-Gambit",
+    "family": "Slawische Verteidigung",
+    "description": "Weiß opfert den e-Bauern für Entwicklung und Druck auf den schwarzen Feldern – gegen die Zugfolge von Noteboom/Dreiecksaufbau.",
+    "ideas": [
+      "Gambit für Entwicklung",
+      "Angriff auf den schwarzen Feldern",
+      "Scharfes Spiel"
+    ]
+  },
+  "catalan-opening": {
+    "name": "Katalanische Eröffnung",
+    "family": "Katalanische Eröffnung",
+    "description": "Weiß kombiniert d4/c4 mit einem Fianchetto am Königsflügel und übt langfristig Druck auf den schwarzen Damenflügel aus. Ein Liebling von Kramnik und Carlsen.",
+    "ideas": [
+      "Der Läufer auf g2 drückt auf d5 und b7",
+      "Langfristiger Druck am Damenflügel",
+      "Ruhiges, aber kraftvolles Positionsspiel"
+    ]
+  },
+  "catalan-open": {
+    "name": "Katalanische Eröffnung: Offene Variante",
+    "family": "Katalanische Eröffnung",
+    "description": "Schwarz nimmt den Bauern auf c4. Weiß holt ihn mit Qa4 oder Ne5 zurück und hält den Druck auf der langen Diagonale.",
+    "ideas": [
+      "c4 nehmen und mit ...a6/...b5 halten",
+      "Weiß gewinnt den Bauern zurück und drückt auf b7",
+      "Schwarz strebt ...c5 an"
+    ]
+  },
+  "catalan-closed": {
+    "name": "Katalanische Eröffnung: Geschlossene Variante",
+    "family": "Katalanische Eröffnung",
+    "description": "Schwarz hält den Stützpunkt d5. Das Spiel ist langsam und positionell, Weiß macht Druck am Damenflügel.",
+    "ideas": [
+      "Solider Bauer auf d5",
+      "...c6 und ...b6",
+      "Langes Manövrieren"
+    ]
+  },
+  "indian-defense": {
+    "name": "Indische Verteidigung",
+    "family": "Indische Verteidigung",
+    "description": "Schwarz entwickelt einen Springer und kontrolliert e4. Dabei bleiben Königsindisch, Nimzowitsch-Indisch, Grünfeld und mehr möglich.",
+    "ideas": [
+      "e4 mit einer Figur kontrollieren",
+      "Flexibel: Wähle dein System später",
+      "Hypermoderner Ansatz"
+    ]
+  },
+  "trompowsky-attack": {
+    "name": "Trompowsky-Angriff",
+    "family": "Trompowsky-Angriff",
+    "description": "Weiß fesselt sofort den Springer auf f6 (oder droht ihn zu schlagen) und umgeht so die gängige Theorie der indischen Verteidigungen.",
+    "ideas": [
+      "Mit Bxf6 die schwarze Bauernstruktur beschädigen",
+      "Schnelle Entwicklung",
+      "Theorie umgehen"
+    ],
+    "traps": [
+      "2...Ne4 greift den Läufer auf g5 an; 3.Bf4 oder 3.h4 sind die Hauptantworten"
+    ]
+  },
+  "torre-attack": {
+    "name": "Torre-Angriff",
+    "family": "Torre-Angriff",
+    "description": "Weiß spielt Nf3 und Bg5 mit e3, Nbd2 und c3 – ein solides System mit taktischem Biss.",
+    "ideas": [
+      "Den Springer auf f6 fesseln",
+      "Hebel e4",
+      "Solider Aufbau"
+    ]
+  },
+  "indian-normal": {
+    "name": "Indische Verteidigung: Normalvariante",
+    "family": "Indische Verteidigung",
+    "description": "Schwarz bereitet ...d5, ...Bb4 oder ...b6 vor und hält sich Nimzowitsch-Indisch, Damenindisch und das abgelehnte Damengambit offen.",
+    "ideas": [
+      "Flexibel",
+      "...Bb4 oder ...d5 vorbereiten",
+      "Solide Struktur"
+    ]
+  },
+  "nimzo-indian": {
+    "name": "Nimzowitsch-Indische Verteidigung",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Schwarz fesselt den Springer auf c3, um um e4 zu kämpfen. Eine der angesehensten Verteidigungen im Schach, reich an strategischen Ideen.",
+    "ideas": [
+      "Den Springer auf c3 fesseln, um e4 zu kontrollieren",
+      "Den Läufer für Doppelbauern hergeben",
+      "Flexible Bauernstruktur"
+    ]
+  },
+  "nimzo-classical": {
+    "name": "Nimzowitsch-Indisch: Klassische Variante",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Weiß deckt c3 mit der Dame, um ohne Doppelbauern zurückschlagen zu können, und strebt das Läuferpaar an.",
+    "ideas": [
+      "Doppelbauern vermeiden",
+      "Läuferpaar nach a3",
+      "Schwarz spielt ...O-O, ...d5 oder ...c5"
+    ]
+  },
+  "nimzo-rubinstein": {
+    "name": "Nimzowitsch-Indisch: Rubinstein-Variante",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Das flexible e3: Weiß entwickelt sich ruhig mit Bd3 und Ne2/Nf3 und begegnet der Fesselung positionell.",
+    "ideas": [
+      "Flexible Entwicklung",
+      "Ne2, um Doppelbauern zu vermeiden",
+      "Solides Zentrum"
+    ]
+  },
+  "nimzo-saemisch": {
+    "name": "Nimzowitsch-Indisch: Sämisch-Variante",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Weiß erzwingt den Tausch auf c3 und nimmt Doppelbauern für das Läuferpaar und ein großes Zentrum in Kauf.",
+    "ideas": [
+      "Läuferpaar und Zentrum",
+      "Pläne mit f3 und e4",
+      "Schwarz zielt auf c4"
+    ]
+  },
+  "nimzo-kasparov": {
+    "name": "Nimzowitsch-Indisch: Kasparow-Variante",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Weiß entwickelt sich natürlich, oft mit g3 als nächstem Zug, und bleibt flexibel.",
+    "ideas": [
+      "Natürliche Entwicklung",
+      "Fianchetto mit g3",
+      "Flexibel"
+    ]
+  },
+  "nimzo-leningrad": {
+    "name": "Nimzowitsch-Indisch: Leningrader Variante",
+    "family": "Nimzowitsch-Indische Verteidigung",
+    "description": "Weiß fesselt seinerseits den Springer auf f6. Das führt zu scharfem Spiel.",
+    "ideas": [
+      "Gegenfesselung",
+      "Scharfes Spiel",
+      "Ideen mit dem Vorstoß d5"
+    ]
+  },
+  "queens-indian": {
+    "name": "Damenindische Verteidigung",
+    "family": "Damenindische Verteidigung",
+    "description": "Schwarz fianchettiert den Damenläufer, um e4 zu kontrollieren. Solide und flexibel – gespielt, wenn Weiß mit Nf3 der Nimzowitsch-Indischen ausweicht.",
+    "ideas": [
+      "e4 mit ...Bb7 kontrollieren",
+      "Solide Struktur",
+      "Erst ausgleichen, dann überspielen"
+    ]
+  },
+  "qid-fianchetto": {
+    "name": "Damenindisch: Fianchetto-Variante",
+    "family": "Damenindische Verteidigung",
+    "description": "Weiß antwortet auf den schwarzen Läufer mit einem eigenen Fianchetto und kämpft um die lange Diagonale.",
+    "ideas": [
+      "Fianchetto-Duell auf der langen Diagonale",
+      "Schwarz greift mit ...Ba6 c4 an",
+      "Langsames Manövrieren"
+    ]
+  },
+  "qid-petrosian": {
+    "name": "Damenindisch: Petrosjan-Variante",
+    "family": "Damenindische Verteidigung",
+    "description": "Weiß verhindert ...Bb4 und bereitet Nc3 und d5 vor. Kasparow nutzte sie als scharfe Waffe.",
+    "ideas": [
+      "...Bb4 verhindern",
+      "Nc3 und Vorstoß d5",
+      "Raumvorteil"
+    ]
+  },
+  "bogo-indian": {
+    "name": "Bogoljubow-Indische Verteidigung",
+    "family": "Bogoljubow-Indische Verteidigung",
+    "description": "Schwarz gibt Schach, um weiße Figuren zu tauschen oder schlecht zu platzieren. Solide und weniger theorielastig als die Nimzowitsch-Indische.",
+    "ideas": [
+      "Schach, um die Entwicklung zu stören",
+      "Die schwarzfeldrigen Läufer tauschen",
+      "Solide Struktur"
+    ]
+  },
+  "kings-indian-defense": {
+    "name": "Königsindische Verteidigung",
+    "family": "Königsindische Verteidigung",
+    "description": "Schwarz fianchettiert und lässt Weiß ein großes Zentrum aufbauen, um dann mit ...e5 oder ...c5 zurückzuschlagen. Die Waffe von Fischer und Kasparow.",
+    "ideas": [
+      "Den Königsläufer fianchettieren",
+      "Mit ...e5 oder ...c5 zuschlagen",
+      "Angriff am Königsflügel nach ...f5"
+    ]
+  },
+  "kid-normal": {
+    "name": "Königsindische Verteidigung: Normalvariante",
+    "family": "Königsindische Verteidigung",
+    "description": "Die Grundstellung der Königsindischen: Weiß hat ein großes Zentrum und wählt zwischen klassischem System, Sämisch, Vierbauernangriff und anderen Systemen.",
+    "ideas": [
+      "...O-O und ...e5",
+      "Angriff am Königsflügel mit ...f5",
+      "Weiß greift am Damenflügel an"
+    ]
+  },
+  "kid-classical": {
+    "name": "Königsindische Verteidigung: Klassische Variante",
+    "family": "Königsindische Verteidigung",
+    "description": "Die Hauptvariante: Weiß entwickelt sich natürlich, Schwarz greift das Zentrum mit ...e5 an. Führt zu berühmten Wettlaufstellungen.",
+    "ideas": [
+      "...e5 im Kampf ums Zentrum",
+      "Geschlossenes Zentrum nach d5",
+      "Angriffe auf entgegengesetzten Flügeln"
+    ],
+    "traps": [
+      "8.dxe5 dxe5 9.Qxd8 Rxd8 – das Endspiel ist etwa ausgeglichen und für Weiß nicht gewonnen"
+    ]
+  },
+  "kid-mar-del-plata": {
+    "name": "Königsindisch: Mar-del-Plata-Variante",
+    "family": "Königsindische Verteidigung",
+    "description": "Die berühmteste Variante der Königsindischen: Weiß greift am Damenflügel an, Schwarz stürmt mit ...f5-f4-g5 am Königsflügel.",
+    "ideas": [
+      "Wettlauf der Bauernstürme",
+      "...Nd7/Ne8, ...f5, ...f4, ...g5",
+      "Weiß spielt c5 und Nb5"
+    ]
+  },
+  "kid-petrosian": {
+    "name": "Königsindisch: Petrosjan-System",
+    "family": "Königsindische Verteidigung",
+    "description": "Weiß schließt das Zentrum sofort mit d5 und spielt dann Bg5, um ...f5 zu bremsen.",
+    "ideas": [
+      "Das Zentrum früh schließen",
+      "Mit Bg5 bremsen",
+      "Expansion am Damenflügel"
+    ]
+  },
+  "kid-saemisch": {
+    "name": "Königsindisch: Sämisch-Variante",
+    "family": "Königsindische Verteidigung",
+    "description": "Weiß stützt e4 mit f3, bereitet Be3 und Qd2 vor und rochiert oft lang, um dann mit den Bauern am Königsflügel zu stürmen.",
+    "ideas": [
+      "Solide Stütze für e4",
+      "Be3/Qd2 und Bauernsturm mit g4-h4",
+      "Das schwarze ...f5 erschweren"
+    ]
+  },
+  "kid-four-pawns": {
+    "name": "Königsindisch: Vierbauernangriff",
+    "family": "Königsindische Verteidigung",
+    "description": "Weiß baut mit vier Bauern ein riesiges Zentrum. Schwarz muss schnell mit ...c5 und ...e6 kontern.",
+    "ideas": [
+      "Maximales Zentrum",
+      "Vorstoß e5",
+      "Schwarz untergräbt mit ...c5"
+    ]
+  },
+  "kid-fianchetto": {
+    "name": "Königsindisch: Fianchetto-Variante",
+    "family": "Königsindische Verteidigung",
+    "description": "Auch Weiß fianchettiert. Das verringert die schwarzen Angriffschancen und führt zu positionellem Spiel.",
+    "ideas": [
+      "Spiegelbildliches Fianchetto",
+      "Positionelles Spiel",
+      "Den schwarzen Königsangriff eindämmen"
+    ]
+  },
+  "kid-averbakh": {
+    "name": "Königsindisch: Awerbach-Variante",
+    "family": "Königsindische Verteidigung",
+    "description": "Weiß fesselt mit Bg5, um ...e5 zu erschweren, und hält sich Angriffe mit h4 offen.",
+    "ideas": [
+      "...e5 bremsen",
+      "Fesselung mit Bg5",
+      "Flexible Pläne"
+    ]
+  },
+  "grunfeld-defense": {
+    "name": "Grünfeld-Indische Verteidigung",
+    "family": "Grünfeld-Indische Verteidigung",
+    "description": "Schwarz lässt Weiß ein großes Zentrum bauen und greift es dann mit Figuren und ...c5 an. Dynamisch und theorielastig.",
+    "ideas": [
+      "Das weiße Zentrum mit Figuren angreifen",
+      "...c5 und ...Nc6",
+      "Läufer auf g7 gegen d4"
+    ]
+  },
+  "grunfeld-exchange": {
+    "name": "Grünfeld-Indisch: Abtauschvariante",
+    "family": "Grünfeld-Indische Verteidigung",
+    "description": "Nach dem Springertausch besetzt Weiß mit e4 das Zentrum. Schwarz setzt d4 mit ...c5, ...Nc6 und ...Bg4 unter Druck.",
+    "ideas": [
+      "Großes Bauernzentrum",
+      "Schwarz greift d4 an",
+      "Aufbau mit Bc4 und Ne2 für Weiß"
+    ]
+  },
+  "grunfeld-russian": {
+    "name": "Grünfeld-Indisch: Russisches System",
+    "family": "Grünfeld-Indische Verteidigung",
+    "description": "Weiß greift d5 mit der Dame an, erzwingt ...dxc4 und baut dann mit e4 das Zentrum auf.",
+    "ideas": [
+      "Druck auf d5",
+      "Nach ...dxc4 das Zentrum aufbauen",
+      "Qxc4 und e4"
+    ]
+  },
+  "grunfeld-bf4": {
+    "name": "Grünfeld-Indisch: 4.Bf4",
+    "family": "Grünfeld-Indische Verteidigung",
+    "description": "Weiß entwickelt den Läufer und drückt auf c7. So umgeht er die Hauptvarianten der Abtauschvariante.",
+    "ideas": [
+      "Druck auf c7",
+      "Solide Entwicklung",
+      "Die Haupttheorie umgehen"
+    ]
+  },
+  "old-indian": {
+    "name": "Altindische Verteidigung",
+    "family": "Altindische Verteidigung",
+    "description": "Schwarz spielt ...d6 und ...e5 ohne Fianchetto. Es entstehen solide Strukturen ähnlich wie in der Königsindischen.",
+    "ideas": [
+      "...e5 und ...Nbd7",
+      "Solide Struktur",
+      "Läufer nach e7"
+    ]
+  },
+  "budapest-gambit": {
+    "name": "Budapester Gambit",
+    "family": "Budapester Gambit",
+    "description": "Schwarz opfert den e-Bauern für aktives Figurenspiel und gewinnt ihn oft mit ...Ng4 zurück. Fallenreich und unterhaltsam.",
+    "ideas": [
+      "e5 mit ...Ng4 und ...Nc6 zurückgewinnen",
+      "Aktive Figuren",
+      "Tricks mit Bb4+"
+    ],
+    "traps": [
+      "3.dxe5 Ng4 4.Bf4 Nc6 5.Nf3 Bb4+ 6.Nbd2 Qe7 7.a3 Ngxe5 8.axb4?? Nd3# – ein berühmtes ersticktes Matt"
+    ]
+  },
+  "fajarowicz-gambit": {
+    "name": "Budapester Gambit: Fajarowicz-Variante",
+    "family": "Budapester Gambit",
+    "description": "Schwarz stellt den Springer nach e4 statt nach g4 und setzt auf schnelle Entwicklung und Taktik.",
+    "ideas": [
+      "Aktiver Springer auf e4",
+      "Ideen mit ...Bb4+ und ...Qh4",
+      "Schnelle Entwicklung"
+    ]
+  },
+  "benoni-defense": {
+    "name": "Moderne Benoni-Verteidigung",
+    "family": "Benoni-Verteidigung",
+    "description": "Schwarz schafft eine unausgeglichene Struktur: Mehrheit am Damenflügel gegen die weiße Zentrumsmehrheit. Scharf und dynamisch.",
+    "ideas": [
+      "Bauernmehrheit am Damenflügel mit ...b5",
+      "Fianchetto auf g7",
+      "Aktives Figurenspiel"
+    ],
+    "traps": [
+      "Der Taimanow-Angriff mit f4 und Bb5+ ist für Schwarz sehr gefährlich"
+    ]
+  },
+  "benoni-main": {
+    "name": "Moderne Benoni: Hauptvariante",
+    "family": "Benoni-Verteidigung",
+    "description": "Die klassische Benoni-Tabiya. Weiß plant e5, Schwarz spielt ...a6, ...b5 und ...Re8.",
+    "ideas": [
+      "Weiß stößt mit e5 vor",
+      "Schwarz spielt ...b5",
+      "Taktische Kämpfe auf der e-Linie"
+    ]
+  },
+  "czech-benoni": {
+    "name": "Tschechisches Benoni",
+    "family": "Benoni-Verteidigung",
+    "description": "Schwarz schließt das Zentrum mit ...e5 und setzt auf langsames Manövrieren und die Hebel ...f5 oder ...b5.",
+    "ideas": [
+      "Geschlossenes Zentrum",
+      "Hebel ...f5 oder ...b5",
+      "Strategisches Spiel"
+    ]
+  },
+  "old-benoni": {
+    "name": "Alte Benoni-Verteidigung",
+    "family": "Benoni-Verteidigung",
+    "description": "Schwarz greift d4 sofort mit dem c-Bauern an. Nach d5 entstehen unausgeglichene Stellungen vom Benoni-Typ.",
+    "ideas": [
+      "d4 sofort angreifen",
+      "Benoni-Strukturen",
+      "Überraschungseffekt"
+    ]
+  },
+  "benko-gambit": {
+    "name": "Benkö-Gambit",
+    "family": "Benkö-Gambit",
+    "description": "Schwarz opfert einen Bauern am Damenflügel für langfristigen Druck auf der a- und b-Linie. Ein großartiges positionelles Gambit.",
+    "ideas": [
+      "a- und b-Linie für die Türme öffnen",
+      "Fianchetto-Läufer auf g7",
+      "Langfristiger Druck"
+    ]
+  },
+  "benko-accepted": {
+    "name": "Angenommenes Benkö-Gambit",
+    "family": "Benkö-Gambit",
+    "description": "Weiß nimmt beide Bauern. Schwarz schlägt auf a6 zurück und bekommt dauerhaften Druck am Damenflügel.",
+    "ideas": [
+      "Druck auf a2 und b2",
+      "Läufer auf g7",
+      "Türme auf a8 und b8"
+    ]
+  },
+  "dutch-defense": {
+    "name": "Holländische Verteidigung",
+    "family": "Holländische Verteidigung",
+    "description": "Schwarz kontrolliert e4 mit dem f-Bauern und strebt einen Angriff am Königsflügel an. Ehrgeizig, aber etwas schwächend.",
+    "ideas": [
+      "e4 kontrollieren",
+      "Angriff am Königsflügel",
+      "Leningrader System, Stonewall oder klassischer Aufbau"
+    ],
+    "traps": [
+      "2.Bg5 und 2.e4 (Staunton-Gambit) sind aggressive Versuche gegen die Holländische",
+      "Achte auf die Diagonale e8-h5 – Tricks mit Qh5+"
+    ]
+  },
+  "dutch-leningrad": {
+    "name": "Holländische Verteidigung: Leningrader System",
+    "family": "Holländische Verteidigung",
+    "description": "Schwarz kombiniert ...f5 mit einem königsindischen Fianchetto und strebt ...e5 und einen Angriff am Königsflügel an.",
+    "ideas": [
+      "Hebel ...e5",
+      "Fianchetto am Königsflügel",
+      "Dynamisches Spiel"
+    ]
+  },
+  "dutch-stonewall": {
+    "name": "Holländische Verteidigung: Stonewall",
+    "family": "Holländische Verteidigung",
+    "description": "Schwarz baut eine Bauernmauer auf c6-d5-e6-f5, kontrolliert e4 und plant einen Angriff am Königsflügel.",
+    "ideas": [
+      "Die Bauernmauer kontrolliert e4",
+      "Springer nach e4",
+      "Angriff am Königsflügel mit ...Qe8-h5"
+    ],
+    "traps": [
+      "Das Loch auf e5 ist eine Schwäche – Weiß stellt dort einen Springer hin"
+    ]
+  },
+  "dutch-classical": {
+    "name": "Holländische Verteidigung: Klassische Variante",
+    "family": "Holländische Verteidigung",
+    "description": "Schwarz lässt den d-Bauern auf d6 und bereitet ...e5 und ...Qe8-h5 vor.",
+    "ideas": [
+      "Hebel ...e5",
+      "Angriff mit ...Qe8-h5",
+      "Flexibel"
+    ]
+  },
+  "staunton-gambit": {
+    "name": "Holländische Verteidigung: Staunton-Gambit",
+    "family": "Holländische Verteidigung",
+    "description": "Weiß greift den Bauern auf f5 sofort an und bietet einen Bauern für schnelle Entwicklung.",
+    "ideas": [
+      "Linien gegen den schwarzen König öffnen",
+      "Schnelle Entwicklung",
+      "Druck mit Bg5 und Nc3"
+    ]
+  },
+  "englund-gambit": {
+    "name": "Englund-Gambit",
+    "family": "Englund-Gambit",
+    "description": "Ein zweifelhaftes Gambit mit einer berühmten Falle. Schwarz opfert e5 für Entwicklung und Tricks.",
+    "ideas": [
+      "Schnelle Entwicklung",
+      "Dame nach e7, um e5 unter Druck zu setzen",
+      "Spiel auf Fallen"
+    ],
+    "traps": [
+      "2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+ 5.Bd2 Qxb2 6.Bc3?? Bb4! 7.Qd2 Bxc3 8.Qxc3 Qc1# – die berühmte Falle"
+    ]
+  },
+  "english-reversed-sicilian": {
+    "name": "Englische Eröffnung: Umgekehrtes Sizilianisch",
+    "family": "Englische Eröffnung",
+    "description": "Weiß spielt Sizilianisch mit vertauschten Farben und hat so in einer sizilianischen Struktur ein Tempo mehr.",
+    "ideas": [
+      "...Nc6, ...Nf6, ...d5 oder ...g6",
+      "Kontrolle des Zentrums",
+      "Kampf um d4"
+    ]
+  },
+  "english-symmetrical": {
+    "name": "Englische Eröffnung: Symmetrievariante",
+    "family": "Englische Eröffnung",
+    "description": "Schwarz spiegelt den Zug von Weiß. Das Spiel ist langsam und strategisch, mit vielen Zugumstellungen.",
+    "ideas": [
+      "Symmetrie",
+      "Fianchettos auf beiden Seiten",
+      "Igel-Aufbauten"
+    ]
+  },
+  "english-four-knights": {
+    "name": "Englische Eröffnung: Vierspringervariante",
+    "family": "Englische Eröffnung",
+    "description": "Alle vier Springer sind entwickelt. Weiß spielt g3, e3 oder d4, um ums Zentrum zu kämpfen.",
+    "ideas": [
+      "Springer entwickeln",
+      "Kampf um d4/d5",
+      "Fianchetto mit g3"
+    ]
+  },
+  "english-botvinnik": {
+    "name": "Englische Eröffnung: Botwinnik-System",
+    "family": "Englische Eröffnung",
+    "description": "Weiß baut mit Bauern auf c4, d3 und e4 eine geschlossene Struktur und übernimmt die Kontrolle über d5.",
+    "ideas": [
+      "Fester Griff auf d5",
+      "Expansion am Königsflügel mit f4",
+      "Strategisches Spiel"
+    ]
+  },
+  "english-anglo-indian": {
+    "name": "Englische Eröffnung: Anglo-Indische Verteidigung",
+    "family": "Englische Eröffnung",
+    "description": "Schwarz entwickelt zuerst den Springer und hält sich königsindische, nimzowitsch-indische oder symmetrische Aufbauten offen.",
+    "ideas": [
+      "Flexibel",
+      "...e6, ...g6 oder ...c5",
+      "Werkzeug für Zugumstellungen"
+    ]
+  },
+  "english-mikenas": {
+    "name": "Englische Eröffnung: Mikenas-Carls-Variante",
+    "family": "Englische Eröffnung",
+    "description": "Weiß stößt früh mit e4 vor und weicht so Nimzowitsch-Indisch und dem abgelehnten Damengambit aus. Scharf und unausgeglichen.",
+    "ideas": [
+      "Das Zentrum besetzen",
+      "Vorstoß e5",
+      "Scharfes Spiel"
+    ]
+  },
+  "english-hedgehog": {
+    "name": "Englische Eröffnung: Igelsystem",
+    "family": "Englische Eröffnung",
+    "description": "Schwarz stellt seine Bauern wie die Stacheln eines Igels auf der 6. Reihe auf und wartet auf den Hebel ...b5 oder ...d5.",
+    "ideas": [
+      "Kompakter Aufbau",
+      "Hebel ...b5 oder ...d5",
+      "Geduld"
+    ]
+  },
+  "english-agincourt": {
+    "name": "Englische Eröffnung: Agincourt-Variante",
+    "family": "Englische Eröffnung",
+    "description": "Schwarz bereitet ...d5 mit einem Aufbau wie im abgelehnten Damengambit vor oder lenkt in nimzowitsch- oder damenindische Strukturen ein.",
+    "ideas": [
+      "Aufbau mit ...d5",
+      "Solide",
+      "Zugumstellungen"
+    ]
+  },
+  "reti-main": {
+    "name": "Réti-Eröffnung: Hauptvariante",
+    "family": "Réti-Eröffnung",
+    "description": "Weiß greift d5 vom Flügel aus an und bleibt im hypermodernen Stil.",
+    "ideas": [
+      "d5 mit c4 angreifen",
+      "Fianchetto mit g3",
+      "Flexibles Spiel im Zentrum"
+    ]
+  },
+  "kings-indian-attack": {
+    "name": "Königsindischer Angriff",
+    "family": "Réti-Eröffnung",
+    "description": "Weiß spielt einen königsindischen Aufbau mit einem Tempo mehr: Nf3, g3, Bg2, O-O, d3, Nbd2 und e4. Leicht zu lernen.",
+    "ideas": [
+      "In jeder Partie derselbe Aufbau",
+      "e4-e5 und Angriff am Königsflügel",
+      "Wenig Theorie"
+    ]
+  },
+  "froms-gambit": {
+    "name": "Bird-Eröffnung: From-Gambit",
+    "family": "Bird-Eröffnung",
+    "description": "Schwarz opfert den e-Bauern, um Linien gegen den geschwächten weißen König zu öffnen. Voller Fallen.",
+    "ideas": [
+      "Linien zum weißen König öffnen",
+      "Ideen mit ...Bd6 und ...g5",
+      "Schneller Angriff"
+    ],
+    "traps": [
+      "2.fxe5 d6 3.exd6 Bxd6 4.Nf3 g5! droht ...g4 und ...Bg3#",
+      "Matts nach dem Muster 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3#"
+    ]
+  },
+  "bird-dutch": {
+    "name": "Bird-Eröffnung: Holländische Variante",
+    "family": "Bird-Eröffnung",
+    "description": "Schwarz besetzt das Zentrum und entwickelt sich klassisch. Weiß spielt Nf3, e3, b3 und Bb2.",
+    "ideas": [
+      "Kontrolle über e4 beanspruchen",
+      "Klassische Entwicklung",
+      "Solide Struktur"
+    ]
+  }
+}

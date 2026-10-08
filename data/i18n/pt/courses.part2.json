@@ -1,0 +1,707 @@
+{
+  "openings-for-black": {
+    "title": "Aberturas populares com as negras",
+    "description": "Contra-ataque desde o primeiro lance. Aprenda a Siciliana e a Caro-Kann contra 1.e4, a clássica 1...e5, e a dinâmica Índia do Rei e o sólido Gambito da Dama Recusado contra 1.d4.",
+    "lessons": {
+      "sicilian-defense": {
+        "title": "A Defesa Siciliana",
+        "summary": "A resposta mais popular e combativa a 1.e4.",
+        "steps": [
+          {
+            "text": "**1...c5**, a **Defesa Siciliana**, luta por d4 com um peão de ala. A posição fica desequilibrada: as brancas costumam atacar na ala do rei, e as negras contra-atacam na ala da dama e pela **coluna c** semiaberta."
+          },
+          {
+            "text": "Jogue a Siciliana Aberta, Variante Najdorf: a escolha de Fischer e Kasparov.",
+            "task": {
+              "prompt": "Jogue ...c5, ...d6, ...cxd4, ...Nf6 e ...a6.",
+              "hint": "c5, depois d6, capture em d4 com o peão c, desenvolva o cavalo para f6 e termine com o flexível ...a6.",
+              "success": "A Najdorf! ...a6 controla b5 e prepara ...e5 ou ...b5."
+            }
+          },
+          {
+            "text": "**O Dragão**: as negras fianquetam o bispo em g7, de onde ele cospe fogo pela grande diagonal em direção à ala da dama das brancas."
+          },
+          {
+            "text": "**Ideias-chave das negras na Siciliana:**\n\n- A ruptura **...d5** libera o jogo das negras.\n- Aproveite a **coluna c** com uma torre em c8.\n- Trocar em c3 (...Rxc3!) é um sacrifício de qualidade típico para destruir o rei branco.\n- Não abra o centro enquanto seu rei ainda não tiver rocado."
+          },
+          {
+            "text": "**Contra a Alapin (2.c3)**, ataque o centro imediatamente com ...d5 ou ...Nf6.",
+            "task": {
+              "prompt": "Ataque o centro com seu peão d.",
+              "hint": "Avance o peão d duas casas para desafiar e4 imediatamente.",
+              "success": "Isso mesmo! Depois de exd5 Qxd5, as brancas não podem jogar Nc3 para perseguir sua dama, porque o peão de c3 está no caminho."
+            }
+          }
+        ]
+      },
+      "caro-kann": {
+        "title": "A Defesa Caro-Kann",
+        "summary": "Estrutura sólida como uma rocha, com jogo ativo de peças.",
+        "steps": [
+          {
+            "text": "**1...c6** prepara **...d5** com apoio de peão. A Caro-Kann é sólida como a Defesa Francesa, mas o bispo de casas claras das negras sai antes de ...e6."
+          },
+          {
+            "text": "Jogue a Variante Clássica.",
+            "task": {
+              "prompt": "Jogue ...c6, ...d5, ...dxe4 e ...Bf5.",
+              "hint": "Primeiro c6, depois d5. Capture em e4 e desenvolva o bispo para f5 ganhando tempo sobre o cavalo.",
+              "success": "A Caro-Kann Clássica! O bispo está ativo e a posição das negras é muito sólida."
+            }
+          },
+          {
+            "text": "**A Variante do Avanço** (3.e5) ganha espaço. As negras desenvolvem o bispo para **f5** e depois atacam a cadeia branca com **...c5**."
+          },
+          {
+            "text": "**Cuidado com a armadilha do mate sufocado!** Depois de 4...Nd7 5.Qe2, o natural 5...Ngf6?? cai em 6.Nd6#: o peão de e7 não pode capturar porque está cravado pela dama."
+          },
+          {
+            "text": "Evite a armadilha na Caro-Kann.",
+            "task": {
+              "prompt": "Leve um cavalo a f6 sem permitir Nd6#: jogue ...Ndf6.",
+              "hint": "Mova o cavalo de d7 para f6. Agora d6 continua protegida pelo peão de e7: nada de mate sufocado!",
+              "success": "São e salvo. O peão de e7 ainda protege d6, então Nd6# é impossível."
+            }
+          }
+        ]
+      },
+      "open-games-black": {
+        "title": "Enfrentando 1.e4 com 1...e5",
+        "summary": "Clássica, fiel aos princípios e cheia de armadilhas.",
+        "steps": [
+          {
+            "text": "**1...e5** é a resposta mais clássica. Luta pelo centro e abre linhas para a dama e o bispo. Você precisa saber lidar com a Italiana, a Ruy López e os gambitos."
+          },
+          {
+            "text": "Escolha a ativa **Defesa dos Dois Cavalos** contra a Italiana.",
+            "task": {
+              "prompt": "Jogue ...e5, ...Nc6 e ...Nf6.",
+              "hint": "Peão central, depois os dois cavalos.",
+              "success": "A Dois Cavalos! Você contra-ataca e4 em vez de se defender passivamente."
+            }
+          },
+          {
+            "text": "Depois de 4.Ng5 d5 5.exd5, **não** recapture com 5...Nxd5? (o Ataque Fegatello!). A linha principal é **5...Na5**, atacando o bispo de c4."
+          },
+          {
+            "text": "Evite o Ataque Fegatello.",
+            "task": {
+              "prompt": "Ataque o bispo com seu cavalo de c6.",
+              "hint": "Seu cavalo salta para a borda: aqui isso se justifica porque ele ataca o bispo de c4.",
+              "success": "Correto! As negras entregam um peão em troca de desenvolvimento rápido e iniciativa."
+            }
+          },
+          {
+            "text": "Contra a Ruy López, a **Defesa Berlinense** (3...Nf6) e a **Defesa Morphy** (3...a6) são as respostas mais confiáveis. No final da Berlinense as damas saem cedo do tabuleiro, e as negras ficam incrivelmente sólidas."
+          }
+        ]
+      },
+      "kings-indian": {
+        "title": "A Defesa Índia do Rei",
+        "summary": "Deixe as brancas montarem um centro e depois exploda-o.",
+        "steps": [
+          {
+            "text": "Na **Defesa Índia do Rei**, as negras permitem que as brancas tenham um grande centro, rocam rápido atrás de um bispo fianquetado e depois atacam o centro com **...e5** ou **...c5**."
+          },
+          {
+            "text": "Monte a Índia do Rei.",
+            "task": {
+              "prompt": "Jogue ...Nf6, ...g6, ...Bg7, ...d6 e faça o roque.",
+              "hint": "Cavalo em f6, fianqueto com ...g6 e ...Bg7, depois ...d6 e roque pequeno.",
+              "success": "Uma montagem perfeita da Índia do Rei. Agora é hora de atacar o centro."
+            }
+          },
+          {
+            "text": "Ataque o centro.",
+            "task": {
+              "prompt": "Desafie o centro das brancas com seu peão e.",
+              "hint": "Avance o peão e duas casas para atacar d4.",
+              "success": "Essa é a linha principal! Começa a batalha pelo centro."
+            }
+          },
+          {
+            "text": "**O plano Mar del Plata**: depois de d5, o centro se fecha. As negras afastam o cavalo e avançam **...f5–f4** e **...g5–g4**, lançando uma avalanche de peões contra o rei branco enquanto as brancas atacam na ala da dama."
+          }
+        ]
+      },
+      "queens-gambit-declined": {
+        "title": "O Gambito da Dama Recusado",
+        "summary": "A resposta mais sólida a 1.d4.",
+        "steps": [
+          {
+            "text": "**1.d4 d5 2.c4 e6** recusa o gambito e mantém um peão forte em d5. O principal problema das negras é o bispo de casas claras em c8, bloqueado por e6. Planos como **...b6 + ...Bb7** ou as rupturas **...c5 / ...e5** resolvem isso."
+          },
+          {
+            "text": "Jogue o Gambito da Dama Recusado clássico.",
+            "task": {
+              "prompt": "Jogue ...d5, ...e6, ...Nf6, ...Be7 e faça o roque.",
+              "hint": "d5, e6, cavalo em f6, descrave com Be7 e roque.",
+              "success": "Sólido como uma rocha. O rei das negras está seguro e d5 se mantém firme."
+            }
+          },
+          {
+            "text": "**Manobra libertadora:** ...Ne4 troca peças para aliviar a pressão (a Defesa Lasker).",
+            "task": {
+              "prompt": "Troque peças com a manobra Lasker.",
+              "hint": "Salte com o cavalo de f6 para e4.",
+              "success": "Depois de Bxe7 Qxe7, as negras trocaram dois pares de peças menores e estão muito confortáveis."
+            }
+          },
+          {
+            "text": "Lembre-se da **Armadilha do Elefante** do curso de táticas: se as brancas pegarem o peão de d5 com Nxd5 enquanto o cavalo de f6 está cravado, ...Nxd5! ganha uma peça."
+          }
+        ]
+      }
+    }
+  },
+  "middlegame-strategy": {
+    "title": "Estratégia de meio-jogo",
+    "description": "O que fazer quando não há tática. Entenda as estruturas de peões, os postos avançados e as casas fracas, as colunas abertas, os bispos bons e ruins, a atividade das peças e como montar um plano.",
+    "lessons": {
+      "pawn-structure": {
+        "title": "Estrutura de peões",
+        "summary": "Os peões são a alma do xadrez.",
+        "steps": [
+          {
+            "text": "\"Os peões são a alma do xadrez\" — Philidor. Os peões não podem andar para trás, então cada lance de peão cria pontos fortes e fracos **permanentes**. Aprenda a reconhecer:\n\n- **Peões isolados** (sem peões aliados nas colunas vizinhas)\n- **Peões dobrados** (dois peões na mesma coluna)\n- **Peões atrasados** (não podem ser apoiados por outros peões)\n- **Peões passados** (nenhum peão inimigo pode detê-los)"
+          },
+          {
+            "text": "**O peão isolado da dama (PID).** O peão de d4 das brancas não tem vizinhos. Ele dá às brancas espaço e peças ativas (postos avançados em e5 e c5), mas no final se torna uma fraqueza.\n\nA casa **à frente** de um peão isolado é o lar perfeito para uma peça inimiga: nada consegue expulsá-la."
+          },
+          {
+            "text": "Lute contra o peão isolado.",
+            "task": {
+              "prompt": "Bloqueie o peão isolado: coloque um cavalo na casa à frente dele.",
+              "hint": "O cavalo de f6 pode saltar para d5.",
+              "success": "Um bloqueio sólido como uma rocha! Nenhum peão branco jamais poderá atacar seu cavalo em d5."
+            }
+          },
+          {
+            "text": "**Peões passados devem ser avançados!** (Nimzowitsch). Um peão passado amarra as peças inimigas e, quanto mais avança, mais forte fica. Um peão passado **protegido** (defendido por outro peão) é especialmente forte."
+          },
+          {
+            "text": "Use seus peões passados.",
+            "task": {
+              "prompt": "Avance seus peões passados ligados: jogue c6, depois d6.",
+              "hint": "Avance primeiro o peão c, depois traga o peão d para o lado dele. Lado a lado, eles se protegem.",
+              "success": "Peões passados ligados avançam juntos como um rolo compressor. O rei negro não consegue parar os dois!"
+            }
+          }
+        ]
+      },
+      "outposts-weak-squares": {
+        "title": "Postos avançados e casas fracas",
+        "summary": "Encontre buracos no campo inimigo e ocupe-os.",
+        "steps": [
+          {
+            "text": "Uma **casa fraca** (ou **buraco**) é uma casa que não pode mais ser defendida por um peão. Um **posto avançado** é uma casa fraca na metade inimiga, de preferência protegida por um peão seu, de onde sua peça não pode ser expulsa.\n\nOs cavalos adoram postos avançados!"
+          },
+          {
+            "text": "Nesta Siciliana Najdorf, o ...e5 das negras deixou um buraco em **d5**. As peças brancas querem ocupá-lo.",
+            "task": {
+              "prompt": "Ocupe o posto avançado em d5.",
+              "hint": "Qual cavalo consegue chegar a d5 com um salto?",
+              "success": "Um cavalo monstruoso em d5! Se as negras o capturarem, as brancas recapturam com o peão e e ganham um peão passado protegido."
+            }
+          },
+          {
+            "text": "**Criando casas fracas**: cada avanço de peão abre mão do controle de casas. Depois de ...g6, as casas escuras **f6** e **h6** ao redor do rei negro ficam fracas, sobretudo quando o bispo de g7 é trocado."
+          },
+          {
+            "text": "**Regra prática**: não avance peões sem um bom motivo. Cada lance de peão é permanente; garanta que as casas que ele deixa para trás não sejam úteis ao adversário."
+          }
+        ]
+      },
+      "open-files": {
+        "title": "Colunas abertas e a sétima fileira",
+        "summary": "Onde as torres viram monstros.",
+        "steps": [
+          {
+            "text": "Uma **coluna aberta** não tem peões. As torres pertencem às colunas abertas, por onde podem penetrar na posição inimiga. **Dobrar as torres** em uma coluna aberta as deixa ainda mais fortes.\n\nUma coluna **semiaberta** tem apenas peões inimigos: também é ótima para as torres."
+          },
+          {
+            "text": "A coluna d é a única coluna aberta.",
+            "task": {
+              "prompt": "Coloque sua torre de a1 na coluna d aberta.",
+              "hint": "Deslize a torre de a1 para d1.",
+              "success": "Muito bem! Agora a torre de f1 pode se juntar a ela na coluna d ou apoiar e4 mais tarde."
+            }
+          },
+          {
+            "text": "Uma torre na **sétima fileira** (a 7ª para as brancas, a 2ª para as negras) ataca peões que só podem ser defendidos por peças e corta o rei inimigo. Duas torres na sétima costumam ser decisivas."
+          },
+          {
+            "text": "A torre negra está passiva em c8. A coluna d é sua.",
+            "task": {
+              "prompt": "Invada a sétima fileira com sua torre.",
+              "hint": "Use a coluna d aberta para chegar a d7.",
+              "success": "A torre em d7 ataca a7 e f7 e amarra as negras. Esse é o poder da sétima fileira!"
+            }
+          }
+        ]
+      },
+      "bishops": {
+        "title": "Bispos bons, bispos ruins e o par de bispos",
+        "summary": "Nem todos os bispos são iguais.",
+        "steps": [
+          {
+            "text": "Um **bispo ruim** está bloqueado pelos próprios peões, colocados em casas da sua cor. Um **bispo bom** tem seus peões na cor oposta e se move livremente.\n\nNa Defesa Francesa, o bispo de casas claras das negras em c8 costuma ser ruim: os peões de e6 e d5 o bloqueiam."
+          },
+          {
+            "text": "**Solução**: troque o bispo ruim! As negras preparam ...b6 e ...Ba6 para trocá-lo pelo bispo bom das brancas.",
+            "task": {
+              "prompt": "Ofereça a troca do seu bispo ruim com ...Ba6.",
+              "hint": "O bispo de c8 vai para a6, onde enfrenta o bispo de f1 das brancas.",
+              "success": "Esperto: as negras trocam o bispo ruim pelo bispo bom das brancas."
+            }
+          },
+          {
+            "text": "**O par de bispos** (dois bispos contra bispo e cavalo ou dois cavalos) é uma vantagem real em posições **abertas**. Juntos, eles cobrem as duas cores e varrem o tabuleiro.\n\nSe você tem o par de bispos, abra a posição. Se você o enfrenta, mantenha-a fechada."
+          },
+          {
+            "text": "**Cavalos contra bispos**: os cavalos são melhores em posições **fechadas**, com cadeias de peões travadas e postos avançados. Os bispos preferem posições abertas com peões nas duas alas.\n\nAqui o bispo de casas claras das negras é **ruim**: os próprios peões em d5, e6 e f5 o bloqueiam. O cavalo branco ruma para o posto avançado em c5 e domina."
+          }
+        ]
+      },
+      "piece-activity": {
+        "title": "Atividade das peças",
+        "summary": "Melhore sua pior peça.",
+        "steps": [
+          {
+            "text": "Quando você não souber o que fazer, encontre sua **peça mais mal colocada** e melhore-a. Uma peça passiva na borda é como jogar com uma peça a menos.\n\nAqui o cavalo branco em a4 não faz nada. A rota **a4–c3–e2–f4** ou **–d5** o traz de volta ao jogo."
+          },
+          {
+            "text": "Melhore sua pior peça.",
+            "task": {
+              "prompt": "Traga o cavalo da borda de volta em direção ao centro.",
+              "hint": "\"Cavalo na borda, peça que não acorda.\" Traga-o de volta para c3.",
+              "success": "Muito melhor. Agora o cavalo mira d5, e4 e b5."
+            }
+          },
+          {
+            "text": "**Ative suas torres**: conecte-as (nada entre elas na primeira fileira) e depois coloque-as em colunas abertas ou semiabertas. As **elevações** de torre (Re3–g3, Rd3–h3) trazem as torres para o ataque."
+          },
+          {
+            "text": "**Troque suas peças ruins e mantenha as boas.** Troque as peças que defendem bem o adversário (como um cavalo forte em um posto avançado) e mantenha suas peças mais ativas no tabuleiro."
+          }
+        ]
+      },
+      "planning": {
+        "title": "Como montar um plano",
+        "summary": "Transforme sua compreensão em estratégia.",
+        "steps": [
+          {
+            "text": "Um método simples de planejamento para qualquer posição:\n\n1. **Segurança em primeiro lugar**: há alguma ameaça? (xeques, capturas, ameaças)\n2. **Olhe os peões**: em qual ala devo jogar? Que ruptura de peões eu quero?\n3. **Encontre fraquezas**: peões fracos, buracos, um rei exposto.\n4. **Melhore suas peças**: a pior primeiro.\n5. **Então aja**: abra a posição onde você for mais forte."
+          },
+          {
+            "text": "As **rupturas de peões** são a principal forma de abrir linhas. Na Francesa do Avanço, as negras atacam a base da cadeia de peões branca com ...c5 (e depois com ...f6)."
+          },
+          {
+            "text": "Encontre a ruptura de peões certa.",
+            "task": {
+              "prompt": "Ataque a base da cadeia de peões das brancas.",
+              "hint": "A base da cadeia é d4. Qual peão pode atacá-la?",
+              "success": "Exatamente: ataque a base da cadeia! ...c5 é o lance principal na Francesa do Avanço."
+            }
+          },
+          {
+            "text": "**Jogue na ala onde você tem mais espaço.** As cadeias de peões mostram o caminho: na Índia do Rei, a cadeia branca (d5–e4) aponta para a ala da dama, então as brancas atacam ali com c5. A cadeia negra (e5–d6) aponta para a ala do rei, então as negras atacam com ...f5."
+          },
+          {
+            "text": "**Ataque de minoria**: na estrutura Carlsbad, as brancas avançam dois peões da ala da dama (b4–b5) contra três para criar uma fraqueza em c6, um plano usado por campeões há 100 anos."
+          }
+        ]
+      }
+    }
+  },
+  "attack-and-defense": {
+    "title": "Ataque ao rei e defesa",
+    "description": "Aprenda a atacar o rei rocado (o Presente Grego, as baterias, as avalanches de peões e os roques opostos) e a se defender com profilaxia: sempre perguntando o que o adversário quer.",
+    "lessons": {
+      "attack-principles": {
+        "title": "Princípios do ataque",
+        "summary": "Quando e como partir para cima do rei.",
+        "steps": [
+          {
+            "text": "Um ataque ao rei dá certo quando você tem **mais atacantes do que o adversário tem defensores** naquela região. Antes de atacar, verifique:\n\n- Eu tenho **vantagem de desenvolvimento**?\n- O centro está **fechado ou estável**? (Ataques na ala fracassam se o centro se abre.)\n- Há **alvos**: peões enfraquecidos, defensores ausentes como o cavalo de f6?"
+          },
+          {
+            "text": "**Baterias**: alinhe duas peças na mesma diagonal ou coluna. Dama na frente e bispo atrás (ou bispo na frente e dama atrás) mirando h7 ou h2 é um padrão de mate clássico."
+          },
+          {
+            "text": "O cavalo de f6, o melhor defensor de h7, já não está lá.",
+            "task": {
+              "prompt": "Dê mate em um lance com a bateria de dama e bispo.",
+              "hint": "Capture em h7 com a dama. O bispo de d3 a protege.",
+              "success": "Xeque-mate! A bateria de dama e bispo é mortal."
+            }
+          }
+        ]
+      },
+      "greek-gift": {
+        "title": "O sacrifício do Presente Grego",
+        "summary": "Bxh7+!: o sacrifício de ataque mais famoso.",
+        "steps": [
+          {
+            "text": "O **Presente Grego** é um sacrifício de bispo em h7 (ou h2). Os ingredientes:\n\n- Bispo em d3 mirando h7\n- Cavalo que pode saltar para **g5**\n- Dama que pode chegar a **h5** (ou à coluna h)\n- Nenhum cavalo negro em f6 (muitas vezes expulso por um peão em e5)"
+          },
+          {
+            "text": "Todos os ingredientes estão aqui. Comece o ataque!",
+            "task": {
+              "prompt": "Sacrifique o bispo em h7 e continue com um xeque de cavalo.",
+              "hint": "Capture em h7 com xeque. Quando o rei recapturar, o cavalo salta para g5 com xeque.",
+              "success": "O rei está exposto. Agora a dama entra no ataque..."
+            }
+          },
+          {
+            "text": "As negras recuaram com ...Kg8. Traga a artilharia pesada.",
+            "task": {
+              "prompt": "Traga sua dama para o ataque com uma ameaça de mate.",
+              "hint": "A dama ameaça mate em h7.",
+              "success": "Qh5 ameaça Qh7#. As negras precisam entregar a dama com ...Qxg5: o Presente Grego valeu a pena."
+            }
+          },
+          {
+            "text": "**Quando ele fracassa?** Se as negras puderem defender h7 com um cavalo (…Nf6/…Nf8), ou se o rei puder fugir com segurança para g6/h6 e as brancas não tiverem continuação, o sacrifício é só uma peça perdida. Sempre calcule a caminhada do rei ...Kg6!"
+          }
+        ]
+      },
+      "opposite-castling": {
+        "title": "Roques opostos e avalanches de peões",
+        "summary": "Uma corrida: quem abrir linhas primeiro vence.",
+        "steps": [
+          {
+            "text": "Quando os reis rocam para **lados opostos**, os dois jogadores podem lançar seus peões contra o rei inimigo sem enfraquecer o próprio. Vira uma **corrida**: a velocidade importa mais que o material.\n\nNo Ataque Iugoslavo, as brancas jogam **h4–h5**, trocam o bispo de g7 com **Bh6** e dão mate pela coluna h."
+          },
+          {
+            "text": "**Abrindo a coluna h**: sacrificar um peão (g4!) ou até a qualidade para escancarar as colunas em frente ao rei é típico.\n\nAs negras reagem com ...Rxc3! e avalanches de peões na ala da dama."
+          },
+          {
+            "text": "**Troque o defensor-chave.** No Dragão, o bispo de g7 protege as casas escuras ao redor do rei negro.",
+            "task": {
+              "prompt": "Pressione o cavalo de f6, o defensor-chave: jogue Bg5.",
+              "hint": "Mova o bispo de e3 para g5, pressionando f6.",
+              "success": "Bg5 é uma linha principal: crava/ataca o cavalo de f6 e apoia os planos f4-f5 ou g4."
+            }
+          }
+        ]
+      },
+      "prophylaxis": {
+        "title": "Profilaxia e defesa",
+        "summary": "Pergunte: o que meu adversário quer?",
+        "steps": [
+          {
+            "text": "**Profilaxia** significa impedir as ideias do adversário *antes* que aconteçam. Antes de cada lance, pergunte: **\"O que meu adversário quer fazer?\"**\n\nMuitas vezes a melhor defesa é um lance que impede o plano dele e, ao mesmo tempo, melhora sua posição."
+          },
+          {
+            "text": "As brancas ameaçam **Qxh7#**. Vários lances impedem isso, mas um deles também ataca.",
+            "task": {
+              "prompt": "Defenda-se da ameaça de mate ganhando tempo.",
+              "hint": "Qual peça pode defender h7 e atacar a dama ao mesmo tempo?",
+              "success": "Excelente defesa! O cavalo cobre h7 e ataca a dama."
+            }
+          },
+          {
+            "text": "**Luft** (\"ar\", em alemão): um pequeno lance de peão como **h3/h6** dá ao seu rei uma casa de fuga e elimina os mates do corredor pelo resto da partida. Um lance como **...h6** também impede as ideias de Ng5 e Bg5."
+          },
+          {
+            "text": "**Princípios defensivos:**\n\n- Troque as peças atacantes (sobretudo o melhor atacante do adversário).\n- Mantenha um cavalo em f6 (f3): o melhor defensor do rei.\n- Contra-ataque no centro: a melhor resposta a um ataque na ala é agir no centro.\n- Não entre em pânico: devolva material se isso acabar com o ataque."
+          }
+        ]
+      }
+    }
+  },
+  "endgame-essentials": {
+    "title": "Fundamentos de finais",
+    "description": "\"Para melhorar, estude primeiro os finais\" — Capablanca. Domine a oposição, as casas-chave, o quadrado do peão, a triangulação, os peões passados afastados e os finais de torre que todo mundo precisa conhecer: Lucena e Philidor.",
+    "lessons": {
+      "king-activity": {
+        "title": "O rei ativo",
+        "summary": "No final, o rei vira uma peça de combate.",
+        "steps": [
+          {
+            "text": "Com menos peças no tabuleiro, já não há perigo de mate. O rei se torna uma **peça de ataque forte**, que vale cerca de 4 peões. Regra número um do final: **ative seu rei!**\n\nLeve-o em direção ao centro ou aos peões que importam."
+          },
+          {
+            "text": "**Reis na frente dos peões.** Nos finais de rei e peão, o rei atacante deve ficar **na frente** do seu peão, não atrás dele. O rei defensor quer ficar **bem na frente** do peão inimigo."
+          },
+          {
+            "text": "Seu rei está ao lado do seu peão. Passe para a frente dele!",
+            "task": {
+              "prompt": "Encontre o único lance que vence.",
+              "hint": "Coloque seu rei bem na frente do peão, na 6ª fileira.",
+              "success": "Com o rei na 6ª fileira na frente do seu peão, as brancas sempre vencem (exceto com um peão de torre)."
+            }
+          }
+        ]
+      },
+      "opposition": {
+        "title": "A oposição",
+        "summary": "A ideia mais importante nos finais de rei e peão.",
+        "steps": [
+          {
+            "text": "Dois reis na mesma coluna (ou fileira) com **uma casa entre eles** estão em **oposição**. O jogador que **não** precisa jogar \"tem a oposição\": o outro rei tem que ceder passagem.\n\nAqui os reis estão frente a frente. Quem jogar terá que sair do caminho."
+          },
+          {
+            "text": "Tome a oposição para vencer.",
+            "task": {
+              "prompt": "Tome a oposição.",
+              "hint": "Coloque seu rei na mesma coluna do rei negro, com uma casa entre eles.",
+              "success": "Você tem a oposição! As negras precisam ceder passagem e seu rei avança para as casas-chave."
+            }
+          },
+          {
+            "text": "O rei negro está preso perto do canto. Use a oposição para escoltar o peão.",
+            "task": {
+              "prompt": "Encontre o único lance que vence.",
+              "hint": "Fique de frente para o rei negro, com uma casa entre vocês.",
+              "success": "Oposição! As negras precisam sair do caminho, e seu rei apoia o peão até a casa de promoção."
+            }
+          }
+        ]
+      },
+      "key-squares": {
+        "title": "Casas-chave",
+        "summary": "Chegue a elas e o peão promove.",
+        "steps": [
+          {
+            "text": "Todo peão tem suas **casas-chave**: se o rei atacante chegar a uma delas, o peão promove aconteça o que acontecer.\n\nPara um peão na 2ª, 3ª ou 4ª fileira, as casas-chave são as três casas **duas fileiras à frente** dele. Para um peão na 5ª ou 6ª fileira, há seis casas-chave."
+          },
+          {
+            "text": "As casas-chave do peão de d3 são c5, d5 e e5. O rei negro as protege. Use a oposição para abrir caminho.",
+            "task": {
+              "prompt": "Encontre o único lance que vence.",
+              "hint": "Tome a oposição na coluna c.",
+              "success": "Com a oposição, seu rei chegará a uma casa-chave e o peão vira dama."
+            }
+          },
+          {
+            "text": "**Os peões de torre são especiais.** Com um peão a ou h, o rei defensor no canto não pode ser expulso: esses finais são quase sempre **empate**. Lembre-se disso quando trocar peças rumo a um final de peões!"
+          }
+        ]
+      },
+      "square-of-the-pawn": {
+        "title": "O quadrado do peão",
+        "summary": "O rei alcança o peão? Conte com um quadrado.",
+        "steps": [
+          {
+            "text": "Para saber se um rei consegue alcançar um peão passado sem ajuda, imagine um **quadrado** com um lado indo do peão até sua casa de promoção.\n\nSe o rei defensor puder entrar **no quadrado** no seu lance, ele alcança o peão. Se não, o peão promove.\n\n(Se o peão estiver na fileira inicial, conte a partir da casa à frente dele: ele pode avançar duas casas.)"
+          },
+          {
+            "text": "As negras jogam. O rei branco está longe. Você consegue alcançar o peão?",
+            "task": {
+              "prompt": "Entre no quadrado do peão.",
+              "hint": "Depois do próximo avanço do peão branco, o quadrado diminui. Mova-se na diagonal em direção ao caminho do peão.",
+              "success": "Você está dentro do quadrado: o peão não escapa do seu rei. Empate!"
+            }
+          },
+          {
+            "text": "Mover-se na diagonal é tão rápido quanto em linha reta. Isso significa que um rei pode **perseguir** um peão e **se aproximar** de outro alvo ao mesmo tempo: a famosa **manobra de Réti** (Réti, 1921) usa exatamente essa ideia para salvar uma posição que parecia perdida."
+          }
+        ]
+      },
+      "triangulation": {
+        "title": "Triangulação",
+        "summary": "Perca um lance de propósito para colocar o adversário em zugzwang.",
+        "steps": [
+          {
+            "text": "**Zugzwang** significa que qualquer lance piora sua posição. Aqui, com **as negras jogando**, as negras perdem: o rei precisa abandonar o peão de b7 ou as casas da coluna d.\n\nMas quem joga são **as brancas**. As brancas precisam passar a vez para as negras, e os reis não podem passar."
+          },
+          {
+            "text": "**Triangulação**: o rei branco percorre um triângulo de três casas (d5–e5–d4–d5), enquanto o rei negro só consegue oscilar entre duas casas (d7 e c6). Depois de três lances, a mesma posição aparece, mas com as negras para jogar!"
+          },
+          {
+            "text": "Perca um tempo com seu rei.",
+            "task": {
+              "prompt": "Triangule: jogue Ke5, Kd4 e volte com Kd5.",
+              "hint": "Percorra com o rei o triângulo e5–d4–d5. O rei negro não consegue imitar você.",
+              "success": "A mesma posição, mas agora as negras têm que jogar e perdem! Depois de ...Kc8, Ke6–d6–e7–d7 vence."
+            }
+          }
+        ]
+      },
+      "outside-passed-pawn": {
+        "title": "O peão passado afastado",
+        "summary": "Uma isca que arrasta o rei inimigo para longe.",
+        "steps": [
+          {
+            "text": "Um **peão passado afastado** é um peão passado longe dos outros peões. Ele funciona como **isca**: o rei inimigo precisa correr para detê-lo, e então seu rei faz a festa com os peões que ficaram para trás."
+          },
+          {
+            "text": "Use seu peão passado afastado.",
+            "task": {
+              "prompt": "Avance o peão passado afastado para atrair o rei negro para longe.",
+              "hint": "Avance o peão a. O rei negro precisa persegui-lo.",
+              "success": "O rei negro tem que ir para a ala da dama, e o rei branco vai ganhar os peões da ala do rei."
+            }
+          },
+          {
+            "text": "**Maiorias de peões**: se você tem mais peões em uma ala, normalmente consegue criar um peão passado ali. Uma **maioria saudável na ala da dama** costuma ser uma vantagem decisiva no final, porque o peão passado que ela cria fica longe dos dois reis."
+          }
+        ]
+      },
+      "rook-endgame-basics": {
+        "title": "Fundamentos de finais de torre",
+        "summary": "Torres ativas, reis cortados, torres atrás dos peões passados.",
+        "steps": [
+          {
+            "text": "Os finais de torre são os finais **mais comuns** do xadrez. As regras de ouro:\n\n1. **Ative sua torre**: uma torre ativa vale um peão.\n2. **Corte o rei inimigo** com sua torre ao longo de uma fileira ou coluna.\n3. **As torres pertencem à retaguarda dos peões passados**: dos seus e dos do adversário (regra de Tarrasch)."
+          },
+          {
+            "text": "Seu peão a passado precisa de apoio. A torre negra está na frente dele.",
+            "task": {
+              "prompt": "Coloque sua torre atrás do seu peão passado.",
+              "hint": "Deslize a torre pela primeira fileira até a1.",
+              "success": "Atrás do peão, sua torre fica mais forte a cada avanço, enquanto a torre negra fica mais passiva."
+            }
+          },
+          {
+            "text": "**Cortando o rei**: uma torre em uma coluna pode manter o rei inimigo longe do seu peão. Cada coluna de distância em que o rei defensor fica cortado vale muito."
+          }
+        ]
+      },
+      "lucena-position": {
+        "title": "A posição de Lucena",
+        "summary": "Construindo a ponte: como vencer torre e peão contra torre.",
+        "steps": [
+          {
+            "text": "A **posição de Lucena**: seu peão está na 7ª fileira, seu rei está na frente dele e o rei inimigo está **cortado** pela sua torre. A torre negra impede que seu rei saia do canto.\n\nA técnica vencedora se chama **construir a ponte**."
+          },
+          {
+            "text": "Passo 1: leve sua torre para a **4ª fileira**. Mais tarde ela vai bloquear os xeques da torre.",
+            "task": {
+              "prompt": "Construa a ponte: eleve sua torre para d4.",
+              "hint": "Torre para a 4ª fileira (d4).",
+              "success": "Exatamente. Agora o rei pode sair e, quando os xeques acabarem, a torre vai bloquear."
+            }
+          },
+          {
+            "text": "Depois de 1.Rd4 Rc1 2.Ka7 Ra1+ 3.Kb6 Rb1+ 4.Kc6 Rc1+ 5.Kb5 Rb1+, o rei saiu. Agora a ponte está completa.",
+            "task": {
+              "prompt": "Bloqueie o xeque e termine a ponte.",
+              "hint": "Interponha sua torre em b4. Os xeques acabaram.",
+              "success": "A ponte está construída! O peão vai promover. Essa é a técnica de Lucena."
+            }
+          }
+        ]
+      },
+      "philidor-position": {
+        "title": "A posição de Philidor",
+        "summary": "Como empatar um final de torre com um peão a menos.",
+        "steps": [
+          {
+            "text": "A **posição de Philidor** é a montagem defensiva fundamental quando você tem um peão a menos em um final de torre e seu rei está na frente do peão.\n\n**Passo 1**: mantenha sua torre na sua **3ª fileira** (a 6ª fileira para as negras) para que o rei branco não possa avançar."
+          },
+          {
+            "text": "**Passo 2**: assim que as brancas avançarem o peão para a 6ª fileira, o rei branco perde seu abrigo. Desça sua torre para a **primeira fileira** e dê xeques **por trás**. O rei nunca consegue escapar deles."
+          },
+          {
+            "text": "As brancas acabaram de jogar e5–e6. Hora do passo 2.",
+            "task": {
+              "prompt": "Desça sua torre até b1.",
+              "hint": "Vá até o outro extremo do tabuleiro, para poder dar xeques no rei por trás.",
+              "success": "Defesa de Philidor perfeita. Você vai dar xeques no rei por trás para sempre: é empate."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "calculation-and-thinking": {
+    "title": "Cálculo e raciocínio",
+    "description": "Pense como um mestre. Crie uma rotina de raciocínio confiável: verifique xeques, capturas e ameaças, escolha lances candidatos, calcule linhas forçadas e procure erros graves antes de cada lance.",
+    "lessons": {
+      "checks-captures-threats": {
+        "title": "Xeques, capturas, ameaças",
+        "summary": "A varredura XCA que encontra táticas.",
+        "steps": [
+          {
+            "text": "Jogadores fortes olham **primeiro os lances forçados**, nesta ordem:\n\n1. **Xeques**: o adversário é obrigado a responder.\n2. **Capturas**: mudam o material e muitas vezes forçam recapturas.\n3. **Ameaças**: ataques que o adversário precisa responder.\n\nVerifique-os para **os dois lados** a cada lance. A maioria das táticas se esconde entre os lances forçados."
+          },
+          {
+            "text": "Este é o desfecho da famosa **Partida da Ópera** de Paul Morphy (Paris, 1858). Verifique primeiro os xeques, até os mais \"malucos\".",
+            "task": {
+              "prompt": "Mate em 2: verifique todos os xeques!",
+              "hint": "Olhe cada xeque de dama. Se o cavalo de d7 for obrigado a capturar, quem sobra protegendo d8?",
+              "success": "O desfecho imortal de Morphy! Um sacrifício de dama que só uma varredura XCA encontra."
+            }
+          },
+          {
+            "text": "**Não pare no primeiro lance bom.** Um xeque forçado pode ser ainda mais forte que uma grande captura. Sempre pergunte: *depois do meu xeque, o que o adversário pode fazer?* Se a resposta for \"quase nada\", calcule até o fim."
+          },
+          {
+            "text": "Réti x Tartakower, Viena 1910: uma das brilhantes mais curtas já jogadas.",
+            "task": {
+              "prompt": "Mate em 3: comece com um sacrifício de dama.",
+              "hint": "Sacrifique a dama em d8 com xeque. Depois, um xeque duplo com o bispo!",
+              "success": "Brilhante! Sacrifício de dama, xeque duplo e mate."
+            }
+          }
+        ]
+      },
+      "candidate-moves": {
+        "title": "Lances candidatos",
+        "summary": "Liste suas opções antes de calcular.",
+        "steps": [
+          {
+            "text": "Antes de calcular, faça uma lista curta de **lances candidatos** (2 a 4 opções sérias). Depois calcule cada um e compare. Isso evita que você se apaixone pela primeira ideia.\n\nBons candidatos: lances forçados, lances que usam suas peças mais ativas e lances que impedem o plano do adversário."
+          },
+          {
+            "text": "Morphy, Partida da Ópera, lance 13. Candidatos: Rxd7, Bxf6, Rhe1... Qual é o mais forte?",
+            "task": {
+              "prompt": "Encontre o candidato mais forçado.",
+              "hint": "Uma captura que mantém viva a cravada em d7.",
+              "success": "Morphy escolheu o lance mais forçado: Rxd7! As peças negras estão cravadas e amarradas."
+            }
+          },
+          {
+            "text": "Depois de 13.Rxd7 Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7, Morphy já tinha calculado tudo até o fim: o sacrifício de dama que você encontrou na lição anterior."
+          }
+        ]
+      },
+      "blunder-check": {
+        "title": "A checagem de erros graves",
+        "summary": "Antes de tocar numa peça, olhe o tabuleiro do lado do adversário.",
+        "steps": [
+          {
+            "text": "A maioria das partidas entre iniciantes é decidida por **erros graves**, não por combinações brilhantes. Antes de cada lance, faça uma **checagem de erros graves**:\n\n1. O que o último lance do adversário **ameaça**?\n2. Depois do lance que planejei, quais são os xeques, capturas e ameaças **dele**?\n3. Alguma das minhas peças está **sem defesa**?"
+          },
+          {
+            "text": "**Contar não é tudo.** Aqui, 1.Nxe5? Nxe5 2.Rxe5?? parece ganhar um peão (dois atacantes contra um defensor), mas depois que a torre sai, **...Bxf2+** ganha a torre. A casa f2 só era defendida pelo rei!"
+          },
+          {
+            "text": "**O Gambito Blackburne Shilling**: as brancas pegaram o peão de e5 com ganância e não viram a ameaça das negras. Castigue isso!"
+          },
+          {
+            "text": "Encontre os lances que castigam a ganância das brancas.",
+            "task": {
+              "prompt": "Ataque duas coisas ao mesmo tempo com sua dama e continue atacando.",
+              "hint": "Dama em g5 ataca g2 e e5. Depois de Nxf7, pegue g2, dê xeque em e4 e termine com um cavalo.",
+              "success": "Mate sufocado! A famosa armadilha Blackburne Shilling. As brancas esqueceram a checagem de erros graves."
+            }
+          }
+        ]
+      },
+      "forcing-sequences": {
+        "title": "Calculando linhas forçadas",
+        "summary": "Xeques, capturas e ameaças limitam as escolhas do adversário, e assim você pode calcular mais fundo.",
+        "steps": [
+          {
+            "text": "Quanto mais **forçados** forem seus lances, **menos respostas** você precisa calcular. Uma sequência de xeques pode ser calculada com 5 a 10 lances de profundidade, porque o adversário tem só uma ou duas respostas a cada vez.\n\nDica: **visualize** a posição final. Onde estão as peças depois da sequência?"
+          },
+          {
+            "text": "Calcule toda a sequência forçada antes de jogar. (Você já a viu no curso de Padrões de xeque-mate!)",
+            "task": {
+              "prompt": "Mate em 4 só com xeques.",
+              "hint": "Xeque de cavalo, xeque duplo, sacrifício de dama, mate sufocado.",
+              "success": "Todos os lances foram xeques: é por isso que você conseguiu calcular até o fim."
+            }
+          },
+          {
+            "text": "**Lista de verificação do cálculo:**\n\n- Comece pelo candidato mais forçado.\n- Para cada lance, encontre a **melhor** resposta do adversário, não aquela que você espera.\n- Conte o material no fim da linha.\n- Antes de jogar, confira de novo o **primeiro lance** para evitar um erro grave simples."
+          }
+        ]
+      }
+    }
+  }
+}

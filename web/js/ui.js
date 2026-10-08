@@ -2,6 +2,17 @@
 // Contract: docs/CONTRACT.md §5. Class vocabulary: docs/STYLEGUIDE.md.
 
 import { t, getLocale } from './i18n.js';
+import { getSetting } from './settings.js';
+import { announce } from './components/announcer.js';
+
+/**
+ * t() with an English fallback for code that can run before i18n has loaded (global error
+ * handlers, toasts raised during boot): never show a raw key such as "common.dismiss".
+ */
+export function tOr(key, fallback, params) {
+  const v = t(key, params);
+  return v === key ? fallback : v;
+}
 
 // ---------------------------------------------------------------------------
 // Escaping & DOM helper
@@ -237,17 +248,11 @@ export function iconNode(name, opts) {
   return htmlToNode(icon(name, opts));
 }
 
-/** Brand mark (green rounded square with a white knight) as SVG string. */
+/** Brand mark (the crowned-knight app icon) as an <img> HTML string. */
 export function brandMark(size = 36) {
   const s = Number(size) || 36;
-  return `<svg class="brand-mark" width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="gm-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#95c95f"/><stop offset="1" stop-color="#6f9f3f"/></linearGradient></defs>
-<rect width="64" height="64" rx="16" fill="url(#gm-g)"/>
-<path d="M22 50h24c0-8.5-2.4-14.5-4.6-18.6 3.6-2.2 6-6.6 4.8-12.3-4.4.6-7.1 2-9.4 4.1L34.2 17l-3.7 6.6C25 26.4 22 31.6 22 37l5.8 1.3 6-4.3-1.4 6C29.5 42.4 22 45 22 50Z" fill="#fff"/>
-<rect x="18" y="51" width="32" height="5" rx="2.5" fill="#fff"/>
-<circle cx="35.4" cy="26.6" r="1.7" fill="#6f9f3f"/>
-<path d="M27 12.5l2.4 2.6 2.6-4.6 2.6 4.6 2.4-2.6-.9 5H27.9z" fill="#ffd75e"/>
-</svg>`;
+  const src = s > 64 ? '/img/icons/mark-128.png' : '/img/icons/mark-64.png';
+  return `<img class="brand-mark" src="${src}" width="${s}" height="${s}" alt="" aria-hidden="true" decoding="async">`;
 }
 
 // ---------------------------------------------------------------------------
@@ -294,6 +299,14 @@ export function winPercent(score) {
 }
 
 // Labels/descriptions are i18n keys (ui.cls.<key>.label / .description), resolved at call time.
+// Colour-blind-safe palette (Okabe–Ito based): good moves in blues, bad moves in yellow → orange →
+// purple → vermillion, so the two halves stay apart with deuteranopia / protanopia. Symbols are
+// always shown with the colour. Selected by the `cbPalette` setting (<html data-cls-palette="cb">).
+const CLS_CB = {
+  brilliant: '#1fb5c9', great: '#4a90e2', best: '#56b4e9', excellent: '#7fc4ec', good: '#a3bccc', book: '#b8977a',
+  inaccuracy: '#f0e442', mistake: '#e69f00', miss: '#cc79a7', blunder: '#f0712c', forced: '#a3bccc',
+};
+
 const CLS = {
   brilliant: { color: '#26c2a3', symbol: '!!' },
   great: { color: '#5c8bb0', symbol: '!' },
@@ -319,13 +332,15 @@ export function classificationMeta(cls) {
   const key = String(cls || '').toLowerCase();
   const m = CLS[key];
   if (!m) return { key, label: key ? key[0].toUpperCase() + key.slice(1) : '', color: '#96af8b', cssVar: 'var(--cls-good)', symbol: '', description: '' };
-  return { key, ...m, label: t(`ui.cls.${key}.label`), description: t(`ui.cls.${key}.description`), cssVar: `var(--cls-${key})` };
+  let cb = false;
+  try { cb = getSetting('cbPalette') === true; } catch { cb = false; }
+  return { key, ...m, color: cb ? CLS_CB[key] : m.color, label: t(`ui.cls.${key}.label`), description: t(`ui.cls.${key}.description`), cssVar: `var(--cls-${key})` };
 }
 
 /** <span class="cls-badge" data-cls="..."> element for a classification. */
 export function classificationBadge(cls, { large = false } = {}) {
   const m = classificationMeta(cls);
-  return h('span', { class: large ? 'cls-badge lg' : 'cls-badge', dataset: { cls: m.key }, title: m.label, 'aria-label': m.label }, m.symbol);
+  return h('span', { class: large ? 'cls-badge lg' : 'cls-badge', dataset: { cls: m.key }, title: m.label, role: 'img', 'aria-label': m.label }, m.symbol);
 }
 
 const PIECE_FIGURINES = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘' };
@@ -455,7 +470,7 @@ const TOAST_ICONS = { info: 'info', success: 'check-circle', warning: 'alert', e
 function toastHost() {
   let host = document.getElementById('toasts');
   if (!host) {
-    host = h('div', { id: 'toasts', class: 'toasts', role: 'status', 'aria-live': 'polite' });
+    host = h('div', { id: 'toasts', class: 'toasts' });
     document.body.appendChild(host);
   }
   return host;
@@ -472,10 +487,13 @@ export function toast(msg, kind = 'info', opts = {}) {
   let timer = null;
   let gone = false;
 
-  const el = h('div', { class: `toast toast-${k}`, role: k === 'error' ? 'alert' : 'status' });
+  // Screen readers hear toasts through the shared announcer (errors interrupt, the rest is polite),
+  // so the toast stack itself is not a live region (no double announcements).
+  const el = h('div', { class: `toast toast-${k}` });
   el.innerHTML = icon(TOAST_ICONS[k]);
-  const closeBtn = h('button', { class: 'toast-close', type: 'button', 'aria-label': t('common.dismiss'), html: icon('close') });
+  const closeBtn = h('button', { class: 'toast-close', type: 'button', 'aria-label': tOr('common.dismiss', 'Dismiss'), html: icon('close') });
   el.append(h('div', { class: 'toast-msg' }, String(msg ?? '')), closeBtn);
+  try { announce(String(msg ?? ''), { assertive: k === 'error' || k === 'warning' }); } catch { /* ignore */ }
 
   const dismiss = () => {
     if (gone) return;
@@ -552,7 +570,7 @@ export function modal({ title = '', body = '', actions, size, dismissible = true
     footer.appendChild(btn);
   }
 
-  const dialog = h('div', { class: ['modal', size === 'lg' && 'modal-lg', className], role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': title ? titleId : null },
+  const dialog = h('div', { class: ['modal', size === 'lg' && 'modal-lg', className], role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': title ? titleId : null, tabindex: '-1' },
     header, bodyEl, footer);
   const backdrop = h('div', { class: 'modal-backdrop' }, dialog);
 
@@ -585,18 +603,30 @@ export function modal({ title = '', body = '', actions, size, dismissible = true
   document.addEventListener('keydown', onKey, true);
   backdrop.addEventListener('mousedown', onBackdrop);
   document.body.appendChild(backdrop);
-  const focusTarget = dialog.querySelector('[data-autofocus], input, select, textarea') || dialog.querySelector('.modal-footer .btn-primary') || dialog.querySelector('button');
-  if (focusTarget) requestAnimationFrame(() => { if (!closed) focusTarget.focus({ preventScroll: true }); });
+  const focusTarget = dialog.querySelector('[data-autofocus], input, select, textarea') || dialog.querySelector('.modal-footer .btn-primary') || dialog.querySelector('button') || dialog;
+  requestAnimationFrame(() => { if (!closed) focusTarget.focus({ preventScroll: true }); });
   return api;
 }
 
+const FOCUSABLE = 'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+
+/** Visible, keyboard-focusable elements inside `container`, in DOM order. */
+export function focusableIn(container) {
+  return Array.from(container.querySelectorAll(FOCUSABLE)).filter((el) => {
+    if (el.closest('[inert], [hidden], [aria-hidden="true"]')) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 || r.height > 0;
+  });
+}
+
 function trapFocus(e, container) {
-  const items = container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
-  if (!items.length) return;
+  const items = focusableIn(container);
+  if (!items.length) { e.preventDefault(); container.focus(); return; }
   const first = items[0];
   const last = items[items.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  const inside = container.contains(document.activeElement);
+  if (e.shiftKey && (document.activeElement === first || !inside || document.activeElement === container)) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && (document.activeElement === last || !inside)) { e.preventDefault(); first.focus(); }
 }
 
 /** Close every open modal (the router calls this on navigation). */

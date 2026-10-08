@@ -346,3 +346,39 @@ fn stored_json_round_trip() {
     assert_eq!(from_stored_json(&legacy).map(|(_, l)| l), Some(Lang::En));
     assert!(from_stored_json("not json").is_none());
 }
+
+/// Review summaries and relocalized explanations in Portuguese, French and German.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn new_language_review_text_and_relocalize() {
+    let content = fixture_content();
+    let moves = ucis("e2e4 e7e5 g1f3 b8c6 f1c4 f8c5 c4f7 e8f7 f3e5 c6e5");
+    let en = review_game(&pool(), Arc::clone(&content), "start", &moves, 6, None, Lang::En).await.expect("review");
+    for (lang, accuracy, opening, leak) in [
+        (Lang::Pt, "Precisão: brancas", "Depois da abertura (Giuoco Piano)", ["Accuracy", "White", "This "]),
+        (Lang::Fr, "Précision : Blancs", "Après l'ouverture (Giuoco Piano)", ["Accuracy", "White", "This "]),
+        (Lang::De, "Genauigkeit: Weiß", "Nach der Eröffnung (Giuoco Piano)", ["Accuracy", "White", "This "]),
+    ] {
+        let r = review_game(&pool(), Arc::clone(&content), "start", &moves, 6, None, lang).await.expect("review");
+        assert!(r.summary.contains(accuracy), "{lang}: {}", r.summary);
+        assert!(r.summary.contains(opening), "{lang}: {}", r.summary);
+        for w in leak {
+            assert!(!r.summary.contains(w), "{lang}: {}", r.summary);
+        }
+        assert!(!r.summary.contains('{') && !r.summary.contains('}'), "{lang}: {}", r.summary);
+        assert_eq!(serde_json::to_value(r.moves[0].classification).expect("json"), serde_json::json!("book"));
+
+        let re = relocalize(&en, &content, lang);
+        assert_eq!(re.evals, en.evals);
+        assert_eq!(re.moves.len(), en.moves.len());
+        for (a, b) in en.moves.iter().zip(&re.moves) {
+            assert_eq!((a.ply, &a.san, a.classification), (b.ply, &b.san, b.classification));
+            assert_ne!(a.explanation, b.explanation, "{lang} ply {} not translated: {}", a.ply, b.explanation);
+            assert!(!b.explanation.trim().is_empty() && !b.explanation.contains('{'), "{lang}: {}", b.explanation);
+        }
+        assert!(re.summary.contains(accuracy), "{lang}: {}", re.summary);
+        assert_eq!(relocalize(&re, &content, Lang::En), en);
+        let j = to_stored_json(&re, lang).expect("json");
+        assert_eq!(from_stored_json(&j).map(|(_, l)| l), Some(lang));
+    }
+}
+

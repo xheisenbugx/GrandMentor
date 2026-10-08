@@ -1,0 +1,430 @@
+{
+  "_comment": "German overlay for the Board Vision and Guess the Move courses (see docs/I18N.md).",
+  "board-vision": {
+    "title": "Brettsicht",
+    "description": "Trainiere deinen Blick: Benenne jedes Feld im Nu, zähle Material, entdecke ungedeckte Figuren und vergleiche Kandidatenzüge.",
+    "lessons": {
+      "bv-coordinates": {
+        "title": "Jedes Feld hat einen Namen",
+        "summary": "Lerne Linien und Reihen kennen und finde Felder schnell.",
+        "steps": [
+          {
+            "text": "Das Brett ist ein Gitter aus **64 Feldern**. Die Spalten heißen Linien und tragen die Buchstaben **a** bis **h**, von links nach rechts aus Sicht von Weiß. Die Zeilen heißen Reihen und sind von **1** bis **8** nummeriert, beginnend auf der Seite von Weiß."
+          },
+          {
+            "text": "Um ein Feld zu benennen, nennst du **zuerst die Linie, dann die Reihe**. Das markierte Feld ist **e4**: Linie *e*, Reihe *4*. Jeder Schachzug wird mit diesen Namen notiert. Wenn du sie auswendig kennst, wird alles leichter."
+          },
+          {
+            "text": "Du bist dran! Die Buchstaben und Zahlen am Brettrand helfen dir.",
+            "task": {
+              "prompt": "Klicke auf jedes Feld, das genannt wird.",
+              "success": "Gute Augen! Du hast jedes Feld gefunden.",
+              "hint": "Such unten den Buchstaben der Linie und zähle dann hoch bis zur Reihe."
+            }
+          },
+          {
+            "text": "Jetzt etwas schneller. Randfelder sind knifflig: **a** und **h** sind die äußeren Linien, **1** und **8** die Grundreihen.",
+            "task": {
+              "prompt": "Finde diese Felder.",
+              "success": "Perfekt! Du liest das Brett wie eine Landkarte."
+            }
+          }
+        ]
+      },
+      "bv-black-side": {
+        "title": "Aus der Sicht von Schwarz",
+        "summary": "Dreh das Brett um und finde trotzdem jedes Feld.",
+        "steps": [
+          {
+            "text": "Wenn du Schwarz spielst, wird das Brett umgedreht. Deine Figuren stehen unten auf den Reihen **8** und **7**, und die **h-Linie** ist jetzt links von dir. Die Felder behalten ihre Namen; nur dein Blickwinkel ändert sich."
+          },
+          {
+            "text": "Lass uns aus der Sicht von Schwarz üben.",
+            "task": {
+              "prompt": "Klicke auf jedes Feld, das genannt wird.",
+              "success": "Gut gemacht! Das Brett sieht anders aus, aber du hast dich zurechtgefunden.",
+              "hint": "Von dieser Seite aus ist die Linie **a** rechts und die Reihe **1** oben."
+            }
+          },
+          {
+            "text": "Zwei praktische Eselsbrücken: Das Eckfeld zu deiner **Rechten** ist immer **hell** („rechts hell“), und jede Dame startet auf ihrer eigenen Farbe: die weiße Dame auf dem hellen Feld **d1**, die schwarze Dame auf dem dunklen Feld **d8**."
+          },
+          {
+            "text": "Zeit für eine Herausforderung: Die Beschriftung ist weg! Stell dir die Buchstaben und Zahlen im Kopf vor.",
+            "task": {
+              "prompt": "Finde diese Felder ohne Koordinaten.",
+              "success": "Beeindruckend! Das ist echte Brettsicht.",
+              "hint": "Nutze die Könige als Orientierung: Sie stehen auf **e1** und **e8**."
+            }
+          },
+          {
+            "text": "Die letzte: keine Beschriftung, und du spielst Schwarz.",
+            "task": {
+              "prompt": "Finde diese Felder aus der Sicht von Schwarz.",
+              "success": "Fantastisch! Du findest jedes Feld von beiden Seiten.",
+              "hint": "Die Könige stehen auf **e8** (unten) und **e1** (oben)."
+            }
+          }
+        ]
+      },
+      "bv-counting": {
+        "title": "Material zählen",
+        "summary": "Zähl die Figurenwerte zusammen und sieh, wer vorne liegt.",
+        "steps": [
+          {
+            "text": "Figuren haben ungefähre Punktwerte: **Bauer 1**, **Springer 3**, **Läufer 3**, **Turm 5**, **Dame 9**. Der König ist unbezahlbar, deshalb zählen wir ihn nicht.\n\nZähl die Punkte jeder Seite zusammen und vergleiche sie: Das ist die **Materialbilanz**."
+          },
+          {
+            "text": "Zähle die Figuren auf beiden Seiten.",
+            "task": {
+              "prompt": "Wer liegt vorne, und um wie viel?",
+              "success": "Richtig! Weiß hat einen Springer mehr: **+3**.",
+              "hint": "Die Bauern sind gleich. Vergleiche die Springer."
+            }
+          },
+          {
+            "text": "Diesmal sind es verschiedene Figuren. Zähl sorgfältig.",
+            "task": {
+              "prompt": "Wer liegt vorne, und um wie viel?",
+              "success": "Genau: zwei Türme (10) gegen Turm und Läufer (8), also **liegt Schwarz mit +2 vorne**. Einen Turm für einen Läufer oder Springer zu gewinnen nennt man **die Qualität gewinnen**.",
+              "hint": "Ein Turm ist 5 wert, ein Läufer 3."
+            }
+          },
+          {
+            "text": "Eine Dame gegen ein Team aus kleineren Figuren. Wer hat mehr?",
+            "task": {
+              "prompt": "Wer liegt vorne, und um wie viel?",
+              "success": "Ausgeglichen! Eine Dame (9) ist ungefähr so viel wert wie Turm, Läufer und Bauer (5 + 3 + 1). Verschiedene Figuren, gleiche Summe.",
+              "hint": "Zähl auch die Bauern: Schwarz hat einen mehr."
+            }
+          },
+          {
+            "text": "Wenn du nach jedem Schlagen zählst, verschenkst du keine Figuren. Aber denk dran: Material ist nicht alles. **Schachmatt schlägt jeden Materialvorteil!**"
+          }
+        ]
+      },
+      "bv-hanging": {
+        "title": "Finde die hängende Figur",
+        "summary": "Finde Figuren, die man umsonst schlagen kann.",
+        "steps": [
+          {
+            "text": "Eine Figur **hängt**, wenn eine gegnerische Figur sie angreift und nichts sie deckt, oder wenn eine **billigere** Figur sie angreift. Hier wird der schwarze Springer auf c6 vom Läufer angegriffen und hat keinen Verteidiger.\n\nFrag dich vor jedem Zug: *Welche Figuren hängen?*"
+          },
+          {
+            "text": "Die schwarze Dame ist gerade nach b6 gesprungen.",
+            "task": {
+              "prompt": "Klicke auf die hängende weiße Figur.",
+              "success": "Ja! Der **Bauer auf b2** wird von der Dame angegriffen, und nichts deckt ihn. Ein Zug wie **Qb3** oder **Qc2** löst das Problem.",
+              "hint": "Folge den Linien der Dame von b6 aus."
+            }
+          },
+          {
+            "text": "Weiß hat gerade mit dem Springer auf d5 geschlagen. Du spielst Schwarz.",
+            "task": {
+              "prompt": "Klicke auf die hängende weiße Figur.",
+              "success": "Richtig! Nichts deckt den **Springer auf d5**. Dein Springer auf f6 sieht gefesselt aus, aber **Nxd5!** funktioniert: Nach **Bxd8** holt **Bb4+** die Dame zurück, und du hast eine Figur mehr. Das ist die berühmte **Elefantenfalle**.",
+              "hint": "Welche weiße Figur steht direkt neben deinen Figuren?"
+            }
+          },
+          {
+            "text": "**Patzer-Check:** Schau dir vor jedem Zug alle Figuren an, deine und die deines Gegners, und frag dich, was sie angreifen und was sie deckt. Das dauert ein paar Sekunden und rettet viele Partien."
+          }
+        ]
+      },
+      "bv-many-hanging": {
+        "title": "Mehr als eine ungedeckte Figur",
+        "summary": "Finde alle hängenden Figuren, auf beiden Seiten.",
+        "steps": [
+          {
+            "text": "Manchmal hängt **mehr als eine** Figur, und sie können zu beiden Seiten gehören. Klicke sie alle an und drücke dann auf **Prüfen**."
+          },
+          {
+            "text": "Der schwarze Springer ist gerade nach f6 gesprungen.",
+            "task": {
+              "prompt": "Finde **beide** hängenden weißen Figuren.",
+              "success": "Genau: Die **Dame auf h5** und der **Bauer auf e4** werden beide angegriffen. Aber bevor du sie rettest, such immer zuerst nach Schachgeboten: Hier ist **Qxf7#** Schachmatt!",
+              "hint": "Was greift der Springer auf f6 an?"
+            }
+          },
+          {
+            "text": "Bauern sind tolle Angreifer, weil sie am wenigsten wert sind.",
+            "task": {
+              "prompt": "Beide Seiten haben eine Figur, die von einem Bauern angegriffen wird. Klicke beide an.",
+              "success": "Richtig! Der Bauer auf e5 greift den **Springer auf f6** an, und der Bauer auf d5 greift den **Läufer auf c4** an. Ein Bauer, der eine Figur angreift, ist eine große Drohung.",
+              "hint": "Schau dir die Bauern auf e5 und d5 an."
+            }
+          },
+          {
+            "text": "Der weiße Springer ist gerade auf d5 gelandet. Du spielst Schwarz.",
+            "task": {
+              "prompt": "Welche deiner Figuren hängen? Es sind zwei.",
+              "success": "Gut gesehen! Der Springer greift deine **Dame auf f6** und den **Bauern auf c7** an, und **Nxc7+** wäre außerdem eine Gabel gegen König und Turm.",
+              "hint": "Ein Springer greift in L-Form an, bis zu acht Felder."
+            }
+          }
+        ]
+      },
+      "bv-best-plan": {
+        "title": "Wähle den besten Plan",
+        "summary": "Vergleiche Kandidatenzüge, bevor du dich entscheidest.",
+        "steps": [
+          {
+            "text": "Starke Spieler vergleichen einige **Kandidatenzüge**, bevor sie sich entscheiden. Jede Option zeigt einen Pfeil auf dem Brett: Fahre mit der Maus darüber oder tippe eine Option an, um ihn zu sehen, und wähle dann die beste."
+          },
+          {
+            "text": "Erinnerst du dich an diese Stellung? Weiß ist am Zug.",
+            "task": {
+              "prompt": "Welcher Zug ist der beste?",
+              "success": "Schachmatt! Schau immer zuerst nach **Schachgeboten und Schlagzügen**.",
+              "options": [
+                {
+                  "text": "Qh3: die Dame retten",
+                  "explain": "Sicher, aber du hast ein Matt in 1 verpasst!"
+                },
+                {
+                  "text": "Qxf7#: auf f7 schlagen",
+                  "explain": "Schachmatt! Nur der König deckte f7, und der Läufer auf c4 unterstützt die Dame."
+                },
+                {
+                  "text": "Qxe5+: einen Bauern mit Schach schlagen",
+                  "explain": "Der Springer auf c6 deckt e5: Nach **Nxe5** ist deine Dame weg."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Die schwarze Dame greift deinen Bauern auf b2 an.",
+            "task": {
+              "prompt": "Was ist dein Plan?",
+              "success": "Guter Plan! Erst verteidigen, dann weiter entwickeln.",
+              "options": [
+                {
+                  "text": "Ne5: ignorieren und angreifen",
+                  "explain": "Schwarz schlägt einfach auf b2, gewinnt einen Bauern und greift deinen Turm an."
+                },
+                {
+                  "text": "Bc7: die Dame angreifen",
+                  "explain": "Nichts deckt den Läufer auf c7, also schlägt die Dame ihn einfach."
+                },
+                {
+                  "text": "Qb3: b2 decken und Tausch anbieten",
+                  "explain": "Solide: b2 ist gedeckt, und nach einem Damentausch hättest du eine gesunde Stellung."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Wieder die Elefantenfalle. Du spielst Schwarz.",
+            "task": {
+              "prompt": "Dein Springer auf f6 ist gefesselt. Kannst du trotzdem auf d5 schlagen?",
+              "success": "Ja! Eine Fesselung ist nur gefährlich, wenn die Figur dahinter wirklich umsonst geschlagen werden kann.",
+              "options": [
+                {
+                  "text": "Nxd5: den Springer schlagen",
+                  "explain": "Nach **Bxd8** holt **Bb4+** die Dame zurück, und du hast am Ende eine Figur mehr."
+                },
+                {
+                  "text": "c6: den Springer verjagen",
+                  "explain": "Spielbar, aber du verpasst den Gewinn eines ganzen Springers."
+                },
+                {
+                  "text": "Be7: zuerst die Fesselung aufheben",
+                  "explain": "Sicher, aber der geschenkte Springer entkommt."
+                }
+              ]
+            }
+          },
+          {
+            "text": "Abschlusstest: Zähle das Material.",
+            "task": {
+              "prompt": "Wer liegt vorne, und um wie viel?",
+              "success": "Richtig: Schwarz hat einen Bauern mehr. Jetzt hast du echte Brettsicht!"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "guess-the-move": {
+    "title": "Errate den Zug: Meisterpartien",
+    "description": "Setz dich auf den Stuhl einer Legende. Errate den nächsten Zug in berühmten Partien: Ein genauer Treffer bringt 3 Punkte, starke Alternativen bringen Teilpunkte, und jeder Zug wird erklärt.",
+    "lessons": {
+      "gtm-legal": {
+        "title": "Das Seekadettenmatt (1750)",
+        "summary": "Ein Damenopfer, das Spieler seit Jahrhunderten hereinlegt.",
+        "steps": [
+          {
+            "text": "**Légal gegen Saint Brie, Paris 1750.** Eine der ältesten überlieferten Fallen. Schwarz hat den weißen Springer mit **...Bg4** an die Dame gefesselt. Der Springer scheint festzustecken ... oder etwa nicht?"
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Seekadettenmatt! Eine Fesselung zählt nur, wenn das Ziehen der gefesselten Figur wirklich etwas kostet.",
+              "hint": "Steckt der gefesselte Springer wirklich fest?",
+              "game": "Légal gegen Saint Brie, Paris 1750",
+              "notes": [
+                "**Nxe5!** ignoriert die Fesselung und bietet die Dame an.",
+                "**Bxf7+**: Der Läufer gibt Schach und zieht den König nach vorne.",
+                "**Nd5#**: Drei Leichtfiguren setzen matt. Die zusätzliche Dame von Schwarz ist nutzlos!"
+              ]
+            }
+          },
+          {
+            "text": "Schwarz war gierig. Das Schlagen der Dame lief ins Matt; **5...dxe5**, mit Rückgabe eines Bauern, war viel besser. Prüfe immer, was dein Gegner droht, bevor du Material einsammelst."
+          }
+        ]
+      },
+      "gtm-opera": {
+        "title": "Morphys Opernpartie (1858)",
+        "summary": "Schnelle Entwicklung und offene Linien zerschmettern einen König, der im Zentrum feststeckt.",
+        "steps": [
+          {
+            "text": "**Paul Morphy gegen Herzog Karl von Braunschweig und Graf Isouard, Paris 1858**, gespielt in einer Loge der Oper! Nach acht Zügen liegt Morphy in der Entwicklung weit vorne, während der schwarze König noch im Zentrum steht."
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Tolles Angriffsspiel! Schwarz antwortete **12...Rd8**. Jetzt bring die Sache zu Ende.",
+              "hint": "Entwickle eine Figur mit Drohung.",
+              "game": "Paul Morphy gegen Herzog Karl und Graf Isouard, Paris 1858",
+              "notes": [
+                "**Bg5** entwickelt und fesselt den Springer auf f6.",
+                "**Nxb5!** gibt einen Springer her, um die Linien zum schwarzen König aufzureißen.",
+                "**Bxb5+**: Schach, und jetzt wird der Springer auf d7 gefesselt sein.",
+                "**O-O-O** bringt den Turm direkt auf die d-Linie und zielt auf den gefesselten Springer."
+              ]
+            }
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Brillant! Ein Musterbeispiel für schnelle Entwicklung und den Angriff auf den unrochierten König.",
+              "hint": "Der Springer auf d7 ist gefesselt. Greif ihn mit mehr Figuren an.",
+              "game": "Paul Morphy gegen Herzog Karl und Graf Isouard, Paris 1858",
+              "notes": [
+                "**Rxd7!** gibt einen Turm, damit der Angriff weiterrollt.",
+                "**Rd1**: Der zweite Turm verstärkt die Fesselung auf d7.",
+                "**Bxd7+** beseitigt einen weiteren Verteidiger.",
+                "**Qb8+!!** Ein Damenopfer, das den Springer von d7 weglenkt.",
+                "**Rd8#**: Schachmatt mit den letzten beiden Figuren, Läufer und Turm."
+              ]
+            }
+          },
+          {
+            "text": "Morphy setzte jede Figur ein und gab die meisten davon her, um nur mit Läufer und Turm matt zu setzen. **Entwickle schnell, öffne Linien und greif den König an, der nicht rochiert hat.**"
+          }
+        ]
+      },
+      "gtm-reti": {
+        "title": "Réti gegen Tartakower (1910)",
+        "summary": "Ein Damenopfer und ein Doppelschach beenden die Partie in 11 Zügen.",
+        "steps": [
+          {
+            "text": "**Richard Réti gegen Savielly Tartakower, Wien 1910.** Die schwarze Dame hat einen Bauern auf e5 geschlagen, aber der schwarze König steht noch in der Mitte, und die weißen Figuren sind bereit zuzuschlagen."
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Großartig! Ein Doppelschach ist der forcierendste Zug, den es im Schach gibt.",
+              "hint": "Bring deinen König in Sicherheit und deinen Turm auf die offene Linie.",
+              "game": "Richard Réti gegen Savielly Tartakower, Wien 1910",
+              "notes": [
+                "**O-O-O!** rochiert und stellt den Turm auf die offene d-Linie. Weiß nimmt den Verlust des Springers auf e4 in Kauf.",
+                "**Qd8+!!** Ein Damenopfer! Der König muss schlagen.",
+                "**Bg5+** ist ein **Doppelschach**: Läufer und Turm geben beide Schach, also muss der König ziehen.",
+                "**Bd8#**: Der Läufer landet auf d8 und setzt matt."
+              ]
+            }
+          },
+          {
+            "text": "Nur 11 Züge! Tartakower nahm einen Bauern und ließ seinen König im Zentrum. **Wenn der gegnerische König in der Mitte feststeckt, öffne die Linien, selbst wenn es dich die Dame kostet.**"
+          }
+        ]
+      },
+      "gtm-immortal": {
+        "title": "Die Unsterbliche Partie (1851)",
+        "summary": "Anderssen gibt beide Türme und seine Dame her und setzt matt.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen gegen Lionel Kieseritzky, London 1851.** Die schwarze Dame hat gerade auf b2 geschlagen und greift jetzt den Turm auf a1 an. Weiß hat bereits einen Läufer geopfert. Findest du Anderssens berühmte Opfer?"
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Mutig gespielt! Jetzt kommt das Finale.",
+              "hint": "Auf welches Feld würde der schwarze König gerne fliehen? Nimm es ihm weg.",
+              "game": "Adolf Anderssen gegen Lionel Kieseritzky, London 1851",
+              "notes": [
+                "**Bd6!** ignoriert beide angegriffenen Türme und nimmt dem schwarzen König das Feld f8.",
+                "**e5!** sperrt die lange Diagonale, sodass die schwarze Dame g7 nicht mehr decken kann.",
+                "**Ke2** geht aus dem Schach. Weiß hat zwei Türme weniger, aber die schwarzen Figuren sind weit von zu Hause entfernt."
+              ]
+            }
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Wahrhaft unsterblich! Weiß gab einen Läufer, zwei Türme und die Dame.",
+              "hint": "Fang mit einem Schach an.",
+              "game": "Adolf Anderssen gegen Lionel Kieseritzky, London 1851",
+              "notes": [
+                "**Nxg7+**: Schach, das den König nach d8 treibt.",
+                "**Qf6+!!** gibt auch noch die Dame und lenkt den Springer von der Deckung von e7 ab.",
+                "**Be7#**: Die Leichtfiguren setzen einen König matt, der vom zusätzlichen Material von Schwarz umgeben ist."
+              ]
+            }
+          },
+          {
+            "text": "**Was zählt, sind die Figuren, die am Angriff teilnehmen, nicht die auf dem Punktekonto.** Schwarz hatte riesigen Materialvorsprung, aber nichts davon konnte den König verteidigen."
+          }
+        ]
+      },
+      "gtm-evergreen": {
+        "title": "Die Immergrüne Partie (1852)",
+        "summary": "Ein ruhiger Turmzug, ein Damenopfer und ein Doppelschach.",
+        "steps": [
+          {
+            "text": "**Adolf Anderssen gegen Jean Dufresne, Berlin 1852.** Die weißen Figuren umschwärmen den schwarzen König im Zentrum, aber Schwarz droht **...Qxf3** und **...Rxg2+**. Weiß ist am Zug."
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Furchtlos! Jetzt ist die d-Linie bereit.",
+              "hint": "Bring deine letzte Figur ins Spiel.",
+              "game": "Adolf Anderssen gegen Jean Dufresne, Berlin 1852",
+              "notes": [
+                "**Rad1!!** Ein ruhiger Zug, der die schwarzen Drohungen ignoriert und die letzte Figur in den Angriff bringt.",
+                "**Rxe7+!** beseitigt einen Verteidiger mit Schach."
+              ]
+            }
+          },
+          {
+            "text": "Du spielst Weiß. Such zuerst nach forcierenden Zügen: Schachgebote, Schlagzüge und Drohungen.",
+            "task": {
+              "prompt": "Errate den nächsten Zug von Weiß. Ein genauer Treffer bringt 3 Punkte, eine starke Alternative bringt Teilpunkte.",
+              "success": "Immergrün! Ein Finale, das noch mehr als 170 Jahre später bewundert wird.",
+              "hint": "Jeder Zug ist ein Schach. Fang mit dem größten Opfer an.",
+              "game": "Adolf Anderssen gegen Jean Dufresne, Berlin 1852",
+              "notes": [
+                "**Qxd7+!!** Das Damenopfer öffnet die d-Linie.",
+                "**Bf5+**: Doppelschach durch den Läufer und den Turm auf d1.",
+                "**Bd7+** gibt weiter Schach und lässt dem König keinen Ausweg.",
+                "**Bxe7#**: Matt! Eines der schönsten Finale, die je gespielt wurden."
+              ]
+            }
+          },
+          {
+            "text": "**Bring jede Figur in den Angriff, bevor du zum entscheidenden Schlag ansetzt.** Erst der ruhige Zug **Rad1** machte das ganze Feuerwerk möglich."
+          }
+        ]
+      }
+    }
+  }
+}

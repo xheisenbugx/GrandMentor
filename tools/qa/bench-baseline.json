@@ -1,0 +1,12 @@
+{
+  "_comment": "Engine gate floors for tools/qa/bench-gate.mjs. nps_floor is ~40% of measured.nps so slower CI runners pass while a large regression fails; max_total_nodes allows 3x the measured node count. Regenerate with: node tools/qa/bench-gate.mjs --update",
+  "nps_floor": 736000,
+  "max_total_nodes": 4865580,
+  "measured": {
+    "nps": 1840930,
+    "total_nodes": 1621860,
+    "total_ms": 881,
+    "platform": "darwin-arm64",
+    "date": "2026-10-08"
+  }
+}

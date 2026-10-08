@@ -1,0 +1,1648 @@
+{
+  "kings-pawn-opening": {
+    "name": "Ouverture du pion roi",
+    "family": "Ouverture du pion roi",
+    "description": "Le premier coup le plus populaire aux échecs. 1.e4 prend le centre, ouvre des lignes pour la dame et le fou de cases blanches, et mène souvent à des parties ouvertes et tactiques.",
+    "ideas": [
+      "Occupe le centre avec un pion",
+      "Ouvre des diagonales pour la dame et le fou de f1",
+      "Continue avec Nf3, Bc4/Bb5 et un roque rapide"
+    ],
+    "traps": [
+      "Les débutants sortent souvent la dame trop tôt avec Qh5 : elle peut être chassée avec gain de temps"
+    ]
+  },
+  "queens-pawn-opening": {
+    "name": "Ouverture du pion dame",
+    "family": "Ouverture du pion dame",
+    "description": "1.d4 revendique le centre avec un pion déjà protégé par la dame. Les parties sont souvent plus stratégiques et fermées qu'après 1.e4.",
+    "ideas": [
+      "Contrôle e5 et c5",
+      "Prépare c4 pour attaquer le centre noir par le côté",
+      "Développe tranquillement : Nf3, Bf4/Bg5, e3"
+    ],
+    "traps": [
+      "Le gambit Englund (1...e5) cache le piège 2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+ qui gagne b2"
+    ]
+  },
+  "english-opening": {
+    "name": "Ouverture anglaise",
+    "family": "Ouverture anglaise",
+    "description": "Une ouverture de flanc souple : les Blancs contrôlent d5 avec le pion c et développent souvent le fou roi en fianchetto. Elle peut transposer dans de nombreuses ouvertures en d4.",
+    "ideas": [
+      "Contrôle d5 par le côté",
+      "Fianchetto avec g3 et Bg2",
+      "Garde la possibilité de transposer dans des structures du gambit dame"
+    ]
+  },
+  "reti-opening": {
+    "name": "Ouverture Réti",
+    "family": "Ouverture Réti",
+    "description": "Un début hypermoderne : les Blancs développent un cavalier, contrôlent le centre à distance et attendent de voir le dispositif noir avant d'engager leurs pions.",
+    "ideas": [
+      "Contrôle e5 et d4 avec une pièce",
+      "Reste souple : c4, g3 et b3 sont tous possibles",
+      "Transpose dans un système favorable en d4 ou c4"
+    ]
+  },
+  "birds-opening": {
+    "name": "Ouverture Bird",
+    "family": "Ouverture Bird",
+    "description": "1.f4 lutte pour e5 et prépare une attaque à l'aile roi, comme une défense hollandaise avec un temps de plus. Elle affaiblit légèrement le roi blanc.",
+    "ideas": [
+      "Contrôle e5 avec le pion f",
+      "Développe le fou dame en fianchetto avec b3 et Bb2",
+      "Attaque à l'aile roi avec Qe1-h4"
+    ],
+    "traps": [
+      "Gambit From : 1...e5 2.fxe5 d6 3.exd6 Bxd6 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3# ; joue d'abord 4.Nf3"
+    ]
+  },
+  "nimzo-larsen-attack": {
+    "name": "Attaque Nimzo-Larsen",
+    "family": "Attaque Nimzo-Larsen",
+    "description": "Les Blancs développent tout de suite le fou dame en fianchetto pour viser la grande diagonale et la case e5. Une favorite de Bent Larsen et des joueurs modernes de parties rapides.",
+    "ideas": [
+      "Mets la pression sur e5 et la grande diagonale a1-h8",
+      "Joue e3, Nf3 et c4 plus tard",
+      "Évite la théorie des lignes principales"
+    ]
+  },
+  "kings-fianchetto-opening": {
+    "name": "Ouverture du fianchetto roi",
+    "family": "Ouverture irrégulière",
+    "description": "Aussi appelée ouverture Benko. Les Blancs préparent Bg2 pour contrôler la grande diagonale et gardent toutes les options au centre.",
+    "ideas": [
+      "Développe le fou roi en fianchetto",
+      "Roque rapidement",
+      "Choisis plus tard un dispositif central (c4, d4 ou e4)"
+    ]
+  },
+  "polish-opening": {
+    "name": "Ouverture polonaise",
+    "family": "Ouverture irrégulière",
+    "description": "L'ouverture Sokolsky ou Orang-outan : les Blancs gagnent de l'espace à l'aile dame et préparent Bb2 pour viser e5. Les Noirs peuvent attaquer directement le pion b4.",
+    "ideas": [
+      "Gagne de l'espace à l'aile dame",
+      "Joue Bb2 pour mettre la pression sur e5",
+      "Continue avec a3 ou c3 pour soutenir b4"
+    ],
+    "traps": [
+      "Après 1...e5 2.Bb2 Bxb4 le pion est perdu, mais les Blancs récupèrent le pion e5 avec 3.Bxe5"
+    ]
+  },
+  "grob-opening": {
+    "name": "Ouverture Grob",
+    "family": "Ouverture irrégulière",
+    "description": "Un premier coup agressif mais douteux qui ouvre la grande diagonale pour Bg2 tout en affaiblissant l'aile roi blanche.",
+    "ideas": [
+      "Fianchetto avec Bg2 et pression sur b7",
+      "Surprends ton adversaire dès le début",
+      "Cherche des pièges sur la diagonale h1-a8"
+    ],
+    "traps": [
+      "Après 1...d5 2.Bg2 Bxg4 3.c4 c6 4.cxd5 cxd5 5.Qb3 les Blancs attaquent b7 et d5, mais objectivement les Noirs vont bien",
+      "Risque de mat du sot : g4 joué avec f3/f4 permet Qh4#"
+    ]
+  },
+  "van-geet-opening": {
+    "name": "Ouverture Van Geet",
+    "family": "Ouverture irrégulière",
+    "description": "Aussi appelée ouverture Dunst. Les Blancs développent un cavalier vers le centre et gardent e4 et d4 en réserve.",
+    "ideas": [
+      "Développe-toi vite vers e4/d5",
+      "Transpose souvent dans des lignes de 1.e4",
+      "Évite la théorie dès le début"
+    ]
+  },
+  "anderssen-opening": {
+    "name": "Ouverture Anderssen",
+    "family": "Ouverture irrégulière",
+    "description": "Un coup d'attente utilisé par Adolf Anderssen : les Blancs jouent en pratique les ouvertures des Noirs avec le temps supplémentaire a3.",
+    "ideas": [
+      "Joue des ouvertures inversées avec un temps de plus",
+      "a3 empêche les clouages avec ...Bb4",
+      "Prépare l'expansion b4"
+    ]
+  },
+  "ware-opening": {
+    "name": "Ouverture Ware",
+    "family": "Ouverture irrégulière",
+    "description": "Un rare coup de pion de tour qui n'apporte presque rien au centre. Les Blancs peuvent enchaîner avec une tour levée par Ra3, mais c'est surtout une arme de surprise.",
+    "ideas": [
+      "Prépare une tour levée rapide avec Ra3",
+      "Gagne de l'espace à l'aile dame",
+      "Évite la théorie"
+    ]
+  },
+  "clemenz-opening": {
+    "name": "Ouverture Clemenz",
+    "family": "Ouverture irrégulière",
+    "description": "Un coup d'attente tranquille. Il empêche ...Bg4, mais laisse les mains libres aux Noirs au centre.",
+    "ideas": [
+      "Empêche les clouages avec ...Bg4",
+      "Prépare g4 pour gagner de l'espace",
+      "Transpose plus tard dans un dispositif normal"
+    ]
+  },
+  "desprez-opening": {
+    "name": "Ouverture Desprez",
+    "family": "Ouverture irrégulière",
+    "description": "L'ouverture Kádas : un coup de pion de flanc qui prépare une tour levée par h3, mais ne fait rien pour le centre.",
+    "ideas": [
+      "Prépare Rh3",
+      "Gagne de l'espace à l'aile roi",
+      "Seulement pour l'effet de surprise"
+    ]
+  },
+  "saragossa-opening": {
+    "name": "Ouverture Saragosse",
+    "family": "Ouverture irrégulière",
+    "description": "Les Blancs préparent d4 et ouvrent la diagonale d1-a4 pour la dame. C'est solide mais passif.",
+    "ideas": [
+      "Soutiens un futur d4",
+      "Idées possibles de Qa4+ ou Qb3",
+      "Joue une structure Caro-Kann/slave inversée"
+    ]
+  },
+  "mieses-opening": {
+    "name": "Ouverture Mieses",
+    "family": "Ouverture irrégulière",
+    "description": "Un coup modeste qui ouvre le fou de c1 et vise souvent un dispositif d'attaque est-indienne.",
+    "ideas": [
+      "Joue e4, Nf3, g3 et Bg2 plus tard",
+      "Garde la position fermée et souple",
+      "Joue une Pirc inversée"
+    ]
+  },
+  "vant-kruijs-opening": {
+    "name": "Ouverture Van't Kruijs",
+    "family": "Ouverture irrégulière",
+    "description": "Un coup tranquille qui ouvre des lignes pour le fou de f1 et la dame. Il peut transposer dans une française inversée ou dans des systèmes du pion dame.",
+    "ideas": [
+      "Développe le fou de f1",
+      "Continue avec d4 ou c4",
+      "Évite la théorie tranchante"
+    ]
+  },
+  "barnes-opening": {
+    "name": "Ouverture Barnes",
+    "family": "Ouverture irrégulière",
+    "description": "L'un des pires premiers coups : il prend la case f3 au cavalier et affaiblit le roi. C'est la première étape du mat du sot.",
+    "ideas": [
+      "Prépare le soutien de e4 (en théorie)",
+      "De l'espace à l'aile roi sans fianchetto",
+      "Surtout une ouverture pour rire"
+    ],
+    "traps": [
+      "Mat du sot : 1.f3 e5 2.g4?? Qh4#, l'échec et mat le plus rapide aux échecs"
+    ]
+  },
+  "durkin-opening": {
+    "name": "Ouverture Durkin",
+    "family": "Ouverture irrégulière",
+    "description": "L'attaque Sodium : les Blancs développent le cavalier sur le bord avec l'idée de Nc4 ou c3/Nc2 plus tard.",
+    "ideas": [
+      "Replace le cavalier sur c4 ou c2",
+      "Surprends ton adversaire",
+      "Évite la théorie"
+    ],
+    "traps": [
+      "« Cavalier au bord, cavalier mort » : ne le laisse pas en a3"
+    ]
+  },
+  "amar-opening": {
+    "name": "Ouverture Amar",
+    "family": "Ouverture irrégulière",
+    "description": "L'ouverture de Paris : le cavalier se développe sur le bord en direction de f4 ou g5. On la voit rarement dans les parties sérieuses.",
+    "ideas": [
+      "Replace le cavalier sur f4",
+      "Joue g3/Bg2 avec un fianchetto",
+      "Effet de surprise"
+    ]
+  },
+  "open-game": {
+    "name": "Ouverture du pion roi : partie ouverte",
+    "family": "Ouverture du pion roi",
+    "description": "Les Noirs imitent le premier coup des Blancs et réclament leur part du centre. Cela mène à des positions classiques et ouvertes avec beaucoup de jeu de pièces.",
+    "ideas": [
+      "Lutte pour le centre de façon symétrique",
+      "Développe vite cavaliers et fous",
+      "Méfie-toi des attaques sur f7"
+    ],
+    "traps": [
+      "Coup du berger : 2.Qh5 Nc6 3.Bc4 Nf6?? 4.Qxf7#"
+    ]
+  },
+  "parham-attack": {
+    "name": "Attaque Parham (dame vagabonde)",
+    "family": "Ouverture du pion roi",
+    "description": "Les Blancs sortent la dame tout de suite, visent e5 et f7 et espèrent le coup du berger. Face à un jeu prudent, la dame se fait simplement chasser.",
+    "ideas": [
+      "Menace Qxe5+ et Bc4 avec Qxf7#",
+      "Tends des pièges précoces aux débutants",
+      "Sois prêt à reculer la dame"
+    ],
+    "traps": [
+      "Coup du berger : 2...Nc6 3.Bc4 Nf6?? 4.Qxf7#",
+      "Bonne défense : 2...Nc6 3.Bc4 g6 4.Qf3 Nf6 et les Noirs gagnent du temps sur la dame"
+    ]
+  },
+  "center-game": {
+    "name": "Partie du centre",
+    "family": "Partie du centre",
+    "description": "Les Blancs reprennent en d4 avec la dame, qui est exposée à ...Nc6 avec gain de temps. Cela mène à des positions inhabituelles où les Blancs font souvent le grand roque.",
+    "ideas": [
+      "Recule avec Qe3 et fais le grand roque",
+      "Attaque vite avec f4 et e5",
+      "Profite de la colonne d ouverte"
+    ],
+    "traps": [
+      "Après 3...Nc6 la dame doit bouger : ne la place pas là où ...Nb4 ou ...Bb4 l'attaquent de nouveau"
+    ]
+  },
+  "danish-gambit": {
+    "name": "Gambit danois",
+    "family": "Gambit danois",
+    "description": "Les Blancs sacrifient deux pions pour deux fous qui balayent l'échiquier et une énorme avance de développement. Très dangereux au niveau club.",
+    "ideas": [
+      "Deux fous braqués sur f7 et g7",
+      "Développement éclair et attaque",
+      "Les Noirs doivent rendre du matériel avec ...d5"
+    ],
+    "traps": [
+      "L'antidote le plus sûr pour les Noirs : 5...d5! 6.Bxd5 Nf6, qui rend un pion pour rattraper le retard de développement"
+    ]
+  },
+  "scotch-game": {
+    "name": "Partie écossaise",
+    "family": "Partie écossaise",
+    "description": "Les Blancs ouvrent le centre tout de suite avec 3.d4. Le jeu est ouvert et direct, avec moins de théorie que dans la partie espagnole.",
+    "ideas": [
+      "Ouvre le centre tôt",
+      "Cavalier fort en d4",
+      "Développement rapide et petit roque"
+    ],
+    "traps": [
+      "4...Nxd4?! 5.Qxd4 ne fait que centraliser la dame blanche",
+      "4...Qh4!? (Steinitz) prend e4 si les Blancs sont négligents"
+    ]
+  },
+  "scotch-classical": {
+    "name": "Partie écossaise : variante classique",
+    "family": "Partie écossaise",
+    "description": "Les Noirs attaquent tout de suite le cavalier de d4. Les Blancs jouent en général 5.Be3 ou 5.Nxc6, et le jeu tourne autour de la diagonale a7-g1.",
+    "ideas": [
+      "...Qf6 double la pression sur d4",
+      "Développe avec ...Nge7 et roque",
+      "Le coup blanc Nb3 gagne du temps sur le fou de c5"
+    ]
+  },
+  "scotch-mieses": {
+    "name": "Partie écossaise : variante Mieses",
+    "family": "Partie écossaise",
+    "description": "La ligne principale moderne de l'écossaise : les Blancs gagnent de l'espace avec e5 et c4, tandis que la dame et le fou noirs sont temporairement mal placés.",
+    "ideas": [
+      "Le pion blanc e5 gêne les Noirs",
+      "Les Noirs mettent la pression sur e5 avec ...Qe6/...f6",
+      "Les pions c doublés donnent aux Noirs la colonne b ouverte"
+    ],
+    "traps": [
+      "7...Ba6 cloue le pion c4 : les Blancs doivent surveiller les tactiques avec b3/Qe4"
+    ]
+  },
+  "scotch-gambit": {
+    "name": "Gambit écossais",
+    "family": "Partie écossaise",
+    "description": "Au lieu de reprendre, les Blancs développent le fou vers f7 et offrent un pion contre du développement. Cela transpose souvent dans la défense des deux cavaliers.",
+    "ideas": [
+      "Mets la pression sur f7",
+      "Développement rapide et roque précoce",
+      "Pousse e5 pour chasser le cavalier de f6"
+    ],
+    "traps": [
+      "4...Nf6 5.e5 d5! est la réponse la plus propre des Noirs ; une défense passive laisse les Blancs attaquer f7"
+    ]
+  },
+  "goring-gambit": {
+    "name": "Gambit Göring",
+    "family": "Partie écossaise",
+    "description": "Un gambit à la danoise dans l'écossaise : les Blancs offrent le pion c contre un développement rapide et des chances d'attaque.",
+    "ideas": [
+      "Deux fous sur des diagonales ouvertes",
+      "Avance de développement",
+      "Cherche une attaque rapide sur f7"
+    ],
+    "traps": [
+      "Les Noirs peuvent le refuser avec 4...d5! 5.exd5 Qxd5 et restent solides"
+    ]
+  },
+  "ponziani-opening": {
+    "name": "Partie Ponziani",
+    "family": "Partie Ponziani",
+    "description": "Les Blancs préparent d4 avec c3 pour bâtir un centre classique. Les Noirs peuvent contre-attaquer directement avec ...d5 ou ...Nf6.",
+    "ideas": [
+      "Construis un grand centre avec d4",
+      "Idées de Qa4 qui cloue le cavalier de c6",
+      "Évite la théorie des lignes principales"
+    ],
+    "traps": [
+      "3...Nf6 4.d4 Nxe4 5.d5 Ne7 6.Nxe5 Ng6 mène à un jeu tranchant : connais-le avant de l'essayer"
+    ]
+  },
+  "italian-game": {
+    "name": "Partie italienne",
+    "family": "Partie italienne",
+    "description": "L'une des plus anciennes ouvertures. Les Blancs se développent vite et braquent le fou sur la case la plus faible des Noirs, f7.",
+    "ideas": [
+      "Développe les cavaliers avant les fous",
+      "Roque tôt",
+      "Prépare d4 avec c3 pour bâtir un centre fort"
+    ],
+    "traps": [
+      "Attaque Fegatello (Fried Liver) après 3...Nf6 4.Ng5",
+      "Pièges dans le style du mat de Légal après ...Bg4 et un Nxe5 précoce"
+    ]
+  },
+  "giuoco-piano": {
+    "name": "Giuoco Piano",
+    "family": "Partie italienne",
+    "description": "La « partie tranquille » : les deux camps développent leurs fous sur leurs meilleures diagonales. Les Blancs choisissent entre des dispositifs lents avec d3 et la rupture tranchante c3-d4.",
+    "ideas": [
+      "Les deux fous visent le pion f adverse",
+      "c3 et d4 pour un grand centre",
+      "Roque vite et amène les tours au centre"
+    ],
+    "traps": [
+      "Le gambit Jerome 4.Bxf7+? est incorrect mais piégeux"
+    ]
+  },
+  "giuoco-pianissimo": {
+    "name": "Giuoco Pianissimo",
+    "family": "Partie italienne",
+    "description": "La façon moderne de jouer l'italienne : les Blancs maintiennent la tension avec d3, c3, O-O, Re1 et un jeu lent de manœuvres, comme le font aujourd'hui les meilleurs joueurs.",
+    "ideas": [
+      "Construction lente : c3, O-O, Re1, Nbd2-f1-g3",
+      "Prépare d4 au bon moment",
+      "Joue a4 pour faire de la place au fou en a2"
+    ],
+    "traps": [
+      "Attention à ...Ng4 qui attaque f2 si les Blancs roquent tôt sans h3"
+    ]
+  },
+  "giuoco-piano-main": {
+    "name": "Giuoco Piano : ligne principale",
+    "family": "Partie italienne",
+    "description": "La ligne principale classique : les Blancs construisent le centre idéal avec c3 et d4, et les Noirs ripostent par un échec et une pression sur e4.",
+    "ideas": [
+      "Les Noirs attaquent le centre avec ...d5",
+      "Les Blancs peuvent jouer un gambit avec Nc3",
+      "Simplifie avec Bd2 pour un avantage sans risque"
+    ],
+    "traps": [
+      "7.Nc3 Nxe4 8.O-O entre dans l'attaque Møller",
+      "7.Bd2 Bxd2+ 8.Nbxd2 d5! libère le jeu noir"
+    ]
+  },
+  "moller-attack": {
+    "name": "Giuoco Piano : attaque Møller",
+    "family": "Partie italienne",
+    "description": "Un gambit sauvage où les Blancs sacrifient du matériel pour ouvrir des lignes contre le roi noir qui n'a pas roqué. Les deux camps doivent se défendre avec précision.",
+    "ideas": [
+      "Ouvre la colonne e contre le roi noir",
+      "Tour en e1 avec gain de temps",
+      "Les Noirs doivent rendre du matériel avec ...Bf6 et ...Ne7"
+    ],
+    "traps": [
+      "9...Bf6 10.Re1 Ne7 11.Rxe4 d6 est la défense connue ; d'autres coups peuvent perdre vite"
+    ]
+  },
+  "evans-gambit": {
+    "name": "Gambit Evans",
+    "family": "Partie italienne",
+    "description": "Les Blancs sacrifient le pion b pour gagner du temps pour c3 et d4. Favori de Morphy et de Kasparov, il mène à des attaques rapides.",
+    "ideas": [
+      "Dévie le fou de c5 avec b4",
+      "Gagne du temps pour c3 et d4",
+      "Attaque f7 avec Qb3 et Bc4"
+    ],
+    "traps": [
+      "Après ...Bxb4 ...Ba5, les Noirs doivent continuer avec des lignes précises en ...d6 ou ...Nf6",
+      "Attention aux doubles attaques de Qb3 sur f7 et b7"
+    ]
+  },
+  "evans-gambit-accepted": {
+    "name": "Gambit Evans accepté",
+    "family": "Partie italienne",
+    "description": "Les Noirs prennent le pion et les Blancs frappent tout de suite au centre avec d4. Le pion c3 et le fou de c4 créent de fortes chances d'attaque.",
+    "ideas": [
+      "Centre fort après c3 et d4",
+      "Qb3 attaque f7",
+      "Les Noirs cherchent à rendre le pion avec ...d6 ou ...exd4"
+    ],
+    "traps": [
+      "5...Ba5 6.d4 exd4? 7.O-O dxc3?! 8.Qb3 donne aux Blancs une attaque célèbre"
+    ]
+  },
+  "two-knights-defense": {
+    "name": "Défense des deux cavaliers",
+    "family": "Partie italienne",
+    "description": "Les Noirs contre-attaquent e4 au lieu de copier les Blancs. Cela invite l'agressif 4.Ng5 et mène à un jeu tactique tranchant.",
+    "ideas": [
+      "Contre-attaque e4 tout de suite",
+      "Développement rapide",
+      "Sois prêt pour l'attaque Ng5 sur f7"
+    ],
+    "traps": [
+      "4.Ng5 d5 5.exd5 Nxd5? 6.Nxf7! est l'attaque Fegatello (Fried Liver)",
+      "4.Ng5 Bc5!? est la contre-attaque Traxler"
+    ]
+  },
+  "italian-two-knights-d3": {
+    "name": "Partie italienne : deux cavaliers, variante d3",
+    "family": "Partie italienne",
+    "description": "Les Blancs défendent e4 calmement et gardent un dispositif italien lent. Cela évite la théorie tranchante et mène à des milieux de partie de manœuvres.",
+    "ideas": [
+      "Protection solide de e4",
+      "Prépare c3, O-O, Re1",
+      "Pression à long terme sur f7"
+    ],
+    "traps": [
+      "Il faut surveiller les astuces noires avec ...Ng4 contre f2"
+    ]
+  },
+  "fried-liver-attack": {
+    "name": "Attaque Fegatello (Fried Liver)",
+    "family": "Partie italienne",
+    "description": "Les Blancs sacrifient un cavalier en f7 pour attirer le roi noir à découvert. Très dangereux pour les débutants et très amusant à apprendre.",
+    "ideas": [
+      "Sacrifie en f7 pour exposer le roi",
+      "Qf3+ fait une fourchette sur le roi et le cavalier de d5",
+      "Amène toutes tes pièces à l'attaque"
+    ],
+    "traps": [
+      "6...Kxf7 7.Qf3+ Ke6 8.Nc3 : le roi noir est coincé au centre",
+      "Les Noirs l'évitent avec 5...Na5! au lieu de 5...Nxd5"
+    ]
+  },
+  "two-knights-polerio": {
+    "name": "Défense des deux cavaliers : défense Polerio",
+    "family": "Partie italienne",
+    "description": "La ligne principale contre 4.Ng5 : les Noirs donnent un pion, mais chassent le fou de c4 et prennent une grosse avance de développement.",
+    "ideas": [
+      "Chasse le fou avec ...Na5",
+      "Du développement contre un pion",
+      "...h6 et ...e4 gagnent encore du temps"
+    ],
+    "traps": [
+      "6.Bb5+ c6 7.dxc6 bxc6 8.Be2 h6 9.Nf3 e4 : l'activité noire compense le pion"
+    ]
+  },
+  "traxler-counterattack": {
+    "name": "Défense des deux cavaliers : contre-attaque Traxler",
+    "family": "Partie italienne",
+    "description": "Les Noirs ignorent la menace sur f7 et contre-attaquent f2. Une ligne sauvage et tactique où les deux rois sont sous le feu.",
+    "ideas": [
+      "Contre-attaque f2 tout de suite",
+      "Accepte de perdre du matériel en échange de l'initiative",
+      "Tactique éclair des deux côtés"
+    ],
+    "traps": [
+      "5.Nxf7 Bxf2+! 6.Kxf2 Nxe4+ est la ligne critique",
+      "5.Bxf7+ Ke7 est le test le plus sûr pour les Blancs"
+    ]
+  },
+  "hungarian-defense": {
+    "name": "Défense hongroise",
+    "family": "Partie italienne",
+    "description": "Une réponse solide mais passive à l'italienne. Les Noirs évitent tous les gambits et préparent ...d6 et ...Nf6.",
+    "ideas": [
+      "Évite la théorie tranchante",
+      "Structure solide avec ...d6",
+      "Développe calmement et roque"
+    ],
+    "traps": [
+      "4.d4 exd4? 5.c3 donne vite l'initiative aux Blancs"
+    ]
+  },
+  "blackburne-shilling-gambit": {
+    "name": "Gambit Blackburne Shilling",
+    "family": "Partie italienne",
+    "description": "Un coup piège qui invite 4.Nxe5?, lequel se heurte à un mat rapide. Contre un jeu correct, il est tout simplement faible.",
+    "ideas": [
+      "Pousse les Blancs à prendre e5",
+      "Dame en g5 qui attaque g2 et le cavalier",
+      "Une pure ouverture piège"
+    ],
+    "traps": [
+      "4.Nxe5? Qg5! 5.Nxf7?? Qxg2 6.Rf1 Qxe4+ 7.Be2 Nf3# : un mat dans le style du mat à l'étouffée",
+      "Le bon choix pour les Blancs : 4.Nxd4 exd4 5.c3 ou 4.O-O"
+    ]
+  },
+  "rousseau-gambit": {
+    "name": "Gambit Rousseau",
+    "family": "Partie italienne",
+    "description": "Une réponse agressive où les Noirs frappent e4 avec le pion f, ce qui ouvre la colonne f et affaiblit le roi.",
+    "ideas": [
+      "Contre-attaque e4",
+      "Ouvre la colonne f",
+      "Effet de surprise"
+    ],
+    "traps": [
+      "4.d3 Nf6 5.Ng5 vise les cases blanches affaiblies"
+    ]
+  },
+  "jerome-gambit": {
+    "name": "Gambit Jerome",
+    "family": "Partie italienne",
+    "description": "Un sacrifice incorrect du XIXe siècle : les Blancs donnent un fou pour faire sortir le roi. Amusant en blitz, perdant face à une bonne défense.",
+    "ideas": [
+      "Expose le roi noir",
+      "Continue avec Nxe5+ et Qh5+",
+      "Pur effet de choc"
+    ],
+    "traps": [
+      "4...Kxf7 5.Nxe5+ Nxe5 6.Qh5+ g6! 7.Qxe5 d6 et les Noirs sont nettement mieux"
+    ]
+  },
+  "ruy-lopez": {
+    "name": "Partie espagnole (Ruy Lopez)",
+    "family": "Partie espagnole",
+    "description": "La partie espagnole : les Blancs mettent la pression sur le cavalier qui défend e5 et jouent pour un avantage à long terme.",
+    "ideas": [
+      "Mets indirectement la pression sur le pion e5",
+      "Roque et joue Re1, c3 et d4",
+      "De longues batailles stratégiques de manœuvres"
+    ],
+    "traps": [
+      "Le piège de l'arche de Noé enferme le fou de b3 avec ...c5-c4",
+      "Ne gagne pas le pion e5 trop tôt : Bxc6 + Nxe5 permet ...Qd4"
+    ]
+  },
+  "ruy-lopez-morphy": {
+    "name": "Partie espagnole : défense Morphy",
+    "family": "Partie espagnole",
+    "description": "Les Noirs demandent au fou ses intentions avec ...a6. Les Blancs maintiennent le clouage en reculant en a4, la porte d'entrée de la plupart des lignes principales de l'espagnole.",
+    "ideas": [
+      "...a6 et ...b5 gagnent de l'espace à l'aile dame",
+      "Garde la possibilité de briser le clouage",
+      "Développe avec ...Nf6, ...Be7 et roque"
+    ],
+    "traps": [
+      "Piège de l'arche de Noé : le fou blanc de b3 peut être enfermé par ...c5 et ...c4"
+    ]
+  },
+  "ruy-lopez-exchange": {
+    "name": "Partie espagnole : variante d'échange",
+    "family": "Partie espagnole",
+    "description": "Les Blancs cèdent la paire de fous pour abîmer la structure de pions noire. Ils visent une meilleure finale grâce à leur saine majorité de 4 contre 3 à l'aile roi.",
+    "ideas": [
+      "Échange vers une finale avec une majorité à l'aile roi",
+      "Les Noirs obtiennent la paire de fous et un développement libre",
+      "O-O et d4 sont les plans principaux des Blancs"
+    ],
+    "traps": [
+      "5.Nxe5? Qd4! récupère le pion avec avantage"
+    ]
+  },
+  "ruy-lopez-berlin": {
+    "name": "Partie espagnole : défense berlinoise",
+    "family": "Partie espagnole",
+    "description": "Le « mur de Berlin » rendu célèbre par Kramnik : une défense ultra-solide qui contre-attaque e4 et mène souvent à un milieu de partie sans dames.",
+    "ideas": [
+      "Contre-attaque e4 tout de suite",
+      "Accepte la finale avec la paire de fous",
+      "Une défense à toute épreuve, à tous les niveaux"
+    ]
+  },
+  "ruy-lopez-berlin-wall": {
+    "name": "Partie espagnole : défense berlinoise, mur de Berlin",
+    "family": "Partie espagnole",
+    "description": "La finale berlinoise : les dames s'échangent tôt et les Noirs perdent le droit de roquer, mais gardent la paire de fous et une structure solide comme une forteresse.",
+    "ideas": [
+      "Les Noirs bloquent avec ...h6, ...Ke8 et ...Be6",
+      "Les Blancs utilisent leur majorité à l'aile roi (e5, f4-f5)",
+      "Une longue finale technique"
+    ]
+  },
+  "ruy-lopez-anti-berlin": {
+    "name": "Partie espagnole : défense berlinoise, variante d3",
+    "family": "Partie espagnole",
+    "description": "Les Blancs évitent la finale berlinoise en défendant e4 tranquillement avec d3, ce qui garde les dames et un jeu lent à l'espagnole.",
+    "ideas": [
+      "Garde les dames sur l'échiquier",
+      "Construction lente avec c3, O-O, Re1, Nbd2",
+      "Manœuvre comme dans l'espagnole fermée"
+    ]
+  },
+  "ruy-lopez-closed": {
+    "name": "Partie espagnole : variante fermée",
+    "family": "Partie espagnole",
+    "description": "Les Noirs se développent calmement et préparent le roque, ce qui mène à l'espagnole fermée : une riche bataille stratégique avec des manœuvres sur les deux ailes.",
+    "ideas": [
+      "Les Noirs gardent le point fort e5",
+      "Les Blancs construisent c3 et d4",
+      "Manœuvre de cavalier Nb1-d2-f1-g3 pour les Blancs"
+    ],
+    "traps": [
+      "Après 6.Re1 b5 7.Bb3 d6 8.c3 O-O 9.h3 commence la ligne principale ; oublier h3 permet ...Bg4"
+    ]
+  },
+  "ruy-lopez-closed-main": {
+    "name": "Partie espagnole : variante fermée, ligne principale",
+    "family": "Partie espagnole",
+    "description": "La tabiya classique de l'espagnole. Les Noirs choisissent entre les systèmes Tchigorine, Breyer, Zaïtsev et d'autres.",
+    "ideas": [
+      "Les Blancs préparent d4 avec un soutien complet",
+      "h3 empêche les clouages avec ...Bg4",
+      "Les Noirs réorganisent leurs pièces de l'aile dame avant ...c5 ou ...d5"
+    ]
+  },
+  "ruy-lopez-chigorin": {
+    "name": "Partie espagnole : variante fermée, défense Tchigorine",
+    "family": "Partie espagnole",
+    "description": "Les Noirs chassent le fou de b3, jouent ...c5 et gagnent de l'espace à l'aile dame. Un système classique au contenu stratégique profond.",
+    "ideas": [
+      "...Na5 et ...c5 gagnent de l'espace à l'aile dame",
+      "...Qc7 soutient e5",
+      "Les Blancs jouent Nbd2-f1-g3 et d5 au bon moment"
+    ]
+  },
+  "ruy-lopez-breyer": {
+    "name": "Partie espagnole : variante fermée, défense Breyer",
+    "family": "Partie espagnole",
+    "description": "Les Noirs reculent le cavalier en b8 pour le replacer en d7, ce qui libère le pion c et fait de la place pour ...Bb7. La préférée de Spassky et de Carlsen.",
+    "ideas": [
+      "Replace le cavalier avec ...Nb8-d7",
+      "...Bb7 puis ...c5 ou ...c6",
+      "Une structure très solide et souple"
+    ]
+  },
+  "ruy-lopez-zaitsev": {
+    "name": "Partie espagnole : variante fermée, variante Zaïtsev",
+    "family": "Partie espagnole",
+    "description": "Les Noirs accumulent la pression sur e4 avec ...Bb7 et ...Re8, en préparant ...Bf8. Une favorite de Karpov dans ses matchs pour le championnat du monde.",
+    "ideas": [
+      "Mets la pression sur e4",
+      "...Bf8 pour renforcer l'aile roi",
+      "Contre-jeu avec ...exd4 et ...c5"
+    ],
+    "traps": [
+      "10.Ng5 Rf8 11.Nf3 Re8 répète la position : les Blancs doivent trouver un autre plan pour éviter la nulle"
+    ]
+  },
+  "ruy-lopez-marshall": {
+    "name": "Partie espagnole : attaque Marshall",
+    "family": "Partie espagnole",
+    "description": "Le célèbre sacrifice de pion de Frank Marshall : les Noirs donnent un pion pour une dangereuse attaque à l'aile roi. Très analysé et parfaitement correct.",
+    "ideas": [
+      "Sacrifie d5 contre un développement rapide",
+      "Attaque avec ...Bd6, ...Qh4 et ...Bg4",
+      "Les Blancs doivent se défendre avec précision et rendre du matériel"
+    ],
+    "traps": [
+      "Les lignes gourmandes avec Rxe5 permettent aux Noirs ...Bd6 et ...Qh4 avec une attaque féroce"
+    ]
+  },
+  "ruy-lopez-anti-marshall": {
+    "name": "Partie espagnole : anti-Marshall",
+    "family": "Partie espagnole",
+    "description": "Les Blancs évitent le gambit Marshall en attaquant le pion b5 avec 8.a4 et mettent plutôt la pression sur l'aile dame.",
+    "ideas": [
+      "Mets la pression sur b5 avec a4",
+      "Évite la théorie de la Marshall",
+      "Profite plus tard de la colonne a"
+    ]
+  },
+  "ruy-lopez-open": {
+    "name": "Partie espagnole : variante ouverte",
+    "family": "Partie espagnole",
+    "description": "Les Noirs prennent le pion e4 et obtiennent un jeu de pièces actif. Les Blancs le récupèrent avec d4 et gagnent un avantage d'espace avec e5.",
+    "ideas": [
+      "Des pièces actives pour les Noirs",
+      "Structure avec ...b5, ...d5 et ...Be6",
+      "Les Blancs jouent d4, dxe5 et c3"
+    ],
+    "traps": [
+      "Le piège Tarrasch : 6.d4 b5 7.Bb3 d5 8.dxe5 Be6 9.c3 Be7 10.Re1 O-O 11.Nd4 Qd7?? 12.Nxe6 fxe6 13.Rxe4 gagne"
+    ]
+  },
+  "ruy-lopez-schliemann": {
+    "name": "Partie espagnole : défense Schliemann",
+    "family": "Partie espagnole",
+    "description": "Le gambit Jaenisch : les Noirs frappent e4 avec le pion f, ce qui mène à des positions tranchantes proches du gambit du roi avec les couleurs inversées.",
+    "ideas": [
+      "Ouvre la colonne f",
+      "Contre-attaque e4 rapidement",
+      "Accepte des risques en échange d'activité"
+    ],
+    "traps": [
+      "4.Nc3 fxe4 5.Nxe4 d5 6.Nxe5! dxe4 7.Nxc6 est une longue ligne forcée à connaître"
+    ]
+  },
+  "ruy-lopez-steinitz": {
+    "name": "Partie espagnole : défense Steinitz",
+    "family": "Partie espagnole",
+    "description": "Les Noirs défendent solidement e5 avec ...d6, mais la position est passive et les Blancs ont les mains libres au centre.",
+    "ideas": [
+      "Tiens e5 avec ...d6",
+      "Solide mais à l'étroit",
+      "...Bd7 pour déclouer le cavalier"
+    ],
+    "traps": [
+      "Piège Tarrasch : 4.d4 Bd7 5.Nc3 Nf6 6.O-O Be7 7.Re1 O-O?? 8.Bxc6 Bxc6 9.dxe5 dxe5 10.Qxd8 Raxd8 11.Nxe5 gagne un pion et bientôt la qualité"
+    ]
+  },
+  "ruy-lopez-classical": {
+    "name": "Partie espagnole : défense classique",
+    "family": "Partie espagnole",
+    "description": "Les Noirs développent le fou activement en c5, comme dans l'italienne. Les Blancs réagissent en général avec c3 et d4.",
+    "ideas": [
+      "Fou actif en c5",
+      "Développement rapide",
+      "Dispositifs avec ...Nge7 ou ...Nf6"
+    ],
+    "traps": [
+      "4.c3 f5!? est le tranchant gambit Cordel"
+    ]
+  },
+  "ruy-lopez-arkhangelsk": {
+    "name": "Partie espagnole : variante Arkhangelsk",
+    "family": "Partie espagnole",
+    "description": "Les Noirs développent tôt le fou en b7, ce qui ajoute de la pression sur e4 et la grande diagonale. Une alternative dynamique aux lignes fermées.",
+    "ideas": [
+      "Mets la pression sur e4 avec ...Bb7",
+      "...Bc5 pour un jeu actif",
+      "Tactique tranchante autour de e4 et f2"
+    ]
+  },
+  "ruy-lopez-moller": {
+    "name": "Partie espagnole : défense Møller",
+    "family": "Partie espagnole",
+    "description": "Aussi appelée néo-Arkhangelsk : les Noirs placent le fou en c5 pour mettre la pression sur f2 et d4.",
+    "ideas": [
+      "Fou actif en c5",
+      "Combine ...b5 et ...Bc5",
+      "Freine la rupture d4 des Blancs"
+    ]
+  },
+  "ruy-lopez-bird": {
+    "name": "Partie espagnole : variante Bird",
+    "family": "Partie espagnole",
+    "description": "Les Noirs échangent les cavaliers pour briser le clouage, en acceptant un pion d doublé. Rare mais jouable.",
+    "ideas": [
+      "Échange le cavalier attaqué",
+      "Le pion d4 gêne les Blancs",
+      "Joue vite ...c6 et ...Ne7"
+    ]
+  },
+  "petrov-defense": {
+    "name": "Défense Petrov",
+    "family": "Défense Petrov",
+    "description": "La défense russe : les Noirs contre-attaquent e4 au lieu de défendre e5. Extrêmement solide, c'est une favorite des joueurs d'élite qui cherchent l'égalité.",
+    "ideas": [
+      "Contre-attaque symétrique",
+      "Structure solide avec peu de faiblesses",
+      "Égalise, puis surpasse ton adversaire"
+    ],
+    "traps": [
+      "3.Nxe5 Nxe4?? 4.Qe2! Nf6?? 5.Nc6+ gagne la dame par une attaque à la découverte",
+      "Le bon coup : 3.Nxe5 d6 4.Nf3 Nxe4"
+    ]
+  },
+  "petrov-classical": {
+    "name": "Défense Petrov : attaque classique",
+    "family": "Défense Petrov",
+    "description": "La ligne principale de la Petrov. Les Blancs gagnent un petit avantage d'espace, tandis que le cavalier noir de e4 est fort mais peut être contesté.",
+    "ideas": [
+      "Conteste le cavalier de e4 avec Bd3, O-O, Re1, c4",
+      "Les Noirs soutiennent e4 avec ...d5",
+      "Des positions symétriques mais riches"
+    ]
+  },
+  "petrov-steinitz": {
+    "name": "Défense Petrov : attaque Steinitz",
+    "family": "Défense Petrov",
+    "description": "Les Blancs ouvrent le centre tout de suite avec 3.d4, ce qui mène à un jeu plus ouvert que dans la ligne principale.",
+    "ideas": [
+      "Ouvre le centre rapidement",
+      "Développe avec Bd3 et O-O",
+      "Profite de ton avance de développement"
+    ]
+  },
+  "stafford-gambit": {
+    "name": "Gambit Stafford",
+    "family": "Défense Petrov",
+    "description": "Un gambit piégeux très populaire en ligne : les Noirs donnent un pion contre un développement rapide et beaucoup d'astuces contre le roi.",
+    "ideas": [
+      "Pousse le cavalier à prendre en c6",
+      "Bc5 et Ng4 qui attaquent f2",
+      "Plein de pièges en blitz"
+    ],
+    "traps": [
+      "4.Nxc6 dxc6 5.d3?? Bc5 6.Bg5?? Nxe4! 7.Bxd8 Bxf2+ 8.Ke2 Bg4# : le célèbre mat",
+      "Le bon choix pour les Blancs : 4.Nxc6 dxc6 5.d3 Bc5 6.Be2 et le gambit est faible"
+    ]
+  },
+  "philidor-defense": {
+    "name": "Défense Philidor",
+    "family": "Défense Philidor",
+    "description": "Une défense solide mais passive qui protège e5 avec un pion. Les Blancs obtiennent plus d'espace, mais la position noire est difficile à briser.",
+    "ideas": [
+      "Défends e5 avec ...d6",
+      "Structure solide",
+      "Vise ...Nf6, ...Nbd7, ...Be7"
+    ],
+    "traps": [
+      "Mat de Légal : 3.Bc4 Bg4 4.Nc3 g6? 5.Nxe5! Bxd1?? 6.Bxf7+ Ke7 7.Nd5#",
+      "3.d4 exd4 mène à une variante d'échange passive"
+    ]
+  },
+  "philidor-hanham": {
+    "name": "Défense Philidor : variante Hanham",
+    "family": "Défense Philidor",
+    "description": "Les Noirs gardent le point fort e5 avec ...Nbd7. La position ressemble à une vieille indienne, avec un jeu solide mais à l'étroit.",
+    "ideas": [
+      "Tiens e5 à tout prix",
+      "...Be7, ...O-O, ...c6",
+      "Prépare ...b5 ou ...exd4 au bon moment"
+    ],
+    "traps": [
+      "5.Bc4 Be7 6.dxe5 dxe5? 7.Bxf7+! Kxf7 8.Ng5+ Kg8 9.Ne6 gagne la dame ; reprends plutôt avec 6...Nxe5"
+    ]
+  },
+  "philidor-exchange": {
+    "name": "Défense Philidor : variante d'échange",
+    "family": "Défense Philidor",
+    "description": "Les Noirs cèdent le centre pour libérer leurs pièces. Les Blancs se centralisent avec Nxd4 et obtiennent un confortable avantage d'espace.",
+    "ideas": [
+      "Ouvre des lignes pour les pièces",
+      "Le fianchetto avec ...g6 est possible",
+      "Contre-jeu contre e4"
+    ]
+  },
+  "latvian-gambit": {
+    "name": "Gambit letton",
+    "family": "Gambit letton",
+    "description": "Un gambit très agressif et risqué : les Noirs attaquent e4 tout de suite avec le pion f, affaiblissant leur roi en échange d'activité.",
+    "ideas": [
+      "Ouvre la colonne f",
+      "Bats-toi pour l'initiative",
+      "Arme de surprise"
+    ],
+    "traps": [
+      "3.Nxe5 Qf6 4.d4 d6 5.Nc4 fxe4 6.Nc3 Qg6 7.f3! est fort pour les Blancs",
+      "Idées avec Bc4 contre la diagonale e8-h5 affaiblie"
+    ]
+  },
+  "elephant-gambit": {
+    "name": "Gambit de l'éléphant",
+    "family": "Gambit de l'éléphant",
+    "description": "Les Noirs contre-attaquent tout de suite au centre avec ...d5. Objectivement douteux, mais il peut déstabiliser un adversaire mal préparé.",
+    "ideas": [
+      "Contre-attaque le centre",
+      "Ouvre vite des lignes",
+      "Arme de surprise"
+    ],
+    "traps": [
+      "3.exd5 e4 4.Qe2 Nf6 5.d3 et les Blancs sont mieux"
+    ]
+  },
+  "damiano-defense": {
+    "name": "Défense Damiano",
+    "family": "Ouverture du pion roi",
+    "description": "Une défense faible de e5 qui affaiblit la diagonale du roi. Une leçon classique sur le danger de ...f6.",
+    "ideas": [
+      "(Déconseillé) défendre e5 avec un pion",
+      "Comprends pourquoi ...f6 affaiblit le roi",
+      "Connais la réfutation"
+    ],
+    "traps": [
+      "3.Nxe5! fxe5? 4.Qh5+ Ke7 (4...g6 5.Qxe5+) 5.Qxe5+ Kf7 6.Bc4+ et les Blancs gagnent"
+    ]
+  },
+  "four-knights-game": {
+    "name": "Partie des quatre cavaliers",
+    "family": "Partie des quatre cavaliers",
+    "description": "Une ouverture classique et symétrique : les deux camps développent d'abord leurs cavaliers. Des principes simples, idéale pour apprendre.",
+    "ideas": [
+      "Les cavaliers avant les fous",
+      "Développement symétrique",
+      "Choisis un plan avec Bb5 (espagnole) ou d4 (écossaise)"
+    ],
+    "traps": [
+      "4.Nxe5? Nxe5 5.d4 est le gambit d'Halloween : un vrai sacrifice de cavalier"
+    ]
+  },
+  "four-knights-spanish": {
+    "name": "Partie des quatre cavaliers : variante espagnole",
+    "family": "Partie des quatre cavaliers",
+    "description": "Les Blancs clouent le cavalier c6 comme dans la partie espagnole. Les Noirs peuvent imiter avec ...Bb4 ou jouer la tranchante variante Rubinstein ...Nd4.",
+    "ideas": [
+      "Mets la pression sur e5 grâce au clouage",
+      "Roque et joue d3 ou d4",
+      "Développement simple et classique"
+    ],
+    "traps": [
+      "4...Nd4 5.Nxe5? Qe7 récupère le matériel avec intérêts"
+    ]
+  },
+  "four-knights-scotch": {
+    "name": "Partie des quatre cavaliers : variante écossaise",
+    "family": "Partie des quatre cavaliers",
+    "description": "Les Blancs ouvrent le centre avec d4. Après 4...exd4 5.Nxd4, le jeu ressemble à la partie écossaise avec les deux cavaliers déjà développés.",
+    "ideas": [
+      "Ouvre le centre",
+      "Jeu de pièces actif",
+      "Utilise les idées Nxc6 et e5"
+    ]
+  },
+  "halloween-gambit": {
+    "name": "Partie des quatre cavaliers : gambit d'Halloween",
+    "family": "Partie des quatre cavaliers",
+    "description": "Un sacrifice de cavalier qui fait peur : les Blancs donnent une pièce entière pour un grand centre de pions et pour chasser les cavaliers noirs.",
+    "ideas": [
+      "Grand centre avec d4 et e5",
+      "Chasse les cavaliers en gagnant du temps",
+      "Effet de surprise en blitz"
+    ],
+    "traps": [
+      "4...Nxe5 5.d4 Ng6 6.e5 Ng8 7.Bc4 : les Noirs doivent se défendre calmement, et ensuite ils sont nettement mieux"
+    ]
+  },
+  "three-knights-game": {
+    "name": "Partie des trois cavaliers",
+    "family": "Partie des quatre cavaliers",
+    "description": "Les Blancs développent le cavalier dame avant de choisir un plan. Les Noirs transposent souvent dans les quatre cavaliers avec ...Nf6.",
+    "ideas": [
+      "Développe d'abord les cavaliers",
+      "Souple : Bb5, Bc4 ou d4 plus tard",
+      "Outil de transposition"
+    ]
+  },
+  "vienna-game": {
+    "name": "Partie viennoise",
+    "family": "Partie viennoise",
+    "description": "Les Blancs développent d'abord le cavalier dame et gardent le pion f libre pour une poussée f4 rapide. Elle peut être calme ou très agressive.",
+    "ideas": [
+      "Prépare f4 comme dans le gambit du roi",
+      "Contrôle d5",
+      "Pression de Bc4 sur f7"
+    ],
+    "traps": [
+      "Frankenstein-Dracula : 2...Nf6 3.Bc4 Nxe4!? 4.Qh5 est très tranchant"
+    ]
+  },
+  "vienna-falkbeer": {
+    "name": "Partie viennoise : variante Falkbeer",
+    "family": "Partie viennoise",
+    "description": "Les Noirs se développent et contre-attaquent e4. Les Blancs choisissent entre le gambit viennois (f4), Bc4 ou un calme g3.",
+    "ideas": [
+      "Contre-attaque e4",
+      "Prépare ...d5 pour libérer le jeu",
+      "Développement solide"
+    ]
+  },
+  "vienna-max-lange": {
+    "name": "Partie viennoise : défense Max Lange",
+    "family": "Partie viennoise",
+    "description": "Les Noirs imitent le développement des Blancs. Les Blancs peuvent encore jouer f4, Bc4 ou un dispositif lent avec g3.",
+    "ideas": [
+      "Développement symétrique",
+      "Contrôle d4",
+      "Plans souples"
+    ]
+  },
+  "vienna-gambit": {
+    "name": "Gambit viennois",
+    "family": "Partie viennoise",
+    "description": "Un gambit du roi avec le cavalier déjà en c3. Les Blancs veulent ouvrir la colonne f et pousser e5 pour chasser le cavalier noir.",
+    "ideas": [
+      "Pousse e5 pour gagner de l'espace",
+      "Ouvre la colonne f",
+      "Attaque rapide à l'aile roi"
+    ],
+    "traps": [
+      "3...d5! est la meilleure réponse : 4.fxe5 Nxe4 5.Nf3 avec un jeu complexe",
+      "3...exf4 4.e5 Ng8 donne aux Blancs un grand centre"
+    ]
+  },
+  "vienna-frankenstein-dracula": {
+    "name": "Partie viennoise : variante Frankenstein-Dracula",
+    "family": "Partie viennoise",
+    "description": "L'une des lignes les plus folles des échecs : les Blancs gagnent une tour, mais le cavalier a8 est piégé, et les Noirs obtiennent un centre puissant et l'attaque.",
+    "ideas": [
+      "Les Noirs sacrifient la qualité pour un énorme centre",
+      "Piège le cavalier a8",
+      "La dame blanche doit éviter d'être piégée"
+    ],
+    "traps": [
+      "4.Qh5 menace Qxf7# : les Noirs doivent jouer 4...Nd6"
+    ]
+  },
+  "bishops-opening": {
+    "name": "Ouverture du fou",
+    "family": "Ouverture du fou",
+    "description": "Les Blancs développent d'abord le fou, visent f7 et gardent le pion f libre. Elle transpose souvent dans l'italienne ou la viennoise.",
+    "ideas": [
+      "Vise f7 dès le début",
+      "Garde l'option f4",
+      "Transpositions souples"
+    ]
+  },
+  "bishops-opening-berlin": {
+    "name": "Ouverture du fou : défense berlinoise",
+    "family": "Ouverture du fou",
+    "description": "Les Noirs contre-attaquent e4 tout de suite. Les Blancs défendent en général avec d3 et jouent une partie lente à l'italienne.",
+    "ideas": [
+      "Contre-attaque e4",
+      "Rupture ...d5",
+      "Développement simple"
+    ],
+    "traps": [
+      "3.d4 exd4 4.Nf3 est le gambit Urusov : un jeu tranchant"
+    ]
+  },
+  "kings-gambit": {
+    "name": "Gambit du roi",
+    "family": "Gambit du roi",
+    "description": "Le gambit romantique du XIXe siècle : les Blancs offrent le pion f pour dévier le pion e noir, ouvrir la colonne f et bâtir un grand centre.",
+    "ideas": [
+      "Dévie le pion e5 et joue d4",
+      "Ouvre la colonne f pour attaquer f7",
+      "Développement rapide"
+    ],
+    "traps": [
+      "Après 2...exf4 3.Nf3 g5 4.h4 g4 5.Ne5 (Kieseritzky), les Blancs se battent pour le pion f4",
+      "Sans Nf3, ...Qh4+ force le roi blanc à bouger : 3.Nf3 l'empêche"
+    ]
+  },
+  "kings-gambit-accepted": {
+    "name": "Gambit du roi accepté",
+    "family": "Gambit du roi",
+    "description": "Les Noirs prennent le pion. Toute la lutte consiste à savoir s'ils peuvent garder le pion f4 ou s'ils doivent le rendre contre du développement.",
+    "ideas": [
+      "Les Noirs peuvent garder le pion avec ...g5",
+      "Les Blancs jouent Nf3, d4 et Bxf4",
+      "Les rois restent souvent au centre"
+    ],
+    "traps": [
+      "3.Nf3 g5 4.Bc4 g4 5.O-O!? gxf3 6.Qxf3 est le gambit Muzio"
+    ]
+  },
+  "kings-gambit-kieseritzky": {
+    "name": "Gambit du roi : gambit Kieseritzky",
+    "family": "Gambit du roi",
+    "description": "Les Blancs sapent la chaîne de pions noire avec h4 et installent le cavalier en e5. L'une des lignes les plus respectées du gambit du roi.",
+    "ideas": [
+      "Sape g5 avec h4",
+      "Le cavalier e5 attaque f7 et g4",
+      "Récupère f4 avec d4 et Bxf4"
+    ]
+  },
+  "kings-gambit-muzio": {
+    "name": "Gambit du roi : gambit Muzio",
+    "family": "Gambit du roi",
+    "description": "Les Blancs sacrifient un cavalier entier pour ouvrir la colonne f contre f7. Une ligne romantique spectaculaire, avec d'énormes chances d'attaque.",
+    "ideas": [
+      "Sacrifie le cavalier f3 contre du développement",
+      "Attaques avec Qxf3 et Bxf7+",
+      "Toutes les pièces rejoignent l'attaque"
+    ]
+  },
+  "kings-gambit-fischer": {
+    "name": "Gambit du roi : défense Fischer",
+    "family": "Gambit du roi",
+    "description": "La « réfutation » de Bobby Fischer : les Noirs empêchent Ne5 avec ...d6 avant de jouer ...g5 pour garder le pion de plus.",
+    "ideas": [
+      "Empêche Ne5 avec ...d6",
+      "Puis ...g5 pour tenir f4",
+      "Un pion de plus solide"
+    ]
+  },
+  "kings-gambit-bishops": {
+    "name": "Gambit du roi : gambit du fou",
+    "family": "Gambit du roi",
+    "description": "Les Blancs développent le fou au lieu de Nf3 : ils permettent ...Qh4+, mais gardent le roi actif en f1.",
+    "ideas": [
+      "Mets la pression sur f7",
+      "Le roi va en f1 en toute sécurité",
+      "Développe vite et reprends f4"
+    ]
+  },
+  "kings-gambit-falkbeer": {
+    "name": "Gambit du roi refusé : contre-gambit Falkbeer",
+    "family": "Gambit du roi",
+    "description": "Les Noirs refusent avec un contre-gambit : ils frappent au centre et ouvrent des lignes vers le roi blanc affaibli.",
+    "ideas": [
+      "Contre-attaque au lieu d'accepter",
+      "...e4 gêne les Blancs",
+      "Ouvre des lignes contre le roi blanc"
+    ]
+  },
+  "kings-gambit-declined-classical": {
+    "name": "Gambit du roi refusé : variante classique",
+    "family": "Gambit du roi",
+    "description": "Les Noirs ignorent le gambit et développent le fou en c5, ce qui empêche les Blancs de faire facilement le petit roque.",
+    "ideas": [
+      "Empêche le roque blanc",
+      "Garde le pion e5",
+      "Pression sur la diagonale g1-a7"
+    ],
+    "traps": [
+      "3.fxe5?? Qh4+ 4.g3 Qxe4+ gagne la tour h1"
+    ]
+  },
+  "sicilian-defense": {
+    "name": "Défense sicilienne",
+    "family": "Défense sicilienne",
+    "description": "La réponse la plus populaire des Noirs à 1.e4 : ils se battent pour la case d4 avec un pion de l'aile et créent une partie déséquilibrée.",
+    "ideas": [
+      "Échange le pion c contre le pion d blanc",
+      "Profite de la colonne c semi-ouverte",
+      "Contre-attaque à l'aile dame"
+    ],
+    "traps": [
+      "Dans beaucoup de lignes, les Blancs sacrifient en e6, d5 ou b5 : surveille les sacrifices de cavalier"
+    ]
+  },
+  "sicilian-old": {
+    "name": "Défense sicilienne : vieille sicilienne",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs développent le cavalier dame pour se battre pour d4. Elle mène à la Sveshnikov, à la classique, au Dragon accéléré ou à la Rossolimo.",
+    "ideas": [
+      "Contrôle d4 avec une pièce",
+      "Garde des options : ...e5, ...g6, ...d6",
+      "Ordre de coups souple"
+    ]
+  },
+  "sicilian-modern": {
+    "name": "Défense sicilienne : variantes modernes",
+    "family": "Défense sicilienne",
+    "description": "L'ordre de coups le plus courant de la sicilienne : ...d6 prépare ...Nf6 et garde possibles la Najdorf, le Dragon, la classique et la Scheveningen.",
+    "ideas": [
+      "Contrôle e5",
+      "Prépare ...Nf6 sans que e5 le chasse",
+      "Choisis le système plus tard"
+    ]
+  },
+  "sicilian-french-variation": {
+    "name": "Défense sicilienne : variante française",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs jouent ...e6 et se dirigent vers la Kan, la Taïmanov ou la sicilienne des quatre cavaliers. Souple et solide.",
+    "ideas": [
+      "Contrôle d5",
+      "Placement des pièces souple",
+      "La dame va souvent en c7"
+    ]
+  },
+  "sicilian-open": {
+    "name": "Défense sicilienne : sicilienne ouverte",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs ouvrent le centre avec d4 et reprennent avec le cavalier. Les Blancs prennent de l'avance dans le développement ; les Noirs obtiennent la colonne c semi-ouverte et une majorité de pions au centre.",
+    "ideas": [
+      "Les Blancs attaquent à l'aile roi",
+      "Les Noirs contre-attaquent à l'aile dame",
+      "Jeu vif et à double tranchant"
+    ]
+  },
+  "sicilian-najdorf": {
+    "name": "Défense sicilienne : variante Najdorf",
+    "family": "Défense sicilienne",
+    "description": "La sicilienne la plus célèbre, jouée par Fischer et Kasparov. Le calme ...a6 contrôle b5 et prépare ...e5 ou ...e6 avec une contre-attaque à l'aile dame.",
+    "ideas": [
+      "...a6 empêche Nb5 et Bb5+",
+      "Souple : ...e5 ou ...e6",
+      "Expansion à l'aile dame avec ...b5"
+    ],
+    "traps": [
+      "6.Bg5 e6 7.f4 Qb6 est le pion empoisonné : prendre b2 est risqué mais correct",
+      "Surveille les sacrifices Nd5 et Bxe6"
+    ]
+  },
+  "najdorf-english-attack": {
+    "name": "Sicilienne Najdorf : attaque anglaise",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs jouent Be3, f3, Qd2 et O-O-O, puis lancent l'assaut à l'aile roi avec g4-g5. Une arme moderne et agressive.",
+    "ideas": [
+      "Roques opposés",
+      "Avalanche de pions avec g4-g5",
+      "Contrôle d5"
+    ]
+  },
+  "najdorf-6bg5": {
+    "name": "Sicilienne Najdorf : 6.Bg5",
+    "family": "Défense sicilienne",
+    "description": "L'attaque classique contre la Najdorf. Les Blancs clouent le cavalier et préparent les ruptures e5 ou f5 pour un assaut direct.",
+    "ideas": [
+      "Cloue le cavalier f6",
+      "Pousse e5 ou f5 pour ouvrir le jeu",
+      "Fais le grand roque et attaque"
+    ],
+    "traps": [
+      "7...Qb6 8.Qd2 Qxb2 est le pion empoisonné",
+      "7...b5?! 8.e5! dxe5 9.fxe5 Qc7 10.exf6 Qe5+ est la ligne Polougaïevski"
+    ]
+  },
+  "najdorf-poisoned-pawn": {
+    "name": "Sicilienne Najdorf : pion empoisonné",
+    "family": "Défense sicilienne",
+    "description": "La dame noire prend le pion b2 et doit survivre à une attaque féroce. L'une des lignes les plus analysées des échecs.",
+    "ideas": [
+      "Les Noirs prennent du matériel et se défendent",
+      "Les Blancs sacrifient contre du développement",
+      "La dame noire peut se faire piéger : il faut des coups précis"
+    ],
+    "traps": [
+      "9.Rb1 Qa3 10.f5 et 10.e5 sont les principaux essais d'attaque des Blancs"
+    ]
+  },
+  "najdorf-opocensky": {
+    "name": "Sicilienne Najdorf : variante Opočenský",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs jouent le calme 6.Be2 et les Noirs répondent ...e5, ce qui mène à une bataille positionnelle pour la case d5.",
+    "ideas": [
+      "Bats-toi pour d5",
+      "Le pion arriéré d6 contre des pièces actives",
+      "Dispositif avec ...Be6, ...Be7, ...O-O"
+    ]
+  },
+  "sicilian-dragon": {
+    "name": "Défense sicilienne : variante du Dragon",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs développent le fou roi en fianchetto et créent un puissant « dragon » sur la grande diagonale. Cela mène à des batailles ultra-tranchantes avec roques opposés.",
+    "ideas": [
+      "Fou en fianchetto en g7",
+      "Attaque à l'aile dame avec ...Rc8 et ...Qa5",
+      "Sacrifice de qualité ...Rxc3"
+    ],
+    "traps": [
+      "Attention aux échanges avec Bh6 : éliminer le fou g7 affaiblit le roi",
+      "Les sacrifices de qualité Rxc3 sont typiques pour les Noirs"
+    ]
+  },
+  "dragon-yugoslav-attack": {
+    "name": "Sicilienne Dragon : attaque yougoslave",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs font le grand roque et lancent l'assaut avec h4-h5 pour ouvrir la colonne h contre le roi noir. Une course d'attaques classique.",
+    "ideas": [
+      "Bh6 pour échanger le fou dragon des Noirs",
+      "h4-h5 pour ouvrir la colonne h",
+      "Grand roque et attaque rapide"
+    ],
+    "traps": [
+      "Le sacrifice de qualité ...Rxc3 des Noirs peut démolir l'aile dame blanche"
+    ]
+  },
+  "sicilian-classical": {
+    "name": "Défense sicilienne : variante classique",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs développent les deux cavaliers et gardent toutes les options. Les Blancs choisissent entre la Richter-Rauzer (Bg5), la Sozine (Bc4) ou des lignes plus calmes.",
+    "ideas": [
+      "Développement naturel",
+      "Souple : ...e6 ou ...g6",
+      "Contrôle du centre"
+    ]
+  },
+  "sicilian-richter-rauzer": {
+    "name": "Défense sicilienne : attaque Richter-Rauzer",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs clouent le cavalier f6 et prévoient Qd2 et O-O-O : ils empêchent le dispositif du Dragon et préparent une attaque.",
+    "ideas": [
+      "Cloue le cavalier",
+      "Grand roque",
+      "Abîme les pions noirs avec Bxf6"
+    ]
+  },
+  "sicilian-sozin": {
+    "name": "Défense sicilienne : attaque Sozine",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs braquent le fou sur e6 et f7 ; c'était l'arme favorite de Bobby Fischer. Les sacrifices en e6 et d5 sont fréquents.",
+    "ideas": [
+      "Fou sur la diagonale a2-g8",
+      "Sacrifice en e6 ou d5",
+      "f4-f5 pour ouvrir des lignes"
+    ]
+  },
+  "sicilian-scheveningen": {
+    "name": "Défense sicilienne : variante Scheveningen",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs forment un « petit centre » avec des pions en d6 et e6. Solide mais souple, c'était l'une des favorites de Kasparov.",
+    "ideas": [
+      "Les pions d6/e6 contrôlent le centre",
+      "...a6, ...Qc7, ...Be7, ...O-O",
+      "Attends le bon moment pour ...d5 ou ...e5"
+    ],
+    "traps": [
+      "L'attaque Keres 6.g4! est le test le plus tranchant"
+    ]
+  },
+  "sicilian-keres-attack": {
+    "name": "Sicilienne Scheveningen : attaque Keres",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs lancent tout de suite le pion g pour chasser le cavalier noir et déclencher une attaque à l'aile roi.",
+    "ideas": [
+      "Chasse le cavalier f6 avec g5",
+      "Expansion rapide à l'aile roi",
+      "Fais le grand roque"
+    ]
+  },
+  "sicilian-sveshnikov": {
+    "name": "Défense sicilienne : variante Sveshnikov",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs acceptent un trou en d5 et un pion arriéré en échange d'un jeu de pièces dynamique et de la paire de fous. Une ligne principale moderne jouée par Carlsen.",
+    "ideas": [
+      "Jeu dynamique face au trou en d5",
+      "Ruptures ...b5 et ...f5",
+      "La paire de fous"
+    ],
+    "traps": [
+      "Après 8.Bg5 a6 9.Na3 b5, les Noirs doivent connaître les plans avec ...f5 et ...Bg7"
+    ]
+  },
+  "sicilian-kalashnikov": {
+    "name": "Défense sicilienne : variante Kalachnikov",
+    "family": "Défense sicilienne",
+    "description": "Une cousine de la Sveshnikov : les Noirs jouent ...e5 avant ...Nf6 et gardent les options ...Be7 et ...f5.",
+    "ideas": [
+      "Accepte le trou en d5 en échange d'activité",
+      "Rupture ...f5",
+      "Développement souple de l'aile roi"
+    ]
+  },
+  "sicilian-taimanov": {
+    "name": "Défense sicilienne : variante Taïmanov",
+    "family": "Défense sicilienne",
+    "description": "Un système souple : les Noirs développent le cavalier en c6 et gardent ouvertes les options pour les fous et le pion d. Populaire au plus haut niveau.",
+    "ideas": [
+      "Structure de pions souple",
+      "Dame en c7 et ...a6",
+      "Jeu rapide à l'aile dame"
+    ],
+    "traps": [
+      "5.Nb5 d6 6.c4 mène à un étau de type Maroczy"
+    ]
+  },
+  "sicilian-taimanov-main": {
+    "name": "Sicilienne Taïmanov : ligne principale",
+    "family": "Défense sicilienne",
+    "description": "La position type moderne de la Taïmanov. Les Blancs jouent souvent Qd2/Qf3 et O-O-O, tandis que les Noirs visent ...Nf6, ...Bb4 ou ...b5.",
+    "ideas": [
+      "La dame en c7 contrôle e5",
+      "...b5 et ...Bb7",
+      "Pression sur c3 et e4"
+    ]
+  },
+  "sicilian-kan": {
+    "name": "Défense sicilienne : variante Kan",
+    "family": "Défense sicilienne",
+    "description": "La Paulsen/Kan : les Noirs jouent ...a6 tôt pour garder un maximum de souplesse. Une structure en hérisson apparaît souvent.",
+    "ideas": [
+      "Développement souple",
+      "Dispositif en hérisson avec ...d6, ...b6",
+      "Dame en c7"
+    ],
+    "traps": [
+      "5.Bd3 et c4 créent un étau de Maroczy : les Noirs doivent trouver les ruptures ...b5 ou ...d5"
+    ]
+  },
+  "sicilian-four-knights": {
+    "name": "Défense sicilienne : variante des quatre cavaliers",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs développent les deux cavaliers et préparent ...Bb4 pour faire pression sur e4. Elle peut transposer dans beaucoup d'autres lignes de la sicilienne.",
+    "ideas": [
+      "...Bb4 cloue et fait pression sur e4",
+      "Développement rapide",
+      "Rupture ...d5"
+    ],
+    "traps": [
+      "6.Ndb5 Bb4 7.a3 Bxc3+ 8.Nxc3 d5 est la ligne principale"
+    ]
+  },
+  "sicilian-accelerated-dragon": {
+    "name": "Défense sicilienne : Dragon accéléré",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs font le fianchetto sans ...d6 : ils gagnent un temps et préparent ...d5 en une seule fois. Le meilleur essai des Blancs est l'étau de Maroczy avec c4.",
+    "ideas": [
+      "Le fou g7 vise la grande diagonale",
+      "...d5 en un seul coup",
+      "Évite l'attaque yougoslave"
+    ],
+    "traps": [
+      "5.Nc3 Bg7 6.Be3 Nf6 7.Bc4 O-O 8.Bb3 Na5? 9.e5 Ne8 10.Bxf7+! Kxf7 11.Ne6! gagne la dame"
+    ]
+  },
+  "sicilian-maroczy-bind": {
+    "name": "Défense sicilienne : étau de Maroczy",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs verrouillent d5 avec des pions en c4 et e4 et limitent le contre-jeu noir. Un dispositif stratégique qui gagne de l'espace.",
+    "ideas": [
+      "Contrôle d5 avec des pions",
+      "Étouffe la position noire",
+      "Les Noirs cherchent les ruptures ...b5 ou ...f5"
+    ]
+  },
+  "sicilian-hyper-accelerated-dragon": {
+    "name": "Défense sicilienne : Dragon hyper-accéléré",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs font le fianchetto dès le deuxième coup et gardent un maximum de souplesse. Les Blancs peuvent répondre par d4 ou par un c3 rapide.",
+    "ideas": [
+      "Fianchetto précoce",
+      "Souple : ...Nc6 / ...d6",
+      "Évite la théorie des lignes principales"
+    ]
+  },
+  "sicilian-alapin": {
+    "name": "Défense sicilienne : variante Alapine",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs préparent d4 pour bâtir un centre de pions complet et évitent la lourde théorie de la sicilienne ouverte. Un anti-sicilien apprécié à tous les niveaux.",
+    "ideas": [
+      "Prépare d4 avec c3",
+      "Développement simple et logique",
+      "Des positions avec pion dame isolé apparaissent souvent"
+    ]
+  },
+  "sicilian-alapin-nf6": {
+    "name": "Sicilienne Alapine : 2...Nf6",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs attaquent e4 tout de suite ; les Blancs gagnent de l'espace avec e5 et le cavalier trouve une belle case centrale en d5.",
+    "ideas": [
+      "Le cavalier d5 est fort",
+      "...d6 pour contester e5",
+      "Positions avec pion dame isolé pour les Blancs"
+    ]
+  },
+  "sicilian-alapin-d5": {
+    "name": "Sicilienne Alapine : 2...d5",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs prennent en d5 et la dame se centralise ; comme c3 a privé le cavalier de sa case, la dame est en sécurité.",
+    "ideas": [
+      "Dame active en d5",
+      "...Nf6, ...e6 et ...Nc6",
+      "Lutte contre le pion dame isolé"
+    ]
+  },
+  "smith-morra-gambit": {
+    "name": "Gambit Smith-Morra",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs sacrifient un pion en échange d'une avance de développement et des colonnes c et d ouvertes. Très dangereux en club et en ligne.",
+    "ideas": [
+      "Des colonnes ouvertes pour les tours",
+      "Développement rapide : Nc3, Nf3, Bc4, O-O, Qe2, Rd1",
+      "Pression sur d6 et f7"
+    ],
+    "traps": [
+      "Piège sibérien : 4.Nxc3 Nc6 5.Nf3 e6 6.Bc4 Qc7 7.O-O Nf6 8.Qe2 Ng4! 9.h3?? Nd4! gagne la dame ou fait mat en h2",
+      "Les Noirs peuvent le refuser avec 3...Nf6 ou 3...d3"
+    ]
+  },
+  "smith-morra-accepted": {
+    "name": "Gambit Smith-Morra accepté",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs prennent le pion. L'avance de développement des Blancs est importante ; les Noirs doivent se développer avec soin.",
+    "ideas": [
+      "Bc4, Nf3, O-O, Qe2 et Rd1",
+      "Pression sur d6 et la colonne c",
+      "Sauts Nd5 et Nb5"
+    ],
+    "traps": [
+      "Avec ...d6, ...Nf6, ...e6, les Noirs doivent surveiller les ruptures e5 et Nb5"
+    ]
+  },
+  "sicilian-closed": {
+    "name": "Défense sicilienne : sicilienne fermée",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs évitent d'ouvrir le centre et jouent un dispositif lent à l'aile roi avec g3, Bg2, d3, f4. La favorite de Spassky.",
+    "ideas": [
+      "Fianchetto à l'aile roi",
+      "Expansion f4-f5 à l'aile roi",
+      "Garde le centre fermé"
+    ]
+  },
+  "sicilian-closed-main": {
+    "name": "Sicilienne fermée : ligne principale",
+    "family": "Défense sicilienne",
+    "description": "La position classique de la sicilienne fermée, avec un fianchetto de chaque côté. Les Blancs jouent à l'aile roi, les Noirs à l'aile dame.",
+    "ideas": [
+      "Blancs : Be3, Qd2, f4 et attaque à l'aile roi",
+      "Noirs : ...Rb8 et ...b5",
+      "Manœuvres lentes"
+    ]
+  },
+  "sicilian-grand-prix": {
+    "name": "Défense sicilienne : attaque Grand Prix",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs jouent f4 tôt et développent le fou en c4 ou b5 pour une attaque directe à l'aile roi. Très populaire en club.",
+    "ideas": [
+      "Attaque f4-f5 à l'aile roi",
+      "Bc4 ou Bb5",
+      "Idées d'attaque avec Qe1-h4"
+    ]
+  },
+  "sicilian-rossolimo": {
+    "name": "Défense sicilienne : variante Rossolimo",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs développent le fou en b5 pour clouer le cavalier et doublent souvent les pions noirs avec Bxc6. Un anti-sicilien solide.",
+    "ideas": [
+      "Cloue et prends peut-être en c6",
+      "Roque rapide",
+      "Jeu stratégique contre les pions c doublés"
+    ]
+  },
+  "sicilian-moscow": {
+    "name": "Défense sicilienne : variante de Moscou",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs donnent échec avec le fou pour simplifier et évitent la Najdorf et le Dragon. Les fous s'échangent souvent en d7.",
+    "ideas": [
+      "Échange les fous de cases blanches",
+      "Centre avec c3 et d4",
+      "Jeu solide, avec peu de théorie"
+    ]
+  },
+  "sicilian-okelly": {
+    "name": "Défense sicilienne : variante O'Kelly",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs jouent ...a6 dès le deuxième coup pour garder des options et tendre des pièges contre des coups naturels comme 3.d4.",
+    "ideas": [
+      "Après 3.d4 cxd4 4.Nxd4 Nf6, les Noirs attaquent e4",
+      "Dispositifs souples",
+      "Effet de surprise"
+    ],
+    "traps": [
+      "3.c3! est la meilleure réponse"
+    ]
+  },
+  "sicilian-nimzowitsch": {
+    "name": "Défense sicilienne : variante Nimzowitsch",
+    "family": "Défense sicilienne",
+    "description": "Les Noirs attaquent e4 comme dans la défense Alekhine. Après 3.e5 Nd5, le jeu ressemble à une Alekhine avec ...c5 en plus.",
+    "ideas": [
+      "Provoque e5",
+      "Cavalier en d5",
+      "Sape le centre blanc"
+    ],
+    "traps": [
+      "3.e5 Nd5 4.Nc3 e6 5.Nxd5 exd5 6.d4 donne aux Blancs un bel avantage"
+    ]
+  },
+  "sicilian-wing-gambit": {
+    "name": "Défense sicilienne : gambit de l'aile",
+    "family": "Défense sicilienne",
+    "description": "Les Blancs sacrifient le pion b pour dévier le pion c5 et bâtir un centre avec d4. Rare et douteux.",
+    "ideas": [
+      "Dévie c5",
+      "Bâtis un centre d4/e4",
+      "Arme de surprise"
+    ]
+  },
+  "french-defense": {
+    "name": "Défense française",
+    "family": "Défense française",
+    "description": "Une défense solide où les Noirs préparent ...d5 et contestent le centre blanc. Le fou noir de cases blanches est souvent une pièce à problème.",
+    "ideas": [
+      "Frappe le centre avec ...d5",
+      "Contre-attaque avec ...c5 et ...f6",
+      "Chaîne de pions solide"
+    ],
+    "traps": [
+      "Le fou de cases blanches en c8 peut devenir « mauvais » derrière le pion e6"
+    ]
+  },
+  "french-kia": {
+    "name": "Défense française : attaque est-indienne",
+    "family": "Défense française",
+    "description": "Les Blancs évitent la théorie de la française avec un dispositif est-indien : d3, Nd2, Ngf3, g3, Bg2, O-O, puis une attaque à l'aile roi avec e5.",
+    "ideas": [
+      "Fianchetto et roque",
+      "Pousse e5 pour gagner de l'espace à l'aile roi",
+      "Attaque avec h4, Nf1-h2-g4"
+    ]
+  },
+  "french-advance": {
+    "name": "Défense française : variante d'avance",
+    "family": "Défense française",
+    "description": "Les Blancs bloquent le centre avec e5 et gagnent de l'espace à l'aile roi. Les Noirs attaquent la base de la chaîne avec ...c5 et ...Qb6.",
+    "ideas": [
+      "Avantage d'espace avec e5",
+      "Défends d4 avec c3 et Nf3",
+      "Les Noirs attaquent d4 avec ...c5, ...Nc6, ...Qb6"
+    ],
+    "traps": [
+      "Si la dame noire prend en d4, elle peut tomber sur une tactique avec Bb5+",
+      "Le gambit Milner-Barry sacrifie d4 contre du développement"
+    ]
+  },
+  "french-advance-milner-barry": {
+    "name": "Française, variante d'avance : gambit Milner-Barry",
+    "family": "Défense française",
+    "description": "Les Blancs sacrifient le pion d4 pour un développement rapide et une attaque dangereuse contre le roi noir qui n'a pas roqué.",
+    "ideas": [
+      "Sacrifie d4 contre du développement",
+      "Attaques avec Nb5 et Re1",
+      "Garde le roi noir au centre"
+    ],
+    "traps": [
+      "10...Qxe5?? 11.Re1 Qb8 12.Nxd5! avec une attaque écrasante"
+    ]
+  }
+}

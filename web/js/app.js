@@ -2,10 +2,12 @@
 // Contract: docs/CONTRACT.md §5. Pages live in ./pages/*.js and export
 //   mount(root, { params, query, path }) -> cleanup fn (may be async), and optional `title`.
 
-import { h, icon, brandMark, toast, closeAllModals, escapeHtml } from './ui.js';
+import { h, icon, brandMark, toast, closeAllModals, escapeHtml, tOr } from './ui.js';
+import { announce, clearAnnouncements } from './components/announcer.js';
 import { api } from './api.js';
 import { getSettings, setSetting, onSettingsChange } from './settings.js';
 import { initI18n, onLanguageChange, t } from './i18n.js';
+import { initPwa } from './pwa.js';
 
 // ---------------------------------------------------------------------------
 // Navigation model (labels are i18n keys nav.<key>, resolved at render time)
@@ -16,9 +18,11 @@ const NAV = [
   { key: 'puzzles', icon: 'puzzle', href: '#/puzzles', primary: true },
   { key: 'learn', icon: 'learn', href: '#/learn', primary: true },
   { key: 'openings', icon: 'openings', href: '#/openings' },
+  { key: 'repertoire', icon: 'book', href: '#/repertoire' },
   { key: 'endgames', icon: 'endgames', href: '#/endgames' },
   { key: 'analysis', icon: 'analysis', href: '#/analysis', primary: true },
   { key: 'library', icon: 'library', href: '#/library' },
+  { key: 'insights', icon: 'chart', href: '#/insights', section: 'you' },
   { key: 'profile', icon: 'profile', href: '#/profile', section: 'you' },
   { key: 'settings', icon: 'settings', href: '#/settings', section: 'you' },
 ];
@@ -32,7 +36,16 @@ const ROUTES = [
   { pattern: '/review/:gameId', page: 'review', nav: 'analysis', titleKey: 'nav.routes.review' },
   { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzleRush', params: { mode: 'rush' } },
   { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.dailyPuzzle', params: { mode: 'daily' } },
+  { pattern: '/puzzles/mistakes', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.mistakes', params: { mode: 'mistakes' } },
   { pattern: '/puzzles', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzles' },
+  { pattern: '/local', page: 'local', nav: 'play', titleKey: 'nav.routes.local' },
+  { pattern: '/drills', page: 'drills', nav: 'learn', titleKey: 'nav.routes.drills' },
+  { pattern: '/drills/:drillId', page: 'drills', nav: 'learn', titleKey: 'nav.routes.drills' },
+  { pattern: '/classics', page: 'classics', nav: 'learn', titleKey: 'nav.routes.classics' },
+  { pattern: '/classics/:classicId', page: 'classics', nav: 'learn', titleKey: 'nav.routes.classics' },
+  { pattern: '/repertoire', page: 'repertoire', nav: 'repertoire', titleKey: 'nav.routes.repertoire' },
+  { pattern: '/repertoire/:side', page: 'repertoire', nav: 'repertoire', titleKey: 'nav.routes.repertoire' },
+  { pattern: '/insights', page: 'insights', nav: 'insights', titleKey: 'nav.routes.insights' },
   { pattern: '/learn', page: 'learn', nav: 'learn', titleKey: 'nav.routes.learn' },
   { pattern: '/learn/:courseId', page: 'learn', nav: 'learn', titleKey: 'nav.routes.learn' },
   { pattern: '/learn/:courseId/:lessonId', page: 'lesson', nav: 'learn', titleKey: 'nav.routes.lesson' },
@@ -110,7 +123,7 @@ function navLink(item, cls = 'nav-item') {
 function localizeStatic() {
   els.sidebar.setAttribute('aria-label', t('nav.mainNavigation'));
   els.bottombar.setAttribute('aria-label', t('nav.mainNavigation'));
-  const skip = document.querySelector('a.sr-only[href="#view"]');
+  const skip = document.querySelector('a.skip-link, a.sr-only[href="#view"]');
   if (skip) skip.textContent = t('nav.skipToContent');
   const desc = document.querySelector('meta[name="description"]');
   if (desc) desc.setAttribute('content', t('nav.metaDescription'));
@@ -156,8 +169,10 @@ function renderShell() {
   const sheetItems = NAV.filter((n) => !n.primary).map((n) => navLink(n));
   const sheetTheme = h('button', { class: 'nav-item', type: 'button', style: 'border:0', onClick: () => { toggleTheme(); } });
   els.sheetTheme = sheetTheme;
-  const panel = h('div', { class: 'more-sheet-panel', role: 'menu', 'aria-label': t('nav.more') }, sheetItems, sheetTheme);
+  const panel = h('nav', { class: 'more-sheet-panel', id: 'more-sheet-panel', 'aria-label': t('nav.more') }, sheetItems, sheetTheme);
   els.sheet.replaceChildren(panel);
+  els.moreBtn.setAttribute('aria-controls', 'more-sheet-panel');
+  els.sheet.inert = !els.sheet.classList.contains('open');
   syncShellSettings(getSettings());
 
   // renderShell() runs again on every language switch: install global listeners only once.
@@ -167,8 +182,18 @@ function renderShell() {
     if (e.target === els.sheet || e.target.closest('a')) toggleSheet(false);
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && els.sheet.classList.contains('open')) toggleSheet(false);
+    if (e.key === 'Escape' && els.sheet.classList.contains('open')) { toggleSheet(false); els.moreBtn?.focus(); }
   });
+  // Skip link: the hash router owns location.hash, so move focus instead of navigating to "#view".
+  const skip = document.querySelector('a.skip-link, a.sr-only[href="#view"]');
+  if (skip) {
+    skip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = els.view.querySelector('h1') || els.view;
+      if (target !== els.view && !target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      try { target.focus(); } catch { /* ignore */ }
+    });
+  }
   onSettingsChange((s, key) => {
     if (key === 'theme' || key === 'sidebarCollapsed') syncShellSettings(s);
   });
@@ -199,8 +224,13 @@ function toggleSheet(force) {
   const open = typeof force === 'boolean' ? force : !els.sheet.classList.contains('open');
   els.sheet.classList.toggle('open', open);
   els.sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+  els.sheet.inert = !open; // closed sheet links must not be reachable with Tab
   els.moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   els.moreBtn.classList.toggle('active', open);
+  if (open) {
+    const first = els.sheet.querySelector('a, button');
+    if (first) requestAnimationFrame(() => { try { first.focus({ preventScroll: true }); } catch { /* ignore */ } });
+  }
 }
 
 function setActiveNav(key) {
@@ -240,6 +270,7 @@ async function checkHealth() {
 // Router
 // ---------------------------------------------------------------------------
 let currentCleanup = null;
+let routedOnce = false;
 let navToken = 0;
 let progressTimer = null;
 
@@ -268,6 +299,7 @@ async function handleRoute() {
 
   toggleSheet(false);
   closeAllModals();
+  clearAnnouncements();
   await runCleanup();
   if (token !== navToken) return;
 
@@ -287,6 +319,9 @@ async function handleRoute() {
   const { route, params } = match;
   setActiveNav(route.nav);
   setTitle(t(route.titleKey));
+  // Tell screen-reader users that the page changed (the hash router doesn't reload the document).
+  if (routedOnce) announce(t(route.titleKey));
+  routedOnce = true;
   showProgress(true);
 
   try {
@@ -353,12 +388,13 @@ window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason;
   if (r && r.name === 'AbortError') { e.preventDefault(); return; }
   console.error('[unhandled]', r);
-  reportGlobal(r && r.message ? r.message : t('common.somethingWentWrong'));
+  reportGlobal(r && r.message ? r.message : tOr('common.somethingWentWrong', 'Something went wrong'));
 });
 window.addEventListener('error', (e) => {
   if (!e.error) return; // resource load errors etc.
   console.error('[error]', e.error);
-  reportGlobal(t('nav.globalError'));
+  // i18n may not have loaded yet (an error during boot): fall back to English, never a raw key.
+  reportGlobal(tOr('nav.globalError', 'Something went wrong — try reloading the page'));
 });
 
 // ---------------------------------------------------------------------------
@@ -367,6 +403,7 @@ window.addEventListener('error', (e) => {
 async function boot() {
   try { await initI18n(); } catch (e) { console.error('[i18n] init failed', e); }
   renderShell();
+  initPwa();
   setTitle(null);
   // A language switch re-renders the shell and remounts the current page in the new language.
   onLanguageChange(() => {

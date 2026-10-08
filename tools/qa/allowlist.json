@@ -1,0 +1,11 @@
+{
+  "_comment": "Intentional exceptions for tools/qa. Every entry needs a reason. untranslated: i18n keys whose non-English value may equal English (check-i18n.mjs; trailing * = prefix). visibleEnglish: English text allowed on non-English pages (sweep.mjs). sweep: suppress specific sweep issues; fields check/route/lang/viewport are exact matches, match is a substring of the issue detail; omitted fields match anything.",
+  "untranslated": [
+    { "key": "puzzles.rush.panelTitle", "reason": "\"Puzzle Rush\" is a mode name and stays in English" }
+  ],
+  "visibleEnglish": [
+    { "text": "Puzzle Rush", "reason": "Mode name, kept in English in every language (like chess.com)" },
+    { "text": "GrandMentor", "reason": "App name" }
+  ],
+  "sweep": []
+}

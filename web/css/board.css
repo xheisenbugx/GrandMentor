@@ -33,7 +33,9 @@
   border-radius: var(--r-xs, 4px);
   overflow: hidden;
 }
-.gm-sq { position: relative; background-color: var(--board-dark, #739552); }
+.gm-row { display: contents; }   /* ARIA rows only; the 64 cells stay in the CSS grid */
+.gm-sq { position: relative; background-color: var(--board-dark, #739552); outline: none; }
+.gm-sq:focus, .gm-sq:focus-visible { outline: none; box-shadow: none; }
 .gm-sq.light { background-color: var(--board-light, #ebecd0); }
 
 /* Tint layer (last move < highlight < selected). */
@@ -76,6 +78,19 @@
 }
 /* Square under a dragged piece. */
 .gm-sq.hover { box-shadow: inset 0 0 0 0.62cqw rgba(255, 255, 255, 0.75); }
+
+/* Premoves: the queued move's squares in a muted red (chess.com style); premove targets get
+   reddish dots so it's clear the move only happens after the opponent replies. */
+.gm-sq.premove { --gm-tint: var(--board-premove, rgba(214, 79, 66, 0.55)); }
+.gm-sq.light.premove { --gm-tint: var(--board-premove-light, rgba(226, 104, 86, 0.6)); }
+.gm-sq.premove-dest.dest::after { background: var(--board-premove-dot, rgba(176, 52, 40, 0.42)); }
+.gm-sq.premove-dest.capture::after { box-shadow: inset 0 0 0 1.1cqw var(--board-premove-dot, rgba(176, 52, 40, 0.42)); }
+
+/* Blindfold: pieces are invisible (still there for moves); "peek" shows them while held. */
+.gm-board.blindfold .gm-piece:not(.gm-dragging) { opacity: 0; }
+.gm-board.blindfold .gm-piece.gm-dragging { opacity: 0.85; }
+.gm-board.blindfold.peek .gm-piece { opacity: 1; }
+.gm-board.blindfold .gm-badges { display: none; }
 
 /* Coordinates (inside the board corners). */
 .gm-coord {
@@ -140,14 +155,13 @@
   display: grid; place-items: center;
   border-radius: 50%;
   background: var(--cls, var(--cls-best, #81b64c));
-  color: #fff;
+  color: var(--cls-fg, #111417);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-weight: 900;
   font-size: calc(var(--size) * 0.5);
   line-height: 1;
   letter-spacing: -0.04em;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), inset 0 0 0 2px rgba(255, 255, 255, 0.92);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   animation: gm-badge-pop 260ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
 }
 .gm-badge.wide { font-size: calc(var(--size) * 0.42); }
@@ -184,9 +198,53 @@
 .gm-promo-choice:active { transform: scale(0.95); }
 .gm-piece-img { width: 86%; height: 86%; background-size: 100% 100%; background-repeat: no-repeat; pointer-events: none; }
 
+/* Keyboard cursor: a thick two-tone ring (visible on light and dark squares), shown only while
+   the board has keyboard focus. Square-name tags show on hover/focus when the setting is on. */
+.gm-kbd-cursor, .gm-hover-name {
+  position: absolute; left: 0; top: 0;
+  width: 12.5%; height: 12.5%;
+  pointer-events: none;
+  z-index: 13;
+  display: none;
+}
+.gm-board.kbd.has-focus .gm-kbd-cursor {
+  display: block;
+  box-shadow: inset 0 0 0 0.55cqw #fff, inset 0 0 0 1.1cqw var(--focus-ring-color, #1a73e8), 0 0 0 0.3cqw rgba(0, 0, 0, 0.55);
+  border-radius: 2px;
+}
+.gm-sq-name {
+  position: absolute; left: 50%; bottom: 4%;
+  transform: translateX(-50%);
+  padding: 0.15em 0.45em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: clamp(10px, 2.2cqw, 15px);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  display: none;
+}
+:root[data-square-names="on"] .gm-board.kbd.has-focus .gm-kbd-cursor .gm-sq-name { display: block; }
+:root[data-square-names="on"] .gm-hover-name.on { display: block; }
+:root[data-square-names="on"] .gm-hover-name.on .gm-sq-name { display: block; }
+.gm-board.dragging .gm-hover-name { display: none !important; }
+
+/* High-contrast board theme: bolder last-move/selection tints, darker legal-move dots, bold coords. */
+:root[data-board-theme="contrast"] {
+  --board-lastmove: rgba(255, 214, 0, 0.62);
+  --board-selected: rgba(255, 196, 0, 0.75);
+  --board-dot: rgba(0, 0, 0, 0.42);
+}
+:root[data-board-theme="contrast"] .gm-coord { font-weight: 900; }
+:root[data-board-theme="contrast"] .gm-sq.light.last, :root[data-board-theme="contrast"] .gm-sq.dark.last { box-shadow: inset 0 0 0 0.45cqw rgba(0, 0, 0, 0.55); }
+
 @media (prefers-reduced-motion: reduce) {
   .gm-piece, .gm-badge, .gm-promo, .gm-evalbar-fill, .gm-evalbar-label { transition: none !important; animation: none !important; }
 }
+:root[data-motion="reduce"] .gm-piece, :root[data-motion="reduce"] .gm-badge, :root[data-motion="reduce"] .gm-promo,
+:root[data-motion="reduce"] .gm-evalbar-fill, :root[data-motion="reduce"] .gm-evalbar-label { transition: none !important; animation: none !important; }
 
 /* Piece sets (cburnett default; switched by <html data-piece-set>). */
 .gm-board .wK, .gm-piece-img.wK { background-image: url("../img/pieces/cburnett/wK.svg"); }
@@ -329,8 +387,9 @@
   width: 16px; height: 16px;
   border-radius: 50%;
   background: var(--cls);
-  color: #fff;
+  color: var(--cls-fg, #111417);
   font-size: 9px; font-weight: 900; line-height: 1;
   letter-spacing: -0.05em;
 }
 .gm-ml-dot.small { width: 8px; height: 8px; font-size: 0; }
+.gm-ml-dot.emoji { background: transparent; font-size: 11px; letter-spacing: 0; }

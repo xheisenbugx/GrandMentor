@@ -146,9 +146,9 @@ pub struct BookMove { pub uci: String, pub san: String, pub name: Option<String>
 /// User-facing language, shared by every crate (serde: "en" | "es"; default En).
 pub enum Lang { En, Es }
 impl Lang {
-  pub const ALL: [Lang; 2];
-  pub fn code(self) -> &'static str;                            // "en" | "es"
-  pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; unsupported -> None
+  pub const ALL: [Lang; 5];                                     // En, Es, Pt (pt-BR), Fr, De
+  pub fn code(self) -> &'static str;                            // "en" | "es" | "pt" | "fr" | "de"
+  pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; "pt-BR"/"pt-PT" -> Pt; "fr-CA" -> Fr; "de-AT"/"de-CH" -> De; unsupported -> None
   pub fn from_accept_language(h: &str) -> Option<Lang>;         // first supported range by q: "es-MX,es;q=0.9,en;q=0.8" -> Es
   pub fn negotiate(query: Option<&str>, accept_language: Option<&str>) -> Lang; // ?lang= > Accept-Language > En
 }
@@ -212,7 +212,7 @@ pub struct MoveContext { pub fen_before: String, pub played_uci: String, pub pla
   pub eval_before: Score, pub eval_after: Score, pub classification: String }
 pub fn explain_move(ctx: &MoveContext, lang: Lang) -> String;     // rule-based, instant, friendly, 1-3 sentences
 pub fn describe_position(fen: &str, lang: Lang) -> Vec<String>;   // plans / features: material, king safety, open files, hanging pieces...
-pub fn coach_answer(req: &ChatRequest, lang: Lang) -> ChatResponse; // rule-based; routes English and Spanish questions
+pub fn coach_answer(req: &ChatRequest, lang: Lang) -> ChatResponse; // rule-based; routes questions in every supported language
 pub struct ChatRequest { pub question: String, pub fen: String, pub moves_san: Vec<String>,
   pub engine_lines: Vec<String> /* e.g. "+0.45: Nf3 Nc6 Bb5" */, pub history: Vec<ChatTurn> }
 pub struct ChatTurn { pub role: String /* user|mentor */, pub text: String }
@@ -291,12 +291,12 @@ pub mod pgn { pub fn to_pgn(...) -> String; pub fn parse_pgn(text: &str) -> Resu
 
 Errors: HTTP 4xx/5xx with `{error: "message"}` (message in the request language, see below).
 
-**Language.** Every endpoint accepts `?lang=en|es`; otherwise the `Accept-Language` header picks the
+**Language.** Every endpoint accepts `?lang=en|es|pt|fr|de` (regional tags such as `pt-BR` map to their language); otherwise the `Accept-Language` header picks the
 first supported language by q-weight (`es-MX,es;q=0.9,en;q=0.8` → `es`); otherwise English. Only
 human text changes; JSON shapes, ids, enum values (`classification`, bot `style`/`category`,
 puzzle themes), SAN/UCI/FEN and numbers never do. Localized: bot `description`/`greeting` and
 move `chat`; mentor `explanation`, position `ideas` and rule-based chat (the LLM is told to answer in
-the language; questions are understood in English or Spanish); review `summary`, per-move
+the language; questions are understood in every supported language); review `summary`, per-move
 `explanation`, `opening.name` and `opening_name`; course/lesson/step/task text, opening
 `name`/`family`/`description`/`ideas`/`traps`, `BookMove.name` and the start position name in
 `/openings/lookup`, endgame text (all from `data/i18n/<lang>/` overlays with English fallback;
@@ -344,8 +344,12 @@ export class EngineClient {           // one websocket, lazy-connect, auto-recon
 }
 ```
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
-Keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett|merida|alpha), `sounds` (bool),
+Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|alpha), `sounds` (bool),
 `showCoords`, `showLegal`, `animationMs` (number), `showEvalBar`, `autoQueen`, `theme` (dark|light), `moveNotation` (san|figurine).
+Accessibility keys (see "Accessibility" below): `highContrast` (bool), `cbPalette` (bool), `motion` (system|reduce|full),
+`announceMoves` (bool, default true), `squareNames` (bool), `uiScale` (100|115|130).
+Also exported: `reducedMotion()` (true when `motion` is reduce, or system + `prefers-reduced-motion`), `scrollBehavior()`
+(`'auto'|'smooth'` for `scrollIntoView`), `UI_SCALES`.
 **`web/js/ui.js`**: `toast(msg, kind)`, `modal({title, body /*Node|string*/, actions:[{label, kind, onClick}]}) → {close}`,
 `h(tag, attrs, ...children)` tiny DOM helper, `icon(name)` → inline SVG string, `formatScore(score)` → "+1.2"/"M3",
 `classificationMeta(cls)` → `{label, color, symbol /* "!!","!","★","👍","📖","?!","?","✗","??" */}`, `escapeHtml`.
@@ -380,3 +384,643 @@ If `onMove` returns `false` the board reverts the move.
 **`components/clock.js`**: `new ChessClock(el, {initialMs, incrementMs, onFlag(color)})`, `.start(color)`, `.press()`, `.pause()`, `.destroy()`.
 
 CSS class vocabulary and tokens are defined in `docs/STYLEGUIDE.md` (written by the design-system owner).
+
+## Accessibility
+
+### Board keyboard & screen-reader support (`components/board.js`, backwards compatible)
+
+```js
+new Board(el, { …, keyboard /* default true: arrow keys etc. */, announce /* default true: speak moves */,
+  label /* accessible name, default "Chess board" */ });
+board.focus();                 // focus the keyboard cursor square
+board.canUserMove(square?);    // interactive and the side to move (or the piece on `square`) is movable
+board.playUserMove(uci | {from,to,promotion}); // play as if the user moved it (typed input): onMove decides; → move object | null
+```
+- The squares form an ARIA grid (`role="grid"` → 8 `role="row"` wrappers with `display: contents` → 64 `role="gridcell"`,
+  in visual order) with one tab stop (roving `tabindex`). ←↑→↓ move the cursor (always screen directions, both
+  orientations), Home/End jump within the row, PageUp/PageDown within the column, Enter/Space picks up a piece (legal-move
+  dots appear) and drops it on a target (promotion opens the picker; arrows cycle its choices), Esc cancels a selection or
+  a queued premove. Handled keys call `preventDefault()` + `stopPropagation()` so page shortcuts (← → navigation) don't
+  also fire. Enter on a square also calls `onSquareClick(square)`.
+- Cells are labelled `"e4, white knight"` / `"e4, empty"`, plus `selected`, `legal move`, `capture`, `in check`,
+  `last move`, `premove` (blindfold hides piece names). The cursor ring (`.gm-kbd-cursor`) shows only after keyboard use.
+- With `squareNames` on, a name tag shows on the hovered / focused square (`.gm-hover-name`, `.gm-sq-name`).
+- Moves are announced (user moves, `move()`, and `setPosition(fen, {lastMove})` when it is exactly one legal move);
+  after the opponent's move, "Your move" is added when the user can move. Preview boards pass `keyboard:false, announce:false`.
+
+### `components/announcer.js`
+
+```js
+announce(text, { assertive = false, dedupe = true });  // shared polite/assertive live regions, 150 ms debounce,
+                                                       // bursts joined, same text dropped within 1.2 s
+clearAnnouncements();                                  // the router calls it on navigation
+describeMove(move) → "White knight to f3" | "Black captures on d5, check" | "… Checkmate!"   // Board move or chess.js verbose move
+announceMove(move); announceTurn(color, { you });      // respect the announceMoves setting
+squareLabel(square, code?), pieceName(role), coloredPiece('wN')
+```
+`toast()` messages are spoken through `announce()` (errors/warnings assertive); the toast stack itself is not a live region.
+
+### `components/moveinput.js`
+
+```js
+const mi = createMoveInput({ board /* Board or () => Board */, onMove? /* (mv) => false to reject */,
+  blocked? /* () => message|null */, label?, placeholder?, className? });
+panel.append(mi.el); …; mi.destroy();          // also mi.input, mi.focus(), mi.clear(), mi.setDisabled(bool)
+parseMoveText(chessOrFen, text) → {from, to, promotion?, san} | null   // SAN (e4, Nf3, exd5, O-O, 0-0-0, e8=Q, e8Q, nf3) or UCI (e2e4, e7e8q)
+looksLikeMove(text) → bool
+```
+Without `onMove` the move goes through `board.playUserMove()`, i.e. the page's normal `onMove` (puzzle checking, engine
+replies…). Errors show under the field (`aria-invalid`) and are announced. Used on Puzzles (solver, mistakes, rush),
+lessons, Analysis, Play a friend, endgame practice and the repertoire builder/drill; Play keeps its own typed-move box
+(same parser). Quick drills have their own typed answers.
+
+### `ui.js` additions
+`tOr(key, englishFallback, params)` (for code that may run before i18n loads, e.g. the global error toast),
+`focusableIn(container)`; modals trap Tab (also when nothing inside is focusable) and restore focus on close;
+`classificationMeta(cls).color` follows the colour-blind palette when `cbPalette` is on (`cssVar` always follows the
+active palette).
+
+### `<html>` attributes set by `settings.js` (and the pre-paint script in `index.html`)
+`data-contrast="high|normal"`, `data-cls-palette="cb|default"`, `data-motion="reduce|full"` (resolved, follows the OS while
+`motion` is `system`), `data-square-names="on|off"`, `data-ui-scale="100|115|130"` (root `font-size` set inline).
+
+## Local two-player (Play a friend)
+
+Pass-and-play games between two people on one device. Frontend only; no new endpoints.
+
+**Route:** `#/local` (page `web/js/pages/local.js`, styles `web/css/local.css` injected by the page, strings in the `local` locale namespace).
+Optional query: `#/local?fen=<encodeURIComponent(FEN)>` preselects "Custom position" with that FEN (4-, 5- or 6-field FENs are accepted and normalized; invalid or already-finished positions show an inline error).
+
+**Setup:** player names (empty = translated "White"/"Black"; White is prefilled with the profile name the first time), the same time-control presets as Play (`none`, `1+0`, `3+2`, `5+0`, `10+0`, `15+10`, `30+0`), start position, and options `autoFlip` (default on for `(max-width: 1024px), (pointer: coarse)`), `showLegal`, `evalBar` (default off; uses `EngineClient` over `/api/engine/ws`, toggleable in-game).
+Preferences are stored in `localStorage["grandmentor.local.prefs.v1"]` = `{white, black, tc, autoFlip, showLegal, evalBar}`.
+
+**Game:** game end is detected with the vendored chess.js (checkmate, stalemate, threefold repetition, 50-move rule, insufficient material) plus clock flags (`timeout`, or `timeout vs insufficient material` when the winner has only a king). Takeback undoes one ply after the opponent (the side to move) allows it; a draw offer from the side to move needs the other player's acceptance; resign asks which side resigns. The clock pauses while a request dialog is open.
+
+**Saving:** when a game with at least 2 plies ends it is saved with `POST /api/games`:
+`{white, black, result, termination, start_fen, moves, bot_id: null, user_color /* 'white'|'black' when exactly one name equals the profile name, else null */, time_control /* tc id or null */, opening_name: null /* server detects */, notes /* takeback count */, tags: ["local"]}`.
+The server logs the `local_game` activity for `bot_id: null`. The game-over modal offers "Review this game" (→ `#/review/<id>`), a rematch with sides swapped, and a new game.
+
+**Resume:** an unfinished game is kept in `localStorage["grandmentor.local.current.v1"]` =
+`{v: 1, white, black, startFen, moves /* UCI */, tcId, opts, orientation, clocks: {white, black} | null, takebacks, updatedAt}`
+(written after every move and on `pagehide` / hidden / unmount; removed when the game ends or is discarded). The setup screen shows a resume card for it.
+
+## Installable app (PWA)
+
+GrandMentor can be installed as an app and keeps puzzles and lessons working without a connection.
+
+**Static endpoints (served by `crates/gm-server/src/web.rs`, not under `/api`)**
+
+| Path | Notes |
+|---|---|
+| `GET /sw.js` | The service worker. `Cache-Control: no-cache`, `Service-Worker-Allowed: /`, `text/javascript`. The literal token `__GM_BUILD__` in `web/sw.js` is replaced by the build id (hash of every shell file's path + size + mtime, plus the crate version), so any frontend change ships a byte-different worker. 404 if the file is missing or > 512 KB. |
+| `GET /precache-manifest.json` | `{"version": "<build id>", "files": ["/index.html", "/css/app.css", ...]}` — every file under `web/` except `dev/`, dot-files, `*.br`/`*.gz`, symlinks and `sw.js` itself. Bounded walk (depth 8, max 1500 files) on a blocking thread. `no-cache`. |
+| `GET /manifest.webmanifest` | `application/manifest+json`, `no-cache`. Icons live in `web/img/icons/` (`icon-192/512.png`, `maskable-192/512.png`, `apple-touch-icon.png`, generated from `web/favicon.svg`). |
+
+**Service worker (`web/sw.js`) — caches (all bounded; unknown `gm-*` caches are deleted on activate)**
+
+| Cache | Strategy | Contents | Limit |
+|---|---|---|---|
+| `gm-shell-<build>` | precache, cache-first | the precache manifest list; navigations fall back to the cached `/index.html` | exact list |
+| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache; Google Fonts (SWR) | 120 entries |
+| `gm-content-v1` | stale-while-revalidate | `GET /api/courses[/:id]`, `/api/openings[/:id]`, `/api/endgames[/:id]`, `/api/classics[/:id]`, `/api/puzzles/themes`, `/api/bots`, `/api/puzzles/:id`, plus the offline puzzle pack | 250 entries |
+| `gm-api-v1` | network-first, cached fallback | any other JSON `GET /api/*` (profile, progress, stats, summaries…) | 80 entries |
+
+- Cache keys for `/api` include the request language (`?__lang=<Accept-Language>`), since content is localized. Offline with nothing cached in the current language, the same content in another language is served.
+- Eviction is LRU-ish: every write re-inserts the key at the end, the oldest keys are evicted beyond the limit.
+- **Never cached:** non-GET requests, `/api/health`, `/api/engine/*` (incl. the WebSocket), `/api/mentor/*`, `/api/backup*`, anything containing `/export`, `*/pgn`.
+- **Offline puzzles:** `GET /api/puzzles/next[?theme=]` and `GET /api/puzzles/rush[?count=]` are network-first; offline they are answered from a pack of up to 200 puzzles (`/api/puzzles/rush?count=200`), honouring `theme` when possible and avoiding recent repeats. Offline responses carry `X-GM-Offline: 1`.
+- **Prefetch:** when the page is idle (`requestIdleCallback`, ≥ 4 s after load, skipped on Save-Data unless installed) `pwa.js` posts `{type:'prefetch', lang}`; the worker caches `/api/courses` + every course (lessons included, max 80 courses), the puzzle pack, themes, openings, endgames, profile and progress. Throttled to once per 12 h per language (IndexedDB `gm-pwa/meta`); forced after `appinstalled`; re-run for a new language after a language switch.
+- **Offline write queue:** `POST /api/puzzles/:id/attempt`, `POST /api/progress`, `POST /api/puzzles/rush` and `POST /api/activity` that fail with a network error are stored in IndexedDB (`gm-pwa/queue`, max 200 entries, max 8 KB body, dropped after 30 days) and answered with `200` + `X-GM-Queued: 1` and a plausible body (`{rating, delta: 0, queued: true}` from the cached profile; the merged progress list — also written back into the cache so the course page shows the tick; `{best, queued: true}`; otherwise `{queued: true}`). Replay is in order, on Background Sync (`gm-replay`), on worker activation, and when the page reports it is back online. 2xx and 4xx remove an entry; network errors and 5xx stop the replay and keep the rest. Only these record-a-fact endpoints are queued; a write that reached the server but whose response was lost may be recorded twice.
+- **Messages** page → worker: `{type:'skipWaiting'}`, `{type:'replay'}`, `{type:'prefetch', lang, force?}`, `{type:'status'}` (replies `{build, queued}` on `ports[0]`). Worker → page (`source: 'gm-sw'`): `queued`, `replayed {count, remaining}`, `prefetched {courses, lessons, puzzles}`.
+
+**Frontend (`web/js/pwa.js`)** — `initPwa()` (called once from `app.js` boot after the shell renders) and `destroyPwa()`.
+- Registers `/sw.js` (scope `/`, `updateViaCache: 'none'`) in secure contexts (https or localhost); checks for updates when the tab becomes visible (at most every 30 min).
+- Update flow: a waiting worker shows a sticky toast "A new version is available — Reload"; Reload posts `skipWaiting` and reloads on `controllerchange` (fallback reload after 3 s).
+- Offline: `navigator.onLine` + a `/api/health` probe (4 s timeout; re-probed every 15 s while offline and on `online`). Shows `#offline-banner` ("Offline — puzzles and lessons still work", Retry) and sets `html.is-offline`; "Back online" for 2.5 s when the connection returns, then asks the worker to replay the queue.
+- Install: captures `beforeinstallprompt` and adds an "Install app" entry to the sidebar footer and the mobile "More" sheet (re-injected when `app.js` re-renders the shell); on iOS Safari (not standalone) the entry opens "Share → Add to Home Screen" instructions. Hidden once installed / in standalone mode.
+- Keeps `<meta name="theme-color">` in sync with the in-app theme (`--bg-elev`).
+- Strings: `pwa.*` in `web/locales/{en,es}/pwa.js`. Styles: `web/css/pwa.css`.
+
+## Daily plan, streaks and goals
+
+All days are **UTC calendar days** (`YYYY-MM-DD`, SQLite `date('now')`), used consistently by the activity log,
+`profile.last_active` and every streak computation.
+
+**Streak — single source of truth** (`gm_store::activity::streak_in`): active days = days with a non-zero count in
+the `activity` table ∪ the run stored in `profile.last_active`/`profile.streak_days` (kept for streaks earned before
+the activity log existed; store writes and `log_activity` refresh it with the computed run). `current` counts back
+from today, or from yesterday when today has no activity yet (a streak only breaks after a whole missed day).
+`Profile.streak_days`, `Stats.streak_days` and `/api/daily` all read this value.
+
+Store (`gm_store::activity`): `log_activity(kind, n)`, `activity_days(days)`, `KINDS` (unchanged) plus
+`streak() -> Streak`, `daily_goal() -> DailyGoal`, `set_daily_goal(&DailyGoal)`, `daily_summary() -> DailySummary`.
+Goal table `daily_goal(id=1, kind, target)`; default `{kind:"minutes", target:10}`. Minutes are estimated per kind
+(`activity::minutes_per`: game/local_game 10, classic 5, lesson 4, endgame 3, puzzle/drill 2, reviews 1).
+
+| Method & path | Body | Response |
+|---|---|---|
+| GET `/api/daily` | – | `DailySummary` |
+| PUT `/api/daily/goal` | `{kind:"minutes"\|"activities", target}` (minutes 1..=240, activities 1..=100; else 400) | `DailySummary` |
+| GET `/api/activity?days=N` | N 1..=400 (default 84) | `{days, items:[{day, counts:{kind:n}, total}]}` (only active days, newest first) |
+| POST `/api/activity` | `{kind, n?=1}` (kind ∈ `KINDS`, n 1..=20; else 400) | `DailySummary` — for client-only activities (endgame drills, reading classics…) |
+
+```
+DailySummary { date: "YYYY-MM-DD", goal: {kind, target},
+  progress: {minutes, activities, value /* in goal unit */, target, ratio /* 0..1 */, met},
+  streak: {current, best, today_active}, last7: [{day, total, active}] /* oldest → today */,
+  today: {kind: count} }
+```
+
+**Frontend** — `web/js/components/daily.js`: `new DailyPanel(container)`, `.load({bots, courses, progress, games,
+dailyPuzzle, nextLesson})`, `.destroy()`; also exports `choosePlan`, `taskDone`, `seededRandom`, `heatLevel`,
+`ensureDailyCss()` (loads `web/css/daily.css`). Mounted on Home under the hero. The plan (3–5 tasks, ~10–15 min)
+is composed client-side from `/api/puzzles/daily`, `/api/mistakes/summary`, `/api/repertoire/summary`, courses +
+`/api/progress`, `/api/endgames`, `/api/adaptive/estimate` + `/api/bots` (missing endpoints are skipped), seeded by
+the UTC date and cached per day in `localStorage['grandmentor.daily.plan.v1']` so it is stable across reloads.
+A task is checked when today's count for its kind is > 0 (game task: `game` or `local_game`).
+Pages that finish a client-only activity should call `api.post('/api/activity', {kind})` (endgames.js does for `endgame`).
+
+## Learn from your mistakes
+
+Spaced-repetition "find the better move" cards built from the user's own reviewed games.
+Storage: `crates/gm-store/src/srs.rs` (tables `mistake_cards`, `mistake_scanned_games`); routes: `crates/gm-server/src/routes/mistakes.rs`.
+
+**Ingestion.** When `POST /api/review` computes a review for a `game_id` and saves it, every move of the user's side
+(`games.user_color`) classified `mistake` | `miss` | `blunder` with `win_chance_loss >= 10` and a different engine best
+move becomes a card (max 12 per game, worst first). Cards are deduplicated by the first four FEN fields; removed cards
+stay as tombstones and are never re-added. The deck is capped at 5000 live cards. Games without `user_color` are skipped.
+`solution` is the best move plus the engine continuation while it stays forcing (the opponent has a single legal reply,
+or the line is a forced mate), always odd length (ends on the user's move), max 9 plies.
+
+**Scheduling** (Leitner / SM-2 hybrid): new cards are due immediately. A correct answer on a due card bumps `streak`
+and grows the interval (1 day, then ≥ 3 days, then ≥ 7 days, × `ease`); at `streak` 3 the card graduates (retired).
+A wrong answer (or hint / show solution) resets `streak` to 0, lowers `ease` (min 1.3) and brings the card back in 10 minutes.
+Answering a card before it is due is practice: success leaves the schedule alone (`counted: false`), failure still resets it.
+Each attempt logs activity `mistake_review`.
+
+```
+MistakeCard {
+  id, fen /* user to move */, prev_fen?, prev_uci? /* opponent's previous move: prev_fen --prev_uci--> fen */,
+  played_uci, played_san, best_uci, best_san, solution: [uci] /* starts with best_uci */,
+  game_id?, ply /* 1-based */, move_number, color: "white"|"black", classification: "mistake"|"miss"|"blunder",
+  phase: "opening"|"middlegame"|"endgame", opponent, bot_id?, explanation /* coach text of the played move */, lang,
+  win_chance_loss, due_at /* ISO UTC */, due_in_secs /* <= 0 when due */, interval_days, ease, streak, reps, lapses,
+  graduated, last_reviewed_at?, created_at
+}
+MistakeSummary { due, total /* live cards incl. graduated */, graduated, learning, next_due_at?, next_due_in_secs? }
+```
+
+| Method & path | Body / query | Response |
+|---|---|---|
+| `GET /api/mistakes/summary` | | `MistakeSummary` |
+| `GET /api/mistakes/next` | `?exclude=<id>` (skip the card just answered) | `{ card: MistakeCard \| null, due: bool, summary }` — the most overdue card; if none is due, the soonest upcoming one (`due: false`). Graduated cards are never returned. `explanation` is in the request language. |
+| `POST /api/mistakes/:id/attempt` | `{ solved: bool, time_ms?: n }` | `{ card, counted, graduated_now, summary }`; 404 if unknown/removed |
+| `POST /api/mistakes/sync` | | `{ scanned, added, more, summary }` — backfill: scans up to 100 reviewed, not-yet-scanned games per call (`more: true` → call again) |
+| `GET /api/mistakes` | `?filter=all\|due\|learning\|graduated&limit=1..100 (20)&offset=n` | `{ items: [MistakeCard], summary, limit, offset }` (newest first) |
+| `DELETE /api/mistakes/:id` | | `{ ok: true, summary }`; 404 if unknown/removed |
+
+**Frontend.** `#/puzzles/mistakes` (`params.mode === 'mistakes'` in `pages/puzzles.js`) runs the deck with the shared
+`PuzzleRunner` (a card becomes `{ fen: prev_fen, moves: [prev_uci, ...solution] }`, or `{ fen, moves: solution, userFirst: true }`
+when there is no previous move). On mount it calls `POST /api/mistakes/sync` (up to 3 rounds). The Puzzles hub shows a
+"Learn from your mistakes" entry with the due-count badge (from `/api/mistakes/summary`). `#/puzzles?theme=<theme>` opens the
+rated solver filtered by theme.
+
+## Insights
+
+Personal weakness tracker built from the user's reviewed games. Aggregation is pure and lives in
+`gm_analysis::insights` (unit-tested); routes in `crates/gm-server/src/routes/insights.rs`.
+
+**User side of a game:** `user_color`, else a case-insensitive match of the profile name against
+`white`/`black`. Games where the side is unknown are ignored. "Reviewed" = the game has stored
+accuracies (set by `POST /api/review {game_id}` or `review-next`).
+
+### `GET /api/insights`
+Computed server-side from at most 200 recent reviewed games (scan of the 500 most recent games),
+cached in a bounded cache (8 entries) keyed by language + every reviewed game's `id:updated_at`
+(any change invalidates). Text (`title`, `explanation`, `drill.label`) is in the request `Lang`.
+```json
+{
+  "games_analyzed": 9, "min_games": 3, "ready": true,
+  "total_games": 12, "unreviewed": 3, "reviewable": 3,
+  "weaknesses": [{
+    "id": "hanging_pieces|missed_tactics|endgame|opening|conversion|repeated|time_trouble",
+    "title": "Leaving pieces unprotected", "explanation": "…", "count": 28, "games": 8, "score": 4.1,
+    "theme": "fork",
+    "examples": [{ "game_id": 7, "ply": 19, "fen": "<before the move>", "move_uci": "d1d3", "move_san": "Qd3",
+                   "best_uci": "b5c4", "best_san": "bxc4", "color": "white", "classification": "blunder" }],
+    "drill": { "href": "#/drills/hanging", "label": "Practice spotting hanging pieces" }
+  }],
+  "phases": [{ "phase": "opening|middlegame|endgame", "moves": 90, "inaccuracies": 15, "mistakes": 5, "blunders": 4 }],
+  "hanging": [{ "piece": "pawn|knight|bishop|rook|queen", "count": 13 }],
+  "tactics": [{ "theme": "hangingPiece", "count": 5 }],
+  "accuracy_trend": [{ "game_id": 3, "date": "…", "accuracy": 72.6, "outcome": "win|loss|draw|ongoing", "color": "white" }],
+  "average_accuracy": 73.8,
+  "by_color": { "white": { "games": 6, "wins": 2, "losses": 4, "draws": 0, "accuracy": 73.0 } },
+  "by_opening": [{ "name": "Italian Game", "games": 2, "wins": 1, "losses": 1, "draws": 0, "accuracy": 72.4 }],
+  "conversion": { "winning_games": 3, "converted": 2,
+                  "failed": [{ "game_id": 9, "ply": 41, "fen": "…", "color": "white", "outcome": "draw|loss", "best_cp": 1250 }] },
+  "time_trouble": null
+}
+```
+- `ready` = `games_analyzed >= min_games`; `reviewable` = unreviewed user games with ≥ 6 plies.
+- `weaknesses`: at most 3, most urgent first; `theme` only for `missed_tactics`; `tactics` lists puzzle theme ids, most frequent first.
+- `time_trouble`, when clock data exists: `{ games_with_clock, low_time_secs: 30, low_time_moves, low_time_errors, normal_moves, normal_errors }`.
+
+Definitions: user errors = mistake, miss, blunder (phases also count inaccuracies). Phase: endgame when
+non-pawn material of both sides ≤ 20 points (or no queens and ≤ 26), else opening while full move ≤ 10,
+else middlegame. Hanging = a mistake/blunder after which a user piece can be won (SEE). Missed tactic =
+the engine's best move on a user error is a fork / pin / skewer / discovered attack / back-rank mate /
+mate in 1–3 / winning a hanging piece (`gm_mentor::tactics`). Conversion = finished game where the user
+reached ≥ +3 and didn't win. Time trouble needs `[%clk]` comments in the stored PGN (currently stripped
+on import, so it is normally `null` and the UI hides the card). Drill links: `#/drills/hanging`,
+`#/puzzles?theme=<theme>`, `#/endgames`, `#/repertoire`, `#/play?fen=…&color=w|b`, `#/puzzles/mistakes`,
+`#/puzzles/rush`.
+
+### `POST /api/insights/review-next`
+Body `{ "skip": [gameId…] }` (optional, ≤ 200 ids). Reviews ONE unreviewed user game (most recent
+first, ≥ 6 plies) at depth 12 through the normal review pipeline and stores it like
+`POST /api/review {game_id}`. → `{ "game_id": 12 | null, "remaining": 2 }` (`null` = nothing left).
+Only one runs at a time (`409` otherwise). The review is awaited inside the request, so aborting the
+HTTP request cancels its engine searches. The Insights page loops it for at most 10 games per click
+and has a Stop button.
+
+### Frontend
+- `#/insights` (`web/js/pages/insights.js`, CSS `web/css/insights.css` linked from `index.html`).
+  Exports `topWeaknessesCard() → { el, destroy() }` (used on the Profile page), `miniBoard(fen,
+  { orientation, played, best })` (static SVG), `momentHref(gameId, ply)`.
+- `#/review/:gameId?ply=<n>` opens Game Review on that move's walkthrough (added for Insights).
+- Strings: `insights.*` in `web/locales/{en,es}/insights.js`.
+
+## Backup & sync
+
+Whole-profile backup file, restore (merge or replace) and LAN device sync. Store logic:
+`crates/gm-store/src/backup.rs`; routes: `crates/gm-server/src/routes/backup.rs`; UI: the
+"Your data" card on Settings (`web/js/components/backup.js`, `createBackupSection() -> { el, destroy }`).
+
+### Backup file (format version 1)
+
+```json
+{ "format": "grandmentor-backup", "format_version": 1, "schema_version": 2,
+  "app_version": "0.1.0", "created_at": "2026-10-08T12:00:00Z",
+  "profile": { "name": "Alex", "...": "Profile fields" },
+  "tables": { "games": [ { "id": 1, "white": "Me", "...": "..." } ], "activity": [ "..." ] },
+  "browser": { "grandmentor.settings.v1": "{\"theme\":\"dark\"}", "gm.endgames.v1": "..." } }
+```
+
+* `tables` holds **every** user table (discovered with `pragma_table_list`; `sqlite_*` internals and
+  `backup_meta` excluded), rows as JSON objects keyed by column name. Tables added by new features
+  are included automatically. SQL values map to JSON null / integer / float / string; BLOBs to
+  `{"$blob": "<hex>"}`.
+* `browser` is added by the frontend: localStorage entries whose key starts with `grandmentor`,
+  `gm.`, `gm_` or `gm-` (string values, at most 512 KB in total). The server never stores it; preview
+  and import echo it back (sanitized) so the client can restore it.
+* Max size 200 MB (`MAX_BACKUP_BYTES`); files with `format_version` > 1 are rejected.
+
+### Endpoints
+
+| Method & path | Body | Response |
+|---|---|---|
+| `GET /api/backup/status` | — | `{ last_backup_at, last_restore_at, last_sync_at, tables: [{name, rows}], total_rows, schema_version, format_version }` (timestamps ISO or null) |
+| `GET /api/backup/export[?mark=false]` | — | the backup JSON (without `browser`), `Content-Disposition: attachment; filename="grandmentor-backup-YYYY-MM-DD.json"`. Records `last_backup_at` unless `mark=false`. |
+| `POST /api/backup/preview` | backup file (raw JSON, ≤ 200 MB) | `{ format_version, schema_version, current_schema_version, app_version, created_at, profile_name, tables: [{name, rows, known, current_rows}], total_rows, warnings: [Warning], browser }` |
+| `POST /api/backup/import?mode=merge\|replace[&confirm=replace][&source=sync]` | backup file | `ImportReport` = `{ mode, tables: [{name, inserted, updated, skipped, failed}], inserted, updated, skipped, failed, warnings: [Warning], browser }`. `mode=replace` requires `confirm=replace`; `source=sync` records `last_sync_at` instead of `last_restore_at`. |
+| `GET /api/sync/pair` | — | `{ active, code?, expires_in?, network_visible }` — local requests only |
+| `POST /api/sync/pair` | — | new pairing code (replaces any previous one): `{ active: true, code: "ABC-234", expires_in: 600, network_visible }` — local requests only |
+| `DELETE /api/sync/pair` | — | revokes the code — local requests only |
+| `GET /api/sync/snapshot` | header `X-GM-Pair: <code>` | backup JSON of this device (does not touch `last_backup_at`) |
+| `POST /api/sync/merge` | header `X-GM-Pair`, backup file | `ImportReport` (merge mode; `browser` is always `{}`) |
+
+`Warning` = `{ code, table?, column?, count }` with `code` one of `unknown_table` (skipped, `count`
+rows), `unknown_column` (skipped), `rows_failed` (`count` rows violated a constraint and were
+skipped), `newer_schema` (file from a newer DB schema) or `browser_dropped` (invalid browser entries
+left out). The UI translates them. Errors are `{ "error": "..." }`, localized via `Accept-Language`:
+400 bad / foreign file or unsupported version, 401 wrong or expired pairing code, 403 pairing
+requested from another machine, 413 too large.
+
+### Import semantics (always one transaction)
+
+* **Replace**: empties every user table, inserts the backup rows verbatim (original ids, only
+  columns known locally), drops rows with dangling foreign keys, keeps a profile row.
+* **Merge** (idempotent — merging the same file twice changes nothing):
+  * tables keyed by an auto-increment `INTEGER PRIMARY KEY` (games, puzzle_attempts, …): rows get
+    new local ids and are de-duplicated by content — games by `(start_fen, moves, created_at)`,
+    other tables by every column except the id and `updated_at`. Columns referencing those ids
+    through a declared foreign key, or any column named `game_id`, are remapped to the new ids.
+  * tables with a natural primary key (lesson_progress, activity, …): missing rows are inserted; an
+    existing row is overwritten only when the backup's `updated_at` is newer.
+  * `profile`: best-of counters (`rush_best`, `puzzles_solved`, `puzzles_failed`, at least the merged
+    attempt counts), rating / RD / streak from the side with the newer `last_active`, local name /
+    avatar / settings unless the local profile is still the default "Player".
+
+### Device sync and security
+
+Flow (device B, Settings → "Connect to another device"): B's browser fetches
+`A/api/sync/snapshot` with the pairing code and posts it to its own
+`/api/backup/import?mode=merge&source=sync` ("Bring here"), then posts its own
+`/api/backup/export?mark=false` to `A/api/sync/merge` ("Send there"). "Both ways" pulls first.
+
+* GrandMentor binds to `127.0.0.1` by default, so nothing is reachable from the network. To be a
+  sync source, device A must be started with `GM_HOST=0.0.0.0` (or a LAN address). That also
+  exposes the rest of the (unauthenticated) API to the LAN, as before — only do it on a trusted
+  network, and stop the server or restart it without `GM_HOST` afterwards.
+* Pairing codes (6 characters from a 32-letter alphabet, shown as `ABC-234`) live only in memory,
+  one at a time, for 10 minutes; 20 wrong attempts revoke the code. They can only be created, read
+  or revoked by requests from this machine (loopback peer address and, when present, a localhost
+  `Origin`).
+* `snapshot` / `merge` always require a valid `X-GM-Pair` header, with or without CORS.
+* CORS for non-local origins is granted **only** to `/api/sync/snapshot` and `/api/sync/merge`,
+  and only for requests carrying a currently valid code (preflights: when they announce the
+  `x-gm-pair` header). `GM_SYNC_ALLOW_ORIGINS=http://192.168.1.21:8080,...` restricts it further to
+  those origins. Every other endpoint keeps the localhost-only CORS policy.
+* Traffic is plain HTTP (code and data are not encrypted): use it on your own network.
+* The request body limit is raised to 200 MB only for `backup/preview`, `backup/import` and
+  `sync/merge` (everything else stays at 1 MB); parsing and database work run on the blocking pool.
+
+## Quick drills
+
+Short, timed board-vision games at `#/drills` (hub) and `#/drills/:drillId` (`web/js/pages/drills.js`,
+styles `web/css/drills.css`, strings `drills.*`). Scores are "higher is better"; the server keeps the personal
+best per drill + variant (`drill_bests`) and a bounded history of 50 runs per drill + variant (`drill_scores`).
+
+| Drill id | Variants (first = default) | Length | Questions |
+|---|---|---|---|
+| `coordinates` | `find-white`, `find-black`, `name-white`, `name-black` | 30 s | client-generated |
+| `hanging` | `standard` | 60 s | server batch |
+| `material` | `standard` | 60 s | server batch |
+| `checks` | `checks`, `captures` | 60 s | server batch |
+| `knight` | `basic`, `advanced` | 60 s | server batch |
+
+**`GET /api/drills`** → `{ "drills": [ { "id": "coordinates", "variants": [ { "id": "find-white", "best": 23|null, "best_at": "ISO"|null, "plays": 4, "recent": [18, 20, 23], "last_accuracy": 95.0|null } ] } ] }`
+(drills in the table order; `recent` = last ≤10 scores, oldest first).
+
+**`GET /api/drills/:id/batch?n=20&variant=`** (`n` clamped to 1..=50; unknown drill → 404, unknown variant or
+`coordinates` → 400) → `{ "drill": "hanging", "variant": "standard", "items": [...] }` where items are:
+- `hanging`: `{ "fen", "hanging": [ { "square": "d5", "piece": "bN" } ] }` — 1..=3 pieces (either colour, never kings) that the
+  other side can capture legally with a positive static exchange; positions where a side is in check are never served.
+- `material`: `{ "fen", "white": 31, "black": 28, "diff": 3, "options": [3, -3, 2, 0] }` — pawns (P1 N3 B3 R5 Q9), `diff = white - black`, four distinct shuffled options.
+- `checks`: `{ "fen", "answers": [ { "uci": "e7g7", "san": "Rg7+" } ] }` — every legal checking move (variant `checks`) or capture (`captures`), 1..=6 answers; the side to move is not in check and has no promotions.
+- `knight`: `{ "fen", "start": "g1", "target": "f2", "min_moves": 2, "blocked": ["a1", ...], "path": ["e2", "f4"] }` — the FEN holds the white knight (and in `advanced` 2..=4 black pieces, no kings); `blocked` = squares occupied or attacked by black pieces; `path` = one shortest route (start excluded).
+
+Positions come from `data/puzzles.json` (start and along the solution line), with random legal positions as a fallback.
+
+**`POST /api/drills/:id/score`** `{ "variant": "find-white", "score": 14, "correct": 14, "total": 16, "duration_ms": 30000 }`
+(`correct <= total <= 10000`, `score <= 10000`) → `{ "score": 14, "best": 14, "previous_best": 12|null, "is_best": true, "plays": 5 }`.
+Logs activity kind `drill` (1 per run).
+
+Store API (`gm_store::drills`): `DRILLS`, `is_known`, `variants_of`, `Store::record_drill(drill, variant, &DrillRun) -> DrillRecordResult`,
+`Store::drill_stats() -> Vec<DrillStats>`. Generators live in `gm-server/src/routes/drills/generate.rs`.
+
+Client preferences (mode / board side / coordinates / variant) are kept per viewer in `localStorage["gm.drills.v1"]`.
+Keyboard: Enter/Space starts; type a square (`e4`) to click it; `1`–`4` pick an answer; in `checks` type a move (`g1f3`) and Enter for the next position.
+
+## Interactive lessons
+
+Extends `Task` (§3 gm-content) with new `kind`s. Module: `crates/gm-content/src/steps.rs`; the extra
+fields live in `steps::TaskExtra`, flattened into `Task` on the wire and **omitted when empty**, so
+`moves` tasks serialize exactly as before. `GET /api/courses/:id` returns them unchanged. An empty
+`kind` means `moves`; an unknown kind drops the lesson at load time (and fails `cargo test -p gm-content`).
+
+| `kind` | Learner does | Fields (besides `prompt`, `hint?`, `success`) | Load-time validation |
+|---|---|---|---|
+| `moves` | plays `solution` (replies auto-played) | `solution` | needs `fen`; every move legal |
+| `guess` | guesses a master's moves one by one | `solution` (learner, reply, …), `notes: [string]` (one per learner move), `game?: string` caption | needs `fen`; moves legal; `notes.len() <= ceil(solution.len()/2)` |
+| `count` | answers "who's ahead and by how much?" | `answer: i32` (pawns, White − Black, values 1/3/3/5/9), `choices: [i32]` (2–7, unique) | needs `fen`; `answer` equals the position's material balance and is one of `choices` |
+| `hanging` | clicks every hanging piece, then **Check** | `squares: [sq]` | needs `fen`; each square holds a non-king piece that is attacked and undefended or attacked by a cheaper piece; no other piece of those colours qualifies |
+| `choice` | picks the best option | `options: [{text, arrows: [Arrow], correct: bool, explain}]` (2–6, ≥ 1 correct) | squares/colours of arrows valid |
+| `square` | clicks the named squares in order (coordinate quiz) | `squares: [sq]` (1–16), `blind?: bool` (hide board coordinates) | valid squares; `fen` optional (inherits the previous step's position) |
+
+```jsonc
+{ "kind": "count", "prompt": "Who is ahead, and by how much?", "answer": -2, "choices": [-3, -2, 0, 2, 3], "success": "…" }
+{ "kind": "guess", "game": "Paul Morphy vs Duke Karl & Count Isouard, Paris 1858", "solution": ["c1g5", "b7b5", "c3b5", …], "notes": ["**Bg5** develops with a pin…", …], "prompt": "…", "success": "…" }
+```
+
+**Lesson player (`web/js/pages/lesson.js`).**
+- `guess`: an exact guess scores **3** points (any mate also counts when the master's move mates). Otherwise the
+  player compares the two resulting positions with `POST /api/engine/analyze` (`{fen, movetime_ms: 700, depth: 14}`,
+  both in parallel, aborted when the step changes): loss ≤ 30 cp → **2**, ≤ 90 cp → **1**, else 0 (engine
+  unavailable → 0, the lesson continues). Hints cap the move at 2 (piece shown) or 1 (arrow shown). The master's move
+  is then animated with its note, the reply is auto-played, and the step total is shown; the finish card sums all
+  guess steps of the lesson.
+- `count`: answer buttons labelled "White +n / Equal / Black +n" (keys 1–9); a correct answer shows a per-side material breakdown.
+- `hanging`: clicking a piece toggles it (only occupied squares); **Check** marks right picks green, wrong ones red, and says how many are still missing.
+- `choice`: option arrows are drawn together and recoloured by position (blue, yellow, red, green), so the colour never gives the answer away; hovering/focusing an option shows only its arrows. Keys 1–9 pick an option.
+- `square`: shows the target square big; `blind` hides `.gm-coord` labels via `.lrn-blind` on the board slot; reports the time taken.
+
+**Translations.** `data/i18n/<lang>/courses*.json` task overlays accept, besides `prompt`/`hint`/`success`:
+`game`, `notes: [string|null]` and `options: [{text?, explain?}|null]`, all in English order. Answers,
+squares, arrows, `correct` flags and solutions always come from the English source. The Spanish text of the
+**Board Vision** (`board-vision`) and **Guess the Move: Master Games** (`guess-the-move`) courses is in
+`data/i18n/es/courses.part3.json`.
+
+**Learn hub.** `#/learn` shows two practice entry cards between the stats and the course list: **Quick drills** → `#/drills`
+and **Classic games** → `#/classics`.
+
+## Play experience (adaptive bot, play from a position, premoves, confirm, blindfold)
+
+### Adaptive bot & estimated rating
+
+- **Bot** `id: "adaptive"` ("Sparky", `gm_bots::ADAPTIVE_ID`). `GET /api/bots` reports its `elo` as the user's
+  current adaptive level. `POST /api/bot/move` with `bot_id: "adaptive"` plays at the stored level
+  (`gm_bots::choose_move_at(engine, content, bot_id, start_fen, moves, elo: Option<u16>, lang)`; the level is
+  clamped to `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO` = 250..=2800).
+- `GET /api/adaptive/estimate` →
+  `{"rating": n|null, "games": n, "provisional": bool, "bot_level": n, "bot_games": n}`.
+  `rating` is null until the first counted game; `provisional` until 5 games.
+- `POST /api/adaptive/result` `{"game_id": n}` → counts a **saved** game (`POST /api/games`) against a bot. Idempotent
+  per game (a second call returns the stored change with `counted: false`). Response:
+  `{"counted": bool, "previous": n|null, "rating": n, "delta": n, "games": n, "provisional": bool, "bot_level": n,
+  "bot_level_delta": n, "estimate": {…estimate…}}`, or `{"skipped": "unfinished"|"not_bot"|"custom_position"|"too_short",
+  "estimate": {…}}` when the game does not count (result `*`, no/unknown bot or user colour, non-standard start
+  position, < 2 plies). Errors: 400 without `game_id`, 404 unknown game.
+- Model (`gm_store::adaptive`): Elo update from prior 800 with K = 80 (first 5 games) / 48 (< 15) / 32, clamped
+  100..3000, opponent = the bot's Elo (adaptive bot: its level at the time). Adaptive level: starts at the user's
+  estimate (600 without one), moves ±160 → ±50 (shrinking per game played vs it) after a win/loss, unchanged on a draw.
+  Store: `Store::adaptive_estimate()`, `Store::adaptive_record_game(game_id, opponent_elo, score, vs_adaptive)`.
+
+### Play page URL
+
+`#/play?fen=<encodeURIComponent(FEN)>[&color=w|b][&bot=<botId>]` opens the setup with that start position
+(invalid or finished positions show a friendly toast and fall back to the normal start). `color` defaults to the side
+to move. Games store it in `start_fen`. Entry points: Game Review toolbar (robot icon, current ply, same bot and the
+user's colour) and the Analysis board ("Play bot" action, current node). `#/local` is linked from the setup.
+
+Play prefs (`localStorage['grandmentor.play.prefs.v1']`) gain `extras: {premoves: true, confirmMove: false,
+typeMoves: false, blindfold: false}`; saved unfinished games also keep `extras`.
+
+### Board additions (`web/js/components/board.js`, backwards compatible)
+
+```js
+new Board(el, { …, premoveColor /* 'white'|'black'|null, default null */, onPremove /* (pm|null) => void */,
+  blindfold /* bool, default false */ });
+board.setPremoveColor(color|null);   // pieces of `color` can be queued while the other side is to move; null clears
+board.getPremove();                  // {from, to, promotion?} | null
+board.setPremove(pm|null);           // programmatic (e.g. a typed move); no onPremove call
+board.clearPremove(notify = false);
+board.playPremove();                 // plays it if legal now (calls onMove like a user move) → move object | null (dropped)
+board.setBlindfold(bool); board.setPeek(bool); board.blindfold;   // hide pieces; peek shows them while held
+```
+Premove destinations are geometric (rays ignore blockers, pawn pushes/captures, castling squares while the rights
+exist; never onto one's own piece). Promotion premoves open the picker (or queen with `autoQueen`). A queued premove
+is drawn with `.gm-sq.premove` (tokens `--board-premove`, `--board-premove-light`, `--board-premove-dot`, with
+fallbacks); right-click, clicking an empty/non-target square, or `clearPremove()` cancels it. With `premoveColor` set,
+a premove selection or drag in progress survives `setPosition` / `setInteractive` (the opponent's move landing) and
+turns into a normal move if it's now legal. Pages that don't pass the new options behave exactly as before.
+
+## Classic games
+
+Annotated library of famous public-domain games, narrated by the mentor (`#/classics`, `#/classics/:classicId`).
+
+**Content** — `data/classics.json` (array), validated by `gm-content` (`classics.rs`; every move replayed at load,
+`cargo test -p gm-content` fails if any game is dropped or the Spanish overlay is incomplete). Source fields:
+`id, title, white, black, event, year, result ("1-0"|"0-1"|"1/2-1/2"), opening, level (beginner|intermediate|advanced),
+themes [slug], orientation ("white"|"black"), summary, moves (SAN, space separated), key_ply,
+annotations [{ply, text, label?, arrows?, highlights?}], questions [{ply, prompt, hint?, explanation, also?: [SAN]}]`.
+- Annotation `ply` N is shown right after the N-th half-move (0 = intro). A `label` makes it a "key moment".
+- Question `ply` N: the board stops after N−1 plies and the side to move must find the game's N-th move (or one of `also`).
+- Theme slugs: development, attack, sacrifice, king-hunt, checkmate, tactics, positional, endgame, defence, opening-trap,
+  back-rank, zugzwang, initiative, pawn-power, human-vs-machine, calculation (translated in `web/locales/*/classics.js`).
+- Loader-filled: `uci [UCI]`, `san [SAN]`, `plies`, `key_fen` (FEN after `key_ply`), `era` (romantic ≤1885 | classical
+  1886–1945 | modern 1946–1990 | computer 1991+), and per question `answer_uci`, `answer_san`, `accept [UCI]`.
+- Spanish overlay `data/i18n/es/classics*.json`: `{ "<id>": { title, event, opening, summary, annotations: [{text, label}|null],
+  questions: [{prompt, hint, explanation}|null] } }` (same order/length as English; text only).
+
+**HTTP** (localized by `?lang=` / `Accept-Language`):
+- `GET /api/classics` → `[ClassicSummary & {progress: ClassicProgress|null}]` where `ClassicSummary =
+  {id, title, white, black, event, year, result, opening, level, themes, era, orientation, summary, key_fen, plies,
+  annotation_count, question_count}`.
+- `GET /api/classics/:id` → full `Classic` (all fields above) `& {progress: ClassicProgress|null}`; 404 if unknown.
+- `POST /api/classics/:id/progress` body `{ply?: n, completed?: bool, answer?: {ply, correct}}` (at least one field;
+  `ply` ≤ plies, `answer.ply` must be a question ply) → `ClassicProgress = {classic_id, last_ply, max_ply, completed,
+  completed_at|null, answers: [{ply, correct}], updated_at}`. Only the first answer per question is kept; `completed`
+  is never cleared. The first completion logs activity `classic`.
+
+**Store** (`gm_store::classics`): `classic_progress_all()`, `classic_progress(id)`,
+`update_classic_progress(id, &ClassicProgressUpdate) -> (ClassicProgress, newly_completed)`; tables `classic_progress`,
+`classic_answers` (migration v2).
+
+**Frontend** — `web/js/pages/classics.js` (+ `web/css/classics.css`, injected on mount; strings in `classics.*`).
+Library: stats, level/era/theme/search filters, cards with a mini board of `key_fen`. Player: board + optional eval bar
+(engine websocket, off by default), mentor bubble per annotation (arrows/highlights drawn), auto-play (slow/normal/fast,
+longer pauses on comments) or step-by-step (←/→, Space, F), "pause and think" questions (move on the board; hint /
+show me), key-moment chips, move list, "Play this position vs a bot" (`#/play?fen=…&color=w|b`) and "Open in Analysis"
+(`#/analysis?pgn=…`). Speed and eval preference persist in localStorage `grandmentor.classics.v1`.
+
+## Repertoire
+
+Opening repertoire builder with spaced-repetition drills. Store: `crates/gm-store/src/repertoire.rs`
+(`gm_store::repertoire::{Side, RepNode, RepTree, RepSummary, AddOutcome, Conflict, DrillLine, ReviewOutcome, Deviation, RepError}`);
+routes: `crates/gm-server/src/routes/repertoire.rs`; page: `web/js/pages/repertoire.js` (`#/repertoire`, `#/repertoire/:side`,
+query `?drill=1` starts the drill, `?node=<id>` selects a move); styles `web/css/repertoire.css` (injected by the page).
+
+**Model.** One move tree per side (`white` | `black`), rooted at the standard initial position. A node is one move:
+```jsonc
+// RepNode
+{ "id": 12, "parent_id": 0 /* 0 = first move */, "side": "white", "ply": 1 /* 1 = White's first move */,
+  "uci": "e2e4", "san": "e4", "fen": "<full FEN after the move>", "note": "",
+  "mine": true /* played by the repertoire's side = a drill card */,
+  "ease": 2.5, "interval_days": 0, "reps": 0, "lapses": 0, "due": 1800000000 /* unix s */, "is_due": true,
+  "last_review": null }
+```
+Rules: for your side at most **one** move per position (adding another returns a `conflict` unless `replace: true`,
+which removes the old move and everything after it); opponent replies may branch freely. Bounds: ≤ 5000 nodes per
+side, lines ≤ 80 plies, notes ≤ 500 chars. Every move is validated as legal. New cards are due immediately.
+Scheduling (SM-2 style): correct on a due card → interval 1 d, 3 d, then × ease (ease +0.1, max 3.0, interval ≤ 365 d);
+a correct answer on a card that is not due changes nothing; wrong → lapse, interval 0, ease −0.2 (min 1.3), due again in 10 min.
+
+| Method & path | Body / query | Response |
+|---|---|---|
+| `GET /api/repertoire?side=white` | | `RepTree {side, nodes:[RepNode] (parents before children), stats:SideStats, max_nodes}` |
+| `DELETE /api/repertoire?side=white` | | `{deleted:n}` |
+| `GET /api/repertoire/summary` | | `{due, lines, new, cards, white:SideStats, black:SideStats}` — `SideStats = {nodes, cards, lines, due, new, learned, depth}` |
+| `POST /api/repertoire/nodes` | `{side, parent_id?:0, uci, note?, replace?:false}` | `AddOutcome` |
+| `POST /api/repertoire/lines` | `{side, parent_id?:0, moves:[uci…], replace?:false}` | `AddOutcome` |
+| `PUT` (or `PATCH`) `/api/repertoire/nodes/:id` | `{note}` | `RepNode` |
+| `DELETE /api/repertoire/nodes/:id` | | `{deleted:n}` (the move and everything after it) |
+| `GET /api/repertoire/drill/next` | `?side=white\|black` (omit = both) `&any=1` (practice cards that are not due) | `{line: DrillLine \| null}` |
+| `POST /api/repertoire/drill/attempt` | `{node_id, uci}` | `ReviewOutcome {correct, expected_uci, expected_san, card:RepNode}`; logs activity `repertoire_review` |
+| `GET /api/repertoire/deviations` | `?limit=8` (max 30) | `[Deviation]` |
+| `GET /api/repertoire/starters` | | `[{id, side, openings:[{id, name /* localized */}], lines}]` |
+| `POST /api/repertoire/starters/:id` | | `{side, added, lines, skipped}` (lines clashing with your moves are skipped) |
+
+`AddOutcome = {added, removed, path:[node ids of the whole line], conflict: null | {ply, parent_id, existing_id, existing_uci, existing_san, new_uci, new_san}}`
+— with a conflict nothing is saved. Errors (`{error}`, localized en/es): 400 bad side / illegal move / line too long /
+repertoire full / wrong side / drilling an opponent move; 404 unknown node or starter.
+
+`DrillLine = {side, nodes:[RepNode] (path from the first move; always ends on one of your moves), due_in_line, due_total}`.
+The server walks the tree preferring due, overdue and weak (low ease, lapsed) cards; opponent replies are picked at
+random weighted by how much work their branch needs. The page's client-side "bot" plays the opponent moves of the line;
+a wrong answer is recorded once, the right move is shown with a green arrow and the line is re-asked at the end.
+
+`Deviation` (user games with `user_color`, standard start, newest first; games of a side with an empty repertoire are skipped):
+`{game_id, side, white, black, result, created_at, opening_name, status, ply, played_uci, played_san, expected:[{uci,san}],
+parent_id /* node whose position is fen_before; 0 = start */, fen_before, moves_before:[uci], book_plies}` with
+`status` = `deviated` (you played a different move than your repertoire), `unprepared` (opponent move you have not
+prepared — add it with `POST /nodes {side, parent_id, uci: played_uci}`), `end` (the game went past the end of your
+preparation) or `followed` (the game ended inside the repertoire). Positions are matched by FEN, so transpositions count.
+
+Shared helper for other pages: `import('./repertoire.js').then(m => m.openAddToRepertoire({ucis, sans?, name?, side?}))`
+opens the "Add to my repertoire" dialog (used by the Openings detail page).
+
+## Endgame training
+
+Endgame theory drills with a short lesson and a "practise until reliable" mode against the engine.
+
+**Content** (`data/endgames.json`, Spanish text in `data/i18n/es/endgames.json`). `EndgameDrill` gains:
+
+```rust
+pub struct EndgameDrill { /* id, title, category, level, fen, goal, description, hint, technique, plus: */
+  pub variants: Vec<String>,   // extra start FENs (same side to move); practice picks one at random
+  pub lesson: Vec<Step>,       // 2–5 "key idea" steps: text (markdown-lite), optional fen (default: drill fen),
+                               // arrows [{from,to,color}], highlights [square]; no tasks
+  pub success: DrillSuccess,   // when an attempt counts as solved
+  pub pitfall: String }        // what usually goes wrong, shown after a failed attempt
+pub struct DrillSuccess { pub kind: String /* mate|promote|bare_king|hold */, pub moves: u32 }
+```
+
+- `mate`: checkmate within `moves` own moves. `promote`: promote a pawn that the opponent cannot capture at
+  once (or leave the opponent a bare king). `bare_king`: win all enemy material (or mate). These three go
+  with `goal: "win"`; `hold` (only with `goal: "draw"`) succeeds on any draw by rule, when the engine
+  has nothing left to win with (bare king or a lone minor piece), or after surviving `moves` own moves.
+- Missing `success` defaults to `mate`/50 (win) or `hold`/30 (draw). The loader rejects bad goals/kinds,
+  variants with the other side to move, `moves > 100`, more than 8 variants and lesson squares off the board.
+- Categories (UI groups): `basic` Basic mates, `pawn` Pawn endgames, `rook` Rook endgames, `queen` Queen
+  endgames, `minor` Minor pieces.
+
+**Verification.** All 90 positions with ≤ 7 pieces (every main FEN and variant except three 8–10 piece pawn
+structures) were checked against the Lichess Syzygy tablebase (`tablebase.lichess.ovh`): every `win` drill is
+a tablebase win for the side to move and every `draw` drill a tablebase draw. The remaining six positions
+(`outside-passed-pawn`, `pawn-breakthrough`, `rook-behind-passer` and their mirrors) are covered by the engine
+test `crates/gm-server/tests/training.rs::drill_positions_pass_engine_sanity_check`, which also runs on every
+position: wins must score ≥ +150 cp or a mate for the side to move, draws must not be a forced mate against it.
+
+**HTTP**
+
+| Method & path | Body | Response |
+|---|---|---|
+| GET `/api/training` | – | `{ "mastery_streak": 3, "drills": [DrillProgress] }` — one entry per drill in the content (zeros when never tried) |
+| POST `/api/training/:drillId/attempt` | `{ "success": bool, "moves": n /* 0..=500, default 0 */ }` | `DrillProgress` + `"just_mastered": bool, "mastery_streak": 3` |
+
+```json
+DrillProgress = { "drill_id": "lucena", "attempts": 5, "successes": 4, "streak": 3, "best_streak": 3,
+  "best_moves": 9, "mastered": true, "mastered_at": "2026-10-08T21:13:46Z",
+  "last_at": "2026-10-08T21:14:02Z", "last_success": true }
+```
+
+Unknown drill → 404, `moves > 500` or a malformed body → 400 (`{"error": "..."}`). A drill is mastered after
+3 successes in a row; mastery is sticky (a later failure only resets `streak`). Each attempt logs activity
+kind `endgame`. Storage: `gm_store::training` (`Store::training_progress`, `Store::drill_progress`,
+`Store::record_training_attempt`), table `endgame_training`.
+
+**Frontend** (`web/js/pages/endgames.js`, styles in `web/css/endgames.css` + the existing `eg-*` rules in
+`learn.css`, strings in the `endgames` locale namespace).
+
+- `#/endgames`: drills grouped by category with mastered/total per group, progress dots (●●○) per drill and a
+  gold medal on mastered drills.
+- `#/endgames/:id`: the lesson (step through with Back/Next or ←/→) opens first until the drill has been
+  attempted; then practice opens directly (the book button reviews the lesson). Practice plays the engine
+  (`POST /api/engine/analyze`, 500 ms; falls back to the strongest bot) from the main FEN on the first attempt,
+  then from a random variant. An attempt fails on checkmate, a draw by rule in a win drill, the move limit,
+  the engine's evaluation turning lost (≤ −500 cp, or 600 cp worse than the start position for draw drills,
+  or a forced mate) or drawn (|cp| ≤ 25 for two replies in a win drill). Results are posted to
+  `/api/training/:id/attempt`; attempts that used help (the best-move hint or a takeback) are not recorded.
+  Results link to `#/play?fen=<FEN>&color=w|b` ("Play this position vs a bot") and `#/analysis?fen=`.

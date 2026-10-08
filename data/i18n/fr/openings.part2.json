@@ -1,0 +1,1482 @@
+{
+  "french-exchange": {
+    "name": "Défense française : variante d'échange",
+    "family": "Défense française",
+    "description": "Les Blancs relâchent la tension avec une structure de pions symétrique. Simple et solide, mais souvent proche de la nulle.",
+    "ideas": [
+      "Structure symétrique",
+      "Développement libre pour les deux fous",
+      "Lutte pour la colonne e ouverte"
+    ]
+  },
+  "french-tarrasch": {
+    "name": "Défense française : variante Tarrasch",
+    "family": "Défense française",
+    "description": "Les Blancs développent le cavalier en d2 et évitent le clouage de la Winawer. Les Noirs répondent souvent ...c5 ou ...Nf6.",
+    "ideas": [
+      "Éviter le clouage ...Bb4",
+      "Garder c3 libre pour le pion",
+      "Contrôle solide du centre"
+    ]
+  },
+  "french-tarrasch-open": {
+    "name": "Française Tarrasch : variante ouverte",
+    "family": "Défense française",
+    "description": "Les Noirs frappent d4 tout de suite et acceptent souvent un pion dame isolé en échange de pièces actives.",
+    "ideas": [
+      "Frapper d4 avec ...c5",
+      "Positions à pion dame isolé",
+      "Des pièces actives qui compensent la structure"
+    ]
+  },
+  "french-tarrasch-closed": {
+    "name": "Française Tarrasch : variante fermée",
+    "family": "Défense française",
+    "description": "Les Blancs gagnent de l'espace avec e5 et soutiennent d4 avec c3 ; les Noirs attaquent la chaîne avec ...c5 et ...f6.",
+    "ideas": [
+      "Lutte autour de la chaîne de pions",
+      "Ruptures ...c5 et ...f6",
+      "De l'espace à l'aile roi pour les Blancs"
+    ]
+  },
+  "french-rubinstein": {
+    "name": "Défense française : variante Rubinstein",
+    "family": "Défense française",
+    "description": "Les Noirs cèdent le centre pour se développer librement. Solide mais passive ; les Blancs obtiennent un petit avantage durable.",
+    "ideas": [
+      "Libérer les pièces",
+      "...Nd7 et ...Ngf6",
+      "Solide mais passive"
+    ]
+  },
+  "french-paulsen": {
+    "name": "Défense française : variante Paulsen",
+    "family": "Défense française",
+    "description": "Le coup principal : les Blancs défendent e4 avec le cavalier. Les Noirs choisissent entre la Winawer (...Bb4), la classique (...Nf6) et la Rubinstein (...dxe4).",
+    "ideas": [
+      "Défendre e4 avec une pièce",
+      "Développement rapide",
+      "Préparer e5"
+    ]
+  },
+  "french-winawer": {
+    "name": "Défense française : variante Winawer",
+    "family": "Défense française",
+    "description": "Les Noirs clouent le cavalier c3 et donnent souvent leur fou contre lui, ce qui abîme les pions blancs. Très tranchante et complexe sur le plan stratégique.",
+    "ideas": [
+      "Clouer le cavalier c3",
+      "Doubler les pions c des Blancs",
+      "Contre-attaquer avec ...c5 et ...Qc7"
+    ],
+    "traps": [
+      "Après 7.Qg4, les Noirs doivent choisir entre ...O-O et le tranchant sacrifice de pion ...Qc7"
+    ]
+  },
+  "french-winawer-main": {
+    "name": "Française Winawer : ligne principale",
+    "family": "Défense française",
+    "description": "La structure principale de la Winawer : les Blancs ont la paire de fous et de l'espace à l'aile roi ; les Noirs ont une meilleure structure et du jeu à l'aile dame.",
+    "ideas": [
+      "Les Blancs attaquent avec Qg4",
+      "Les Noirs jouent ...Ne7, ...Qc7, ...Qa5",
+      "Duel entre les fous et la structure"
+    ]
+  },
+  "french-classical": {
+    "name": "Défense française : variante classique",
+    "family": "Défense française",
+    "description": "Les Noirs développent le cavalier et attaquent e4. Les Blancs choisissent Bg5 (classique), e5 (Steinitz) ou d'autres plans.",
+    "ideas": [
+      "Mettre la pression sur e4",
+      "Développement naturel",
+      "Ruptures ...c5 et ...f6 après e5"
+    ]
+  },
+  "french-steinitz": {
+    "name": "Défense française : variante Steinitz",
+    "family": "Défense française",
+    "description": "Les Blancs gagnent de l'espace avec e5 et le soutiennent par f4, formant une large chaîne de pions et préparant une attaque à l'aile roi.",
+    "ideas": [
+      "Grande chaîne de pions e5/f4/d4",
+      "Attaque à l'aile roi",
+      "Les Noirs frappent avec ...c5, ...Nc6, ...Qb6"
+    ]
+  },
+  "french-mccutcheon": {
+    "name": "Défense française : variante MacCutcheon",
+    "family": "Défense française",
+    "description": "Au lieu de se libérer du clouage, les Noirs clouent à leur tour le cavalier c3, ce qui mène à un jeu tranchant et déséquilibré.",
+    "ideas": [
+      "Contre-clouage avec ...Bb4",
+      "Jeu tactique tranchant",
+      "Abîmer la structure blanche"
+    ]
+  },
+  "french-classical-main": {
+    "name": "Française classique : ligne principale",
+    "family": "Défense française",
+    "description": "Les Blancs échangent les fous de cases noires et gardent l'avantage d'espace en e5. Les Noirs jouent ...c5 et ...a6 pour jouer à l'aile dame.",
+    "ideas": [
+      "Échanger le bon fou de cases noires",
+      "f4 et Nf3 soutiennent e5",
+      "Le contre-jeu noir à l'aile dame"
+    ]
+  },
+  "caro-kann-defense": {
+    "name": "Défense Caro-Kann",
+    "family": "Défense Caro-Kann",
+    "description": "Une défense ultra-solide : les Noirs préparent ...d5 tout en gardant leur fou de cases blanches libre. Idéale si tu aimes les positions sûres et bien structurées.",
+    "ideas": [
+      "Préparer ...d5 avec ...c6",
+      "Sortir le fou hors de la chaîne de pions",
+      "Structure solide et bonnes finales"
+    ],
+    "traps": [
+      "Mat à l'étouffée : 3.Nc3 dxe4 4.Nxe4 Nd7 5.Qe2 Ngf6?? 6.Nd6#"
+    ]
+  },
+  "caro-kann-advance": {
+    "name": "Caro-Kann : variante d'avance",
+    "family": "Défense Caro-Kann",
+    "description": "Les Blancs prennent de l'espace avec e5. Les Noirs développent le fou en f5 et attaquent la chaîne avec ...c5, ou avec ...e6 puis ...c5.",
+    "ideas": [
+      "L'espace des Blancs à l'aile roi",
+      "Le schéma noir avec ...Bf5 et ...e6",
+      "Rupture ...c5 contre d4"
+    ]
+  },
+  "caro-kann-advance-short": {
+    "name": "Caro-Kann avance : variante Short",
+    "family": "Défense Caro-Kann",
+    "description": "Le système tranquille de Nigel Short : les Blancs se développent calmement, roquent et visent c4 ou une pression lente. Peu de risques, un avantage stable.",
+    "ideas": [
+      "Développement calme et roque",
+      "Plans avec c4 ou Nbd2-b3",
+      "Avantage d'espace"
+    ]
+  },
+  "caro-kann-classical": {
+    "name": "Caro-Kann : variante classique",
+    "family": "Défense Caro-Kann",
+    "description": "Les Noirs développent le fou en gagnant un temps sur le cavalier. Une ligne principale classique et très solide, qu'on atteint aussi par 3.Nd2.",
+    "ideas": [
+      "Le fou se développe en gagnant un temps",
+      "Schéma solide ...e6/...Ngf6/...Nbd7",
+      "Parfois le grand roque"
+    ],
+    "traps": [
+      "Après 6.Ng3 Bg6 7.h4, les Noirs jouent 7...h6 pour que le fou puisse reculer en h7 quand h5 arrive"
+    ]
+  },
+  "caro-kann-classical-main": {
+    "name": "Caro-Kann classique : ligne principale",
+    "family": "Défense Caro-Kann",
+    "description": "La tabiya classique : le pion blanc en h5 gagne de l'espace à l'aile roi, tandis que les Noirs ont une structure saine.",
+    "ideas": [
+      "Les Blancs font le grand roque",
+      "Les Noirs font le grand ou le petit roque",
+      "Lutte pour e5 et e4"
+    ]
+  },
+  "caro-kann-karpov": {
+    "name": "Caro-Kann : variante Karpov",
+    "family": "Défense Caro-Kann",
+    "description": "Les Noirs préparent ...Ngf6 pour pouvoir échanger le cavalier e4 sans se retrouver avec des pions doublés. Très solide ; la favorite de Karpov.",
+    "ideas": [
+      "Préparer ...Ngf6",
+      "Garder une structure saine",
+      "Jeu lent et solide"
+    ],
+    "traps": [
+      "5.Qe2 Ngf6?? 6.Nd6# : le célèbre mat à l'étouffée",
+      "5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6? 8.Nxe6! est un sacrifice bien connu"
+    ]
+  },
+  "caro-kann-bronstein-larsen": {
+    "name": "Caro-Kann : variante Bronstein-Larsen",
+    "family": "Défense Caro-Kann",
+    "description": "Les Noirs acceptent des pions doublés pour ouvrir la colonne g et chercher l'attaque. Dynamique et risquée.",
+    "ideas": [
+      "Colonne g ouverte",
+      "La dynamique de la paire de fous",
+      "Jeu agressif à l'aile roi"
+    ]
+  },
+  "caro-kann-exchange": {
+    "name": "Caro-Kann : variante d'échange",
+    "family": "Défense Caro-Kann",
+    "description": "Les Blancs échangent en d5 et développent le fou en d3 pour jouer à l'aile roi. Cela ressemble à la variante d'échange du gambit dame refusé, couleurs inversées.",
+    "ideas": [
+      "Schéma avec c3 et Bf4",
+      "Attaque de minorité pour les Noirs",
+      "Jeu simple et stratégique"
+    ]
+  },
+  "caro-kann-panov": {
+    "name": "Caro-Kann : attaque Panov-Botvinnik",
+    "family": "Défense Caro-Kann",
+    "description": "Les Blancs attaquent d5 avec c4, ce qui mène souvent à des positions à pion dame isolé avec des pièces actives.",
+    "ideas": [
+      "Pion dame isolé et pièces actives",
+      "Chances d'attaque à l'aile roi",
+      "Pression sur d5"
+    ]
+  },
+  "caro-kann-two-knights": {
+    "name": "Caro-Kann : attaque des deux cavaliers",
+    "family": "Défense Caro-Kann",
+    "description": "Les Blancs développent leurs deux cavaliers avant d4, ce qui garde de la souplesse et évite les lignes principales.",
+    "ideas": [
+      "Développement souple",
+      "Le clouage ...Bg4 est fréquent",
+      "Éviter la théorie"
+    ]
+  },
+  "caro-kann-fantasy": {
+    "name": "Caro-Kann : variante Fantaisie",
+    "family": "Défense Caro-Kann",
+    "description": "Les Blancs soutiennent e4 avec le pion f, gardant un grand centre et proposant parfois un gambit. Tranchante et peu courante.",
+    "ideas": [
+      "Garder un grand centre de pions",
+      "Développement rapide",
+      "Jeu tranchant"
+    ]
+  },
+  "scandinavian-defense": {
+    "name": "Défense scandinave",
+    "family": "Défense scandinave",
+    "description": "Les Noirs contestent e4 tout de suite. La dame reprend tôt en d5, mais la structure simple la rend facile à apprendre.",
+    "ideas": [
+      "Contestation immédiate du centre",
+      "Développement simple : ...Nf6, ...Bf5, ...e6, ...c6",
+      "Peu de théorie"
+    ],
+    "traps": [
+      "Après 2...Qxd5 3.Nc3, la dame doit bouger en perdant un temps : choisis une case sûre"
+    ]
+  },
+  "scandinavian-qa5": {
+    "name": "Défense scandinave : ligne principale (Qa5)",
+    "family": "Défense scandinave",
+    "description": "La scandinave classique : la dame va en a5, cloue le cavalier c3 et reste active.",
+    "ideas": [
+      "Clouer le cavalier c3 depuis a5",
+      "...Nf6, ...Bf5, ...c6, ...e6",
+      "Structure solide façon Caro-Kann"
+    ],
+    "traps": [
+      "Attention aux attaques à la découverte Bd2 + Nd5 sur la dame en a5",
+      "Les astuces avec b4 peuvent piéger la dame"
+    ]
+  },
+  "scandinavian-qd6": {
+    "name": "Défense scandinave : Gubinsky-Melts (Qd6)",
+    "family": "Défense scandinave",
+    "description": "Un placement moderne de la dame : en d6, elle est centralisée et soutient les schémas avec ...a6 et ...Nf6.",
+    "ideas": [
+      "La dame en d6 contrôle des cases centrales",
+      "Schémas avec ...a6, ...Nf6, ...g6",
+      "Éviter que la dame se fasse chasser"
+    ],
+    "traps": [
+      "Nb5 attaque la dame et c7 : il faut souvent jouer ...a6 ou ...c6"
+    ]
+  },
+  "scandinavian-qd8": {
+    "name": "Défense scandinave : variante Qd8",
+    "family": "Défense scandinave",
+    "description": "La dame rentre à la maison, sur la case la plus sûre. Les Noirs sont solides mais un peu passifs.",
+    "ideas": [
+      "Sécurité maximale pour la dame",
+      "...Nf6, ...g6 ou ...c6",
+      "Structure solide"
+    ]
+  },
+  "scandinavian-modern": {
+    "name": "Défense scandinave : variante moderne",
+    "family": "Défense scandinave",
+    "description": "Les Noirs reprennent avec le cavalier au lieu de la dame, ou sacrifient le pion contre du développement.",
+    "ideas": [
+      "Reprendre avec le cavalier",
+      "Éviter de sortir la dame trop tôt",
+      "Options de gambit"
+    ]
+  },
+  "scandinavian-portuguese": {
+    "name": "Défense scandinave : gambit portugais",
+    "family": "Défense scandinave",
+    "description": "Les Noirs abandonnent le pion d5 contre un développement rapide et des chances d'attaque contre l'aile dame blanche.",
+    "ideas": [
+      "Gambit pour le développement",
+      "Clouage avec ...Bg4",
+      "Jeu de pièces agressif"
+    ]
+  },
+  "scandinavian-icelandic": {
+    "name": "Défense scandinave : gambit islandais (Palme)",
+    "family": "Défense scandinave",
+    "description": "Les Noirs sacrifient un pion pour une grosse avance de développement. Tranchant et agressif.",
+    "ideas": [
+      "Gambit pour ouvrir des lignes",
+      "Développement rapide",
+      "Attaquer le roi blanc"
+    ]
+  },
+  "pirc-defense": {
+    "name": "Défense Pirc",
+    "family": "Défense Pirc",
+    "description": "Une défense hypermoderne : les Noirs laissent les Blancs bâtir un grand centre, puis l'attaquent avec leurs pièces et ...e5 ou ...c5.",
+    "ideas": [
+      "Développer le fou roi en fianchetto",
+      "Attaquer le centre plus tard avec ...e5/...c5",
+      "Jeu souple, en contre-attaque"
+    ],
+    "traps": [
+      "L'attaque 150 (Be3, Qd2, Bh6) est un plan dangereux pour les Blancs"
+    ]
+  },
+  "pirc-austrian": {
+    "name": "Défense Pirc : attaque autrichienne",
+    "family": "Défense Pirc",
+    "description": "Les Blancs bâtissent un centre massif avec f4, en visant e5 et une attaque à l'aile roi. La réponse la plus tranchante à la Pirc.",
+    "ideas": [
+      "Énorme centre de pions",
+      "Poussée e5 pour chasser le cavalier f6",
+      "Attaque à l'aile roi"
+    ]
+  },
+  "pirc-classical": {
+    "name": "Défense Pirc : variante classique",
+    "family": "Défense Pirc",
+    "description": "Les Blancs se développent naturellement et roquent. Un jeu peu risqué avec un avantage central durable.",
+    "ideas": [
+      "Développement naturel",
+      "Garder le contrôle du centre",
+      "Plans lents avec h3/a4"
+    ]
+  },
+  "pirc-150-attack": {
+    "name": "Défense Pirc : attaque 150",
+    "family": "Défense Pirc",
+    "description": "Les Blancs jouent Be3, Qd2, Bh6 et h4-h5 : un plan simple et agressif, facile à apprendre.",
+    "ideas": [
+      "Échanger le fou g7 avec Bh6",
+      "Avalanche de pions h4-h5",
+      "Faire le grand roque"
+    ]
+  },
+  "modern-defense": {
+    "name": "Défense moderne",
+    "family": "Défense moderne",
+    "description": "Les Noirs jouent tout de suite le fianchetto et retardent le développement du cavalier en f6. Très souple et hypermoderne.",
+    "ideas": [
+      "Fianchetto précoce",
+      "Garder le cavalier flexible",
+      "Contre-attaquer le centre plus tard"
+    ]
+  },
+  "modern-defense-standard": {
+    "name": "Défense moderne : ligne standard",
+    "family": "Défense moderne",
+    "description": "Le schéma standard de la moderne : les Noirs laissent un large centre et attendent le bon moment pour contre-attaquer avec ...c6, ...b5 ou ...e5.",
+    "ideas": [
+      "Expansion à l'aile dame avec ...c6 et ...b5",
+      "Ruptures centrales ...e5 ou ...c5",
+      "Aile roi souple"
+    ]
+  },
+  "alekhine-defense": {
+    "name": "Défense Alekhine",
+    "family": "Défense Alekhine",
+    "description": "Les Noirs provoquent l'avance des pions blancs pour les attaquer ensuite. Une défense provocatrice et hypermoderne.",
+    "ideas": [
+      "Provoquer e5 et la surextension",
+      "Saper le centre avec ...d6",
+      "Pression des pièces sur e5"
+    ],
+    "traps": [
+      "L'attaque des quatre pions peut écraser les Noirs s'ils ne font pas attention"
+    ]
+  },
+  "alekhine-four-pawns": {
+    "name": "Défense Alekhine : attaque des quatre pions",
+    "family": "Défense Alekhine",
+    "description": "Les Blancs occupent tout le centre avec quatre pions. Si ça tient, les Noirs sont écrasés ; sinon, ce centre devient une cible.",
+    "ideas": [
+      "Centre maximal",
+      "Étouffer l'adversaire par l'espace",
+      "Les Noirs doivent frapper vite avec ...dxe5, ...Nc6, ...Bf5"
+    ]
+  },
+  "alekhine-exchange": {
+    "name": "Défense Alekhine : variante d'échange",
+    "family": "Défense Alekhine",
+    "description": "Les Blancs relâchent la tension avec exd6, ce qui mène à une partie plus calme avec un léger avantage d'espace.",
+    "ideas": [
+      "Simplifier le centre",
+      "Avantage d'espace avec c4/d4",
+      "Jeu peu risqué"
+    ]
+  },
+  "alekhine-modern": {
+    "name": "Défense Alekhine : variante moderne",
+    "family": "Défense Alekhine",
+    "description": "Les Blancs se développent normalement au lieu de chasser le cavalier. Une ligne principale solide avec un avantage d'espace durable.",
+    "ideas": [
+      "Se développer calmement",
+      "Garder le pion e5",
+      "Éviter la surextension"
+    ]
+  },
+  "nimzowitsch-defense": {
+    "name": "Défense Nimzowitsch",
+    "family": "Défense irrégulière",
+    "description": "Les Noirs développent le cavalier dame pour viser d4 et e5, en invitant à des transpositions vers 1.e4 e5 ou à des structures inhabituelles.",
+    "ideas": [
+      "Mettre la pression sur d4",
+      "Suites avec ...d5 ou ...e5",
+      "Positions inhabituelles"
+    ]
+  },
+  "owens-defense": {
+    "name": "Défense Owen",
+    "family": "Défense irrégulière",
+    "description": "Les Noirs développent le fou dame en fianchetto pour mettre la pression sur e4 à distance.",
+    "ideas": [
+      "Pression sur e4 par la grande diagonale",
+      "Idées avec ...e6 et ...Bb4",
+      "Souple"
+    ]
+  },
+  "st-george-defense": {
+    "name": "Défense Saint-Georges",
+    "family": "Défense irrégulière",
+    "description": "Les Noirs jouent tôt ...a6 et ...b5. Elle est devenue célèbre quand Tony Miles a battu le champion du monde Karpov avec elle en 1980.",
+    "ideas": [
+      "Expansion à l'aile dame avec ...b5",
+      "...Bb7 contre e4",
+      "Arme surprise"
+    ]
+  },
+  "borg-defense": {
+    "name": "Défense Borg",
+    "family": "Défense irrégulière",
+    "description": "Une réponse farfelue (la « Grob » à l'envers) qui affaiblit l'aile roi noire pour jouer le fianchetto.",
+    "ideas": [
+      "Pression de ...Bg7 sur la grande diagonale",
+      "Effet de surprise",
+      "Très risquée"
+    ],
+    "traps": [
+      "2.d4 h6 3.h4! sape le pion g5"
+    ]
+  },
+  "queens-pawn-game": {
+    "name": "Partie du pion dame",
+    "family": "Ouverture du pion dame",
+    "description": "Les Noirs imitent les Blancs et gardent une prise ferme sur le centre. La réponse la plus classique à 1.d4.",
+    "ideas": [
+      "Revendiquer le centre",
+      "Développer ...Nf6, ...e6 ou ...c6",
+      "Se préparer à répondre solidement à c4"
+    ]
+  },
+  "queens-pawn-zukertort": {
+    "name": "Partie du pion dame : variante Zukertort",
+    "family": "Ouverture du pion dame",
+    "description": "Les Blancs développent d'abord le cavalier et gardent le choix entre les systèmes avec c4, Bf4 ou e3.",
+    "ideas": [
+      "Développement souple",
+      "Garder les options c4/Bf4/e3",
+      "Contrôle solide de e5"
+    ]
+  },
+  "london-system": {
+    "name": "Système de Londres",
+    "family": "Système de Londres",
+    "description": "Un système solide où les Blancs jouent d4, Bf4, e3, Nf3, c3 et Bd3 contre presque tout. Facile à apprendre et très populaire en ligne.",
+    "ideas": [
+      "Le même schéma à chaque partie",
+      "Le fou en f4 avant e3",
+      "Idées avec Ne5 et attaque à l'aile roi"
+    ],
+    "traps": [
+      "...c5 et ...Qb6 qui attaque b2 est le test critique pour les Noirs",
+      "Après Bd3, surveille ...Nh5, qui cherche à échanger le fou f4"
+    ]
+  },
+  "london-system-indian": {
+    "name": "Système de Londres contre ...Nf6",
+    "family": "Système de Londres",
+    "description": "Le schéma de Londres contre les défenses indiennes. Les Blancs sortent vite le fou avant de jouer e3.",
+    "ideas": [
+      "Bf4, e3, Nf3, c3, Bd3",
+      "Structure solide",
+      "Éviter la théorie des lignes principales"
+    ]
+  },
+  "jobava-london": {
+    "name": "Système de Londres Jobava",
+    "family": "Système de Londres",
+    "description": "Un Londres agressif où le cavalier va en c3, préparant Nb5, e3 et parfois le grand roque.",
+    "ideas": [
+      "Nb5 qui attaque c7",
+      "Grand roque et attaque à l'aile roi",
+      "Un Londres agressif"
+    ],
+    "traps": [
+      "Il faut souvent jouer ...a6 pour stopper les astuces de Nb5 contre c7"
+    ]
+  },
+  "colle-system": {
+    "name": "Système Colle",
+    "family": "Système Colle",
+    "description": "Un système simple : les Blancs jouent e3, Bd3, Nbd2, c3, O-O et préparent e4 pour ouvrir le centre et attaquer à l'aile roi.",
+    "ideas": [
+      "Préparer la rupture e4",
+      "Le fou en d3 vise h7",
+      "Idées classiques de sacrifice Bxh7+"
+    ],
+    "traps": [
+      "Le sacrifice grec Bxh7+ est un schéma d'attaque typique du Colle"
+    ]
+  },
+  "colle-zukertort": {
+    "name": "Système Colle-Zukertort",
+    "family": "Système Colle",
+    "description": "Les Blancs développent le fou dame en fianchetto en b2 tout en gardant le centre du Colle. Le fou balaie la grande diagonale vers le roi noir.",
+    "ideas": [
+      "Bb2 sur la grande diagonale",
+      "Soutien de Ne5 par f4",
+      "Attaque à l'aile roi"
+    ]
+  },
+  "stonewall-attack": {
+    "name": "Attaque Stonewall",
+    "family": "Ouverture du pion dame",
+    "description": "Les Blancs placent des pions en d4, e3, f4 et c3, puis attaquent l'aile roi avec Ne5 et Qf3/Rf3.",
+    "ideas": [
+      "Pions en c3, d4, e3, f4",
+      "Avant-poste en e5 pour Ne5",
+      "Attaque à l'aile roi"
+    ]
+  },
+  "blackmar-diemer-gambit": {
+    "name": "Gambit Blackmar-Diemer",
+    "family": "Ouverture du pion dame",
+    "description": "Les Blancs sacrifient un pion pour ouvrir la colonne f et accélérer le développement. Un favori des joueurs de club attaquants.",
+    "ideas": [
+      "Colonne f ouverte",
+      "Développement rapide : Nf3, Bd3, O-O, Qe1-h4",
+      "Attaquer l'aile roi"
+    ]
+  },
+  "veresov-attack": {
+    "name": "Attaque Richter-Veresov",
+    "family": "Ouverture du pion dame",
+    "description": "Les Blancs se développent vite avec Nc3 et Bg5, en visant f3 et e4. Inhabituelle, agressive et avec peu de théorie.",
+    "ideas": [
+      "Clouer le cavalier f6",
+      "Préparer e4",
+      "Grand roque possible"
+    ]
+  },
+  "queens-gambit": {
+    "name": "Gambit dame",
+    "family": "Gambit dame",
+    "description": "Les Blancs offrent le pion c pour détourner le pion noir d5 du centre. Ce n'est pas un vrai gambit : les Noirs peuvent rarement garder le pion.",
+    "ideas": [
+      "Attaquer d5 avec c4",
+      "Construire un centre avec e4 ou e3",
+      "Développer Nc3, Nf3, Bg5"
+    ],
+    "traps": [
+      "Dans le gambit dame accepté, vouloir garder le pion c4 avec ...b5 perd souvent à cause de tactiques avec a4 et Qf3"
+    ]
+  },
+  "queens-gambit-accepted": {
+    "name": "Gambit dame accepté",
+    "family": "Gambit dame",
+    "description": "Les Noirs prennent le pion c4 et cèdent le centre pour un temps, puis contre-attaquent avec ...c5 et ...e6.",
+    "ideas": [
+      "N'essaie pas de garder le pion",
+      "Contre-attaquer avec ...c5",
+      "Développement libre"
+    ],
+    "traps": [
+      "3.e3 b5? 4.a4 c6 5.axb5 cxb5 6.Qf3! attaque la tour a8 par la grande diagonale et gagne du matériel"
+    ]
+  },
+  "qga-classical": {
+    "name": "Gambit dame accepté : variante classique",
+    "family": "Gambit dame",
+    "description": "La ligne principale : les Noirs laissent les Blancs reprendre et contestent d4 avec ...c5. Les positions à pion dame isolé sont fréquentes.",
+    "ideas": [
+      "...c5 contre le centre blanc",
+      "Expansion avec ...a6 et ...b5",
+      "Luttes autour du pion d isolé"
+    ]
+  },
+  "qga-central": {
+    "name": "Gambit dame accepté : variante centrale",
+    "family": "Gambit dame",
+    "description": "Les Blancs construisent tout de suite le centre complet e4/d4, puis récupèrent c4. Les Noirs contre-attaquent avec ...e5, ...Nf6 ou ...c5.",
+    "ideas": [
+      "Grand centre",
+      "Récupérer c4 avec Bxc4",
+      "Avantage d'espace"
+    ]
+  },
+  "queens-gambit-declined": {
+    "name": "Gambit dame refusé",
+    "family": "Gambit dame",
+    "description": "Les Noirs défendent solidement d5 avec ...e6. L'une des défenses les plus respectées des échecs, jouée dans de nombreux championnats du monde.",
+    "ideas": [
+      "Tenir d5 avec ...e6",
+      "...Be7, ...Nf6, ...O-O",
+      "Libérer le jeu avec ...c5, ou avec ...dxc4 et ...e5"
+    ],
+    "traps": [
+      "Le piège de l'éléphant : 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5! 7.Bxd8 Bb4+ 8.Qd2 Bxd2+ 9.Kxd2 Kxd8 gagne une pièce"
+    ]
+  },
+  "qgd-normal": {
+    "name": "Gambit dame refusé : défense normale",
+    "family": "Gambit dame",
+    "description": "La position classique du gambit dame refusé, avec les deux cavaliers développés. Les Blancs choisissent des systèmes avec Bg5, Bf4, cxd5 ou Nf3.",
+    "ideas": [
+      "Défendre solidement d5",
+      "Se développer et roquer",
+      "Préparer ...c5 ou ...dxc4"
+    ],
+    "traps": [
+      "Piège de l'éléphant après 4.Bg5 Nbd7 5.cxd5 exd5 6.Nxd5?? Nxd5!"
+    ]
+  },
+  "qgd-exchange": {
+    "name": "Gambit dame refusé : variante d'échange",
+    "family": "Gambit dame",
+    "description": "Les Blancs échangent en d5 pour figer la structure noire, puis lancent la célèbre attaque de minorité avec b4-b5.",
+    "ideas": [
+      "Attaque de minorité b4-b5",
+      "Pression sur c6 et d5",
+      "Les Noirs jouent à l'aile roi"
+    ]
+  },
+  "qgd-orthodox": {
+    "name": "Gambit dame refusé : défense orthodoxe",
+    "family": "Gambit dame",
+    "description": "La ligne principale classique du gambit dame refusé : solide mais un peu passive. Les Noirs attendent la libération par ...c5, ou par ...dxc4 et ...e5.",
+    "ideas": [
+      "Solide mais à l'étroit",
+      "Manœuvres de libération ...dxc4, ...Nd5",
+      "Lente bataille stratégique"
+    ]
+  },
+  "qgd-tartakower": {
+    "name": "Gambit dame refusé : défense Tartakower",
+    "family": "Gambit dame",
+    "description": "Les Noirs développent le fou dame en fianchetto pour régler le problème classique de cette pièce dans le gambit dame refusé. Jouée par Kasparov et Karpov.",
+    "ideas": [
+      "...b6 et ...Bb7",
+      "Régler le problème du fou de cases blanches",
+      "Structures à pions pendants"
+    ]
+  },
+  "qgd-lasker": {
+    "name": "Gambit dame refusé : défense Lasker",
+    "family": "Gambit dame",
+    "description": "Les Noirs échangent des pièces avec ...Ne4 pour soulager la position à l'étroit du gambit dame refusé. Très solide et souvent nulle.",
+    "ideas": [
+      "Échanger des pièces pour libérer la position",
+      "Structure solide",
+      "Égaliser en toute sécurité"
+    ]
+  },
+  "qgd-cambridge-springs": {
+    "name": "Gambit dame refusé : défense Cambridge Springs",
+    "family": "Gambit dame",
+    "description": "La dame noire attaque le cavalier cloué en c3 et le fou en g5. Pleine de pièges et active.",
+    "ideas": [
+      "Mettre la pression sur le cavalier cloué en c3",
+      "Idées avec ...Bb4 et ...Ne4",
+      "Profiter de l'absence du fou parti en g5 (Bg5)"
+    ],
+    "traps": [
+      "Si les Blancs jouent sans attention, ils perdent une pièce après ...dxc4 et ...Ne4",
+      "Le piège de l'éléphant est possible plus tôt"
+    ]
+  },
+  "qgd-ragozin": {
+    "name": "Gambit dame refusé : défense Ragozine",
+    "family": "Gambit dame",
+    "description": "Un schéma façon nimzo-indienne au sein du gambit dame refusé : les Noirs clouent le cavalier c3 pour obtenir des pièces actives.",
+    "ideas": [
+      "Clouer le cavalier c3",
+      "Pièces actives",
+      "Structure souple"
+    ]
+  },
+  "qgd-tarrasch": {
+    "name": "Défense Tarrasch",
+    "family": "Gambit dame",
+    "description": "Les Noirs acceptent un pion dame isolé en échange d'un jeu de pièces libre. Le Dr Tarrasch la considérait comme la seule défense correcte.",
+    "ideas": [
+      "Accepter un pion dame isolé",
+      "Développement actif",
+      "L'activité des pièces avant la structure"
+    ]
+  },
+  "semi-tarrasch": {
+    "name": "Défense semi-Tarrasch",
+    "family": "Gambit dame",
+    "description": "Les Noirs reprennent avec le cavalier pour éviter le pion isolé. Les Blancs obtiennent souvent un centre mobile avec e4.",
+    "ideas": [
+      "Éviter le pion dame isolé",
+      "Mettre la pression sur le centre blanc",
+      "Développement solide"
+    ]
+  },
+  "qgd-bf4": {
+    "name": "Gambit dame refusé : 5.Bf4",
+    "family": "Gambit dame",
+    "description": "Le système moderne avec Bf4 : les Blancs développent le fou hors de la chaîne de pions et jouent souvent e3 et c5, ou construisent lentement leur position.",
+    "ideas": [
+      "Le fou hors de la chaîne",
+      "Parfois de l'espace avec c5",
+      "Pression sur c7 et l'aile dame"
+    ]
+  },
+  "qgd-alatortsev": {
+    "name": "Gambit dame refusé : variante Alatortsev",
+    "family": "Gambit dame",
+    "description": "Les Noirs retardent ...Nf6 pour éviter la variante d'échange avec les schémas à Nge2. Un jeu subtil sur l'ordre des coups.",
+    "ideas": [
+      "Finesse dans l'ordre des coups",
+      "Éviter certaines lignes d'échange",
+      "Structures solides du gambit dame refusé"
+    ]
+  },
+  "albin-countergambit": {
+    "name": "Contre-gambit Albin",
+    "family": "Gambit dame",
+    "description": "Les Noirs sacrifient le pion e contre un pion gênant en d4 et un développement rapide. Agressif et plein de pièges.",
+    "ideas": [
+      "Un pion gênant en d4",
+      "Développement rapide",
+      "Grand roque et attaque"
+    ],
+    "traps": [
+      "Le piège de Lasker : 3.dxe5 d4 4.e3? Bb4+ 5.Bd2 dxe3! 6.Bxb4?? exf2+ 7.Ke2 fxg1=N+! gagne"
+    ]
+  },
+  "chigorin-defense": {
+    "name": "Défense Tchigorine",
+    "family": "Gambit dame",
+    "description": "Les Noirs développent leurs pièces de façon agressive au lieu de bâtir une structure de pions, et visent une pression des pièces sur d4.",
+    "ideas": [
+      "Pression des pièces sur d4",
+      "...Bg4 et ...e5",
+      "Positions déséquilibrées"
+    ]
+  },
+  "baltic-defense": {
+    "name": "Défense balte",
+    "family": "Gambit dame",
+    "description": "Les Noirs développent le fou de cases blanches avant ...e6 et règlent ainsi le problème classique du gambit dame refusé.",
+    "ideas": [
+      "Développer tôt le fou de c8",
+      "Puis ...e6 et ...c6",
+      "Attention à la faiblesse de b7"
+    ],
+    "traps": [
+      "4.Qb3, qui attaque b7, est un test direct"
+    ]
+  },
+  "slav-defense": {
+    "name": "Défense slave",
+    "family": "Défense slave",
+    "description": "Les Noirs défendent d5 avec ...c6 et gardent le fou de c8 libre. Solide et dynamique, jouée par de nombreux champions du monde.",
+    "ideas": [
+      "Soutenir d5 avec ...c6",
+      "Développer le fou en f5 ou en g4",
+      "Idées avec ...dxc4 et ...b5"
+    ]
+  },
+  "slav-exchange": {
+    "name": "Défense slave : variante d'échange",
+    "family": "Défense slave",
+    "description": "Les Blancs simplifient vers une structure symétrique. Solide et souvent nulle, mais les Blancs gardent une petite initiative.",
+    "ideas": [
+      "Structure symétrique",
+      "Schéma avec Bf4, e3, Nc3",
+      "Profiter du temps d'avance"
+    ]
+  },
+  "slav-czech": {
+    "name": "Défense slave : variante tchèque",
+    "family": "Défense slave",
+    "description": "Les Noirs prennent en c4 et développent le fou en f5. Les Blancs récupèrent le pion et se battent pour e4.",
+    "ideas": [
+      "Prendre en c4 puis se développer",
+      "Le fou en f5",
+      "La lutte pour e4"
+    ]
+  },
+  "slav-chebanenko": {
+    "name": "Défense slave : variante Tchebanenko",
+    "family": "Défense slave",
+    "description": "La slave souple avec ...a6 : les Noirs préparent ...b5 pour gagner de l'espace à l'aile dame et gardent beaucoup d'options.",
+    "ideas": [
+      "Préparer ...b5",
+      "Développement souple",
+      "De l'espace à l'aile dame"
+    ]
+  },
+  "semi-slav": {
+    "name": "Défense semi-slave",
+    "family": "Défense slave",
+    "description": "En combinant ...c6 et ...e6, les Noirs forment un triangle solide. Elle mène à certaines des lignes les plus tranchantes des échecs (Meran, Botvinnik).",
+    "ideas": [
+      "Un soutien solide de d5",
+      "Idées avec ...dxc4 et ...b5",
+      "Contre-jeu tranchant"
+    ]
+  },
+  "semi-slav-meran": {
+    "name": "Semi-slave : variante Meran",
+    "family": "Défense slave",
+    "description": "Les Noirs prennent en c4 et s'étendent avec ...b5, en gagnant du temps et de l'espace à l'aile dame. Une théorie riche et dynamique.",
+    "ideas": [
+      "Expansion à l'aile dame",
+      "...Bb7 et ...c5",
+      "Lutter contre e4-e5"
+    ]
+  },
+  "semi-slav-botvinnik": {
+    "name": "Semi-slave : système Botvinnik",
+    "family": "Défense slave",
+    "description": "L'une des ouvertures les plus tranchantes des échecs : les Noirs gardent le pion de plus pendant que les Blancs attaquent avec e5. Analysée en profondeur.",
+    "ideas": [
+      "Garder le pion c4",
+      "Tactique complexe",
+      "Attaques mutuelles"
+    ]
+  },
+  "semi-slav-moscow": {
+    "name": "Semi-slave : variante de Moscou",
+    "family": "Défense slave",
+    "description": "Les Noirs demandent tout de suite au fou ses intentions. Après Bxf6, les Noirs ont la paire de fous et une position solide.",
+    "ideas": [
+      "Obtenir la paire de fous",
+      "Structure solide",
+      "Éviter le système Botvinnik"
+    ]
+  },
+  "semi-slav-marshall-gambit": {
+    "name": "Semi-slave : gambit Marshall",
+    "family": "Défense slave",
+    "description": "Les Blancs sacrifient le pion e contre du développement et une pression sur les cases foncées, face à l'ordre de coups Noteboom/triangle.",
+    "ideas": [
+      "Un gambit pour le développement",
+      "Attaque sur les cases foncées",
+      "Jeu tranchant"
+    ]
+  },
+  "catalan-opening": {
+    "name": "Ouverture catalane",
+    "family": "Ouverture catalane",
+    "description": "Les Blancs combinent d4/c4 avec un fianchetto à l'aile roi et mettent une pression durable sur l'aile dame noire. Une favorite de Kramnik et de Carlsen.",
+    "ideas": [
+      "Le fou de g2 presse d5 et b7",
+      "Pression durable à l'aile dame",
+      "Un jeu positionnel calme mais puissant"
+    ]
+  },
+  "catalan-open": {
+    "name": "Ouverture catalane : défense ouverte",
+    "family": "Ouverture catalane",
+    "description": "Les Noirs prennent le pion c4 ; les Blancs le récupèrent avec Qa4 ou Ne5 et gardent la pression sur la grande diagonale.",
+    "ideas": [
+      "Prendre c4 puis le tenir avec ...a6/...b5",
+      "Les Blancs récupèrent le pion et pressent b7",
+      "Les Noirs visent ...c5"
+    ]
+  },
+  "catalan-closed": {
+    "name": "Ouverture catalane : variante fermée",
+    "family": "Ouverture catalane",
+    "description": "Les Noirs maintiennent le point d5 ; le jeu est lent et positionnel, avec les Blancs qui pressent à l'aile dame.",
+    "ideas": [
+      "Un pion d5 solide",
+      "...c6 et ...b6",
+      "Longues manœuvres"
+    ]
+  },
+  "indian-defense": {
+    "name": "Défense indienne",
+    "family": "Défense indienne",
+    "description": "Les Noirs développent un cavalier et contrôlent e4, en gardant le choix entre l'est-indienne, la nimzo-indienne, la Grünfeld et d'autres.",
+    "ideas": [
+      "Contrôler e4 avec une pièce",
+      "Souple : choisis ton système plus tard",
+      "Une approche hypermoderne"
+    ]
+  },
+  "trompowsky-attack": {
+    "name": "Attaque Trompowsky",
+    "family": "Attaque Trompowsky",
+    "description": "Les Blancs clouent tout de suite le cavalier de f6 (ou menacent de le prendre) et évitent la grande théorie des défenses indiennes.",
+    "ideas": [
+      "Abîmer la structure de pions noire avec Bxf6",
+      "Développement rapide",
+      "Éviter la théorie"
+    ],
+    "traps": [
+      "2...Ne4 attaque le fou de g5 ; 3.Bf4 ou 3.h4 sont les réponses principales"
+    ]
+  },
+  "torre-attack": {
+    "name": "Attaque Torre",
+    "family": "Attaque Torre",
+    "description": "Les Blancs jouent Nf3 et Bg5 avec e3, Nbd2 et c3 : un système solide avec du mordant tactique.",
+    "ideas": [
+      "Clouer le cavalier de f6",
+      "La rupture e4",
+      "Un schéma solide"
+    ]
+  },
+  "indian-normal": {
+    "name": "Défense indienne : variante normale",
+    "family": "Défense indienne",
+    "description": "Les Noirs préparent ...d5, ...Bb4 ou ...b6, en gardant les options nimzo-indienne, ouest-indienne et gambit dame refusé.",
+    "ideas": [
+      "Souple",
+      "Préparer ...Bb4 ou ...d5",
+      "Structure solide"
+    ]
+  },
+  "nimzo-indian": {
+    "name": "Défense nimzo-indienne",
+    "family": "Défense nimzo-indienne",
+    "description": "Les Noirs clouent le cavalier de c3 pour se battre pour e4. L'une des défenses les plus respectées des échecs, riche en idées stratégiques.",
+    "ideas": [
+      "Clouer le cavalier de c3 pour contrôler e4",
+      "Donner le fou contre des pions doublés",
+      "Une structure de pions souple"
+    ]
+  },
+  "nimzo-classical": {
+    "name": "Nimzo-indienne : variante classique",
+    "family": "Défense nimzo-indienne",
+    "description": "Les Blancs défendent c3 avec la dame pour reprendre sans pions doublés, et visent la paire de fous.",
+    "ideas": [
+      "Éviter les pions doublés",
+      "La paire de fous après a3",
+      "Les Noirs jouent ...O-O, ...d5 ou ...c5"
+    ]
+  },
+  "nimzo-rubinstein": {
+    "name": "Nimzo-indienne : variante Rubinstein",
+    "family": "Défense nimzo-indienne",
+    "description": "Le souple e3 : les Blancs se développent calmement avec Bd3 et Ne2/Nf3, et se préparent à répondre au clouage de façon positionnelle.",
+    "ideas": [
+      "Développement souple",
+      "Ne2 pour éviter les pions doublés",
+      "Un centre solide"
+    ]
+  },
+  "nimzo-saemisch": {
+    "name": "Nimzo-indienne : variante Sämisch",
+    "family": "Défense nimzo-indienne",
+    "description": "Les Blancs forcent l'échange en c3 et acceptent des pions doublés contre la paire de fous et un grand centre.",
+    "ideas": [
+      "La paire de fous et le centre",
+      "Plans avec f3 et e4",
+      "Les Noirs visent c4"
+    ]
+  },
+  "nimzo-kasparov": {
+    "name": "Nimzo-indienne : variante Kasparov",
+    "family": "Défense nimzo-indienne",
+    "description": "Les Blancs se développent naturellement, souvent suivis de g3, en restant souples.",
+    "ideas": [
+      "Développement naturel",
+      "Fianchetto avec g3",
+      "Souple"
+    ]
+  },
+  "nimzo-leningrad": {
+    "name": "Nimzo-indienne : variante de Leningrad",
+    "family": "Défense nimzo-indienne",
+    "description": "Les Blancs contre-clouent le cavalier de f6, ce qui mène à un jeu tranchant.",
+    "ideas": [
+      "Contre-clouage",
+      "Jeu tranchant",
+      "Idées avec la poussée d5"
+    ]
+  },
+  "queens-indian": {
+    "name": "Défense ouest-indienne",
+    "family": "Défense ouest-indienne",
+    "description": "Les Noirs développent le fou dame en fianchetto pour contrôler e4. Solide et souple, elle se joue quand les Blancs évitent la nimzo-indienne avec Nf3.",
+    "ideas": [
+      "Contrôler e4 avec ...Bb7",
+      "Structure solide",
+      "Égaliser, puis surclasser l'adversaire"
+    ]
+  },
+  "qid-fianchetto": {
+    "name": "Ouest-indienne : variante du fianchetto",
+    "family": "Défense ouest-indienne",
+    "description": "Les Blancs répondent au fou noir par leur propre fianchetto et se battent pour la grande diagonale.",
+    "ideas": [
+      "Duel de fianchettos sur la grande diagonale",
+      "Le ...Ba6 noir attaque c4",
+      "Manœuvres lentes"
+    ]
+  },
+  "qid-petrosian": {
+    "name": "Ouest-indienne : variante Petrossian",
+    "family": "Défense ouest-indienne",
+    "description": "Les Blancs empêchent ...Bb4 et préparent Nc3 et d5. Kasparov en a fait une arme redoutable.",
+    "ideas": [
+      "Empêcher ...Bb4",
+      "Nc3 et la poussée d5",
+      "Avantage d'espace"
+    ]
+  },
+  "bogo-indian": {
+    "name": "Défense bogo-indienne",
+    "family": "Défense bogo-indienne",
+    "description": "Les Noirs donnent un échec pour échanger ou mal placer les pièces blanches. Solide et moins théorique que la nimzo-indienne.",
+    "ideas": [
+      "Un échec pour gêner le développement",
+      "Échanger les fous de cases noires",
+      "Structure solide"
+    ]
+  },
+  "kings-indian-defense": {
+    "name": "Défense est-indienne",
+    "family": "Défense est-indienne",
+    "description": "Les Noirs font un fianchetto et laissent les Blancs bâtir un grand centre, pour contre-attaquer ensuite avec ...e5 ou ...c5. L'arme de Fischer et de Kasparov.",
+    "ideas": [
+      "Développer le fou roi en fianchetto",
+      "Frapper avec ...e5 ou ...c5",
+      "Attaque à l'aile roi après ...f5"
+    ]
+  },
+  "kid-normal": {
+    "name": "Défense est-indienne : variante normale",
+    "family": "Défense est-indienne",
+    "description": "La position principale de l'est-indienne : les Blancs ont un grand centre et choisissent entre la classique, la Sämisch, l'attaque des quatre pions et d'autres systèmes.",
+    "ideas": [
+      "...O-O et ...e5",
+      "Attaque à l'aile roi avec ...f5",
+      "Les Blancs attaquent à l'aile dame"
+    ]
+  },
+  "kid-classical": {
+    "name": "Défense est-indienne : variante classique",
+    "family": "Défense est-indienne",
+    "description": "La ligne principale : les Blancs se développent naturellement et les Noirs frappent le centre avec ...e5. Elle mène à de célèbres courses à l'attaque.",
+    "ideas": [
+      "...e5 pour lutter pour le centre",
+      "Centre fermé après d5",
+      "Attaques sur des ailes opposées"
+    ],
+    "traps": [
+      "8.dxe5 dxe5 9.Qxd8 Rxd8 : la finale est à peu près égale, pas gagnante pour les Blancs"
+    ]
+  },
+  "kid-mar-del-plata": {
+    "name": "Est-indienne : variante Mar del Plata",
+    "family": "Défense est-indienne",
+    "description": "La ligne la plus célèbre de l'est-indienne : les Blancs attaquent à l'aile dame, les Noirs lancent une avalanche de pions à l'aile roi avec ...f5-f4-g5.",
+    "ideas": [
+      "Course entre avalanches de pions",
+      "...Nd7/Ne8, ...f5, ...f4, ...g5",
+      "Les Blancs jouent c5 et Nb5"
+    ]
+  },
+  "kid-petrosian": {
+    "name": "Est-indienne : système Petrossian",
+    "family": "Défense est-indienne",
+    "description": "Les Blancs ferment tout de suite le centre avec d5, puis jouent Bg5 pour freiner ...f5.",
+    "ideas": [
+      "Fermer tôt le centre",
+      "Freiner avec Bg5",
+      "Expansion à l'aile dame"
+    ]
+  },
+  "kid-saemisch": {
+    "name": "Est-indienne : variante Sämisch",
+    "family": "Défense est-indienne",
+    "description": "Les Blancs soutiennent e4 avec f3, préparent Be3, Qd2 et souvent le grand roque avec une avalanche de pions à l'aile roi.",
+    "ideas": [
+      "Un soutien solide de e4",
+      "Be3/Qd2 et l'avalanche g4-h4",
+      "Limiter le ...f5 noir"
+    ]
+  },
+  "kid-four-pawns": {
+    "name": "Est-indienne : attaque des quatre pions",
+    "family": "Défense est-indienne",
+    "description": "Les Blancs bâtissent un centre géant avec quatre pions. Les Noirs doivent réagir vite avec ...c5 et ...e6.",
+    "ideas": [
+      "Un centre maximal",
+      "La poussée e5",
+      "Les Noirs le sapent avec ...c5"
+    ]
+  },
+  "kid-fianchetto": {
+    "name": "Est-indienne : variante du fianchetto",
+    "family": "Défense est-indienne",
+    "description": "Les Blancs font eux aussi un fianchetto, ce qui réduit les chances d'attaque noires et mène à une partie positionnelle.",
+    "ideas": [
+      "Fianchetto en miroir",
+      "Jeu positionnel",
+      "Limiter l'attaque noire à l'aile roi"
+    ]
+  },
+  "kid-averbakh": {
+    "name": "Est-indienne : variante Averbakh",
+    "family": "Défense est-indienne",
+    "description": "Les Blancs clouent avec Bg5 pour décourager ...e5 et garder des options d'attaque avec h4.",
+    "ideas": [
+      "Freiner ...e5",
+      "Le clouage Bg5",
+      "Des plans souples"
+    ]
+  },
+  "grunfeld-defense": {
+    "name": "Défense Grünfeld",
+    "family": "Défense Grünfeld",
+    "description": "Les Noirs laissent les Blancs bâtir un grand centre, puis l'attaquent avec leurs pièces et ...c5. Dynamique et très théorique.",
+    "ideas": [
+      "Attaquer le centre blanc avec les pièces",
+      "...c5 et ...Nc6",
+      "Le fou de g7 contre d4"
+    ]
+  },
+  "grunfeld-exchange": {
+    "name": "Grünfeld : variante d'échange",
+    "family": "Défense Grünfeld",
+    "description": "Les Blancs occupent le centre avec e4 après l'échange des cavaliers. Les Noirs pressent d4 avec ...c5, ...Nc6 et ...Bg4.",
+    "ideas": [
+      "Un grand centre de pions",
+      "Les Noirs attaquent d4",
+      "Le schéma blanc avec Bc4 et Ne2"
+    ]
+  },
+  "grunfeld-russian": {
+    "name": "Grünfeld : système russe",
+    "family": "Défense Grünfeld",
+    "description": "Les Blancs attaquent d5 avec la dame pour forcer ...dxc4, puis bâtissent le centre avec e4.",
+    "ideas": [
+      "Presser d5",
+      "Bâtir le centre après ...dxc4",
+      "Qxc4 et e4"
+    ]
+  },
+  "grunfeld-bf4": {
+    "name": "Grünfeld : 4.Bf4",
+    "family": "Défense Grünfeld",
+    "description": "Les Blancs développent le fou et pressent c7, en évitant les grandes lignes de la variante d'échange.",
+    "ideas": [
+      "Pression sur c7",
+      "Développement solide",
+      "Éviter la grande théorie"
+    ]
+  },
+  "old-indian": {
+    "name": "Défense vieille-indienne",
+    "family": "Défense vieille-indienne",
+    "description": "Les Noirs jouent ...d6 et ...e5 sans fianchetto, ce qui mène à des structures solides proches de l'est-indienne.",
+    "ideas": [
+      "...e5 et ...Nbd7",
+      "Structure solide",
+      "Le fou en e7"
+    ]
+  },
+  "budapest-gambit": {
+    "name": "Gambit Budapest",
+    "family": "Gambit Budapest",
+    "description": "Les Noirs offrent le pion e contre un jeu de pièces actif et le récupèrent souvent avec ...Ng4. Plein de pièges et amusant.",
+    "ideas": [
+      "Récupérer e5 avec ...Ng4 et ...Nc6",
+      "Des pièces actives",
+      "Les astuces avec Bb4+"
+    ],
+    "traps": [
+      "3.dxe5 Ng4 4.Bf4 Nc6 5.Nf3 Bb4+ 6.Nbd2 Qe7 7.a3 Ngxe5 8.axb4?? Nd3# : le célèbre mat à l'étouffée"
+    ]
+  },
+  "fajarowicz-gambit": {
+    "name": "Gambit Budapest : variante Fajarowicz",
+    "family": "Gambit Budapest",
+    "description": "Les Noirs placent le cavalier en e4 au lieu de g4, et visent un développement rapide et de la tactique.",
+    "ideas": [
+      "Un cavalier actif en e4",
+      "Idées avec ...Bb4+ et ...Qh4",
+      "Développement rapide"
+    ]
+  },
+  "benoni-defense": {
+    "name": "Benoni moderne",
+    "family": "Défense Benoni",
+    "description": "Les Noirs créent une structure déséquilibrée, avec une majorité à l'aile dame contre la majorité centrale des Blancs. Tranchante et dynamique.",
+    "ideas": [
+      "Majorité à l'aile dame avec ...b5",
+      "Fianchetto en g7",
+      "Un jeu de pièces actif"
+    ],
+    "traps": [
+      "L'attaque Taïmanov avec f4 et Bb5+ est très dangereuse pour les Noirs"
+    ]
+  },
+  "benoni-main": {
+    "name": "Benoni moderne : ligne principale",
+    "family": "Défense Benoni",
+    "description": "La tabiya classique de la Benoni. Les Blancs prévoient e5, les Noirs jouent ...a6, ...b5 et ...Re8.",
+    "ideas": [
+      "Les Blancs poussent e5",
+      "Les Noirs jouent ...b5",
+      "Batailles tactiques sur la colonne e"
+    ]
+  },
+  "czech-benoni": {
+    "name": "Benoni tchèque",
+    "family": "Défense Benoni",
+    "description": "Les Noirs ferment le centre avec ...e5 et visent de lentes manœuvres puis les ruptures ...f5 ou ...b5.",
+    "ideas": [
+      "Centre fermé",
+      "Les ruptures ...f5 ou ...b5",
+      "Jeu stratégique"
+    ]
+  },
+  "old-benoni": {
+    "name": "Vieille Benoni",
+    "family": "Défense Benoni",
+    "description": "Les Noirs attaquent d4 tout de suite avec le pion c. Après d5, on obtient des positions déséquilibrées de type Benoni.",
+    "ideas": [
+      "Contester d4 tout de suite",
+      "Structures Benoni",
+      "Effet de surprise"
+    ]
+  },
+  "benko-gambit": {
+    "name": "Gambit Benko",
+    "family": "Gambit Benko",
+    "description": "Les Noirs sacrifient un pion de l'aile dame contre une pression durable sur les colonnes a et b. Un superbe gambit positionnel.",
+    "ideas": [
+      "Ouvrir les colonnes a et b pour les tours",
+      "Le fou en fianchetto en g7",
+      "Pression à long terme"
+    ]
+  },
+  "benko-accepted": {
+    "name": "Gambit Benko accepté",
+    "family": "Gambit Benko",
+    "description": "Les Blancs prennent les deux pions. Les Noirs reprennent en a6 et obtiennent une pression durable à l'aile dame.",
+    "ideas": [
+      "Pression sur a2 et b2",
+      "Le fou en g7",
+      "Les tours en a8 et b8"
+    ]
+  },
+  "dutch-defense": {
+    "name": "Défense hollandaise",
+    "family": "Défense hollandaise",
+    "description": "Les Noirs contrôlent e4 avec le pion f et visent une attaque à l'aile roi. Ambitieuse, mais un peu affaiblissante.",
+    "ideas": [
+      "Contrôler e4",
+      "Attaque à l'aile roi",
+      "Schémas Leningrad, Stonewall ou classique"
+    ],
+    "traps": [
+      "2.Bg5 et 2.e4 (gambit Staunton) sont des tentatives anti-hollandaises agressives",
+      "Surveille la diagonale e8-h5 : attention aux astuces avec Qh5+"
+    ]
+  },
+  "dutch-leningrad": {
+    "name": "Défense hollandaise : variante Leningrad",
+    "family": "Défense hollandaise",
+    "description": "Les Noirs combinent ...f5 avec un fianchetto façon est-indienne, et visent ...e5 et une attaque à l'aile roi.",
+    "ideas": [
+      "La rupture ...e5",
+      "Fianchetto à l'aile roi",
+      "Jeu dynamique"
+    ]
+  },
+  "dutch-stonewall": {
+    "name": "Défense hollandaise : variante Stonewall",
+    "family": "Défense hollandaise",
+    "description": "Les Noirs bâtissent un mur de pions en c6-d5-e6-f5, contrôlent e4 et préparent une attaque à l'aile roi.",
+    "ideas": [
+      "Le mur de pions contrôle e4",
+      "Le cavalier en e4",
+      "Attaque à l'aile roi avec ...Qe8-h5"
+    ],
+    "traps": [
+      "Le trou en e5 est une faiblesse : les Blancs y installent un cavalier"
+    ]
+  },
+  "dutch-classical": {
+    "name": "Défense hollandaise : variante classique",
+    "family": "Défense hollandaise",
+    "description": "Les Noirs gardent le pion d en d6 et préparent ...e5 et ...Qe8-h5.",
+    "ideas": [
+      "La rupture ...e5",
+      "Attaque avec ...Qe8-h5",
+      "Souple"
+    ]
+  },
+  "staunton-gambit": {
+    "name": "Défense hollandaise : gambit Staunton",
+    "family": "Défense hollandaise",
+    "description": "Les Blancs frappent tout de suite le pion f5 et offrent un pion contre un développement rapide.",
+    "ideas": [
+      "Ouvrir des lignes contre le roi noir",
+      "Développement rapide",
+      "Pression avec Bg5 et Nc3"
+    ]
+  },
+  "englund-gambit": {
+    "name": "Gambit Englund",
+    "family": "Gambit Englund",
+    "description": "Un gambit douteux avec un piège célèbre. Les Noirs sacrifient e5 contre du développement et des astuces.",
+    "ideas": [
+      "Développement rapide",
+      "La dame en e7 pour presser e5",
+      "Un jeu tourné vers les pièges"
+    ],
+    "traps": [
+      "2.dxe5 Nc6 3.Nf3 Qe7 4.Bf4? Qb4+ 5.Bd2 Qxb2 6.Bc3?? Bb4! 7.Qd2 Bxc3 8.Qxc3 Qc1# : le piège célèbre"
+    ]
+  },
+  "english-reversed-sicilian": {
+    "name": "Ouverture anglaise : sicilienne inversée",
+    "family": "Ouverture anglaise",
+    "description": "Les Blancs jouent une sicilienne avec les couleurs inversées : ils ont donc un temps de plus dans une structure de type sicilienne.",
+    "ideas": [
+      "...Nc6, ...Nf6, ...d5 ou ...g6",
+      "Contrôle du centre",
+      "La lutte pour d4"
+    ]
+  },
+  "english-symmetrical": {
+    "name": "Ouverture anglaise : variante symétrique",
+    "family": "Ouverture anglaise",
+    "description": "Les Noirs copient le coup des Blancs. Le jeu est lent et stratégique, avec beaucoup de transpositions.",
+    "ideas": [
+      "Symétrie",
+      "Des fianchettos des deux côtés",
+      "Schémas hérisson"
+    ]
+  },
+  "english-four-knights": {
+    "name": "Ouverture anglaise : quatre cavaliers",
+    "family": "Ouverture anglaise",
+    "description": "Les quatre cavaliers sont développés ; les Blancs jouent g3, e3 ou d4 pour se battre pour le centre.",
+    "ideas": [
+      "Développer les cavaliers",
+      "La lutte pour d4/d5",
+      "Fianchetto avec g3"
+    ]
+  },
+  "english-botvinnik": {
+    "name": "Ouverture anglaise : système Botvinnik",
+    "family": "Ouverture anglaise",
+    "description": "Les Blancs bâtissent une structure fermée avec des pions en c4, d3 et e4, et prennent le contrôle de d5.",
+    "ideas": [
+      "La mainmise sur d5",
+      "Expansion à l'aile roi avec f4",
+      "Jeu stratégique"
+    ]
+  },
+  "english-anglo-indian": {
+    "name": "Ouverture anglaise : défense anglo-indienne",
+    "family": "Ouverture anglaise",
+    "description": "Les Noirs développent d'abord le cavalier et gardent le choix entre l'est-indienne, la nimzo-indienne ou des schémas symétriques.",
+    "ideas": [
+      "Souple",
+      "...e6, ...g6 ou ...c5",
+      "Un outil de transposition"
+    ]
+  },
+  "english-mikenas": {
+    "name": "Ouverture anglaise : variante Mikenas-Carls",
+    "family": "Ouverture anglaise",
+    "description": "Les Blancs poussent e4 très tôt et évitent les lignes nimzo-indienne et gambit dame refusé. Tranchante et déséquilibrée.",
+    "ideas": [
+      "Occuper le centre",
+      "La poussée e5",
+      "Jeu tranchant"
+    ]
+  },
+  "english-hedgehog": {
+    "name": "Ouverture anglaise : hérisson",
+    "family": "Ouverture anglaise",
+    "description": "Les Noirs placent leurs pions sur la sixième rangée comme les piquants d'un hérisson, en attendant de rompre avec ...b5 ou ...d5.",
+    "ideas": [
+      "Un schéma compact",
+      "Les ruptures ...b5 ou ...d5",
+      "La patience"
+    ]
+  },
+  "english-agincourt": {
+    "name": "Ouverture anglaise : défense Agincourt",
+    "family": "Ouverture anglaise",
+    "description": "Les Noirs préparent ...d5 avec un schéma proche du gambit dame refusé, ou transposent vers des structures nimzo-indienne ou ouest-indienne.",
+    "ideas": [
+      "Schéma avec ...d5",
+      "Solide",
+      "Transpositions"
+    ]
+  },
+  "reti-main": {
+    "name": "Ouverture Réti : ligne principale",
+    "family": "Ouverture Réti",
+    "description": "Les Blancs attaquent d5 depuis l'aile, dans le pur style hypermoderne.",
+    "ideas": [
+      "Attaquer d5 avec c4",
+      "Fianchetto avec g3",
+      "Un jeu central souple"
+    ]
+  },
+  "kings-indian-attack": {
+    "name": "Attaque est-indienne",
+    "family": "Ouverture Réti",
+    "description": "Les Blancs jouent un schéma est-indien avec un temps de plus : Nf3, g3, Bg2, O-O, d3, Nbd2 et e4. Facile à apprendre.",
+    "ideas": [
+      "Le même schéma à chaque partie",
+      "e4-e5 et attaque à l'aile roi",
+      "Peu de théorie"
+    ]
+  },
+  "froms-gambit": {
+    "name": "Ouverture Bird : gambit From",
+    "family": "Ouverture Bird",
+    "description": "Les Noirs sacrifient le pion e pour ouvrir des lignes contre le roi blanc affaibli. Plein de pièges.",
+    "ideas": [
+      "Ouvrir des lignes vers le roi blanc",
+      "Idées avec ...Bd6 et ...g5",
+      "Attaque rapide"
+    ],
+    "traps": [
+      "2.fxe5 d6 3.exd6 Bxd6 4.Nf3 g5! menace ...g4 et ...Bg3#",
+      "Des mats du genre 4.Nc3?? Qh4+ 5.g3 Qxg3+ 6.hxg3 Bxg3#"
+    ]
+  },
+  "bird-dutch": {
+    "name": "Ouverture Bird : variante hollandaise",
+    "family": "Ouverture Bird",
+    "description": "Les Noirs occupent le centre et se développent de façon classique. Les Blancs jouent Nf3, e3, b3 et Bb2.",
+    "ideas": [
+      "S'assurer le contrôle de e4",
+      "Développement classique",
+      "Structure solide"
+    ]
+  }
+}

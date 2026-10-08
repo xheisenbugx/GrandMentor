@@ -1,0 +1,707 @@
+{
+  "openings-for-black": {
+    "title": "Beliebte Eröffnungen mit Schwarz",
+    "description": "Wehr dich vom ersten Zug an. Lerne die Sizilianische und die Caro-Kann-Verteidigung gegen 1.e4, das klassische 1...e5 sowie die dynamische Königsindische Verteidigung und das solide abgelehnte Damengambit gegen 1.d4.",
+    "lessons": {
+      "sicilian-defense": {
+        "title": "Die Sizilianische Verteidigung",
+        "summary": "Die beliebteste und kämpferischste Antwort auf 1.e4.",
+        "steps": [
+          {
+            "text": "**1...c5**, die **Sizilianische Verteidigung**, kämpft mit einem Flügelbauern um d4. Die Stellung wird unausgeglichen: Weiß greift meist am Königsflügel an, Schwarz kontert am Damenflügel und über die halboffene **c-Linie**."
+          },
+          {
+            "text": "Spiel den offenen Sizilianer, Najdorf-Variante – die Wahl von Fischer und Kasparow.",
+            "task": {
+              "prompt": "Spiele ...c5, ...d6, ...cxd4, ...Nf6 und ...a6.",
+              "hint": "c5, dann d6, schlage auf d4 mit dem c-Bauern, entwickle den Springer nach f6 und schließe mit dem flexiblen ...a6 ab.",
+              "success": "Die Najdorf-Variante! ...a6 kontrolliert b5 und bereitet ...e5 oder ...b5 vor."
+            }
+          },
+          {
+            "text": "**Die Drachenvariante**: Schwarz fianchettiert den Läufer nach g7, wo er entlang der langen Diagonale Feuer in Richtung des weißen Damenflügels speit."
+          },
+          {
+            "text": "**Die wichtigsten Ideen für Schwarz im Sizilianer:**\n\n- Der Hebel **...d5** befreit das schwarze Spiel.\n- Nutze die **c-Linie** mit einem Turm auf c8.\n- Der Tausch auf c3 (...Rxc3!) ist ein typisches Qualitätsopfer, um die weiße Königsstellung zu zertrümmern.\n- Öffne das Zentrum nicht, solange dein König noch nicht rochiert hat."
+          },
+          {
+            "text": "**Gegen die Alapin-Variante (2.c3)** greifst du das Zentrum sofort mit ...d5 oder ...Nf6 an.",
+            "task": {
+              "prompt": "Schlag mit deinem d-Bauern im Zentrum zu.",
+              "hint": "Zieh den d-Bauern zwei Felder vor, um e4 sofort herauszufordern.",
+              "success": "Richtig! Nach exd5 Qxd5 kann Weiß nicht Nc3 spielen, um deine Dame zu verjagen, weil der Bauer auf c3 im Weg steht."
+            }
+          }
+        ]
+      },
+      "caro-kann": {
+        "title": "Die Caro-Kann-Verteidigung",
+        "summary": "Felsenfeste Struktur mit aktivem Figurenspiel.",
+        "steps": [
+          {
+            "text": "**1...c6** bereitet **...d5** mit Bauernunterstützung vor. Caro-Kann ist solide wie die Französische Verteidigung, aber der weißfeldrige Läufer von Schwarz kommt heraus, bevor ...e6 gespielt wird."
+          },
+          {
+            "text": "Spiel die klassische Variante.",
+            "task": {
+              "prompt": "Spiele ...c6, ...d5, ...dxe4 und ...Bf5.",
+              "hint": "Zuerst c6, dann d5. Schlage auf e4 und entwickle den Läufer mit Tempogewinn gegen den Springer nach f5.",
+              "success": "Klassisches Caro-Kann! Der Läufer ist aktiv und die schwarze Stellung sehr solide."
+            }
+          },
+          {
+            "text": "**Die Vorstoßvariante** (3.e5) gewinnt Raum. Schwarz entwickelt den Läufer nach **f5** und greift dann die weiße Bauernkette mit **...c5** an."
+          },
+          {
+            "text": "**Vorsicht vor der Falle mit dem erstickten Matt!** Nach 4...Nd7 5.Qe2 läuft das natürliche 5...Ngf6?? in 6.Nd6# – der Bauer auf e7 kann nicht schlagen, weil er von der Dame gefesselt ist."
+          },
+          {
+            "text": "Weich der Falle im Caro-Kann aus.",
+            "task": {
+              "prompt": "Bring einen Springer nach f6, ohne Nd6# zuzulassen: Spiele ...Ndf6.",
+              "hint": "Zieh den Springer von d7 nach f6. Dann ist d6 weiterhin vom Bauern auf e7 gedeckt – kein ersticktes Matt!",
+              "success": "Sicher und gesund. Der Bauer auf e7 deckt weiterhin d6, also ist Nd6# unmöglich."
+            }
+          }
+        ]
+      },
+      "open-games-black": {
+        "title": "1.e4 mit 1...e5 beantworten",
+        "summary": "Klassisch, prinzipientreu und voller Fallen.",
+        "steps": [
+          {
+            "text": "**1...e5** ist die klassischste Antwort. Der Zug kämpft um das Zentrum und öffnet Linien für Dame und Läufer. Du musst wissen, wie du mit der Italienischen Partie, der Spanischen Partie und Gambits umgehst."
+          },
+          {
+            "text": "Wähle gegen die Italienische Partie das aktive **Zweispringerspiel im Nachzuge**.",
+            "task": {
+              "prompt": "Spiele ...e5, ...Nc6 und ...Nf6.",
+              "hint": "Zentrumsbauer, dann beide Springer.",
+              "success": "Das Zweispringerspiel! Du greifst e4 an, statt passiv zu verteidigen."
+            }
+          },
+          {
+            "text": "Nach 4.Ng5 d5 5.exd5 schlägst du **nicht** mit 5...Nxd5? zurück (der Fegatello-Angriff!). Die Hauptvariante ist **5...Na5**, das den Läufer auf c4 angreift."
+          },
+          {
+            "text": "Weich dem Fegatello-Angriff aus.",
+            "task": {
+              "prompt": "Greif den Läufer mit deinem Springer von c6 an.",
+              "hint": "Dein Springer springt an den Rand – hier ist das gerechtfertigt, weil er den Läufer auf c4 angreift.",
+              "success": "Richtig! Schwarz gibt einen Bauern für schnelle Entwicklung und Initiative."
+            }
+          },
+          {
+            "text": "Gegen die Spanische Partie sind die **Berliner Verteidigung** (3...Nf6) und die **Morphy-Verteidigung** (3...a6) die bewährtesten Antworten. Im Berliner Endspiel verschwinden die Damen früh vom Brett, und Schwarz steht unglaublich solide."
+          }
+        ]
+      },
+      "kings-indian": {
+        "title": "Die Königsindische Verteidigung",
+        "summary": "Lass Weiß ein Zentrum bauen – und spreng es dann.",
+        "steps": [
+          {
+            "text": "In der **Königsindischen Verteidigung** erlaubt Schwarz Weiß ein großes Zentrum, rochiert schnell hinter einem fianchettierten Läufer und greift das Zentrum dann mit **...e5** oder **...c5** an."
+          },
+          {
+            "text": "Bau die Königsindische Aufstellung auf.",
+            "task": {
+              "prompt": "Spiele ...Nf6, ...g6, ...Bg7, ...d6 und rochiere.",
+              "hint": "Springer nach f6, Fianchetto mit ...g6 und ...Bg7, dann ...d6 und kurz rochieren.",
+              "success": "Eine perfekte Königsindische Aufstellung. Jetzt ist es Zeit, das Zentrum anzugreifen."
+            }
+          },
+          {
+            "text": "Greif das Zentrum an.",
+            "task": {
+              "prompt": "Fordere das weiße Zentrum mit deinem e-Bauern heraus.",
+              "hint": "Zieh den e-Bauern zwei Felder vor, um d4 anzugreifen.",
+              "success": "Das ist die Hauptvariante! Der Kampf ums Zentrum beginnt."
+            }
+          },
+          {
+            "text": "**Der Mar-del-Plata-Plan**: Nach d5 ist das Zentrum geschlossen. Schwarz zieht den Springer weg und schiebt **...f5–f4** und **...g5–g4** – ein Bauernsturm gegen den weißen König, während Weiß am Damenflügel angreift."
+          }
+        ]
+      },
+      "queens-gambit-declined": {
+        "title": "Das abgelehnte Damengambit",
+        "summary": "Die solideste Antwort auf 1.d4.",
+        "steps": [
+          {
+            "text": "**1.d4 d5 2.c4 e6** lehnt das Gambit ab und hält einen starken Bauern auf d5. Das Hauptproblem von Schwarz ist der weißfeldrige Läufer auf c8, der von e6 eingesperrt wird. Pläne wie **...b6 + ...Bb7** oder die Hebel **...c5 / ...e5** lösen es."
+          },
+          {
+            "text": "Spiel das klassische abgelehnte Damengambit.",
+            "task": {
+              "prompt": "Spiele ...d5, ...e6, ...Nf6, ...Be7 und rochiere.",
+              "hint": "d5, e6, Springer nach f6, mit Be7 entfesseln, rochieren.",
+              "success": "Felsenfest. Der schwarze König ist sicher und d5 hält stand."
+            }
+          },
+          {
+            "text": "**Befreiungsmanöver:** ...Ne4 tauscht Figuren, um den Druck zu lindern (die Lasker-Verteidigung).",
+            "task": {
+              "prompt": "Tausche Figuren mit dem Lasker-Manöver.",
+              "hint": "Lass den Springer von f6 nach e4 springen.",
+              "success": "Nach Bxe7 Qxe7 hat Schwarz zwei Leichtfigurenpaare getauscht und steht sehr bequem."
+            }
+          },
+          {
+            "text": "Denk an die **Elefantenfalle** aus dem Taktikkurs: Wenn Weiß mit Nxd5 den Bauern auf d5 schnappt, während der Springer auf f6 gefesselt ist, gewinnt ...Nxd5! eine Figur."
+          }
+        ]
+      }
+    }
+  },
+  "middlegame-strategy": {
+    "title": "Strategie im Mittelspiel",
+    "description": "Was tun, wenn es keine Taktik gibt? Verstehe Bauernstrukturen, Vorposten und schwache Felder, offene Linien, gute und schlechte Läufer, Figurenaktivität – und wie man einen Plan macht.",
+    "lessons": {
+      "pawn-structure": {
+        "title": "Bauernstruktur",
+        "summary": "Die Bauern sind die Seele des Schachspiels.",
+        "steps": [
+          {
+            "text": "„Die Bauern sind die Seele des Schachspiels“ – Philidor. Bauern können nicht zurückziehen, deshalb schafft jeder Bauernzug **dauerhafte** Stärken und Schwächen. Lerne, Folgendes zu erkennen:\n\n- **Isolierte Bauern** (keine eigenen Bauern auf den Nachbarlinien)\n- **Doppelbauern** (zwei Bauern auf derselben Linie)\n- **Rückständige Bauern** (können nicht von anderen Bauern gedeckt werden)\n- **Freibauern** (kein gegnerischer Bauer kann sie aufhalten)"
+          },
+          {
+            "text": "**Der isolierte Damenbauer (Isolani).** Der weiße Bauer auf d4 hat keine Nachbarn. Er gibt Weiß Raum und aktive Figuren (Vorposten auf e5 und c5), aber im Endspiel wird er zur Schwäche.\n\nDas Feld **vor** einem isolierten Bauern ist ein perfektes Zuhause für eine gegnerische Figur: Nichts kann sie von dort vertreiben."
+          },
+          {
+            "text": "Kämpfe gegen den isolierten Bauern.",
+            "task": {
+              "prompt": "Blockiere den isolierten Bauern: Stell einen Springer auf das Feld direkt vor ihm.",
+              "hint": "Der Springer auf f6 kann nach d5 springen.",
+              "success": "Eine felsenfeste Blockade! Kein weißer Bauer kann deinen Springer auf d5 jemals angreifen."
+            }
+          },
+          {
+            "text": "**Freibauern müssen laufen!** (Nimzowitsch). Ein Freibauer bindet gegnerische Figuren, und je weiter er vorrückt, desto stärker wird er. Ein **gedeckter** Freibauer (von einem anderen Bauern geschützt) ist besonders stark."
+          },
+          {
+            "text": "Nutze deine Freibauern.",
+            "task": {
+              "prompt": "Schieb deine verbundenen Freibauern vor: Spiele c6, dann d6.",
+              "hint": "Zieh zuerst den c-Bauern vor und bring dann den d-Bauern daneben. Nebeneinander schützen sie sich gegenseitig.",
+              "success": "Verbundene Freibauern rollen gemeinsam vorwärts wie eine Dampfwalze. Der schwarze König kann nicht beide aufhalten!"
+            }
+          }
+        ]
+      },
+      "outposts-weak-squares": {
+        "title": "Vorposten und schwache Felder",
+        "summary": "Finde Löcher im gegnerischen Lager und besetze sie.",
+        "steps": [
+          {
+            "text": "Ein **schwaches Feld** (oder **Loch**) ist ein Feld, das von keinem Bauern mehr gedeckt werden kann. Ein **Vorposten** ist ein schwaches Feld in der gegnerischen Hälfte, idealerweise von einem eigenen Bauern gedeckt, von dem deine Figur nicht vertrieben werden kann.\n\nSpringer lieben Vorposten!"
+          },
+          {
+            "text": "In diesem Sizilianer (Najdorf-Variante) hat ...e5 von Schwarz ein Loch auf **d5** hinterlassen. Die weißen Figuren wollen es besetzen.",
+            "task": {
+              "prompt": "Besetze den Vorposten auf d5.",
+              "hint": "Welcher Springer erreicht d5 mit einem einzigen Sprung?",
+              "success": "Ein Monster-Springer auf d5! Wenn Schwarz ihn schlägt, nimmt Weiß mit dem e-Bauern zurück und bekommt einen gedeckten Freibauern."
+            }
+          },
+          {
+            "text": "**Schwache Felder entstehen**: Jeder Bauernvorstoß gibt die Kontrolle über Felder auf. Nach ...g6 werden die schwarzen Felder **f6** und **h6** rund um den schwarzen König schwach – besonders, wenn der Läufer auf g7 getauscht wird."
+          },
+          {
+            "text": "**Faustregel**: Zieh keine Bauern ohne guten Grund. Jeder Bauernzug ist endgültig – achte darauf, dass die Felder, die er zurücklässt, dem Gegner nichts nützen."
+          }
+        ]
+      },
+      "open-files": {
+        "title": "Offene Linien und die siebte Reihe",
+        "summary": "Wo Türme zu Monstern werden.",
+        "steps": [
+          {
+            "text": "Auf einer **offenen Linie** stehen keine Bauern. Türme gehören auf offene Linien, über die sie in die gegnerische Stellung eindringen können. **Verdoppelte Türme** auf einer offenen Linie sind noch stärker.\n\nAuf einer **halboffenen** Linie stehen nur gegnerische Bauern – auch ideal für Türme."
+          },
+          {
+            "text": "Die d-Linie ist die einzige offene Linie.",
+            "task": {
+              "prompt": "Stell deinen Turm von a1 auf die offene d-Linie.",
+              "hint": "Zieh den Turm von a1 nach d1.",
+              "success": "Gut! Jetzt kann der Turm von f1 ihm später auf der d-Linie folgen oder e4 unterstützen."
+            }
+          },
+          {
+            "text": "Ein Turm auf der **siebten Reihe** (die 7. für Weiß, die 2. für Schwarz) greift Bauern an, die nur noch von Figuren gedeckt werden können, und schneidet den gegnerischen König ab. Zwei Türme auf der siebten Reihe entscheiden oft die Partie."
+          },
+          {
+            "text": "Der schwarze Turm steht passiv auf c8. Die d-Linie gehört dir.",
+            "task": {
+              "prompt": "Dring mit deinem Turm auf die siebte Reihe ein.",
+              "hint": "Nutze die offene d-Linie, um d7 zu erreichen.",
+              "success": "Der Turm auf d7 greift a7 und f7 an und fesselt Schwarz an die Verteidigung. Das ist die Kraft der siebten Reihe!"
+            }
+          }
+        ]
+      },
+      "bishops": {
+        "title": "Gute Läufer, schlechte Läufer und das Läuferpaar",
+        "summary": "Nicht alle Läufer sind gleich.",
+        "steps": [
+          {
+            "text": "Ein **schlechter Läufer** wird von eigenen Bauern blockiert, die auf seiner Feldfarbe stehen. Ein **guter Läufer** hat seine Bauern auf der anderen Farbe und bewegt sich frei.\n\nIn der Französischen Verteidigung ist der weißfeldrige Läufer von Schwarz auf c8 oft schlecht: Die Bauern auf e6 und d5 blockieren ihn."
+          },
+          {
+            "text": "**Die Lösung**: Tausch den schlechten Läufer! Schwarz bereitet ...b6 und ...Ba6 vor, um ihn gegen den guten Läufer von Weiß zu tauschen.",
+            "task": {
+              "prompt": "Biete mit ...Ba6 den Tausch deines schlechten Läufers an.",
+              "hint": "Der Läufer von c8 geht nach a6, wo er dem weißen Läufer auf f1 gegenübersteht.",
+              "success": "Clever: Schwarz tauscht den schlechten Läufer gegen den guten von Weiß."
+            }
+          },
+          {
+            "text": "**Das Läuferpaar** – zwei Läufer gegen Läufer und Springer oder zwei Springer – ist in **offenen** Stellungen ein echter Vorteil. Zusammen decken sie beide Farben ab und beherrschen das ganze Brett.\n\nWenn du das Läuferpaar hast, öffne die Stellung. Wenn dein Gegner es hat, halte sie geschlossen."
+          },
+          {
+            "text": "**Springer gegen Läufer**: Springer sind in **geschlossenen** Stellungen mit festgelegten Bauernketten und Vorposten besser. Läufer bevorzugen offene Stellungen mit Bauern auf beiden Flügeln.\n\nHier ist der weißfeldrige Läufer von Schwarz **schlecht**: Seine eigenen Bauern auf d5, e6 und f5 blockieren ihn. Der weiße Springer steuert den Vorposten auf c5 an und dominiert."
+          }
+        ]
+      },
+      "piece-activity": {
+        "title": "Figurenaktivität",
+        "summary": "Verbessere deine schlechteste Figur.",
+        "steps": [
+          {
+            "text": "Wenn du nicht weißt, was du tun sollst, such deine **am schlechtesten stehende Figur** und verbessere sie. Eine passive Figur am Rand ist so, als würdest du mit einer Figur weniger spielen.\n\nHier tut der weiße Springer auf a4 gar nichts. Sein Weg **a4–c3–e2–f4** oder **–d5** bringt ihn zurück ins Spiel."
+          },
+          {
+            "text": "Verbessere deine schlechteste Figur.",
+            "task": {
+              "prompt": "Bring den Springer vom Rand zurück in Richtung Zentrum.",
+              "hint": "„Springer am Rand bringt Kummer und Schand.“ Bring ihn zurück nach c3.",
+              "success": "Viel besser. Der Springer hat jetzt d5, e4 und b5 im Blick."
+            }
+          },
+          {
+            "text": "**Aktiviere deine Türme**: Verbinde sie (nichts zwischen ihnen auf der Grundreihe) und stell sie dann auf offene oder halboffene Linien. **Turmschwenks** (Re3–g3, Rd3–h3) bringen Türme in den Angriff."
+          },
+          {
+            "text": "**Tausch deine schlechten Figuren, behalte deine guten.** Tausche Figuren, die den Gegner gut verteidigen (wie einen starken Springer auf einem Vorposten), und behalte deine aktivsten Figuren auf dem Brett."
+          }
+        ]
+      },
+      "planning": {
+        "title": "Wie man einen Plan macht",
+        "summary": "Mach aus deinem Verständnis eine Strategie.",
+        "steps": [
+          {
+            "text": "Eine einfache Planungsmethode für jede Stellung:\n\n1. **Sicherheit zuerst** – gibt es Drohungen? (Schachs, Schlagzüge, Drohungen)\n2. **Schau dir die Bauern an** – auf welchem Flügel sollte ich spielen? Welchen Bauernhebel will ich?\n3. **Finde Schwächen** – schwache Bauern, Löcher, ein ungeschützter König.\n4. **Verbessere deine Figuren** – die schlechteste zuerst.\n5. **Dann handle** – öffne die Stellung dort, wo du stärker bist."
+          },
+          {
+            "text": "**Bauernhebel** sind das wichtigste Mittel, um Linien zu öffnen. In der Vorstoßvariante der Französischen Verteidigung greift Schwarz die Basis der weißen Bauernkette mit ...c5 an (und später mit ...f6)."
+          },
+          {
+            "text": "Finde den richtigen Bauernhebel.",
+            "task": {
+              "prompt": "Greif die Basis der weißen Bauernkette an.",
+              "hint": "Die Basis der Kette ist d4. Welcher Bauer kann sie angreifen?",
+              "success": "Genau – greif die Basis der Kette an! ...c5 ist der Hauptzug in der französischen Vorstoßvariante."
+            }
+          },
+          {
+            "text": "**Spiel auf dem Flügel, auf dem du mehr Raum hast.** Bauernketten zeigen den Weg: In der Königsindischen Verteidigung zeigt die weiße Kette (d5–e4) zum Damenflügel, also greift Weiß dort mit c5 an. Die schwarze Kette (e5–d6) zeigt zum Königsflügel, also greift Schwarz mit ...f5 an."
+          },
+          {
+            "text": "**Minoritätsangriff**: In der Karlsbader Struktur schiebt Weiß zwei Damenflügelbauern (b4–b5) gegen drei vor, um auf c6 eine Schwäche zu erzeugen – ein Plan, den Weltmeister seit 100 Jahren anwenden."
+          }
+        ]
+      }
+    }
+  },
+  "attack-and-defense": {
+    "title": "Königsangriff und Verteidigung",
+    "description": "Lerne, wie man den rochierten König angreift – mit dem Läuferopfer auf h7, Batterien, Bauernstürmen und Rochaden auf verschiedenen Seiten – und wie man mit Prophylaxe verteidigt: Frag dich immer, was dein Gegner will.",
+    "lessons": {
+      "attack-principles": {
+        "title": "Grundsätze des Angriffs",
+        "summary": "Wann und wie du auf den König losgehst.",
+        "steps": [
+          {
+            "text": "Ein Angriff auf den König gelingt, wenn du in diesem Bereich **mehr Angreifer hast, als der Gegner Verteidiger hat**. Prüfe vor dem Angriff:\n\n- Habe ich einen **Entwicklungsvorsprung**?\n- Ist das Zentrum **geschlossen oder stabil**? (Flügelangriffe scheitern, wenn sich das Zentrum öffnet.)\n- Gibt es **Ziele** – geschwächte Bauern, fehlende Verteidiger wie der Springer auf f6?"
+          },
+          {
+            "text": "**Batterien**: Stell zwei Figuren auf dieselbe Diagonale oder Linie. Dame vorne, Läufer dahinter – oder Läufer vorne, Dame dahinter – mit Ziel h7 oder h2 ist ein klassisches Mattmuster."
+          },
+          {
+            "text": "Der Springer auf f6, der beste Verteidiger von h7, ist weg.",
+            "task": {
+              "prompt": "Setz in einem Zug matt mit der Batterie aus Dame und Läufer.",
+              "hint": "Schlag mit der Dame auf h7. Der Läufer auf d3 deckt sie.",
+              "success": "Schachmatt! Die Batterie aus Dame und Läufer ist tödlich."
+            }
+          }
+        ]
+      },
+      "greek-gift": {
+        "title": "Das klassische Läuferopfer",
+        "summary": "Bxh7+! – das berühmteste Angriffsopfer.",
+        "steps": [
+          {
+            "text": "Das **klassische Läuferopfer** („griechisches Geschenk“) ist ein Läuferopfer auf h7 (oder h2). Die Zutaten:\n\n- Läufer auf d3 mit Blick auf h7\n- Ein Springer, der nach **g5** springen kann\n- Eine Dame, die **h5** (oder die h-Linie) erreichen kann\n- Kein schwarzer Springer auf f6 (oft von einem Bauern auf e5 vertrieben)"
+          },
+          {
+            "text": "Alle Zutaten sind da. Starte den Angriff!",
+            "task": {
+              "prompt": "Opfere den Läufer auf h7 und setz mit einem Springerschach nach.",
+              "hint": "Schlag mit Schach auf h7. Wenn der König zurückschlägt, springt der Springer mit Schach nach g5.",
+              "success": "Der König steht ungeschützt. Jetzt greift die Dame ein ..."
+            }
+          },
+          {
+            "text": "Schwarz hat sich mit ...Kg8 zurückgezogen. Hol die schwere Artillerie.",
+            "task": {
+              "prompt": "Bring deine Dame mit einer Mattdrohung in den Angriff.",
+              "hint": "Die Dame droht Matt auf h7.",
+              "success": "Qh5 droht Qh7#. Schwarz muss mit ...Qxg5 die Dame hergeben – das Läuferopfer hat sich gelohnt."
+            }
+          },
+          {
+            "text": "**Wann scheitert es?** Wenn Schwarz h7 mit einem Springer verteidigen kann (…Nf6/…Nf8) oder der König sicher nach g6/h6 laufen kann und Weiß keine Fortsetzung hat, ist das Opfer nur eine verlorene Figur. Berechne immer den Königsmarsch ...Kg6!"
+          }
+        ]
+      },
+      "opposite-castling": {
+        "title": "Verschiedenseitige Rochaden und Bauernstürme",
+        "summary": "Ein Wettlauf: Wer zuerst Linien öffnet, gewinnt.",
+        "steps": [
+          {
+            "text": "Wenn die Könige auf **verschiedenen Seiten** rochiert haben, können beide Spieler ihre Bauern gegen den gegnerischen König werfen, ohne den eigenen zu schwächen. Es wird ein **Wettlauf**: Tempo zählt mehr als Material.\n\nIm Jugoslawischen Angriff spielt Weiß **h4–h5**, tauscht mit **Bh6** den Läufer auf g7 und setzt auf der h-Linie matt."
+          },
+          {
+            "text": "**Die h-Linie öffnen**: Typisch ist es, einen Bauern (g4!) oder sogar die Qualität zu opfern, um die Linien vor dem König aufzureißen.\n\nSchwarz wehrt sich mit ...Rxc3! und Bauernstürmen am Damenflügel."
+          },
+          {
+            "text": "**Tausch den wichtigsten Verteidiger.** In der Drachenvariante bewacht der Läufer auf g7 die schwarzen Felder rund um den schwarzen König.",
+            "task": {
+              "prompt": "Setz den Springer auf f6, den wichtigsten Verteidiger, unter Druck: Spiele Bg5.",
+              "hint": "Zieh den Läufer von e3 nach g5 und übe Druck auf f6 aus.",
+              "success": "Bg5 ist eine Hauptvariante: Der Zug fesselt bzw. greift den Springer auf f6 an und unterstützt die Pläne f4-f5 oder g4."
+            }
+          }
+        ]
+      },
+      "prophylaxis": {
+        "title": "Prophylaxe und Verteidigung",
+        "summary": "Frag dich: Was will mein Gegner?",
+        "steps": [
+          {
+            "text": "**Prophylaxe** bedeutet, die Ideen deines Gegners zu verhindern, *bevor* sie passieren. Frag dich vor jedem Zug: **„Was will mein Gegner tun?“**\n\nOft ist die beste Verteidigung ein Zug, der seinen Plan stoppt und gleichzeitig deine Stellung verbessert."
+          },
+          {
+            "text": "Weiß droht **Qxh7#**. Mehrere Züge verhindern das – aber einer greift gleichzeitig an.",
+            "task": {
+              "prompt": "Wehre die Mattdrohung mit Tempogewinn ab.",
+              "hint": "Welche Figur kann h7 decken und gleichzeitig die Dame angreifen?",
+              "success": "Hervorragende Verteidigung! Der Springer deckt h7 und greift die Dame an."
+            }
+          },
+          {
+            "text": "**Luft schaffen**: Ein kleiner Bauernzug wie **h3/h6** gibt deinem König ein Fluchtfeld und verhindert Grundreihenmatts für den Rest der Partie. Ein Zug wie **...h6** verhindert außerdem Ideen mit Ng5 und Bg5."
+          },
+          {
+            "text": "**Grundsätze der Verteidigung:**\n\n- Tausche angreifende Figuren (besonders den besten Angreifer des Gegners).\n- Behalte einen Springer auf f6 (f3) – den besten Verteidiger des Königs.\n- Kontere im Zentrum: Auf einen Flügelangriff antwortet man am besten mit Aktion im Zentrum.\n- Keine Panik: Gib Material zurück, wenn das den Angriff erstickt."
+          }
+        ]
+      }
+    }
+  },
+  "endgame-essentials": {
+    "title": "Endspiel-Grundlagen",
+    "description": "„Um besser zu werden, studiere zuerst das Endspiel“ – Capablanca. Meistere die Opposition, Schlüsselfelder, die Quadratregel, das Dreiecksmanöver, entfernte Freibauern und die Turmendspiele, die man kennen muss: Lucena und Philidor.",
+    "lessons": {
+      "king-activity": {
+        "title": "Der aktive König",
+        "summary": "Im Endspiel wird der König zur kämpfenden Figur.",
+        "steps": [
+          {
+            "text": "Mit weniger Figuren auf dem Brett droht kein Matt mehr. Der König wird zu einer **starken Angriffsfigur**, die etwa 4 Bauern wert ist. Regel Nummer eins im Endspiel: **Aktiviere deinen König!**\n\nBring ihn ins Zentrum oder zu den Bauern, auf die es ankommt."
+          },
+          {
+            "text": "**Könige vor die Bauern.** In Bauernendspielen gehört der angreifende König **vor** seinen Bauern, nicht dahinter. Der verteidigende König will **direkt vor** dem gegnerischen Bauern stehen."
+          },
+          {
+            "text": "Dein König steht neben seinem Bauern. Stell dich davor!",
+            "task": {
+              "prompt": "Finde den einzigen Gewinnzug.",
+              "hint": "Stell deinen König direkt vor den Bauern, auf die 6. Reihe.",
+              "success": "Mit dem König auf der 6. Reihe vor seinem Bauern gewinnt Weiß immer (außer mit einem Randbauern)."
+            }
+          }
+        ]
+      },
+      "opposition": {
+        "title": "Die Opposition",
+        "summary": "Die wichtigste Idee in Bauernendspielen.",
+        "steps": [
+          {
+            "text": "Zwei Könige auf derselben Linie (oder Reihe) mit **einem Feld dazwischen** stehen in **Opposition**. Wer **nicht** ziehen muss, „hat die Opposition“ – der andere König muss ausweichen.\n\nHier stehen sich die Könige gegenüber. Wer ziehen muss, muss zur Seite gehen."
+          },
+          {
+            "text": "Nimm die Opposition, um zu gewinnen.",
+            "task": {
+              "prompt": "Nimm die Opposition.",
+              "hint": "Stell deinen König auf dieselbe Linie wie den schwarzen König, mit einem Feld dazwischen.",
+              "success": "Du hast die Opposition! Schwarz muss ausweichen, und dein König rückt zu den Schlüsselfeldern vor."
+            }
+          },
+          {
+            "text": "Der schwarze König steckt im Eckbereich fest. Nutze die Opposition, um den Bauern zu begleiten.",
+            "task": {
+              "prompt": "Finde den einzigen Gewinnzug.",
+              "hint": "Stell dich dem schwarzen König gegenüber, mit einem Feld dazwischen.",
+              "success": "Opposition! Schwarz muss zur Seite gehen, und dein König begleitet den Bauern bis zum Umwandlungsfeld."
+            }
+          }
+        ]
+      },
+      "key-squares": {
+        "title": "Schlüsselfelder",
+        "summary": "Erreiche sie, und der Bauer wandelt sich um.",
+        "steps": [
+          {
+            "text": "Jeder Bauer hat **Schlüsselfelder**: Erreicht der angreifende König eines davon, wandelt sich der Bauer auf jeden Fall um.\n\nFür einen Bauern auf der 2., 3. oder 4. Reihe sind die Schlüsselfelder die drei Felder **zwei Reihen vor** ihm. Für einen Bauern auf der 5. oder 6. Reihe gibt es sechs Schlüsselfelder."
+          },
+          {
+            "text": "Die Schlüsselfelder des Bauern auf d3 sind c5, d5 und e5. Der schwarze König bewacht sie. Nutze die Opposition, um dir den Weg freizukämpfen.",
+            "task": {
+              "prompt": "Finde den einzigen Gewinnzug.",
+              "hint": "Nimm die Opposition auf der c-Linie.",
+              "success": "Mit der Opposition erreicht dein König ein Schlüsselfeld, und der Bauer wird zur Dame."
+            }
+          },
+          {
+            "text": "**Randbauern sind besonders.** Mit einem a- oder h-Bauern lässt sich der verteidigende König aus der Ecke nicht vertreiben: Diese Endspiele sind fast immer **Remis**. Denk daran, wenn du in ein Bauernendspiel abtauschst!"
+          }
+        ]
+      },
+      "square-of-the-pawn": {
+        "title": "Die Quadratregel",
+        "summary": "Holt der König den Bauern ein? Zähl mit einem Quadrat.",
+        "steps": [
+          {
+            "text": "Um zu wissen, ob ein König einen Freibauern ohne Hilfe einholen kann, stell dir ein **Quadrat** vor, dessen eine Seite vom Bauern bis zu seinem Umwandlungsfeld reicht.\n\nKann der verteidigende König mit seinem Zug **ins Quadrat** treten, holt er den Bauern ein. Wenn nicht, wandelt sich der Bauer um.\n\n(Steht der Bauer noch auf seiner Ausgangsreihe, zähl ab dem Feld vor ihm – er kann zwei Felder auf einmal ziehen.)"
+          },
+          {
+            "text": "Schwarz ist am Zug. Der weiße König ist weit weg. Kannst du den Bauern einholen?",
+            "task": {
+              "prompt": "Tritt ins Quadrat des Bauern.",
+              "hint": "Nach dem nächsten Bauernzug von Weiß wird das Quadrat kleiner. Zieh diagonal in Richtung der Bahn des Bauern.",
+              "success": "Du bist im Quadrat – der Bauer kann deinem König nicht entkommen. Remis!"
+            }
+          },
+          {
+            "text": "Diagonal zu ziehen ist genauso schnell wie gerade. Ein König kann also einen Bauern **verfolgen** und sich gleichzeitig einem anderen Ziel **nähern** – das berühmte **Réti-Manöver** (Réti, 1921) nutzt genau diese Idee, um eine scheinbar verlorene Stellung zu retten."
+          }
+        ]
+      },
+      "triangulation": {
+        "title": "Das Dreiecksmanöver",
+        "summary": "Verliere absichtlich ein Tempo, um deinen Gegner in Zugzwang zu bringen.",
+        "steps": [
+          {
+            "text": "**Zugzwang** bedeutet, dass jeder Zug deine Stellung verschlechtert. Wäre hier **Schwarz am Zug**, würde Schwarz verlieren: Der König müsste entweder den Bauern auf b7 oder die d-Felder aufgeben.\n\nAber **Weiß** ist am Zug. Weiß muss den Zug an Schwarz weitergeben – und Könige können nicht passen."
+          },
+          {
+            "text": "**Das Dreiecksmanöver**: Der weiße König läuft ein Dreieck aus drei Feldern ab (d5–e5–d4–d5), während der schwarze König nur zwischen zwei Feldern (d7 und c6) hin- und herpendeln kann. Nach drei Zügen entsteht dieselbe Stellung – mit Schwarz am Zug!"
+          },
+          {
+            "text": "Verliere mit deinem König ein Tempo.",
+            "task": {
+              "prompt": "Mach das Dreiecksmanöver: Spiele Ke5, Kd4 und zurück nach Kd5.",
+              "hint": "Lauf mit dem König das Dreieck e5–d4–d5 ab. Der schwarze König kann dich nicht nachahmen.",
+              "success": "Dieselbe Stellung – aber jetzt muss Schwarz ziehen und verliert! Nach ...Kc8 gewinnt Ke6–d6–e7–d7."
+            }
+          }
+        ]
+      },
+      "outside-passed-pawn": {
+        "title": "Der entfernte Freibauer",
+        "summary": "Ein Lockvogel, der den gegnerischen König weglockt.",
+        "steps": [
+          {
+            "text": "Ein **entfernter Freibauer** ist ein Freibauer weit weg von den anderen Bauern. Er wirkt als **Lockvogel**: Der gegnerische König muss hinlaufen, um ihn aufzuhalten, und dann frisst dein König die zurückgelassenen Bauern."
+          },
+          {
+            "text": "Nutze deinen entfernten Freibauern.",
+            "task": {
+              "prompt": "Zieh den entfernten Freibauern vor, um den schwarzen König wegzulocken.",
+              "hint": "Zieh den a-Bauern vor. Der schwarze König muss ihn verfolgen.",
+              "success": "Der schwarze König muss zum Damenflügel, und der weiße König gewinnt die Bauern am Königsflügel."
+            }
+          },
+          {
+            "text": "**Bauernmehrheiten**: Hast du auf einem Flügel mehr Bauern, kannst du dort meist einen Freibauern bilden. Eine **gesunde Bauernmehrheit am Damenflügel** ist im Endspiel oft ein entscheidender Vorteil, weil der entstehende Freibauer weit von beiden Königen entfernt ist."
+          }
+        ]
+      },
+      "rook-endgame-basics": {
+        "title": "Grundlagen der Turmendspiele",
+        "summary": "Aktive Türme, abgeschnittene Könige, Türme hinter Freibauern.",
+        "steps": [
+          {
+            "text": "Turmendspiele sind die **häufigsten** Endspiele im Schach. Die goldenen Regeln:\n\n1. **Aktiviere deinen Turm** – ein aktiver Turm ist einen Bauern wert.\n2. **Schneide den gegnerischen König ab** – mit deinem Turm entlang einer Reihe oder Linie.\n3. **Türme gehören hinter Freibauern** – hinter deine eigenen und hinter die des Gegners (Tarrasch-Regel)."
+          },
+          {
+            "text": "Dein a-Freibauer braucht Unterstützung. Der schwarze Turm steht vor ihm.",
+            "task": {
+              "prompt": "Stell deinen Turm hinter deinen Freibauern.",
+              "hint": "Zieh den Turm entlang der ersten Reihe nach a1.",
+              "success": "Hinter dem Bauern wird dein Turm mit jedem Vorstoß stärker, während der schwarze Turm immer passiver wird."
+            }
+          },
+          {
+            "text": "**Den König abschneiden**: Ein Turm auf einer Linie kann den gegnerischen König von deinem Bauern fernhalten. Jede Linie, um die der verteidigende König abgeschnitten ist, ist viel wert."
+          }
+        ]
+      },
+      "lucena-position": {
+        "title": "Die Lucena-Stellung",
+        "summary": "Brückenbau: So gewinnst du Turm und Bauer gegen Turm.",
+        "steps": [
+          {
+            "text": "Die **Lucena-Stellung**: Dein Bauer steht auf der 7. Reihe, dein König davor, und der gegnerische König ist von deinem Turm **abgeschnitten**. Der schwarze Turm verhindert, dass dein König die Ecke verlässt.\n\nDie Gewinntechnik heißt **Brückenbau**."
+          },
+          {
+            "text": "Schritt 1: Zieh deinen Turm auf die **4. Reihe**. Später wird er die Schachgebote des Turms abblocken.",
+            "task": {
+              "prompt": "Bau die Brücke: Zieh deinen Turm nach d4.",
+              "hint": "Turm auf die 4. Reihe (d4).",
+              "success": "Genau. Jetzt kann der König herauskommen, und wenn die Schachs ausgehen, blockt der Turm ab."
+            }
+          },
+          {
+            "text": "Nach 1.Rd4 Rc1 2.Ka7 Ra1+ 3.Kb6 Rb1+ 4.Kc6 Rc1+ 5.Kb5 Rb1+ ist der König herausgekommen. Jetzt wird die Brücke fertiggestellt.",
+            "task": {
+              "prompt": "Blocke das Schach ab und vollende die Brücke.",
+              "hint": "Stell deinen Turm auf b4 dazwischen. Die Schachs sind vorbei.",
+              "success": "Die Brücke steht! Der Bauer wird sich umwandeln. Das ist die Lucena-Technik."
+            }
+          }
+        ]
+      },
+      "philidor-position": {
+        "title": "Die Philidor-Stellung",
+        "summary": "So hältst du ein Turmendspiel mit einem Bauern weniger remis.",
+        "steps": [
+          {
+            "text": "Die **Philidor-Stellung** ist die wichtigste Verteidigungsaufstellung, wenn du in einem Turmendspiel einen Bauern weniger hast und dein König vor dem Bauern steht.\n\n**Schritt 1**: Halte deinen Turm auf deiner **3. Reihe** (der 6. Reihe für Schwarz), damit der weiße König nicht vorrücken kann."
+          },
+          {
+            "text": "**Schritt 2**: Sobald Weiß den Bauern auf die 6. Reihe zieht, verliert der weiße König seinen Schutz. Zieh deinen Turm auf die **erste Reihe** zurück und gib Schachs **von hinten**. Denen kann der König nie entkommen."
+          },
+          {
+            "text": "Weiß hat gerade e5–e6 gespielt. Zeit für Schritt 2.",
+            "task": {
+              "prompt": "Zieh deinen Turm ganz zurück nach b1.",
+              "hint": "Geh ans andere Ende des Bretts, damit du den König von hinten angreifen kannst.",
+              "success": "Perfekte Philidor-Verteidigung. Du gibst dem König für immer Schach von hinten – Remis."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "calculation-and-thinking": {
+    "title": "Rechnen und Denken",
+    "description": "Denk wie ein Meister. Bau dir eine verlässliche Denkroutine auf: Schachs, Schlagzüge und Drohungen prüfen, Kandidatenzüge wählen, forcierende Varianten berechnen und vor jedem Zug einen Patzer-Check machen.",
+    "lessons": {
+      "checks-captures-threats": {
+        "title": "Schachs, Schlagzüge, Drohungen",
+        "summary": "Der SSD-Check, der Taktiken findet.",
+        "steps": [
+          {
+            "text": "Starke Spieler schauen sich **zuerst forcierende Züge** an, in dieser Reihenfolge:\n\n1. **Schachs** – der Gegner muss reagieren.\n2. **Schlagzüge** – sie verändern das Material und erzwingen oft ein Zurückschlagen.\n3. **Drohungen** – Angriffe, auf die der Gegner antworten muss.\n\nPrüfe sie bei jedem Zug für **beide Seiten**. Die meisten Taktiken verstecken sich unter den forcierenden Zügen."
+          },
+          {
+            "text": "Das ist das Finale von Paul Morphys berühmter **Opernpartie** (Paris, 1858). Prüf zuerst die Schachs – auch die „verrückten“.",
+            "task": {
+              "prompt": "Matt in 2: Prüf jedes Schach!",
+              "hint": "Schau dir jedes Damenschach an. Wenn der Springer auf d7 schlagen muss, wer bewacht dann noch d8?",
+              "success": "Morphys unsterbliches Finale! Ein Damenopfer, das nur ein SSD-Check findet."
+            }
+          },
+          {
+            "text": "**Hör nicht beim ersten guten Zug auf.** Ein forcierendes Schach kann noch stärker sein als ein großer Schlagzug. Frag dich immer: *Was kann der Gegner nach meinem Schach tun?* Wenn die Antwort „fast nichts“ lautet, rechne es bis zum Ende durch."
+          },
+          {
+            "text": "Réti gegen Tartakower, Wien 1910 – eine der kürzesten Glanzpartien aller Zeiten.",
+            "task": {
+              "prompt": "Matt in 3: Beginne mit einem Damenopfer.",
+              "hint": "Opfere die Dame mit Schach auf d8. Dann ein Doppelschach mit dem Läufer!",
+              "success": "Brillant! Damenopfer, Doppelschach und Matt."
+            }
+          }
+        ]
+      },
+      "candidate-moves": {
+        "title": "Kandidatenzüge",
+        "summary": "Liste deine Möglichkeiten auf, bevor du rechnest.",
+        "steps": [
+          {
+            "text": "Mach dir vor dem Rechnen eine kurze Liste von **Kandidatenzügen** (2–4 ernsthafte Möglichkeiten). Berechne dann jeden einzelnen und vergleiche sie. So verliebst du dich nicht in die erste Idee.\n\nGute Kandidaten: forcierende Züge, Züge mit deinen aktivsten Figuren und Züge, die den Plan des Gegners stoppen."
+          },
+          {
+            "text": "Morphy, Opernpartie, 13. Zug. Kandidaten: Rxd7, Bxf6, Rhe1 ... Welcher ist am stärksten?",
+            "task": {
+              "prompt": "Finde den forcierendsten Kandidaten.",
+              "hint": "Ein Schlagzug, der die Fesselung auf d7 aufrechterhält.",
+              "success": "Morphy wählte den forcierendsten Zug: Rxd7! Die schwarzen Figuren sind gefesselt und gebunden."
+            }
+          },
+          {
+            "text": "Nach 13.Rxd7 Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7 hatte Morphy alles bis zum Ende berechnet – das Damenopfer, das du in der vorigen Lektion gefunden hast."
+          }
+        ]
+      },
+      "blunder-check": {
+        "title": "Der Patzer-Check",
+        "summary": "Bevor du eine Figur berührst, schau dir das Brett aus der Sicht deines Gegners an.",
+        "steps": [
+          {
+            "text": "Die meisten Partien unter Anfängern werden durch **grobe Fehler** entschieden, nicht durch glänzende Kombinationen. Mach vor jedem Zug einen **Patzer-Check**:\n\n1. Was **droht** der letzte Zug meines Gegners?\n2. Welche Schachs, Schlagzüge und Drohungen hat **er** nach meinem geplanten Zug?\n3. Ist eine meiner Figuren **ungedeckt**?"
+          },
+          {
+            "text": "**Zählen ist nicht alles.** Hier sieht 1.Nxe5? Nxe5 2.Rxe5?? nach Bauerngewinn aus (zwei Angreifer gegen einen Verteidiger) – aber sobald der Turm weg ist, gewinnt **...Bxf2+** den Turm. Das Feld f2 war nur vom König gedeckt!"
+          },
+          {
+            "text": "**Das Blackburne-Shilling-Gambit**: Weiß hat gierig den Bauern auf e5 genommen und die Drohung von Schwarz übersehen. Bestrafe das!"
+          },
+          {
+            "text": "Finde die Züge, die die Gier von Weiß bestrafen.",
+            "task": {
+              "prompt": "Greif mit deiner Dame zwei Dinge gleichzeitig an und bleib im Angriff.",
+              "hint": "Dame nach g5 greift g2 und e5 an. Nach Nxf7 schnapp dir g2, dann Schach auf e4 – und beende es mit einem Springer.",
+              "success": "Ersticktes Matt! Die berühmte Blackburne-Shilling-Falle. Weiß hat den Patzer-Check vergessen."
+            }
+          }
+        ]
+      },
+      "forcing-sequences": {
+        "title": "Forcierende Varianten berechnen",
+        "summary": "Schachs, Schlagzüge und Drohungen schränken die Möglichkeiten deines Gegners ein – so kannst du tief rechnen.",
+        "steps": [
+          {
+            "text": "Je **forcierender** deine Züge sind, desto **weniger Antworten** musst du berechnen. Eine Folge von Schachs lässt sich 5–10 Züge tief berechnen, weil der Gegner jedes Mal nur ein oder zwei Antworten hat.\n\nTipp: **Visualisiere** die Endstellung. Wo stehen die Figuren nach der Zugfolge?"
+          },
+          {
+            "text": "Berechne die ganze forcierende Zugfolge, bevor du ziehst. (Du kennst sie aus dem Kurs über Mattbilder!)",
+            "task": {
+              "prompt": "Matt in 4 nur mit Schachs.",
+              "hint": "Springerschach, Doppelschach, Damenopfer, ersticktes Matt.",
+              "success": "Jeder Zug war ein Schach – deshalb konntest du es bis zum Ende berechnen."
+            }
+          },
+          {
+            "text": "**Checkliste fürs Rechnen:**\n\n- Beginne mit dem forcierendsten Kandidaten.\n- Finde für jeden Zug die **beste** Antwort des Gegners, nicht die, auf die du hoffst.\n- Zähl am Ende der Variante das Material.\n- Prüf vor dem Ziehen den **ersten Zug** noch einmal auf einen einfachen Patzer."
+          }
+        ]
+      }
+    }
+  }
+}

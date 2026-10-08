@@ -80,6 +80,8 @@ export default {
     flip: 'Flip board',
     analyse: 'Open in analysis board',
     analyseTip: 'Analyse this position',
+    playFromHere: 'Play from here vs a bot',
+    playFromHereTip: 'Take over from here: play this position vs a bot',
   },
 
   mentor: {

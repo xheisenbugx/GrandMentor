@@ -52,6 +52,7 @@ export default {
     flip: 'Girar tablero (F)',
   },
   analyze: 'Analizar esta posición',
+  addToRepertoire: 'Añadir a mi repertorio',
   tabs: { learn: 'Aprender', explore: 'Explorar', train: 'Entrenar' },
   startingPosition: 'Posición inicial',
   bookPosition: 'Posición de teoría',

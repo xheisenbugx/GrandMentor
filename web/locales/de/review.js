@@ -1,0 +1,161 @@
+// review — de strings. See docs/I18N.md.
+export default {
+  title: 'Partieanalyse',
+
+  // Whole sentences: {move} is the move (SAN, possibly with its move number).
+  phrase: {
+    brilliant: '{move} ist brillant',
+    great: '{move} ist ein großartiger Zug',
+    best: '{move} ist der beste Zug',
+    excellent: '{move} ist exzellent',
+    good: '{move} ist gut',
+    book: '{move} ist ein Theoriezug',
+    inaccuracy: '{move} ist eine Ungenauigkeit',
+    mistake: '{move} ist ein Fehler',
+    miss: '{move} verpasst eine Chance',
+    blunder: '{move} ist ein Patzer',
+    forced: '{move} ist erzwungen',
+    played: '{move} wurde gespielt',
+    works: '{move} funktioniert',
+    notBest: '{move} ist nicht der beste Zug',
+  },
+
+  loading: {
+    game: 'Partie wird geladen…',
+    title: 'Deine Partie wird analysiert…',
+    subtitle: '{white} gegen {black} · {moves}',
+    moves: { one: '{count} Zug', other: '{count} Züge' },
+    cancel: 'Abbrechen',
+    done: 'Fertig! Dein Bericht wird vorbereitet…',
+    steps: [
+      'Eröffnung wird gelesen…',
+      'Jeder Zug wird mit der Engine geprüft…',
+      'Suche nach verpassten Taktiken…',
+      'Deine besten Züge werden gesucht…',
+      'Suche nach brillanten Ideen…',
+      'Dein Trainerbericht wird geschrieben…',
+    ],
+    tips: [
+      'Die Genauigkeit misst, wie nah deine Züge an den besten Zügen der Engine lagen.',
+      'Ein Patzer (??) ist ein Zug, der einen großen Teil deines Vorteils verschenkt.',
+      'Brillante Züge (!!) sind meist gute, schwer zu findende Figurenopfer.',
+      'Schlüsselmomente sind die Wendepunkte der Partie – wiederhole sie, um am meisten zu lernen.',
+      'Theoriezüge sind bekannte Eröffnungszüge, die starke Spieler spielen.',
+      '„Verpasst“ heißt, dass du eine Chance auf Materialgewinn oder den Sieg übersehen hast.',
+    ],
+  },
+
+  error: {
+    badLinkTitle: 'Wir konnten diese Partie nicht finden',
+    badLinkText: 'Der Link scheint kaputt zu sein. Wähle eine Partie aus deiner Bibliothek, um sie zu analysieren.',
+    notFoundTitle: 'Partie nicht gefunden',
+    notFoundText: 'Sie wurde vielleicht gelöscht.',
+    loadTitle: 'Die Partie konnte nicht geladen werden',
+    emptyTitle: 'Noch nichts zu analysieren',
+    emptyText: 'Diese Partie hat keine Züge. Spiel ein paar Züge und komm dann für eine Analyse mit deinem Trainer zurück!',
+    playBot: 'Gegen Bot spielen',
+    goLibrary: 'Zur Bibliothek',
+    reviewEmpty: 'Die Analyse kam leer zurück.',
+    failedTitle: 'Die Analyse konnte nicht abgeschlossen werden',
+    generic: 'Etwas ist schiefgelaufen.',
+    tryAgain: 'Nochmal',
+    openAnalysis: 'Im Analysebrett öffnen',
+  },
+
+  side: {
+    white: 'Weiß',
+    black: 'Schwarz',
+  },
+
+  tabs: {
+    review: 'Analyse',
+    coach: 'Trainer fragen',
+  },
+
+  nav: {
+    first: 'Anfang (Pos1)',
+    prev: 'Zurück (←)',
+    next: 'Weiter (→)',
+    last: 'Ende (Ende)',
+    flip: 'Brett drehen',
+    analyse: 'Im Analysebrett öffnen',
+    analyseTip: 'Diese Stellung analysieren',
+    playFromHere: 'Ab hier gegen Bot spielen',
+    playFromHereTip: 'Übernimm ab hier: spiel diese Stellung gegen einen Bot',
+  },
+
+  mentor: {
+    greeting: 'Neugierig auf einen Zug? Geh auf dem Brett zu ihm und frag mich – zum Beispiel *„Warum war das ein Fehler?“*',
+    suggestions: [
+      'Warum war dieser Zug schlecht?',
+      'Was war die Idee des besten Zugs?',
+      'Was kann ich aus dieser Partie lernen?',
+      'Was ist hier der Plan?',
+    ],
+  },
+
+  report: {
+    accuracy: 'Genauigkeit',
+    gameRating: 'Partiewertung',
+    vs: 'gegen',
+    classifications: 'Zugbewertungen',
+    keyMoments: 'Schlüsselmomente',
+    defaultSummary: 'Du hast mit **{accuracy} % Genauigkeit** gespielt. Gehen wir die Partie gemeinsam durch und finden die Schlüsselmomente.',
+  },
+
+  footer: {
+    start: 'Analyse starten',
+    backToGame: 'Zur Partie',
+    backToReport: 'Zum Bericht',
+    prev: 'Zurück',
+    next: 'Weiter',
+  },
+
+  walk: {
+    introTitle: 'Analysieren wir deine Partie!',
+    intro: 'Drücke **Weiter** (oder die Taste →), um Zug für Zug durchzugehen. Ich zeige dir die besten Züge, die Fehler und was du stattdessen hättest spielen können.\n\nMöchtest du eine Idee testen? **Zieh eine beliebige Figur auf dem Brett**, um deine eigene Variante auszuprobieren – ich prüfe sie mit der Engine.',
+    opening: 'Eröffnung: **{name}**',
+    showLine: 'Variante zeigen',
+    retry: 'Nochmal',
+    nextKey: 'Nächster Schlüsselmoment',
+    keyMoment: 'Schlüsselmoment',
+    bestWas: 'Am besten war {move}',
+    evalBefore: '({eval} vor deinem Zug)',
+    tryTip: 'Zieh eine Figur auf dem Brett, um ab hier deine eigene Variante zu testen.',
+    bestLine: 'Beste Variante',
+    stop: 'Stopp',
+  },
+
+  retry: {
+    promptWhite: 'Finde einen besseren Zug für **Weiß**. In der Partie: {played}.',
+    promptBlack: 'Finde einen besseren Zug für **Schwarz**. In der Partie: {played}.',
+    titleSuccess: 'Gut gemacht!',
+    titleError: 'Nicht ganz',
+    titleTurn: 'Du bist dran – nochmal',
+    hint: 'Tipp',
+    showAnswer: 'Lösung zeigen',
+    backToGame: 'Zur Partie',
+    continue: 'Weiter',
+    hintText: 'Schau dir die markierte Figur an – sie hat einen starken Zug.',
+    answer: 'Der beste Zug war **{move}**. Variante: {line}',
+    bestFirstTry: '**{move}** ist der beste Zug! Gleich beim ersten Versuch – beeindruckend.',
+    bestLater: '**{move}** ist der beste Zug! Du hast es geschafft.',
+    sameAsGame: 'Das ist der Zug, den du in der Partie gespielt hast ({move}). Such nach etwas Besserem!',
+    alsoGood: '{verdict} – auch das geht! {explanation}',
+    notGood: '{verdict}. {explanation}',
+    tryAgain: 'Versuch es nochmal!',
+    checkFailed: 'Ich konnte diesen Zug gerade nicht prüfen. Probier den besten Zug oder drücke *Lösung zeigen*.',
+  },
+
+  explore: {
+    thinking: 'Die Engine denkt nach…',
+    depth: '· Tiefe {depth}',
+    checking: 'Dein Zug wird geprüft…',
+    title: 'Deine eigene Variante',
+    notInGame: 'Nicht in der Partie',
+    fromStart: 'Abzweigung ab der Grundstellung. Zieh weiter, um tiefer zu gehen, oder geh mit ← zurück.',
+    fromMove: 'Abzweigung nach {move}. Zieh weiter, um tiefer zu gehen, oder geh mit ← zurück.',
+    undo: 'Zug zurücknehmen',
+    backToGame: 'Zur Partie',
+  },
+};

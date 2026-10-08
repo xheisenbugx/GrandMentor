@@ -74,6 +74,7 @@ pub fn router() -> Router<AppState> {
         .route("/endgames/:id", get(endgame))
         .route("/profile", get(get_profile).put(update_profile))
         .route("/stats", get(stats))
+        .merge(crate::routes::router())
         .fallback(api_not_found)
 }
 
@@ -101,7 +102,7 @@ where
 }
 
 /// Run a store operation on the blocking pool, mapping errors to `{error}`.
-async fn store_op<R, F>(store: &Store, f: F) -> ApiResult<R>
+pub(crate) async fn store_op<R, F>(store: &Store, f: F) -> ApiResult<R>
 where
     R: Send + 'static,
     F: FnOnce(&Store) -> anyhow::Result<R> + Send + 'static,
@@ -139,11 +140,11 @@ where
         })
 }
 
-fn parse_position(fen: &str) -> ApiResult<shakmaty::Chess> {
+pub(crate) fn parse_position(fen: &str) -> ApiResult<shakmaty::Chess> {
     parse_fen(fen).map_err(ApiError::bad_request)
 }
 
-fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<shakmaty::Chess> {
+pub(crate) fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<shakmaty::Chess> {
     if moves.len() > max {
         return Err(ApiError::bad_request(format!("too many moves (max {max})")));
     }
@@ -153,7 +154,7 @@ fn validate_moves(start_fen: &str, moves: &[String], max: usize) -> ApiResult<sh
 }
 
 /// Truncate to at most `max` chars (on a char boundary).
-fn clip(s: &str, max: usize) -> String {
+pub(crate) fn clip(s: &str, max: usize) -> String {
     match s.char_indices().nth(max) {
         Some((i, _)) => s[..i].to_string(),
         None => s.to_string(),
@@ -205,8 +206,13 @@ async fn health(State(st): State<AppState>) -> Json<Value> {
     }))
 }
 
-async fn bots(ReqLang(lang): ReqLang) -> Json<Vec<gm_bots::BotProfile>> {
-    Json(gm_bots::list(lang))
+async fn bots(State(st): State<AppState>, ReqLang(lang): ReqLang) -> Json<Vec<gm_bots::BotProfile>> {
+    let mut bots = gm_bots::list(lang);
+    // The adaptive bot's rating is its current, per-user level.
+    if let Some(b) = bots.iter_mut().find(|b| b.id == gm_bots::ADAPTIVE_ID) {
+        b.elo = crate::routes::adaptive::adaptive_level(&st).await;
+    }
+    Json(bots)
 }
 
 #[derive(Deserialize, Default)]
@@ -233,8 +239,14 @@ async fn bot_move(
         return Err(ApiError::bad_request("the game is already over"));
     }
     let content = Arc::clone(&st.content);
+    // The adaptive bot plays at its stored level (see routes/adaptive.rs).
+    let elo = if req.bot_id == gm_bots::ADAPTIVE_ID {
+        Some(crate::routes::adaptive::adaptive_level(&st).await)
+    } else {
+        None
+    };
     let mv = with_engine(&st.pool, move |engine| {
-        gm_bots::choose_move(engine, &content, &req.bot_id, &req.start_fen, &req.moves, lang)
+        gm_bots::choose_move_at(engine, &content, &req.bot_id, &req.start_fen, &req.moves, elo, lang)
     })
     .await?
     .map_err(ApiError::bad_request)?;
@@ -402,6 +414,9 @@ async fn review(
         // Caching is best-effort: the review itself is still returned on a store error.
         if let Err(e) = store_op(&st.store, move |s| s.update_game(id, &patch)).await {
             tracing::warn!("could not cache review for game {id}: {}", e.message);
+        } else {
+            // "Learn from your mistakes": the user's errors become spaced-repetition cards.
+            crate::routes::mistakes::ingest_review(&st, &game, &review, lang).await;
         }
         return Ok(Json(review));
     }
@@ -708,7 +723,14 @@ async fn create_game(
         let moves = g.moves.clone();
         g.opening_name = blocking(move || detect_opening(&content, &start, &moves)).await?;
     }
-    let rec = store_op(&st.store, move |s| s.create_game(&g)).await?;
+    let rec = store_op(&st.store, move |s| {
+        let rec = s.create_game(&g)?;
+        // Activity feeds the daily plan / streaks; never fail the request because of it.
+        let kind = if g.bot_id.is_some() { "game" } else { "local_game" };
+        let _ = s.log_activity(kind, 1);
+        Ok(rec)
+    })
+    .await?;
     Ok((StatusCode::CREATED, Json(rec)))
 }
 
@@ -939,7 +961,9 @@ async fn puzzle_attempt(
     st.recent_puzzles.insert(id.clone());
     let time_ms = req.time_ms.min(24 * 3600 * 1000);
     let res = store_op(&st.store, move |s| {
-        s.record_puzzle_attempt(&id, rating, req.solved, time_ms)
+        let res = s.record_puzzle_attempt(&id, rating, req.solved, time_ms)?;
+        let _ = s.log_activity("puzzle", 1);
+        Ok(res)
     })
     .await?;
     Ok(Json(res))
@@ -1058,6 +1082,9 @@ async fn set_progress(
     let completed = req.completed;
     let list = store_op(&st.store, move |s| {
         s.set_lesson_progress(&c, &l, completed)?;
+        if completed {
+            let _ = s.log_activity("lesson", 1);
+        }
         s.get_progress()
     })
     .await?;

@@ -1,8 +1,9 @@
-//! Content translation overlays: `data/i18n/<lang>/{courses,openings,endgames}*.json`.
+//! Content translation overlays: `data/i18n/<lang>/{courses,openings,endgames,classics}*.json`.
 //!
 //! Every file whose name starts with `courses`, `openings` or `endgames` and ends in `.json` is
 //! merged (later files, in name order, win on conflicts). Overlays only ever replace *text*:
-//! titles, descriptions, step text, task prompts/hints/success messages, opening names/ideas,
+//! titles, descriptions, step text, task prompts/hints/success messages (plus guess notes and
+//! choice options), opening names/ideas,
 //! endgame hints... Moves, FENs, arrows, highlights and solutions always come from the English
 //! source. Missing ids, fields or steps fall back to English; unknown ids are ignored (and
 //! counted in the load log). Schema: `docs/I18N.md`.
@@ -26,6 +27,18 @@ pub struct TaskOverlay {
     pub prompt: Option<String>,
     pub hint: Option<String>,
     pub success: Option<String>,
+    /// `guess` tasks: game caption and one note per learner move (same order; `null` = keep English).
+    pub game: Option<String>,
+    pub notes: Vec<Option<String>>,
+    /// `choice` tasks: option text/explanation, same order as the English options.
+    pub options: Vec<Option<ChoiceOverlay>>,
+}
+
+#[derive(Deserialize, Clone, Debug, Default)]
+#[serde(default)]
+pub struct ChoiceOverlay {
+    pub text: Option<String>,
+    pub explain: Option<String>,
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]
@@ -69,6 +82,9 @@ pub struct EndgameOverlay {
     pub description: Option<String>,
     pub hint: Option<String>,
     pub technique: Option<Vec<String>>,
+    pub pitfall: Option<String>,
+    /// Lesson step texts, by index (FENs, arrows and highlights always come from English).
+    pub lesson: Option<Vec<String>>,
 }
 
 /// All overlays for one language.
@@ -77,6 +93,7 @@ pub struct Overlay {
     pub courses: BTreeMap<String, CourseOverlay>,
     pub openings: BTreeMap<String, OpeningOverlay>,
     pub endgames: BTreeMap<String, EndgameOverlay>,
+    pub classics: BTreeMap<String, crate::classics::ClassicOverlay>,
 }
 
 /// What applying an overlay did (for the load log and tests).
@@ -90,7 +107,7 @@ pub struct OverlayStats {
 
 impl Overlay {
     pub fn is_empty(&self) -> bool {
-        self.courses.is_empty() && self.openings.is_empty() && self.endgames.is_empty()
+        self.courses.is_empty() && self.openings.is_empty() && self.endgames.is_empty() && self.classics.is_empty()
     }
 }
 
@@ -199,6 +216,7 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
         files.truncate(MAX_FILES);
     }
     let (mut courses, mut openings, mut endgames) = (BTreeMap::new(), BTreeMap::new(), BTreeMap::new());
+    let mut classics = BTreeMap::new();
     for path in files {
         let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("").to_ascii_lowercase();
         let target = if name.starts_with("courses") {
@@ -207,6 +225,8 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
             &mut openings
         } else if name.starts_with("endgames") {
             &mut endgames
+        } else if name.starts_with("classics") {
+            &mut classics
         } else {
             tracing::debug!("{}: not an overlay file; ignored", path.display());
             continue;
@@ -220,12 +240,13 @@ pub fn load_overlay(i18n_dir: &Path, lang: Lang) -> (Overlay, usize) {
         courses: typed("course", lang, courses, &mut bad),
         openings: typed("opening", lang, openings, &mut bad),
         endgames: typed("endgame", lang, endgames, &mut bad),
+        classics: typed("classic", lang, classics, &mut bad),
     };
     (ov, bad)
 }
 
 /// Replace `dst` with a usable translation (non-blank, bounded); keep English otherwise.
-fn set_text(dst: &mut String, src: &Option<String>) -> bool {
+pub(crate) fn set_text(dst: &mut String, src: &Option<String>) -> bool {
     match src.as_deref().map(str::trim) {
         Some(s) if !s.is_empty() && s.chars().count() <= MAX_TEXT_CHARS => {
             *dst = s.to_string();
@@ -251,6 +272,24 @@ fn set_list(dst: &mut Vec<String>, src: &Option<Vec<String>>) -> bool {
         }
         _ => false,
     }
+}
+
+/// Text of the interactive task kinds (game caption, guess notes, choice options).
+fn apply_task_extra(extra: &mut crate::steps::TaskExtra, to: &TaskOverlay) -> bool {
+    let mut any = false;
+    if let Some(g) = extra.game.as_mut() {
+        any |= set_text(g, &to.game);
+    }
+    for (note, tr) in extra.notes.iter_mut().zip(&to.notes) {
+        any |= set_text(note, tr);
+    }
+    for (opt, tr) in extra.options.iter_mut().zip(&to.options) {
+        if let Some(tr) = tr {
+            any |= set_text(&mut opt.text, &tr.text);
+            any |= set_text(&mut opt.explain, &tr.explain);
+        }
+    }
+    any
 }
 
 /// Apply `ov` to `content` in place (text only). Returns what was applied / ignored.
@@ -286,6 +325,7 @@ pub fn apply_overlay(content: &mut Content, ov: &Overlay) -> OverlayStats {
                 if let (Some(task), Some(to)) = (step.task.as_mut(), so.task.as_ref()) {
                     any |= set_text(&mut task.prompt, &to.prompt);
                     any |= set_text(&mut task.success, &to.success);
+                    any |= apply_task_extra(&mut task.extra, to);
                     if let Some(h) = task.hint.as_mut() {
                         any |= set_text(h, &to.hint);
                     } else if to.hint.as_deref().is_some_and(|h| !h.trim().is_empty()) {
@@ -327,9 +367,19 @@ pub fn apply_overlay(content: &mut Content, ov: &Overlay) -> OverlayStats {
         any |= set_text(&mut d.description, &eo.description);
         any |= set_text(&mut d.hint, &eo.hint);
         any |= set_list(&mut d.technique, &eo.technique);
+        any |= set_text(&mut d.pitfall, &eo.pitfall);
+        if let Some(texts) = &eo.lesson {
+            for (step, text) in d.lesson.iter_mut().zip(texts) {
+                any |= set_text(&mut step.text, &Some(text.clone()));
+            }
+        }
         if any {
             st.applied += 1;
         }
     }
+
+    let cs = crate::classics::apply_overlay(&mut content.classics, &ov.classics);
+    st.applied += cs.applied;
+    st.ignored += cs.ignored;
     st
 }

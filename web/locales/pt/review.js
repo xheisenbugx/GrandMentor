@@ -1,0 +1,161 @@
+// review — pt strings. See docs/I18N.md.
+export default {
+  title: 'Revisão da partida',
+
+  // Whole sentences: {move} is the move (SAN, possibly with its move number).
+  phrase: {
+    brilliant: '{move} é brilhante',
+    great: '{move} é um ótimo lance',
+    best: '{move} é o melhor lance',
+    excellent: '{move} é excelente',
+    good: '{move} é bom',
+    book: '{move} é um lance teórico',
+    inaccuracy: '{move} é uma imprecisão',
+    mistake: '{move} é um erro',
+    miss: '{move} é uma chance perdida',
+    blunder: '{move} é um erro grave',
+    forced: '{move} é forçado',
+    played: '{move} foi jogado',
+    works: '{move} funciona',
+    notBest: '{move} não é o melhor',
+  },
+
+  loading: {
+    game: 'Carregando a partida…',
+    title: 'Analisando sua partida…',
+    subtitle: '{white} vs {black} · {moves}',
+    moves: { zero: '{count} lances', one: '{count} lance', other: '{count} lances' },
+    cancel: 'Cancelar',
+    done: 'Pronto! Preparando seu relatório…',
+    steps: [
+      'Lendo a abertura…',
+      'Conferindo cada lance com o motor…',
+      'Procurando táticas que você deixou passar…',
+      'Encontrando seus melhores lances…',
+      'Buscando ideias brilhantes…',
+      'Escrevendo o relatório do seu treinador…',
+    ],
+    tips: [
+      'A precisão mede o quanto seus lances chegaram perto dos melhores lances do motor.',
+      'Um erro grave (??) é um lance que joga fora grande parte da sua vantagem.',
+      'Lances brilhantes (!!) costumam ser bons sacrifícios de peça, difíceis de encontrar.',
+      'Momentos-chave são as viradas da partida — refaça-os para aprender mais.',
+      'Lances teóricos são lances de abertura conhecidos, usados por jogadores fortes.',
+      'Uma “chance perdida” significa que você deixou passar a chance de ganhar material ou a partida.',
+    ],
+  },
+
+  error: {
+    badLinkTitle: 'Não encontramos essa partida',
+    badLinkText: 'O link parece quebrado. Escolha uma partida da sua biblioteca para revisá-la.',
+    notFoundTitle: 'Partida não encontrada',
+    notFoundText: 'Talvez ela tenha sido excluída.',
+    loadTitle: 'Não foi possível carregar a partida',
+    emptyTitle: 'Ainda não há nada para revisar',
+    emptyText: 'Esta partida não tem lances. Faça alguns lances e volte para o treinador revisar!',
+    playBot: 'Jogar contra um bot',
+    goLibrary: 'Ir para a biblioteca',
+    reviewEmpty: 'A revisão voltou vazia.',
+    failedTitle: 'A revisão não pôde terminar',
+    generic: 'Algo deu errado.',
+    tryAgain: 'Tentar de novo',
+    openAnalysis: 'Abrir na análise',
+  },
+
+  side: {
+    white: 'Brancas',
+    black: 'Pretas',
+  },
+
+  tabs: {
+    review: 'Revisão',
+    coach: 'Pergunte ao treinador',
+  },
+
+  nav: {
+    first: 'Início (Home)',
+    prev: 'Anterior (←)',
+    next: 'Próximo (→)',
+    last: 'Fim (End)',
+    flip: 'Girar tabuleiro',
+    analyse: 'Abrir no tabuleiro de análise',
+    analyseTip: 'Analisar esta posição',
+    playFromHere: 'Jogar daqui contra um bot',
+    playFromHereTip: 'Assuma daqui: jogue esta posição contra um bot',
+  },
+
+  mentor: {
+    greeting: 'Curioso sobre algum lance? Vá até ele no tabuleiro e me pergunte — por exemplo, *“Por que isso foi um erro?”*',
+    suggestions: [
+      'Por que este lance foi ruim?',
+      'Qual era a ideia do melhor lance?',
+      'O que devo aprender com esta partida?',
+      'Qual é o plano aqui?',
+    ],
+  },
+
+  report: {
+    accuracy: 'Precisão',
+    gameRating: 'Pontuação da partida',
+    vs: 'vs',
+    classifications: 'Classificação dos lances',
+    keyMoments: 'Momentos-chave',
+    defaultSummary: 'Você jogou com **{accuracy}% de precisão**. Vamos percorrer a partida juntos e encontrar os momentos-chave.',
+  },
+
+  footer: {
+    start: 'Iniciar revisão',
+    backToGame: 'Voltar à partida',
+    backToReport: 'Voltar ao relatório',
+    prev: 'Anterior',
+    next: 'Próximo',
+  },
+
+  walk: {
+    introTitle: 'Vamos revisar sua partida!',
+    intro: 'Toque em **Próximo** (ou na tecla →) para avançar lance a lance. Vou mostrar os melhores lances, os erros e o que você poderia ter jogado no lugar.\n\nQuer testar uma ideia? **Mova qualquer peça no tabuleiro** para tentar sua própria linha — eu confiro com o motor.',
+    opening: 'Abertura: **{name}**',
+    showLine: 'Ver linha',
+    retry: 'Refazer',
+    nextKey: 'Próximo momento-chave',
+    keyMoment: 'Momento-chave',
+    bestWas: 'O melhor era {move}',
+    evalBefore: '({eval} antes do seu lance)',
+    tryTip: 'Mova uma peça no tabuleiro para tentar sua própria linha a partir daqui.',
+    bestLine: 'Melhor linha',
+    stop: 'Parar',
+  },
+
+  retry: {
+    promptWhite: 'Encontre um lance melhor para as **brancas**. Na partida, {played}.',
+    promptBlack: 'Encontre um lance melhor para as **pretas**. Na partida, {played}.',
+    titleSuccess: 'Muito bem!',
+    titleError: 'Quase',
+    titleTurn: 'Sua vez — tente de novo',
+    hint: 'Dica',
+    showAnswer: 'Ver resposta',
+    backToGame: 'Voltar à partida',
+    continue: 'Continuar',
+    hintText: 'Olhe a peça destacada — ela tem um lance forte.',
+    answer: 'O melhor lance era **{move}**. Linha: {line}',
+    bestFirstTry: '**{move}** é o melhor lance! De primeira — impressionante.',
+    bestLater: '**{move}** é o melhor lance! Você conseguiu.',
+    sameAsGame: 'Esse é o lance que você jogou na partida ({move}). Procure algo melhor!',
+    alsoGood: '{verdict} também! {explanation}',
+    notGood: '{verdict}. {explanation}',
+    tryAgain: 'Tente de novo!',
+    checkFailed: 'Não consegui conferir esse lance agora. Tente o melhor lance ou toque em *Ver resposta*.',
+  },
+
+  explore: {
+    thinking: 'O motor está pensando…',
+    depth: '· profundidade {depth}',
+    checking: 'Conferindo seu lance…',
+    title: 'Sua própria linha',
+    notInGame: 'Fora da partida',
+    fromStart: 'Linha alternativa a partir da posição inicial. Continue movendo peças para ir mais fundo, ou use ← para voltar.',
+    fromMove: 'Linha alternativa depois de {move}. Continue movendo peças para ir mais fundo, ou use ← para voltar.',
+    undo: 'Desfazer lance',
+    backToGame: 'Voltar à partida',
+  },
+};

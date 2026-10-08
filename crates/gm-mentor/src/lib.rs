@@ -7,8 +7,8 @@
 //!   `ANTHROPIC_API_KEY` is set (model `GM_MENTOR_MODEL`, default `claude-opus-5-5`), and falls
 //!   back to the rule-based coach on any failure or when no key is configured.
 //!
-//! Every function takes a [`Lang`]: rule-based text is written in that language (Spanish uses
-//! the glossary in `docs/I18N.md` and per-piece gender agreement), and the LLM is told to
+//! Every function takes a [`Lang`]: rule-based text is written in that language (each one uses
+//! its glossary in `docs/I18N.md` and per-piece gender/case agreement), and the LLM is told to
 //! answer in it.
 //!
 //! All functions are panic-free on arbitrary input and allocate only bounded amounts of memory.
@@ -149,6 +149,9 @@ impl Mentor {
             let answer = match lang {
                 Lang::En => format!("Hi, I'm {MENTOR_NAME}! Ask me anything about this position — the plan, the best move, or why a move was good or bad."),
                 Lang::Es => format!("¡Hola, soy {MENTOR_NAME}! Pregúntame lo que quieras sobre esta posición: el plan, la mejor jugada o por qué una jugada fue buena o mala."),
+                Lang::Pt => format!("Oi, eu sou {MENTOR_NAME}! Pergunte o que quiser sobre esta posição: o plano, o melhor lance ou por que um lance foi bom ou ruim."),
+                Lang::Fr => format!("Salut, je suis {MENTOR_NAME} ! Pose-moi toutes tes questions sur cette position : le plan, le meilleur coup ou pourquoi un coup était bon ou mauvais."),
+                Lang::De => format!("Hallo, ich bin {MENTOR_NAME}! Frag mich alles zu dieser Stellung – den Plan, den besten Zug oder warum ein Zug gut oder schlecht war."),
             };
             return ChatResponse { answer, source: "coach".into() };
         }
@@ -286,6 +289,10 @@ mod tests {
         assert!(r.answer.contains(MENTOR_NAME));
         let r = m.chat(ChatRequest::default(), Lang::Es).await;
         assert!(r.answer.starts_with("¡Hola, soy Mentor Mira!"), "{}", r.answer);
+        for (lang, start) in [(Lang::Pt, "Oi, eu sou Mentor Mira!"), (Lang::Fr, "Salut, je suis Mentor Mira !"), (Lang::De, "Hallo, ich bin Mentor Mira!")] {
+            let r = m.chat(ChatRequest::default(), lang).await;
+            assert!(r.answer.starts_with(start), "{}", r.answer);
+        }
     }
 
     #[test]
@@ -329,6 +336,131 @@ mod tests {
         // English questions still route when the answer language is Spanish.
         let a = coach_answer(&req("What should I do?", ITALIAN, lines), Lang::Es).answer;
         assert!(a.contains("**Bc5**") && !a.contains("engine"), "{a}");
+    }
+
+    /// The same questions as `coach_understands_spanish`, asked and answered in Portuguese,
+    /// French and German.
+    #[test]
+    fn coach_understands_new_languages() {
+        struct Case {
+            lang: Lang,
+            best: [&'static str; 2],
+            plan: &'static str,
+            explain: &'static str,
+            winning: &'static str,
+            equal: &'static str,
+            why_bad: [&'static str; 2],
+            bishop: &'static str,
+            last: &'static str,
+            now: &'static str,
+            threat: &'static str,
+            hello: [&'static str; 2],
+            bad_fen: &'static str,
+        }
+        let cases = [
+            Case {
+                lang: Lang::Pt,
+                best: ["O que devo fazer?", "melhor lance"],
+                plan: "Qual é o plano?",
+                explain: "Explique a posição",
+                winning: "Quem está ganhando?",
+                equal: "mais ou menos igualada",
+                why_bad: ["Por que Ba3 é ruim?", "Por que Ba3 é um lance ruim?"],
+                bishop: "bispo em a3",
+                last: "Por que esse lance foi ruim?",
+                now: "Agora",
+                threat: "Há alguma ameaça?",
+                hello: ["olá", "oi"],
+                bad_fen: "Não consegui ler",
+            },
+            Case {
+                lang: Lang::Fr,
+                best: ["Que dois-je faire ?", "meilleur coup"],
+                plan: "Quel est le plan ?",
+                explain: "Explique la position",
+                winning: "Qui gagne ?",
+                equal: "à peu près égale",
+                why_bad: ["Pourquoi Ba3 est mauvais ?", "Pourquoi Fa3 est mauvais ?"],
+                bishop: "fou en a3",
+                last: "Pourquoi ce coup est mauvais ?",
+                now: "Maintenant",
+                threat: "Y a-t-il une menace ?",
+                hello: ["bonjour", "salut !"],
+                bad_fen: "Je n'ai pas pu lire",
+            },
+            Case {
+                lang: Lang::De,
+                best: ["Was soll ich tun?", "bester Zug"],
+                plan: "Was ist der Plan?",
+                explain: "Erkläre die Stellung",
+                winning: "Wer steht besser?",
+                equal: "ungefähr ausgeglichen",
+                why_bad: ["Warum ist Ba3 schlecht?", "Warum ist La3 schlecht?"],
+                bishop: "Läufer auf a3",
+                last: "Warum ist dieser Zug schlecht?",
+                now: "Jetzt",
+                threat: "Gibt es eine Drohung?",
+                hello: ["hallo", "Moin!"],
+                bad_fen: "Ich konnte die aktuelle Stellung nicht lesen",
+            },
+        ];
+        let lines = &["+0.25: Bc5 c3 Nf6"];
+        for c in cases {
+            let lang = c.lang;
+            for q in c.best {
+                let a = coach_answer(&req(q, ITALIAN, lines), lang).answer;
+                assert!(a.contains("**Bc5**") && !a.contains('•'), "{lang} {q}: {a}");
+                assert!(!a.contains("engine's") && !a.contains("I'd play"), "{lang} {q}: {a}");
+            }
+            for q in [c.plan, c.explain] {
+                let a = coach_answer(&req(q, ITALIAN, lines), lang).answer;
+                assert!(a.contains('•') && a.contains(c.equal), "{lang} {q}: {a}");
+            }
+            let a = coach_answer(&req(c.winning, ITALIAN, lines), lang).answer;
+            assert!(a.contains(c.equal), "{lang}: {a}");
+            for q in c.why_bad {
+                let a = coach_answer(&req(q, ITALIAN, lines), lang).answer;
+                assert!(a.contains(c.bishop) && a.contains("Bc5"), "{lang} {q}: {a}");
+            }
+            let r = ChatRequest {
+                question: c.last.into(),
+                fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4".into(),
+                moves_san: ["e4", "e5", "Qh5", "Nc6", "Bc4", "Nf6"].iter().map(|s| s.to_string()).collect(),
+                engine_lines: vec!["M1: Qxf7#".into()],
+                history: vec![],
+            };
+            let a = coach_answer(&r, lang).answer;
+            assert!(a.contains("Qxf7#") && a.contains(c.now), "{lang}: {a}");
+            let a = coach_answer(&req(c.threat, "6k1/5ppp/8/8/8/8/5PPP/R5K1 b - - 0 1", &[]), lang).answer;
+            assert!(a.contains("Ra8#"), "{lang}: {a}");
+            for q in c.hello {
+                let a = coach_answer(&req(q, ITALIAN, &[]), lang).answer;
+                assert!(a.contains("Mentor Mira") || a.contains("Nf3"), "{lang} {q}: {a}");
+                assert!(!a.contains('•'), "{lang} {q}: greeting expected: {a}");
+            }
+            let a = coach_answer(&req("hallo", "nonsense", &[]), lang).answer;
+            assert!(a.starts_with(c.bad_fen), "{lang}: {a}");
+            // English questions still route; the answer stays in the requested language.
+            let a = coach_answer(&req("What should I do?", ITALIAN, lines), lang).answer;
+            assert!(a.contains("**Bc5**") && !a.contains("engine's"), "{lang}: {a}");
+        }
+    }
+
+    /// Every language answers every kind of question with non-empty, fully filled text.
+    #[tokio::test]
+    async fn chat_never_empty_in_any_language() {
+        let m = Mentor::new(None, None);
+        let questions = ["", "hi", "best move", "plan", "who is winning", "threats?", "opening", "endgame", "Why is Ba3 bad?", "zzz"];
+        let fens = [ITALIAN, "8/5k2/8/3P4/8/8/5K2/8 w - - 0 40", "R5k1/5ppp/8/8/8/8/8/6K1 b - - 1 1", "nonsense"];
+        for lang in Lang::ALL {
+            for fen in fens {
+                for q in questions {
+                    let r = m.chat(req(q, fen, &["+0.25: Bc5 c3 Nf6"]), lang).await;
+                    assert!(!r.answer.trim().is_empty(), "{lang} {fen} {q}");
+                    assert!(!r.answer.contains('{') && !r.answer.contains('}'), "{lang} {q}: {}", r.answer);
+                }
+            }
+        }
     }
 
     #[test]

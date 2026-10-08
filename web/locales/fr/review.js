@@ -1,0 +1,161 @@
+// review — fr strings. See docs/I18N.md.
+export default {
+  title: 'Bilan de la partie',
+
+  // Whole sentences: {move} is the move (SAN, possibly with its move number).
+  phrase: {
+    brilliant: '{move} est brillant',
+    great: '{move} est un très bon coup',
+    best: '{move} est le meilleur coup',
+    excellent: '{move} est excellent',
+    good: '{move} est bon',
+    book: '{move} est un coup théorique',
+    inaccuracy: '{move} est une imprécision',
+    mistake: '{move} est une erreur',
+    miss: '{move} est une occasion manquée',
+    blunder: '{move} est une gaffe',
+    forced: '{move} est forcé',
+    played: '{move} a été joué',
+    works: '{move} fonctionne',
+    notBest: '{move} n’est pas le meilleur',
+  },
+
+  loading: {
+    game: 'Chargement de la partie…',
+    title: 'Analyse de ta partie…',
+    subtitle: '{white} contre {black} · {moves}',
+    moves: { one: '{count} coup', many: '{count} coups', other: '{count} coups' },
+    cancel: 'Annuler',
+    done: 'Terminé ! Préparation de ton bilan…',
+    steps: [
+      'Lecture de l’ouverture…',
+      'Vérification de chaque coup avec le moteur…',
+      'Recherche des tactiques manquées…',
+      'Repérage de tes meilleurs coups…',
+      'Recherche d’idées brillantes…',
+      'Rédaction du bilan de ton entraîneur…',
+    ],
+    tips: [
+      'La précision mesure à quel point tes coups étaient proches des meilleurs coups du moteur.',
+      'Une gaffe (??) est un coup qui gâche une grosse partie de ton avantage.',
+      'Les coups brillants (!!) sont souvent de bons sacrifices de pièce, difficiles à trouver.',
+      'Les moments clés sont les tournants de la partie — rejoue-les pour en apprendre le plus.',
+      'Les coups théoriques sont des coups d’ouverture bien connus, joués par les bons joueurs.',
+      'Une « occasion manquée » signifie que tu as laissé passer une chance de gagner du matériel ou la partie.',
+    ],
+  },
+
+  error: {
+    badLinkTitle: 'Partie introuvable',
+    badLinkText: 'Le lien semble cassé. Choisis une partie dans ta bibliothèque pour en faire le bilan.',
+    notFoundTitle: 'Partie introuvable',
+    notFoundText: 'Elle a peut-être été supprimée.',
+    loadTitle: 'Impossible de charger la partie',
+    emptyTitle: 'Rien à analyser pour l’instant',
+    emptyText: 'Cette partie n’a aucun coup. Joue quelques coups et reviens pour le bilan de ton entraîneur !',
+    playBot: 'Jouer un bot',
+    goLibrary: 'Bibliothèque',
+    reviewEmpty: 'Le bilan est revenu vide.',
+    failedTitle: 'Le bilan n’a pas pu aboutir',
+    generic: 'Un problème est survenu.',
+    tryAgain: 'Réessayer',
+    openAnalysis: 'Ouvrir en analyse',
+  },
+
+  side: {
+    white: 'Blancs',
+    black: 'Noirs',
+  },
+
+  tabs: {
+    review: 'Bilan',
+    coach: 'Entraîneur',
+  },
+
+  nav: {
+    first: 'Début (Origine)',
+    prev: 'Précédent (←)',
+    next: 'Suivant (→)',
+    last: 'Fin (touche Fin)',
+    flip: 'Retourner l’échiquier',
+    analyse: 'Ouvrir sur l’échiquier d’analyse',
+    analyseTip: 'Analyser cette position',
+    playFromHere: 'Jouer d’ici contre un bot',
+    playFromHereTip: 'Reprends la main : joue cette position contre un bot',
+  },
+
+  mentor: {
+    greeting: 'Un coup t’intrigue ? Va jusqu’à lui sur l’échiquier et demande-moi — par exemple *« Pourquoi c’était une erreur ? »*',
+    suggestions: [
+      'Pourquoi ce coup était-il mauvais ?',
+      'Quelle était l’idée du meilleur coup ?',
+      'Que dois-je retenir de cette partie ?',
+      'Quel est le plan ici ?',
+    ],
+  },
+
+  report: {
+    accuracy: 'Précision',
+    gameRating: 'Niveau de jeu',
+    vs: 'contre',
+    classifications: 'Classement des coups',
+    keyMoments: 'Moments clés',
+    defaultSummary: 'Tu as joué avec **{accuracy} % de précision**. Parcourons la partie ensemble pour trouver les moments clés.',
+  },
+
+  footer: {
+    start: 'Commencer',
+    backToGame: 'Retour à la partie',
+    backToReport: 'Retour au bilan',
+    prev: 'Préc.',
+    next: 'Suivant',
+  },
+
+  walk: {
+    introTitle: 'Faisons le bilan de ta partie !',
+    intro: 'Appuie sur **Suivant** (ou la touche →) pour parcourir chaque coup. Je te montrerai les meilleurs coups, les erreurs et ce que tu aurais pu jouer à la place.\n\nTu veux tester une idée ? **Déplace n’importe quelle pièce sur l’échiquier** pour essayer ta propre ligne — je la vérifierai avec le moteur.',
+    opening: 'Ouverture : **{name}**',
+    showLine: 'Voir la ligne',
+    retry: 'Rejouer',
+    nextKey: 'Moment clé suivant',
+    keyMoment: 'Moment clé',
+    bestWas: 'Le meilleur était {move}',
+    evalBefore: '({eval} avant ton coup)',
+    tryTip: 'Déplace une pièce sur l’échiquier pour essayer ta propre ligne à partir d’ici.',
+    bestLine: 'Meilleure ligne',
+    stop: 'Arrêter',
+  },
+
+  retry: {
+    promptWhite: 'Trouve un meilleur coup pour les **Blancs**. Dans la partie, {played}.',
+    promptBlack: 'Trouve un meilleur coup pour les **Noirs**. Dans la partie, {played}.',
+    titleSuccess: 'Bien joué !',
+    titleError: 'Pas tout à fait',
+    titleTurn: 'À toi — réessaie',
+    hint: 'Indice',
+    showAnswer: 'Voir la réponse',
+    backToGame: 'Retour à la partie',
+    continue: 'Continuer',
+    hintText: 'Regarde la pièce en surbrillance — elle a un coup fort.',
+    answer: 'Le meilleur coup était **{move}**. Ligne : {line}',
+    bestFirstTry: '**{move}** est le meilleur coup ! Du premier coup — impressionnant.',
+    bestLater: '**{move}** est le meilleur coup ! Tu y es arrivé.',
+    sameAsGame: 'C’est le coup que tu as joué dans la partie ({move}). Cherche mieux !',
+    alsoGood: '{verdict} aussi ! {explanation}',
+    notGood: '{verdict}. {explanation}',
+    tryAgain: 'Réessaie !',
+    checkFailed: 'Je n’ai pas pu vérifier ce coup pour l’instant. Essaie le meilleur coup ou appuie sur *Voir la réponse*.',
+  },
+
+  explore: {
+    thinking: 'Le moteur réfléchit…',
+    depth: '· profondeur {depth}',
+    checking: 'Vérification de ton coup…',
+    title: 'Ta propre ligne',
+    notInGame: 'Pas dans la partie',
+    fromStart: 'Variante depuis la position de départ. Continue à déplacer des pièces pour aller plus loin, ou utilise ← pour revenir.',
+    fromMove: 'Variante après {move}. Continue à déplacer des pièces pour aller plus loin, ou utilise ← pour revenir.',
+    undo: 'Annuler le coup',
+    backToGame: 'Retour à la partie',
+  },
+};

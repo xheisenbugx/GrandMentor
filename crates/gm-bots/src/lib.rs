@@ -34,7 +34,11 @@ use gm_content::words::{fill, kv, PieceRef};
 use gm_content::Lang;
 use gm_engine::{move_to_san, move_to_uci, parse_fen, uci_to_move, Engine, Score, SearchLimits};
 
-pub use personas::Style;
+pub use personas::{Style, ADAPTIVE_ID, ADAPTIVE_START_ELO};
+
+/// Range the adaptive bot's level is kept in.
+pub const ADAPTIVE_MIN_ELO: u16 = 250;
+pub const ADAPTIVE_MAX_ELO: u16 = 2800;
 use personas::{Persona, PERSONAS};
 pub use strength::Strength;
 
@@ -115,6 +119,22 @@ pub fn choose_move(
 ) -> Result<BotMove, String> {
     let mut rng = StdRng::from_entropy();
     choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None, lang)
+}
+
+/// Like [`choose_move`], but plays at `elo` instead of the persona's own rating (used for the
+/// adaptive bot, whose level is stored per user). `elo` is clamped to
+/// `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO`; `None` behaves exactly like [`choose_move`].
+pub fn choose_move_at(
+    engine: &mut Engine,
+    content: &gm_content::Content,
+    bot_id: &str,
+    start_fen: &str,
+    moves: &[String],
+    elo: Option<u16>,
+    lang: Lang,
+) -> Result<BotMove, String> {
+    let mut rng = StdRng::from_entropy();
+    choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, None, elo, lang)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -414,8 +434,26 @@ pub(crate) fn choose_move_with<R: Rng>(
     movetime_cap_ms: Option<u64>,
     lang: Lang,
 ) -> Result<BotMove, String> {
+    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, movetime_cap_ms, None, lang)
+}
+
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn choose_move_inner<R: Rng>(
+    engine: &mut Engine,
+    content: &gm_content::Content,
+    bot_id: &str,
+    start_fen: &str,
+    moves: &[String],
+    rng: &mut R,
+    movetime_cap_ms: Option<u64>,
+    elo_override: Option<u16>,
+    lang: Lang,
+) -> Result<BotMove, String> {
     let started = Instant::now();
     let persona = personas::find(bot_id).ok_or_else(|| format!("unknown bot: {bot_id}"))?;
+    let elo = elo_override
+        .map(|e| e.clamp(ADAPTIVE_MIN_ELO, ADAPTIVE_MAX_ELO))
+        .unwrap_or(persona.elo);
     let game = replay(start_fen, moves)?;
     let pos = &game.pos;
     if pos.is_game_over() {
@@ -425,7 +463,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     if legal.is_empty() {
         return Err("game is over".into());
     }
-    let st = Strength::for_elo(persona.elo);
+    let st = Strength::for_elo(elo);
     let us = pos.turn();
     let ply = moves.len();
 
@@ -441,7 +479,7 @@ pub(crate) fn choose_move_with<R: Rng>(
         let cands = book::candidates(content, pos, persona.style);
         if !cands.is_empty() {
             // Strong players follow the main lines; weak ones pick flatter.
-            let sharp = 0.5 + f64::from(persona.elo.min(3000)) / 3000.0;
+            let sharp = 0.5 + f64::from(elo.min(3000)) / 3000.0;
             let w: Vec<f64> = cands.iter().map(|c| c.weight.powf(sharp)).collect();
             let c = &cands[weighted_pick(rng, &w)];
             if let Ok(m) = uci_to_move(pos, &c.uci) {
@@ -510,7 +548,7 @@ pub(crate) fn choose_move_with<R: Rng>(
                 if Some(h) != current_hash && game.history.contains(&h) {
                     if best > 50 {
                         s -= 150.0;
-                    } else if best < -150 && persona.elo >= 1200 {
+                    } else if best < -150 && elo >= 1200 {
                         s += 120.0;
                     }
                 }
@@ -524,7 +562,7 @@ pub(crate) fn choose_move_with<R: Rng>(
     // ---- 4. Chat + think time -----------------------------------------------------------------
     let best_score = cands.first().map(|c| c.score);
     let chat = make_chat(rng, persona, &game, &chosen, chosen_score.or(best_score), best_score, lang);
-    let think = think_time(rng, persona.elo, legal.len(), &cands, pos.is_check(), started);
+    let think = think_time(rng, elo, legal.len(), &cands, pos.is_check(), started);
     Ok(finish(pos, &chosen, chat, think))
 }
 
@@ -655,9 +693,59 @@ fn tip_text(lang: Lang) -> &'static TipText {
             "¡Los peones pasados hay que avanzarlos! Un peón sin peones rivales delante es muy peligroso.",
         ],
     };
+    // Portuguese, French and German avoid possessives ("seu/sua", "ton/ta", "dein/deine")
+    // whose form depends on the piece's gender: they use the article phrase instead.
+    static PT: TipText = TipText {
+        took_loose: "{P} em {sq} não estava protegid{p_o}, então eu capturei. Antes de cada lance, confira se todas as suas peças estão seguras!",
+        loose: "Atenção: {p} em {sq} está sendo atacad{p_o} e mal defendid{p_o}.",
+        attacks: "Com este lance, {m} ataca {t}. O que você vai fazer?",
+        uncastled: "Seu rei ainda está no centro. Fazer o roque logo vai deixá-lo seguro e conectar suas torres.",
+        undeveloped: "Você ainda tem {n} cavalos ou bispos nas casas iniciais. Desenvolva-os antes de partir para o ataque!",
+        general: [
+            "Antes de cada lance, procure xeques, capturas e ameaças, para os dois lados.",
+            "Tente colocar suas peças em casas de onde elas controlem o centro.",
+            "As torres adoram colunas abertas. Existe alguma coluna sem peões para a sua torre?",
+            "Pergunte-se: qual é a minha peça mais mal posicionada e como posso melhorá-la?",
+            "No final, o seu rei vira uma peça forte. Leve-o para o centro!",
+            "Peões passados devem avançar! Um peão sem peões adversários à frente é muito perigoso.",
+        ],
+    };
+    static FR: TipText = TipText {
+        took_loose: "{P} en {sq} n'était pas protégé{p_o}, alors je l'ai pris{p_o}. Avant chaque coup, vérifie que toutes tes pièces sont à l'abri !",
+        loose: "Attention : {p} en {sq} est attaqué{p_o} et mal défendu{p_o}.",
+        attacks: "Avec ce coup, {m} attaque {t}. Que vas-tu faire ?",
+        uncastled: "Ton roi est encore au centre. Roquer bientôt le mettra à l'abri et reliera tes tours.",
+        undeveloped: "Tu as encore {n} cavaliers ou fous sur leurs cases de départ. Sors-les avant de lancer une attaque !",
+        general: [
+            "Avant chaque coup, cherche les échecs, les captures et les menaces, pour les deux camps.",
+            "Essaie de placer tes pièces sur des cases d'où elles contrôlent le centre.",
+            "Les tours adorent les colonnes ouvertes. Y a-t-il une colonne sans pions pour ta tour ?",
+            "Demande-toi : quelle est ma pièce la plus mal placée, et comment l'améliorer ?",
+            "En finale, ton roi devient une pièce forte. Amène-le vers le centre !",
+            "Les pions passés doivent avancer ! Un pion sans pion adverse devant lui est très dangereux.",
+        ],
+    };
+    static DE: TipText = TipText {
+        took_loose: "{P} auf {sq} war nicht gedeckt, also habe ich {p_lo} geschlagen. Prüfe vor jedem Zug, ob alle deine Figuren sicher stehen!",
+        loose: "Achtung: {P} auf {sq} wird angegriffen und ist schlecht gedeckt.",
+        attacks: "Mit diesem Zug greift {m} {t_acc} an. Was machst du jetzt?",
+        uncastled: "Dein König steht noch im Zentrum. Eine baldige Rochade bringt ihn in Sicherheit und verbindet deine Türme.",
+        undeveloped: "Du hast noch {n} Springer oder Läufer auf ihren Ausgangsfeldern. Entwickle sie, bevor du angreifst!",
+        general: [
+            "Prüfe vor jedem Zug Schachgebote, Schlagzüge und Drohungen – für beide Seiten.",
+            "Stell deine Figuren auf Felder, von denen aus sie das Zentrum kontrollieren.",
+            "Türme lieben offene Linien. Gibt es eine Linie ohne Bauern für deinen Turm?",
+            "Frag dich: Welche meiner Figuren steht am schlechtesten, und wie kann ich sie verbessern?",
+            "Im Endspiel wird dein König zu einer starken Figur. Bring ihn ins Zentrum!",
+            "Freibauern müssen laufen! Ein Bauer ohne gegnerische Bauern vor sich ist sehr gefährlich.",
+        ],
+    };
     match lang {
         Lang::En => &EN,
         Lang::Es => &ES,
+        Lang::Pt => &PT,
+        Lang::Fr => &FR,
+        Lang::De => &DE,
     }
 }
 

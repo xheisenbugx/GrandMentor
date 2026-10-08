@@ -14,6 +14,8 @@ import {
 } from '../ui.js';
 import { getSettings } from '../settings.js';
 import { Board } from '../components/board.js';
+import { parseMoveText, looksLikeMove } from '../components/moveinput.js';
+import { announce } from '../components/announcer.js';
 import { EvalBar } from '../components/evalbar.js';
 import { MoveList } from '../components/movelist.js';
 import { ChessClock } from '../components/clock.js';
@@ -68,6 +70,15 @@ const OPTION_DEFS = [
   { key: 'evalBar', ic: 'chart' },
   { key: 'coach', ic: 'mentor' },
 ];
+// Board & move options (independent of the help level above).
+const EXTRA_DEFS = [
+  { key: 'premoves', ic: 'bolt', def: true },
+  { key: 'confirmMove', ic: 'check-circle', def: false },
+  { key: 'typeMoves', ic: 'keyboard', def: false },
+  { key: 'blindfold', ic: 'eye-off', def: false },
+];
+const DEFAULT_EXTRAS = Object.fromEntries(EXTRA_DEFS.map((d) => [d.key, d.def]));
+const ADAPTIVE_ID = 'adaptive';
 const PIECE_VALUES = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
 const START_COUNTS = { p: 8, n: 2, b: 2, r: 2, q: 1 };
 const GLYPHS = { w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕' }, b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛' } };
@@ -118,9 +129,34 @@ function loadPrefs() {
     color: ['white', 'black', 'random'].includes(p.color) ? p.color : 'random',
     mode,
     opts,
+    extras: normalizeExtras(p.extras),
     tc: TC_BY_ID[p.tc] ? p.tc : 'none',
   };
 }
+
+function normalizeExtras(x) {
+  const src = x && typeof x === 'object' ? x : {};
+  return Object.fromEntries(EXTRA_DEFS.map((d) => [d.key, typeof src[d.key] === 'boolean' ? src[d.key] : d.def]));
+}
+
+/**
+ * Validate a start position from the URL (`#/play?fen=...`). Returns
+ * `{ fen, turn }` for a playable position or `{ error }` with a friendly message.
+ */
+function checkCustomFen(raw) {
+  const fen = String(raw || '').trim().replace(/\s+/g, ' ');
+  if (!fen) return null;
+  if (fen.length > 120) return { error: t('play.custom.invalid') };
+  let c;
+  try { c = new Chess(fen); } catch { return { error: t('play.custom.invalid') }; }
+  if (c.isGameOver()) return { error: t('play.custom.finished') };
+  const full = c.fen();
+  if (full.split(' ').slice(0, 4).join(' ') === START_FEN.split(' ').slice(0, 4).join(' ')) return null; // just the normal start
+  return { fen: full, turn: c.turn() };
+}
+
+// Typed moves are parsed by the shared move-input component (SAN or UCI, forgiving about case).
+const parseTypedMove = (chess, text) => parseMoveText(chess, text);
 
 function loadSavedGame() {
   const s = loadJson(SAVE_KEY);
@@ -164,7 +200,7 @@ function parseUci(uci) {
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
-export async function mount(root, { params = {} } = {}) {
+export async function mount(root, { params = {}, query = {} } = {}) {
   const bag = disposables();
   const ac = new AbortController();
   bag.add(() => ac.abort());
@@ -192,15 +228,26 @@ export async function mount(root, { params = {} } = {}) {
   };
   bag.add(() => { if (viewDispose) { const d = viewDispose; viewDispose = null; d(); } });
 
-  const ctx = { bots: [], profile: null, stats: null, onStats: null };
+  // Custom start position from the URL: #/play?fen=<FEN>[&color=w|b][&bot=<id>].
+  const custom = query.fen ? checkCustomFen(query.fen) : null;
+  const ctx = {
+    bots: [], profile: null, stats: null, onStats: null, estimate: null, onEstimate: null,
+    signal: ac.signal,
+    custom: custom && custom.fen ? { fen: custom.fen, color: ['w', 'b'].includes(query.color) ? query.color : custom.turn } : null,
+    customError: custom && custom.error ? custom.error : null,
+  };
 
   await ensureCss();
   if (bag.disposed) return bag.dispose;
   host.appendChild(loadingBlock(t('play.loading')));
 
-  // Non-critical data (name for saved games, recommended bot).
+  // Non-critical data (name for saved games, recommended bot, estimated rating).
   api.get('/api/profile', { signal: ac.signal }).then((p) => { ctx.profile = p; }).catch(() => {});
   api.get('/api/stats', { signal: ac.signal }).then((s) => { ctx.stats = s; if (ctx.onStats) ctx.onStats(); }).catch(() => {});
+  ctx.refreshEstimate = () => api.get('/api/adaptive/estimate', { signal: ac.signal })
+    .then((e) => { if (e && typeof e === 'object') { ctx.estimate = e; if (ctx.onEstimate) ctx.onEstimate(); } })
+    .catch(() => {});
+  ctx.refreshEstimate();
 
   const showSetup = (preselectId) => setView(() => renderSetup(host, ctx, {
     preselectId,
@@ -218,7 +265,7 @@ export async function mount(root, { params = {} } = {}) {
       if (bag.disposed) return;
       ctx.bots = Array.isArray(bots) ? bots.filter((b) => b && typeof b.id === 'string') : [];
       if (!ctx.bots.length) throw new Error(t('play.error.noBots'));
-      showSetup(params.botId || null);
+      showSetup(params.botId || (typeof query.bot === 'string' && query.bot) || null);
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
       setView(() => {
@@ -248,19 +295,25 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
 
   const recommendedId = () => {
     const per = new Map(((ctx.stats && ctx.stats.per_bot) || []).map((r) => [r.bot_id, r]));
-    const ladder = bots.filter((b) => b.category !== 'coach').sort((a, b) => (a.elo || 0) - (b.elo || 0));
+    const ladder = bots.filter((b) => b.category !== 'coach' && b.id !== ADAPTIVE_ID).sort((a, b) => (a.elo || 0) - (b.elo || 0));
     const pick = ladder.find((b) => !(per.get(b.id)?.won > 0));
     return (pick || ladder[ladder.length - 1] || bots[0]).id;
   };
 
   const state = {
     botId: (preselectId && byId.has(preselectId) && preselectId) || (prefs.botId && byId.has(prefs.botId) && prefs.botId) || recommendedId(),
-    color: prefs.color,
+    color: ctx.custom ? (ctx.custom.color === 'b' ? 'black' : 'white') : prefs.color,
     mode: prefs.mode,
     opts: { ...prefs.opts },
+    extras: { ...prefs.extras },
     tc: prefs.tc,
   };
   if (preselectId && !byId.has(preselectId)) toast(t('play.setup.botNotFound'), 'warning');
+  if (ctx.customError) {
+    toast(ctx.customError, 'warning', { duration: 5000 });
+    ctx.customError = null;
+  }
+  const startFen = () => (ctx.custom ? ctx.custom.fen : START_FEN);
 
   // ---- Left: board preview with the selected bot -------------------------
   const previewBubble = h('div', { class: 'bubble bubble-bot pop-in' });
@@ -274,15 +327,34 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   let previewBoard = null;
   try {
     const s = getSettings();
-    previewBoard = new Board(previewBoardEl, { fen: START_FEN, orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs });
+    previewBoard = new Board(previewBoardEl, { fen: startFen(), orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs, keyboard: false, announce: false });
     bag.add(() => previewBoard.destroy());
   } catch (e) { console.warn('[play] preview board unavailable', e); }
 
   // ---- Right: panel ------------------------------------------------------
   const resumeSlot = h('div');
+  const customSlot = h('div');
   const heroSlot = h('div', { class: 'play-hero' });
   const groups = h('div', { class: 'bot-groups' });
   const tileById = new Map();
+  const estimateEl = h('div', { class: 'play-estimate', hidden: true });
+
+  // The adaptive bot gets its own featured card above the categories.
+  const adaptiveBot = byId.get(ADAPTIVE_ID) || null;
+  const adaptiveLevel = h('span', { class: 'adaptive-level' });
+  if (adaptiveBot) {
+    const card = h('button', {
+      type: 'button', class: 'bot-tile adaptive-card', role: 'option', 'aria-selected': 'false', dataset: { botId: adaptiveBot.id },
+      onClick: () => select(adaptiveBot.id), onDblclick: () => { select(adaptiveBot.id); play(); },
+    },
+    botAvatar({ ...adaptiveBot, category: 'adaptive' }),
+    h('span', { class: 'adaptive-text' },
+      h('span', { class: 'adaptive-title' }, h('span', { class: 'semibold' }, adaptiveBot.name), h('span', { class: 'badge badge-gold' }, t('play.adaptive.badge'))),
+      h('span', { class: 'subtle text-xs' }, t('play.adaptive.tagline')),
+      adaptiveLevel));
+    tileById.set(adaptiveBot.id, card);
+    groups.appendChild(h('section', { class: 'bot-group' }, h('div', { role: 'listbox', 'aria-label': t('play.adaptive.groupAria') }, card)));
+  }
 
   for (const catId of [...CATEGORIES, '__other']) {
     const isOther = catId === '__other';
@@ -291,7 +363,8 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       label: isOther ? t('play.categories.more') : categoryLabel(catId),
       blurb: isOther ? '' : t(`play.categories.${catId}.blurb`),
     };
-    const list = bots.filter((b) => (isOther ? !CATEGORIES.includes(b.category) : b.category === cat.id))
+    const list = bots.filter((b) => b.id !== ADAPTIVE_ID)
+      .filter((b) => (isOther ? !CATEGORIES.includes(b.category) : b.category === cat.id))
       .sort((a, b) => (a.elo || 0) - (b.elo || 0));
     if (!list.length) continue;
     const grid = h('div', { class: 'bot-grid', role: 'listbox', 'aria-label': t('play.categories.groupAria', { category: cat.label }) });
@@ -329,6 +402,17 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       h('span', { class: 'switch' }, input, h('span', { class: 'switch-track' })));
   }));
 
+  // Board & move options
+  const extraInputs = {};
+  const extraList = h('div', { class: 'play-options' }, ...EXTRA_DEFS.map((d) => {
+    const input = h('input', { type: 'checkbox', onChange: () => { state.extras[d.key] = input.checked; } });
+    extraInputs[d.key] = input;
+    return h('label', { class: 'play-option' },
+      h('span', { class: 'play-option-icon', html: icon(d.ic) }),
+      h('span', { class: 'play-option-text' }, h('span', { class: 'semibold' }, t(`play.extras.${d.key}.title`)), h('span', { class: 'subtle text-xs' }, t(`play.extras.${d.key}.desc`))),
+      h('span', { class: 'switch' }, input, h('span', { class: 'switch-track' })));
+  }));
+
   // Time control
   const tcBtns = {};
   const tcRow = h('div', { class: 'tc-grid', role: 'radiogroup', 'aria-label': t('play.setup.timeControlAria') },
@@ -339,9 +423,10 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
 
   const panel = h('aside', { class: 'play-setup-panel card card-flush' },
     h('div', { class: 'play-setup-head' }, h('div', { class: 'page-header-icon', html: icon('robot') }),
-      h('div', null, h('h1', { class: 'page-title' }, t('play.title')), h('p', { class: 'page-subtitle' }, t('play.setup.subtitle')))),
+      h('div', { style: 'min-width:0' }, h('h1', { class: 'page-title' }, t('play.title')), h('p', { class: 'page-subtitle' }, t('play.setup.subtitle')), estimateEl)),
     h('div', { class: 'play-setup-scroll' },
       resumeSlot,
+      customSlot,
       heroSlot,
       h('h2', { class: 'play-section-title' }, t('play.setup.chooseOpponent')),
       groups,
@@ -349,8 +434,14 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       colorRow,
       h('h2', { class: 'play-section-title' }, t('play.setup.help')),
       modeSeg, modeDesc, optionList,
+      h('h2', { class: 'play-section-title' }, t('play.setup.boardOptions')),
+      extraList,
       h('h2', { class: 'play-section-title' }, t('play.setup.time')),
-      tcRow),
+      tcRow,
+      h('a', { class: 'play-local-link', href: '#/local' },
+        h('span', { class: 'play-option-icon', html: icon('users') }),
+        h('span', { class: 'play-option-text' }, h('span', { class: 'semibold' }, t('play.setup.localTitle')), h('span', { class: 'subtle text-xs' }, t('play.setup.localDesc'))),
+        h('span', { class: 'play-local-chevron', html: icon('chevron-right') }))),
     h('div', { class: 'play-setup-foot' }, playBtn));
 
   const layout = h('div', { class: 'play-setup page-enter' }, preview, panel);
@@ -390,22 +481,65 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       })));
   }
 
+  function renderCustom() {
+    customSlot.replaceChildren();
+    if (!ctx.custom) return;
+    customSlot.appendChild(h('div', { class: 'custom-card' },
+      h('span', { class: 'play-option-icon', html: icon('board') }),
+      h('div', { class: 'resume-text' },
+        h('div', { class: 'semibold' }, t('play.custom.title')),
+        h('div', { class: 'subtle text-xs' }, t(ctx.custom.fen.split(' ')[1] === 'b' ? 'play.custom.detailBlack' : 'play.custom.detailWhite'))),
+      h('button', {
+        type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 14 }) + `<span>${escapeHtml(t('play.custom.useStandard'))}</span>`,
+        onClick: () => {
+          ctx.custom = null;
+          // Drop the position from the URL too, without remounting the page.
+          try { history.replaceState(null, '', '#/play'); } catch { /* ignore */ }
+          if (previewBoard) { try { previewBoard.setPosition(START_FEN, { animate: true }); } catch { /* ignore */ } }
+          renderCustom();
+        },
+      })));
+  }
+
+  function renderEstimate() {
+    const e = ctx.estimate;
+    if (adaptiveBot) {
+      const lvl = e && Number.isFinite(e.bot_level) ? e.bot_level : adaptiveBot.elo;
+      adaptiveBot.elo = lvl;
+      adaptiveLevel.textContent = t('play.adaptive.level', { level: lvl });
+    }
+    if (!e || e.rating == null) {
+      estimateEl.hidden = false;
+      estimateEl.replaceChildren(h('span', { html: icon('chart', { size: 14 }) }), h('span', null, t('play.estimate.none')));
+      return;
+    }
+    estimateEl.hidden = false;
+    estimateEl.replaceChildren(
+      h('span', { html: icon('chart', { size: 14 }) }),
+      h('span', null, t('play.estimate.label'), ' ', h('strong', null, `~${e.rating}`)),
+      e.provisional ? h('span', { class: 'badge', title: t('play.estimate.provisionalTitle', { count: Math.max(0, 5 - (e.games | 0)) }) }, t('play.estimate.provisional')) : null);
+  }
+
   function renderHero() {
     const b = byId.get(state.botId);
     if (!b) return;
     const rec = b.id === recommendedId();
+    const adaptive = b.id === ADAPTIVE_ID;
+    const look = adaptive ? { ...b, category: 'adaptive' } : b;
+    const eloText = adaptive ? `~${b.elo ?? ''}` : `${b.elo ?? ''}`;
     heroSlot.replaceChildren(
-      botAvatar(b, 'avatar-xl'),
+      botAvatar(look, 'avatar-xl'),
       h('div', { class: 'play-hero-main' },
-        h('div', { class: 'play-hero-name' }, b.name, h('span', { class: 'play-hero-elo' }, `${b.elo ?? ''}`)),
+        h('div', { class: 'play-hero-name' }, b.name, h('span', { class: 'play-hero-elo' }, eloText)),
         h('div', { class: 'row-sm row-wrap' },
-          b.style && String(b.style).toLowerCase() !== String(b.category || '').toLowerCase() ? h('span', { class: 'badge badge-info' }, styleLabel(b.style)) : null,
-          b.category ? h('span', { class: `badge level-${b.category === 'coach' ? 'beginner' : b.category}` }, categoryLabel(b.category)) : null,
+          adaptive ? h('span', { class: 'badge badge-gold no-cap', html: icon('bolt', { size: 12 }) + ' ' + escapeHtml(t('play.adaptive.badge')) }) : null,
+          !adaptive && b.style && String(b.style).toLowerCase() !== String(b.category || '').toLowerCase() ? h('span', { class: 'badge badge-info' }, styleLabel(b.style)) : null,
+          !adaptive && b.category ? h('span', { class: `badge level-${b.category === 'coach' ? 'beginner' : b.category}` }, categoryLabel(b.category)) : null,
           rec ? h('span', { class: 'badge badge-gold', html: icon('star-filled', { size: 12 }) + ' ' + escapeHtml(t('play.setup.recommended')) }) : null),
         b.description ? h('p', { class: 'muted text-sm play-hero-desc' }, b.description) : null,
         b.greeting ? h('div', { class: 'bubble bubble-bot play-mobile-only text-sm' }, b.greeting) : null));
-    previewAvatarSlot.replaceChildren(botAvatar(b, 'avatar-xl'));
-    previewName.replaceChildren(h('span', { class: 'semibold' }, b.name), ' ', h('span', { class: 'subtle' }, `(${b.elo ?? '?'})`));
+    previewAvatarSlot.replaceChildren(botAvatar(look, 'avatar-xl'));
+    previewName.replaceChildren(h('span', { class: 'semibold' }, b.name), ' ', h('span', { class: 'subtle' }, `(${adaptive ? eloText : (b.elo ?? '?')})`));
     previewBubble.textContent = b.greeting || t('play.setup.defaultGreeting', { name: b.name });
     previewBubble.classList.remove('pop-in');
     void previewBubble.offsetWidth; // restart the pop animation
@@ -434,6 +568,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     }
     modeDesc.textContent = t(`play.modes.${state.mode}.desc`);
     for (const d of OPTION_DEFS) optInputs[d.key].checked = !!state.opts[d.key];
+    for (const d of EXTRA_DEFS) extraInputs[d.key].checked = !!state.extras[d.key];
     for (const [id, btn] of Object.entries(tcBtns)) {
       btn.classList.toggle('active', state.tc === id);
       btn.setAttribute('aria-checked', state.tc === id ? 'true' : 'false');
@@ -454,9 +589,11 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     const bot = byId.get(state.botId);
     if (!bot) return;
     const proceed = () => {
-      saveJson(PREFS_KEY, { botId: state.botId, color: state.color, mode: state.mode, opts: state.opts, tc: state.tc });
+      // A colour picked for a one-off custom position should not become the default.
+      const color = ctx.custom ? prefs.color : state.color;
+      saveJson(PREFS_KEY, { botId: state.botId, color, mode: state.mode, opts: state.opts, extras: state.extras, tc: state.tc });
       const userColor = state.color === 'white' ? 'w' : state.color === 'black' ? 'b' : (Math.random() < 0.5 ? 'w' : 'b');
-      onPlay({ bot, userColor, colorChoice: state.color, opts: { ...state.opts }, tcId: state.tc });
+      onPlay({ bot, userColor, colorChoice: state.color, opts: { ...state.opts }, extras: { ...state.extras }, tcId: state.tc, startFen: startFen() });
     };
     if (saved) {
       confirmDialog({ title: t('play.newGame.title'), message: t('play.newGame.discardUnfinished', { name: saved.bot.name }), confirmLabel: t('play.newGame.start') })
@@ -467,14 +604,18 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   }
 
   ctx.onStats = () => { if (!bag.disposed) { renderHero(); refreshTiles(); } };
-  bag.add(() => { ctx.onStats = null; });
+  ctx.onEstimate = () => { if (!bag.disposed) { renderEstimate(); renderHero(); } };
+  bag.add(() => { ctx.onStats = null; ctx.onEstimate = null; });
 
   renderResume();
+  renderCustom();
+  renderEstimate();
   renderHero();
   refreshTiles();
   refreshOptions();
   // Bring the selected tile into view inside the scroll area.
-  bag.raf(() => { const t = tileById.get(state.botId); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest' }); });
+  // (Not for a custom position: its card at the top must stay visible.)
+  if (!ctx.custom) bag.raf(() => { const t = tileById.get(state.botId); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest' }); });
 
   bag.on(window, 'keydown', (e) => {
     if (e.key === 'Enter' && !e.defaultPrevented && !isTyping(e) && !document.querySelector('.modal-backdrop') && document.activeElement === document.body) play();
@@ -513,8 +654,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     bot: resume ? resume.bot : cfg.bot,
     userColor: resume ? resume.userColor : cfg.userColor,
     colorChoice: resume ? (resume.colorChoice || 'random') : (cfg.colorChoice || 'random'),
-    startFen: (resume && typeof resume.startFen === 'string' && resume.startFen) || START_FEN,
+    startFen: (resume ? (typeof resume.startFen === 'string' && resume.startFen) : (typeof cfg.startFen === 'string' && cfg.startFen)) || START_FEN,
     opts: { hints: true, takebacks: true, evalBar: true, coach: false, ...((resume ? resume.opts : cfg.opts) || {}) },
+    extras: normalizeExtras(resume ? resume.extras : cfg.extras),
     tc: TC_BY_ID[resume ? resume.tcId : cfg.tcId] || TC_BY_ID.none,
     moves: [], sans: [], fens: [], lastMoves: [], cls: [],
     result: null, termination: '',
@@ -524,6 +666,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     drawOfferPly: resume ? (resume.drawOfferPly ?? -99) : -99,
     savedId: null,
     savePromise: null,
+    ratingUpdate: null,   // response of POST /api/adaptive/result
   };
   // Prefer the freshest bot profile from the server if we have it.
   const fresh = ctx.bots.find((b) => b.id === g.bot.id);
@@ -534,6 +677,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   let chess;
   try { chess = new Chess(g.startFen); } catch { chess = new Chess(START_FEN); g.startFen = START_FEN; }
+  const customStart = g.startFen.split(' ').slice(0, 4).join(' ') !== START_FEN.split(' ').slice(0, 4).join(' ');
   g.fens.push(chess.fen());
   g.lastMoves.push(null);
   if (resume) {
@@ -559,8 +703,12 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   let analysis = { fen: null, best: null, score: null, depth: 0 };
   const evals = new Map();       // fen -> { score, opts } so browsing back and forth redraws the eval bar instantly
   let gameOverModal = null;
+  let goRatingEl = null;         // rating line inside the game-over modal
   let ended = false;
   let discarded = false;
+  let pendingConfirm = null;     // { fenBefore, uci, ply } while a move waits for Confirm / Undo
+  let premoveRunning = false;
+  let peeking = false;
 
   // ---- DOM ---------------------------------------------------------------
   const s = getSettings();
@@ -571,9 +719,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const chat = isBot ? h('div', { class: 'bot-chat bubble', role: 'status', 'aria-live': 'polite', hidden: true }) : null;
     const clockSlot = h('div', { class: 'clock-slot' });
     const name = isBot ? bot.name : ((ctx.profile && ctx.profile.name) || t('play.you'));
-    const rating = isBot ? `(${bot.elo ?? '?'})` : null;
+    const rating = isBot ? `(${bot.id === ADAPTIVE_ID ? '~' : ''}${bot.elo ?? '?'})` : null;
     const el = h('div', { class: `player-bar play-bar ${isBot ? 'is-bot' : 'is-user'}` },
-      isBot ? botAvatar(bot) : avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-round user-avatar'),
+      isBot ? botAvatar(bot.id === ADAPTIVE_ID ? { ...bot, category: 'adaptive' } : bot) : avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-round user-avatar'),
       h('div', { style: 'min-width:0' },
         h('div', { class: 'player-name' }, name, ' ', rating ? h('span', { class: 'player-rating' }, rating) : null, thinking),
         captures),
@@ -591,6 +739,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   const modeBadges = h('div', { class: 'row-sm' },
     g.opts.coach ? h('span', { class: 'badge badge-primary', title: t('play.game.coachOnTitle') }, '🎓 ' + t('play.game.coachBadge')) : null,
     g.tc.id !== 'none' ? h('span', { class: 'badge', html: icon('clock', { size: 12 }) + ' ' + escapeHtml(tcLabel(g.tc)) }) : null,
+    g.extras.blindfold ? h('span', { class: 'badge badge-info', html: icon('eye-off', { size: 12 }) + ' ' + escapeHtml(t('play.blindfold.badge')) }) : null,
     !g.opts.hints && !g.opts.takebacks && !g.opts.evalBar && !g.opts.coach ? h('span', { class: 'badge badge-danger' }, t('play.modes.challenge.label')) : null);
   const statusEl = h('div', { class: 'play-status', role: 'status', 'aria-live': 'polite' });
   const coachText = h('div', { class: 'bubble bubble-mentor coach-text md' });
@@ -622,6 +771,32 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   if (!g.opts.hints) acts.hint.hidden = true;
   if (!g.opts.takebacks) acts.takeback.hidden = true;
   const actionsEl = h('div', { class: 'play-actions' }, ...Object.values(acts));
+
+  // Move confirmation bar (option "confirmMove").
+  const confirmText = h('span', { class: 'grow' });
+  const confirmBar = h('div', { class: 'play-confirm', role: 'group', 'aria-label': t('play.confirm.aria'), hidden: true },
+    confirmText,
+    h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('undo', { size: 16 }) + `<span>${escapeHtml(t('play.confirm.undo'))}</span>`, onClick: () => undoPending() }),
+    h('button', { type: 'button', class: 'btn btn-primary btn-sm', html: icon('check', { size: 16 }) + `<span>${escapeHtml(t('play.confirm.confirm'))}</span>`, onClick: () => confirmPending() }));
+
+  // Typed moves (option "typeMoves", always on in blindfold) and the blindfold "peek" button.
+  const showEntry = g.extras.typeMoves || g.extras.blindfold;
+  const moveInput = h('input', {
+    type: 'text', class: 'input play-move-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false',
+    maxlength: '12', placeholder: t('play.typed.placeholder'), 'aria-label': t('play.typed.aria'),
+  });
+  const moveFeedback = h('div', { class: 'play-move-feedback text-xs', role: 'status', 'aria-live': 'polite' });
+  const peekBtn = g.extras.blindfold ? h('button', {
+    type: 'button', class: 'btn btn-secondary btn-sm play-peek', 'aria-pressed': 'false',
+    html: icon('eye', { size: 16 }) + `<span>${escapeHtml(t('play.blindfold.peek'))}</span>`,
+    title: t('play.blindfold.peekTitle'),
+  }) : null;
+  const moveEntry = showEntry ? h('form', { class: 'play-move-entry', onSubmit: (e) => { e.preventDefault(); onTypedMove(); } },
+    h('div', { class: 'play-move-row' },
+      moveInput,
+      h('button', { type: 'submit', class: 'btn btn-primary btn-sm', html: icon('send', { size: 16 }), 'aria-label': t('play.typed.submit'), title: t('play.typed.submit') }),
+      peekBtn),
+    moveFeedback) : null;
   const afterEl = h('div', { class: 'play-after', hidden: true });
 
   const panel = h('aside', { class: 'game-panel' },
@@ -631,6 +806,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       coachBox,
       moveListEl,
       navBar),
+    confirmBar,
+    moveEntry,
     afterEl,
     actionsEl);
 
@@ -643,8 +820,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     orientation: colorName(userC),
     interactive: true,
     movableColor: colorName(userC),
-    showCoords: s.showCoords, showLegal: s.showLegal, animationMs: s.animationMs, sounds: s.sounds,
-    onMove: (m) => onUserMove(m),
+    showCoords: g.extras.blindfold ? true : s.showCoords, showLegal: s.showLegal, animationMs: s.animationMs, sounds: s.sounds,
+    blindfold: g.extras.blindfold,
+    onMove: (m) => onUserMove(m, { premove: premoveRunning }),
+    onPremove: () => renderStatus(),
   });
   bag.add(() => board.destroy());
 
@@ -702,8 +881,11 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   function updateInteractivity() {
-    const can = isLive() && !g.result && !botPending && userToMove();
+    const can = isLive() && !g.result && !botPending && !pendingConfirm && userToMove();
     try { board.setInteractive(can, can ? colorName(userC) : null); } catch { /* ignore */ }
+    // Premoves can be queued while the bot is to move (and survive its move landing).
+    const pre = g.extras.premoves && isLive() && !g.result && !pendingConfirm;
+    try { board.setPremoveColor(pre ? colorName(userC) : null); } catch { /* ignore */ }
   }
 
   function renderCaptures() {
@@ -746,7 +928,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   function renderOpening() {
-    openingEl.textContent = g.openingName || (plies() ? t('play.game.inProgress') : t('play.game.startingPosition'));
+    openingEl.textContent = g.openingName || (customStart ? t('play.custom.inGame') : (plies() ? t('play.game.inProgress') : t('play.game.startingPosition')));
     openingEl.title = openingEl.textContent;
   }
 
@@ -763,9 +945,16 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       statusEl.append(h('span', { html: icon('eye', { size: 16 }) }), h('span', null, t('play.status.viewing', { move: Math.ceil(viewPly / 2) || 0, back: t('play.nav.backToGame') })));
       return;
     }
+    if (pendingConfirm) {
+      statusEl.classList.add('your-turn');
+      statusEl.append(h('span', { html: icon('check-circle', { size: 16 }) }), h('span', null, t('play.confirm.status')));
+      return;
+    }
+    const pm = board.getPremove();
     if (botPending) {
       statusEl.classList.add('thinking');
-      statusEl.append(h('span', { class: 'thinking-dots' }, h('i'), h('i'), h('i')), h('span', null, t('play.status.botThinking', { name: bot.name })));
+      statusEl.append(h('span', { class: 'thinking-dots' }, h('i'), h('i'), h('i')), h('span', { class: 'grow' }, t('play.status.botThinking', { name: bot.name })));
+      if (pm) statusEl.append(premoveChip(pm));
       return;
     }
     if (userToMove()) {
@@ -776,6 +965,13 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     } else {
       statusEl.append(h('span', { class: `turn-dot ${colorName(botC)}` }), h('span', null, t('play.status.botToMove', { name: bot.name })));
     }
+  }
+
+  function premoveChip(pm) {
+    return h('button', {
+      type: 'button', class: 'premove-chip', title: t('play.premove.cancelTitle'),
+      onClick: () => { board.clearPremove(); renderStatus(); },
+    }, h('span', { html: icon('bolt', { size: 12 }) }), t('play.premove.queued', { from: pm.from, to: pm.to }), h('span', { html: icon('x', { size: 12 }) }));
   }
 
   function setBotError(message) {
@@ -789,13 +985,16 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   function renderActions() {
     const live = isLive();
     const over = !!g.result;
-    acts.hint.disabled = over || !live || botPending || !userToMove() || hint.loading;
+    acts.hint.disabled = over || !live || botPending || !!pendingConfirm || !userToMove() || hint.loading;
     acts.hint.classList.toggle('stage-2', hint.fen === chess.fen() && hint.stage >= 1);
-    acts.takeback.disabled = over || !canTakeback();
+    acts.takeback.disabled = over || !!pendingConfirm || !canTakeback();
     acts.draw.disabled = over || plies() < 2;
     acts.resign.disabled = over;
     actionsEl.hidden = over;
     afterEl.hidden = !over;
+    confirmBar.hidden = !pendingConfirm || over;
+    if (pendingConfirm) confirmText.textContent = t('play.confirm.prompt', { san: g.sans[pendingConfirm.ply - 1] || '' });
+    if (moveEntry) moveEntry.hidden = over;
   }
 
   function renderBadge() {
@@ -939,7 +1138,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   // ---- Opening name ------------------------------------------------------
   function lookupOpening() {
-    if (plies() > 30 || plies() === 0) return;
+    if (plies() > 30 || plies() === 0 || customStart) return;
     if (openingAc) openingAc.abort();
     const myAc = new AbortController();
     openingAc = myAc;
@@ -962,8 +1161,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     viewPly = null;
   }
 
-  function onUserMove(m) {
-    if (!m || !isLive() || g.result || botPending || !userToMove()) return false;
+  function onUserMove(m, { premove = false } = {}) {
+    if (!m || !isLive() || g.result || botPending || pendingConfirm || !userToMove()) return false;
     const fenBefore = chess.fen();
     let mv = null;
     try { mv = chess.move({ from: m.from, to: m.to, promotion: m.promotion || undefined }); } catch { mv = null; }
@@ -972,6 +1171,15 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const ply = plies();
     const uci = g.moves[ply - 1];
     clearHint();
+    if (g.extras.confirmMove && !premove) {
+      // Wait for Confirm / Undo before the move counts (clock keeps running).
+      pendingConfirm = { fenBefore, uci, ply };
+      queueMicrotask(() => {
+        if (bag.disposed) return;
+        refreshAll(false);
+      });
+      return true;
+    }
     pressClock(userC);
     // Let the board finish its own move handling before we sync it.
     queueMicrotask(() => {
@@ -980,6 +1188,87 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       afterMove(fenBefore, uci, ply, true);
     });
     return true;
+  }
+
+  function confirmPending() {
+    const pc = pendingConfirm;
+    if (!pc || g.result) return;
+    pendingConfirm = null;
+    pressClock(userC);
+    refreshAll(false);
+    afterMove(pc.fenBefore, pc.uci, pc.ply, true);
+  }
+
+  /** Take the unconfirmed move back. */
+  function undoPending({ render = true } = {}) {
+    if (!pendingConfirm) return;
+    pendingConfirm = null;
+    chess.undo();
+    g.moves.pop(); g.sans.pop(); g.fens.pop(); g.lastMoves.pop();
+    g.cls.length = plies() + 1;
+    viewPly = null;
+    if (render) refreshAll(true);
+  }
+
+  // ---- Typed moves -------------------------------------------------------
+  function setMoveFeedback(text, kind) {
+    moveFeedback.textContent = text || '';
+    moveFeedback.className = `play-move-feedback text-xs ${kind ? 'is-' + kind : ''}`.trim();
+    moveInput.classList.toggle('input-error', kind === 'error');
+  }
+
+  function onTypedMove() {
+    const text = moveInput.value.trim();
+    if (!text) return;
+    if (g.result) return;
+    if (pendingConfirm) { setMoveFeedback(t('play.typed.confirmFirst'), 'error'); return; }
+    if (!isLive()) goto(plies());
+    if (!userToMove() || botPending) {
+      // Not our turn: queue it as a premove if possible.
+      if (!g.extras.premoves) { setMoveFeedback(t('play.typed.wait', { name: bot.name }), 'error'); return; }
+      const parts = chess.fen().split(' ');
+      parts[1] = userC; parts[3] = '-';
+      let probe = null;
+      try { probe = new Chess(parts.join(' ')); } catch { probe = null; }
+      const pm = probe && parseTypedMove(probe, text);
+      if (!pm) { setMoveFeedback(t('play.typed.wait', { name: bot.name }), 'error'); return; }
+      board.setPremove(pm);
+      renderStatus();
+      moveInput.value = '';
+      setMoveFeedback(t('play.typed.premoved', { san: pm.san }), 'ok');
+      return;
+    }
+    const mv = parseTypedMove(chess, text);
+    if (!mv) {
+      setMoveFeedback(looksLikeMove(text) ? t('play.typed.illegal', { move: text }) : t('play.typed.unknown', { move: text }), 'error');
+      return;
+    }
+    const shown = board.move({ from: mv.from, to: mv.to, promotion: mv.promotion });
+    if (!onUserMove({ from: mv.from, to: mv.to, promotion: mv.promotion })) {
+      if (shown) syncBoard(false);
+      setMoveFeedback(t('play.typed.illegal', { move: text }), 'error');
+      return;
+    }
+    moveInput.value = '';
+    setMoveFeedback(t('play.typed.played', { san: mv.san }), 'ok');
+  }
+  if (moveEntry) {
+    bag.on(moveInput, 'input', () => { if (moveInput.classList.contains('input-error')) setMoveFeedback('', null); });
+  }
+
+  // ---- Blindfold peek (press and hold) ----------------------------------
+  function setPeek(on) {
+    if (peeking === on) return;
+    peeking = on;
+    try { board.setPeek(on); } catch { /* ignore */ }
+    if (peekBtn) { peekBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); peekBtn.classList.toggle('active', on); }
+  }
+  if (peekBtn) {
+    bag.on(peekBtn, 'pointerdown', (e) => { e.preventDefault(); setPeek(true); try { peekBtn.setPointerCapture(e.pointerId); } catch { /* ignore */ } });
+    for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture', 'blur']) bag.on(peekBtn, ev, () => setPeek(false));
+    bag.on(peekBtn, 'keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setPeek(true); } });
+    bag.on(peekBtn, 'keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') setPeek(false); });
+    bag.on(peekBtn, 'contextmenu', (e) => e.preventDefault());
   }
 
   function pressClock(mover) {
@@ -1049,7 +1338,22 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     refreshAll(true);
     if (bm.chat) botSay(bm.chat);
     afterMove(fenBefore, g.moves[plies() - 1], plies(), false);
+    runPremove();
   }
+
+  /** Play the queued premove now that it's our turn (dropped quietly if it became illegal). */
+  function runPremove() {
+    if (!board.getPremove()) return;
+    if (g.result || !isLive() || botPending || !userToMove()) { board.clearPremove(); renderStatus(); return; }
+    premoveRunning = true;
+    let played = null;
+    try { played = board.playPremove(); } finally { premoveRunning = false; }
+    if (!played) {
+      renderStatus();
+      setMoveFeedbackSafe(t('play.premove.dropped'));
+    }
+  }
+  function setMoveFeedbackSafe(text) { if (moveEntry) setMoveFeedback(text, 'error'); }
 
   // ---- Coach mode --------------------------------------------------------
   async function coachExplain(fenBefore, uci, ply) {
@@ -1155,6 +1459,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   function onTakeback() {
     if (!canTakeback()) { toast(t('play.takeback.nothing'), 'info'); return; }
     const n = takebackCount();
+    try { board.clearPremove(); } catch { /* ignore */ }
     botToken++;
     if (botAc) { botAc.abort(); botAc = null; }
     if (botTimer) { clearTimeout(botTimer); botTimer = null; }
@@ -1189,6 +1494,11 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   bag.on(window, 'keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isTyping(e)) return;
     if (document.querySelector('.modal-backdrop')) return;
+    if (pendingConfirm) {
+      if (e.key === 'Enter') { e.preventDefault(); confirmPending(); return; }
+      if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); undoPending(); return; }
+    }
+    if (e.key === 'Escape' && board.getPremove()) { e.preventDefault(); board.clearPremove(); renderStatus(); return; }
     let handled = true;
     switch (e.key) {
       case 'ArrowLeft': goto(currentPly() - 1); break;
@@ -1293,6 +1603,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   function endGame(result, termination, { silent = false } = {}) {
     if (g.result) return;
+    // An unconfirmed move never counts (e.g. the clock ran out while it was pending).
+    if (pendingConfirm) undoPending({ render: false });
+    try { board.clearPremove(); } catch { /* ignore */ }
     g.result = result;
     g.termination = termination;
     botToken++;
@@ -1308,9 +1621,11 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     if (result === '1/2-1/2') rememberEval(chess.fen(), { cp: 0 });
     else if (termination === 'checkmate') rememberEval(chess.fen(), { mate: 0 }, { mated: result === '1-0' ? 'black' : 'white' });
     showEval(chess.fen());
+    if (g.extras.blindfold) { try { board.setBlindfold(false); } catch { /* ignore */ } }
     refreshAll(false);
     const o = userOutcome();
     if (!silent) {
+      announce(o === 'win' ? t(termination === 'checkmate' ? 'a11y.result.youWinMate' : 'a11y.result.youWin') : o === 'loss' ? t('a11y.result.youLose') : t('a11y.result.draw'), { assertive: true });
       playSoundSafe('gameEnd');
       botSay(o === 'win' ? t('play.botChat.userWon') : o === 'loss' ? t('play.botChat.userLost') : t('play.botChat.draw'));
     }
@@ -1326,6 +1641,8 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const tags = ['vs-bot'];
     if (g.hintsUsed || g.takebacksUsed) tags.push('assisted');
     if (g.opts.coach) tags.push('coach');
+    if (customStart) tags.push('custom-position');
+    if (g.extras.blindfold) tags.push('blindfold');
     const notesParts = [];
     if (g.hintsUsed) notesParts.push(t('play.notes.hints', { count: g.hintsUsed }));
     if (g.takebacksUsed) notesParts.push(t('play.notes.takebacks', { count: g.takebacksUsed }));
@@ -1348,12 +1665,51 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       if (rec && rec.id != null) {
         g.savedId = rec.id;
         if (!bag.disposed) toast(t('play.save.saved'), 'success', { duration: 2200 });
+        reportResult(rec.id);
         return rec.id;
       }
       return null;
     } catch (e) {
       if (!bag.disposed) toast(t('play.save.failed', { message: e.message || t('play.save.serverError') }), 'error');
       return null;
+    }
+  }
+
+  /** Update the estimated rating / adaptive level with the saved game (counted once per game). */
+  async function reportResult(gameId) {
+    try {
+      const r = await api.post('/api/adaptive/result', { game_id: gameId }, { signal: ctx.signal, timeout: 15000 });
+      if (!r || typeof r !== 'object') return;
+      if (r.estimate) {
+        ctx.estimate = r.estimate;
+        const ab = ctx.bots.find((x) => x.id === ADAPTIVE_ID);
+        if (ab && Number.isFinite(r.estimate.bot_level)) ab.elo = r.estimate.bot_level;
+        if (ctx.onEstimate) ctx.onEstimate();
+      }
+      if (bag.disposed) return;
+      g.ratingUpdate = r;
+      renderRatingLine();
+    } catch { /* the estimate is a bonus: stay quiet */ }
+  }
+
+  function renderRatingLine() {
+    if (!goRatingEl) return;
+    const r = g.ratingUpdate;
+    goRatingEl.replaceChildren();
+    if (!r || r.skipped || typeof r.rating !== 'number') { goRatingEl.hidden = true; return; }
+    goRatingEl.hidden = false;
+    const d = r.delta | 0;
+    const deltaCls = d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
+    goRatingEl.append(
+      h('span', { class: 'go-rating-label' }, t('play.estimate.label')),
+      h('strong', { class: 'go-rating-value' }, `~${r.rating}`),
+      r.previous == null
+        ? h('span', { class: 'go-delta new' }, t('play.estimate.first'))
+        : h('span', { class: `go-delta ${deltaCls}` }, d > 0 ? `+${d}` : d < 0 ? `−${Math.abs(d)}` : '±0'),
+      r.provisional ? h('span', { class: 'badge' }, t('play.estimate.provisional')) : null);
+    if (bot.id === ADAPTIVE_ID && r.bot_level_delta) {
+      goRatingEl.append(h('div', { class: 'go-level subtle text-xs' },
+        t(r.bot_level_delta > 0 ? 'play.adaptive.levelUp' : 'play.adaptive.levelDown', { name: bot.name, level: r.bot_level })));
     }
   }
 
@@ -1370,7 +1726,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   function rematch() {
     const nextColor = g.colorChoice === 'random' ? other(userC) : userC;
-    onRematch({ bot, userColor: nextColor, colorChoice: g.colorChoice, opts: { ...g.opts }, tcId: g.tc.id });
+    // The adaptive bot may have changed level: use the fresh profile next game.
+    const nextBot = bot.id === ADAPTIVE_ID && g.ratingUpdate && g.ratingUpdate.estimate
+      ? { ...bot, elo: g.ratingUpdate.estimate.bot_level } : bot;
+    onRematch({ bot: nextBot, userColor: nextColor, colorChoice: g.colorChoice, opts: { ...g.opts }, extras: { ...g.extras }, tcId: g.tc.id, startFen: g.startFen });
   }
 
   function renderAfter() {
@@ -1387,8 +1746,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   function showGameOver() {
     if (gameOverModal || bag.disposed) return;
     const o = userOutcome();
+    goRatingEl = h('div', { class: 'go-rating', role: 'status', 'aria-live': 'polite', hidden: true });
+    renderRatingLine();
     const you = h('div', { class: 'go-player' }, avatarNode(ctx.profile && ctx.profile.avatar, 'avatar-lg avatar-round'), h('div', { class: 'semibold' }, (ctx.profile && ctx.profile.name) || t('play.you')));
-    const them = h('div', { class: 'go-player' }, botAvatar(bot, 'avatar-lg'), h('div', { class: 'semibold' }, bot.name), h('div', { class: 'subtle text-xs' }, String(bot.elo ?? '')));
+    const them = h('div', { class: 'go-player' }, botAvatar(bot.id === ADAPTIVE_ID ? { ...bot, category: 'adaptive' } : bot, 'avatar-lg'), h('div', { class: 'semibold' }, bot.name), h('div', { class: 'subtle text-xs' }, (bot.id === ADAPTIVE_ID ? '~' : '') + String(bot.elo ?? '')));
     const scoreText = g.result === '1/2-1/2' ? '½ – ½' : (userOutcome() === 'win' ? '1 – 0' : '0 – 1');
     const chips = h('div', { class: 'row-sm row-wrap go-chips' },
       h('span', { class: 'badge' }, t('play.gameOver.moves', { count: Math.ceil(plies() / 2) })),
@@ -1402,6 +1763,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
         h('div', { class: 'result-hero-title' }, resultHeadline()),
         h('div', { class: 'result-hero-sub' }, terminationText(g.termination))),
       h('div', { class: 'go-players' }, you, h('div', { class: 'go-score' }, scoreText), them),
+      goRatingEl,
       chips,
       h('p', { class: 'muted text-sm text-center go-tip' }, plies() >= 2
         ? (o === 'win' ? t('play.gameOver.tipWin') : t('play.gameOver.tipOther'))
@@ -1411,7 +1773,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       { label: t('play.after.rematch'), kind: 'secondary', icon: 'refresh', onClick: () => { rematch(); } },
     ];
     if (plies() >= 2) actions.push({ label: t('play.after.review'), kind: 'primary', icon: 'sparkles', autofocus: true, onClick: () => goReview() });
-    gameOverModal = modal({ title: t('play.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; } });
+    gameOverModal = modal({ title: t('play.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; goRatingEl = null; } });
   }
 
   function confetti() {
@@ -1426,8 +1788,11 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   // ---- Persistence (resume unfinished games) -----------------------------
   function persist() {
     if (g.result || ended || discarded || !plies()) return;
+    // An unconfirmed move is not part of the game yet.
+    const moves = pendingConfirm ? g.moves.slice(0, -1) : g.moves;
+    if (!moves.length) return;
     saveJson(SAVE_KEY, {
-      v: 1, bot, userColor: userC, colorChoice: g.colorChoice, startFen: g.startFen, moves: g.moves, opts: g.opts, tcId: g.tc.id,
+      v: 1, bot, userColor: userC, colorChoice: g.colorChoice, startFen: g.startFen, moves, opts: g.opts, extras: g.extras, tcId: g.tc.id,
       clocks: clock ? clock.getTimes() : null, hintsUsed: g.hintsUsed, takebacksUsed: g.takebacksUsed,
       cls: g.cls, openingName: g.openingName, drawOfferPly: g.drawOfferPly, updatedAt: new Date().toISOString(),
     });

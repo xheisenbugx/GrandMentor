@@ -1,0 +1,2008 @@
+{
+  "opera-game": {
+    "title": "La partie de l'Opéra",
+    "event": "Opéra de Paris",
+    "opening": "Défense Philidor",
+    "summary": "Jouée dans une loge de l'Opéra de Paris pendant une représentation, c'est la leçon la plus célèbre sur le développement rapide. Morphy met toutes ses pièces en jeu, ouvre des lignes vers le roi qui n'a pas roqué et conclut par un sacrifice de dame. À retenir : développe vite, roque, et punis l'adversaire qui prend du retard.",
+    "annotations": [
+      {
+        "text": "Paris, 1858. Paul Morphy, la jeune star américaine, affronte deux nobles qui jouent en équipe, directement dans leur loge à l'opéra. Regarde à quelle vitesse il fait entrer **toutes** ses pièces dans la bataille."
+      },
+      {
+        "text": "2...d6, c'est la défense Philidor. Elle protège solidement e5, mais elle enferme aussi le fou noir de f8. Solide, mais un peu passif."
+      },
+      {
+        "text": "3...Bg4 cloue le cavalier de f3 sur la dame. Ça a l'air actif, mais les Noirs vont bientôt échanger ce fou, et chaque échange de ce genre aide les Blancs à se développer."
+      },
+      {
+        "text": "4...Bxf3 donne le fou contre le cavalier. La dame blanche reprend et entre dans le jeu gratuitement, tandis que les Noirs ont une pièce sortie de moins."
+      },
+      {
+        "text": "6.Bc4 ajoute un deuxième attaquant sur f7. Les Blancs menacent maintenant Qxf7 échec et mat, donc les Noirs doivent réagir."
+      },
+      {
+        "text": "7.Qb3 est une **double attaque** : la dame se place derrière le fou contre f7 et frappe aussi le pion b7."
+      },
+      {
+        "text": "7...Qe7 défend f7, mais maintenant la dame bloque le fou de f8. Les pièces de l'aile roi noire sont coincées et le roque est encore loin."
+      },
+      {
+        "text": "9.Bg5 cloue le cavalier de f6 sur la dame. Morphy ne ramasse pas de pions : il continue de sortir ses pièces. Les Noirs n'ont développé qu'une dame et un cavalier."
+      },
+      {
+        "text": "10.Nxb5! Morphy donne un cavalier entier pour ouvrir les lignes autour du roi noir. Avec tant de pièces en plus en jeu, il peut se le permettre.",
+        "label": "Sacrifice de cavalier"
+      },
+      {
+        "text": "11.Bxb5+ donne échec et cloue le cavalier de d7 sur place. Ce cavalier ne peut pas bouger sans exposer son propre roi."
+      },
+      {
+        "text": "12.O-O-O! Le roque met le roi à l'abri et place directement une tour sur la colonne d ouverte, face au cavalier cloué.",
+        "label": "La tour rejoint l'attaque"
+      },
+      {
+        "text": "13.Rxd7! Morphy donne une tour contre le cavalier pour maintenir la pression. Chaque prise ouvre encore plus la colonne d.",
+        "label": "Une tour contre un cavalier"
+      },
+      {
+        "text": "14.Rd1 amène la dernière tour sur la colonne d. La tour de d7 est clouée et attaquée deux fois, et les pièces de l'aile roi noire n'ont toujours pas bougé."
+      },
+      {
+        "text": "14...Qe6 ajoute un défenseur à d7 et propose l'échange des dames. Les Noirs espèrent calmer le jeu, mais Morphy a une idée plus tranchante."
+      },
+      {
+        "text": "15.Bxd7+ élimine la tour avec échec. Les Noirs doivent reprendre avec le cavalier."
+      },
+      {
+        "text": "15...Nxd7. Maintenant ce cavalier est la seule pièce qui bloque la colonne d. Si on pouvait l'attirer ailleurs, la tour pourrait atteindre d8. Les Blancs peuvent-ils le faire ?"
+      },
+      {
+        "text": "16...Nxb8 était forcé. Le cavalier a dû quitter d7, et la colonne d est grande ouverte."
+      },
+      {
+        "text": "17.Rd8# Échec et mat ! La tour est protégée par le fou de g5. Morphy a gagné avec seulement deux pièces restantes, parce que chacune de ses pièces travaillait. **Développe vite et ouvre des lignes !**",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le cavalier noir de d7 est le dernier gardien de la colonne d. Trouves-tu une façon spectaculaire de l'attirer ailleurs ?",
+        "hint": "Offre ta dame avec échec sur une case que seul le cavalier peut atteindre.",
+        "explanation": "16.Qb8+! est un sacrifice de dame. La seule réponse est 16...Nxb8, et une fois le cavalier parti de d7, la tour fait mat en d8."
+      },
+      {
+        "prompt": "Trait aux Blancs, mat en un coup. Le vois-tu ?",
+        "hint": "La colonne d est ouverte jusqu'à la dernière rangée.",
+        "explanation": "17.Rd8# La tour donne échec sur la dernière rangée et le fou de g5 la protège. Le roi noir n'a aucune case de fuite."
+      }
+    ]
+  },
+  "immortal-game": {
+    "title": "L'Immortelle",
+    "event": "Londres (partie amicale)",
+    "opening": "Gambit du roi accepté, gambit du fou",
+    "summary": "Anderssen donne un fou, ses deux tours et finalement sa dame, puis fait mat avec trois pièces mineures. C'est le symbole de l'époque romantique des échecs. La leçon : des pièces actives et bien placées peuvent compter plus que le décompte du matériel.",
+    "annotations": [
+      {
+        "text": "Londres, 1851. Pendant une pause du premier tournoi international, Adolf Anderssen et Lionel Kieseritzky jouent cette partie amicale. Elle est devenue si célèbre qu'on l'a baptisée **l'Immortelle**."
+      },
+      {
+        "text": "2.f4, c'est le gambit du roi. Les Blancs offrent un pion pour ouvrir la colonne f et obtenir rapidement un centre fort. Une ouverture typique du XIXe siècle."
+      },
+      {
+        "text": "3...Qh4+ met en échec le roi, qui ne pourra plus roquer. Les Blancs doivent aller en f1, mais la dame noire est sortie tôt et pourrait devenir une cible."
+      },
+      {
+        "text": "4...b5 rend un pion pour détourner le fou blanc de sa belle diagonale. Les Noirs aussi jouent de façon très risquée !"
+      },
+      {
+        "text": "7.d3 est un coup calme : il soutient e4 et ouvre la voie au fou de c1. Les Blancs continuent de se développer pendant que la dame noire se promène."
+      },
+      {
+        "text": "9.Nf5 place le cavalier sur une excellente case, d'où il frappe g7 en restant près du roi noir."
+      },
+      {
+        "text": "11.Rg1 protège le pion g et laisse le fou de b5 se faire prendre. Anderssen tient plus au temps et à l'attaque qu'à un fou."
+      },
+      {
+        "text": "12.h4 commence à chasser la dame noire avec les pions. Chaque coup de dame coûte aux Noirs un temps qui devrait servir au développement."
+      },
+      {
+        "text": "14...Ng8 renvoie le cavalier à la maison. Regarde la position noire : presque rien n'est développé, alors que les pièces blanches continuent d'arriver."
+      },
+      {
+        "text": "15.Bxf4 récupère le pion et met en jeu le dernier fou, en gagnant du temps contre la dame."
+      },
+      {
+        "text": "16...Bc5 développe enfin, et le fou attaque la tour de g1. Les Noirs espèrent gagner du matériel pendant que les Blancs sont occupés à attaquer."
+      },
+      {
+        "text": "17.Nd5! Anderssen ignore la tour de g1. Le cavalier attaque la dame noire et menace Nxc7+, une fourchette roi et tour.",
+        "label": "Ignorer les menaces"
+      },
+      {
+        "text": "18.Bd6!! Les Blancs offrent **leurs deux tours**. Le fou contrôle f8 et e7 : le roi noir est en train d'être enfermé.",
+        "label": "Donner les deux tours"
+      },
+      {
+        "text": "19.e5 ferme la grande diagonale, pour que la dame noire ne puisse pas revenir défendre g7. Discret, mais mortel."
+      },
+      {
+        "text": "19...Qxa1+ Les Noirs ont pris les deux tours et ont une énorme avance matérielle. Mais toutes ces pièces noires sont loin de leur roi."
+      },
+      {
+        "text": "20...Na6 couvre la case c7 contre un échec de cavalier. Les Blancs ont maintenant besoin de quelque chose de forcé."
+      },
+      {
+        "text": "21.Nxg7+ Le cavalier prend un pion avec échec et contrôle maintenant aussi e8. Le roi est repoussé en d8."
+      },
+      {
+        "text": "22...Nxf6 était forcé. Les Blancs ont donné un fou, deux tours et la dame.",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "23.Be7# Échec et mat avec seulement un fou et deux cavaliers contre toute une armée ! **Des pièces actives valent mieux que du matériel en plus.**",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Tu as déjà beaucoup donné. Trouves-tu le coup le plus spectaculaire de l'échiquier ?",
+        "hint": "Ta dame peut donner échec sur une case où seul un cavalier peut la prendre.",
+        "explanation": "22.Qf6+!! Le cavalier doit prendre, 22...Nxf6, ce qui ouvre la voie au fou pour faire mat en e7."
+      },
+      {
+        "prompt": "Trait aux Blancs, mat en un. Quelle pièce le donne ?",
+        "hint": "Regarde la case foncée juste à côté du roi noir.",
+        "explanation": "23.Be7# Le fou donne échec, le cavalier de d5 le protège, et toutes les cases de fuite sont couvertes par les cavaliers."
+      }
+    ]
+  },
+  "evergreen-game": {
+    "title": "La Toujours Jeune",
+    "event": "Berlin (partie amicale)",
+    "opening": "Gambit Evans",
+    "summary": "Anderssen sacrifie des pions pour prendre vite de l'avance au développement, puis trouve une combinaison célèbre avec un sacrifice de tour, un sacrifice de dame et un échec double. Elle montre comment des lignes ouvertes et des pièces actives peuvent se transformer en mat forcé.",
+    "annotations": [
+      {
+        "text": "Berlin, 1852. Adolf Anderssen affronte son ami Jean Dufresne dans une partie amicale. Elle s'est terminée par une combinaison si belle qu'on l'a surnommée **la Toujours Jeune** : toujours fraîche."
+      },
+      {
+        "text": "4.b4, c'est le gambit Evans. Les Blancs offrent un pion pour pouvoir jouer c3 et d4 en gagnant du temps, et construire un grand centre."
+      },
+      {
+        "text": "6.d4 frappe au centre. Les Blancs donnent volontiers des pions si cela leur apporte des lignes ouvertes et un développement rapide."
+      },
+      {
+        "text": "7...d3 pousse le pion profondément dans le camp blanc. C'est gênant, car il bloque les pièces de l'aile dame blanche."
+      },
+      {
+        "text": "8.Qb3 place la dame derrière le fou contre f7, le point le plus faible près du roi noir."
+      },
+      {
+        "text": "9.e5 gagne de l'espace et chasse la dame noire. Les Blancs continuent de jouer des coups avec menace."
+      },
+      {
+        "text": "11.Ba3 place le fou sur une longue diagonale qui vise e7 et la case f8, ce qui rend le roque difficile pour les Noirs."
+      },
+      {
+        "text": "11...b5 rend un pion pour éloigner un moment la dame blanche de l'aile roi."
+      },
+      {
+        "text": "15.Ne4 amène le cavalier vers l'aile roi, en visant f6. Les pièces blanches se rassemblent près du roi noir."
+      },
+      {
+        "text": "16.Bxd3 élimine enfin ce pion gênant et pointe le fou vers l'aile roi."
+      },
+      {
+        "text": "17.Nf6+! Un sacrifice de cavalier. Après 17...gxf6 18.exf6, la colonne e s'ouvre et le cavalier de e7 est attaqué.",
+        "label": "Sacrifice de cavalier"
+      },
+      {
+        "text": "18...Rg8 Les Noirs préparent une contre-attaque sur la colonne g. S'ils arrivent à jouer ...Qxf3, alors ...Qxg2 sera mat."
+      },
+      {
+        "text": "19.Rad1!! Un coup calme au milieu de la bataille. Anderssen ignore la menace et amène sa dernière pièce sur la colonne d. Les analystes ont trouvé plus tard des défenses pour les Noirs, mais devant l'échiquier, c'était stupéfiant.",
+        "label": "Le coup de la Toujours Jeune"
+      },
+      {
+        "text": "19...Qxf3 Les Noirs prennent le cavalier et menacent ...Qxg2 mat. Les Blancs doivent continuer à donner des échecs."
+      },
+      {
+        "text": "20.Rxe7+ élimine le défenseur avec échec, si bien que les Noirs n'ont pas le temps de jouer ...Qxg2."
+      },
+      {
+        "text": "21...Kxd7 était forcé. Le fou de d3 se trouve devant la tour de d1. Quand le fou bougera, la tour donnera échec.",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "22.Bf5+ est un **échec double** : celui du fou et celui de la tour derrière lui. Contre un échec double, la seule réponse est de bouger le roi.",
+        "label": "Échec double !"
+      },
+      {
+        "text": "23.Bd7+ chasse le roi en f8, en plein sur la trajectoire du fou de a3."
+      },
+      {
+        "text": "24.Bxe7# Échec et mat ! Le fou est protégé par le pion f6. Un exemple parfait de la façon dont des lignes ouvertes et des pièces actives créent une attaque de mat.",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Les Noirs menacent mat en g2. Trouves-tu un échec qui change tout ?",
+        "hint": "Ta tour de d1 est alignée sur la colonne d. Et si le pion d7 disparaissait avec échec ?",
+        "explanation": "21.Qxd7+!! Le roi doit prendre, puis le fou et la tour donnent un échec double avec 22.Bf5+, qui mène au mat."
+      },
+      {
+        "prompt": "Trait aux Blancs, mat en un. Le roi noir est en f8. Sauras-tu conclure ?",
+        "hint": "Ton fou de cases noires attend en a3 depuis le début de la partie.",
+        "explanation": "24.Bxe7# Le fou prend le cavalier avec échec, le pion f6 le protège, et le roi n'a plus aucune case."
+      }
+    ]
+  },
+  "game-of-the-century": {
+    "title": "La partie du siècle",
+    "event": "Mémorial Rosenwald, New York",
+    "opening": "Défense Grünfeld",
+    "summary": "Bobby Fischer, 13 ans, sacrifie sa dame contre un des meilleurs maîtres américains et gagne grâce à une équipe époustouflante de pièces mineures. La leçon : un roi coincé au centre est une cible, et une dame ne vaut que ce qu'elle peut faire sur l'échiquier.",
+    "annotations": [
+      {
+        "text": "New York, 1956. Bobby Fischer n'a que **13 ans** et affronte Donald Byrne, l'un des meilleurs joueurs américains. Ce qui suit a vite été appelé la partie du siècle."
+      },
+      {
+        "text": "Fischer place son fou en g7, d'où il balaie la grande diagonale. Il laisse les Blancs construire un centre, avec l'idée de l'attaquer plus tard."
+      },
+      {
+        "text": "5...d5 frappe tout de suite le centre. Ce système, avec ...g6 et ...d5, c'est la **défense Grünfeld**."
+      },
+      {
+        "text": "Les Blancs possèdent maintenant un grand centre de pions. Mais regarde leur roi : toujours au milieu, avec les pièces de l'aile roi endormies. Fischer va le leur faire payer."
+      },
+      {
+        "text": "10.Qc5 est déjà le troisième coup de la dame. Chaque coup de dame est un coup que les Blancs ne consacrent ni au développement ni au roque."
+      },
+      {
+        "text": "11...Na4!! Une offre stupéfiante. Si 12.Nxa4, alors 12...Nxe4 attaque à la fois la dame en c5 et le fou en g5, et la position blanche s'écroule.",
+        "label": "Le cavalier offert en a4"
+      },
+      {
+        "text": "13...Nxe4! Fischer gagne le pion central et attaque aussi le pion c3. Pendant ce temps, le roi blanc est toujours coincé au centre."
+      },
+      {
+        "text": "16...Rfe8+ ouvre la colonne e avec échec. Le roi blanc doit aller en f1, et il ne pourra plus jamais roquer."
+      },
+      {
+        "text": "Les Blancs ont pris la dame, et maintenant la revanche commence. Le fou donne échec, et le cavalier et le fou noirs vont danser autour du roi blanc.",
+        "label": "La revanche commence"
+      },
+      {
+        "text": "20...Nxd4+ est un **échec à la découverte** : le cavalier s'écarte et le fou de c4 donne échec. Échec, prise, de nouveau échec : ce motif s'appelle le moulin.",
+        "label": "Le moulin"
+      },
+      {
+        "text": "Le moulin est terminé. Pour sa dame, Fischer a déjà gagné deux fous et un pion, sa tour de a8 attaque maintenant la dame blanche, et le cavalier de c3 attaque la tour de d1."
+      },
+      {
+        "text": "25...Nxd1 ramasse aussi la tour. Les Blancs ont encore une dame, mais les pièces noires travaillent en équipe, alors que la tour blanche de h1 n'a jamais bougé."
+      },
+      {
+        "text": "La dame blanche donne quelques échecs, mais il n'y a pas de vrai danger. Les Noirs mettent tranquillement leur roi à l'abri et gardent leurs pièces en plus."
+      },
+      {
+        "text": "Avec une grosse avance matérielle, Fischer pousse ses pions de l'aile dame et prépare toutes ses pièces à chasser le roi blanc."
+      },
+      {
+        "text": "Il est temps de conclure. 36...Ng3+ lance la chasse finale : cavalier, fous et tour donnent échec à tour de rôle et poussent le roi vers l'aile dame.",
+        "label": "La chasse finale"
+      },
+      {
+        "text": "41...Rc2# La tour fait mat, protégée par le fou de b3, tandis que le cavalier de c3 couvre b1 et d1. Un garçon de 13 ans venait de jouer l'une des parties les plus célèbres de l'histoire.",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. Ta dame en b6 est attaquée par le fou de c5. Trouves-tu la réponse légendaire de Fischer ?",
+        "hint": "Ne sauve pas la dame. Pense au roi blanc en f1.",
+        "explanation": "17...Be6!! abandonne la dame. Le fou attaque le fou de c4 et prépare une pluie d'échecs. Si 18.Bxe6, alors 18...Qb5+ mène à un magnifique mat à l'étouffée ; si les Blancs prennent la dame, comme dans la partie, les Noirs récupèrent une montagne de matériel."
+      },
+      {
+        "prompt": "Trait aux Noirs. Tu as donné ta dame, et maintenant il est temps d'encaisser. Quel échec lance la machine ?",
+        "hint": "Ton cavalier de c3 peut atteindre une case à côté du roi blanc, et ton fou de c4 vise f1.",
+        "explanation": "19...Ne2+ force 20.Kf1. Maintenant le cavalier peut sauter ailleurs avec un échec à la découverte du fou de c4, en gagnant du matériel à chaque fois, tandis que le roi blanc ne peut que faire des allers-retours."
+      },
+      {
+        "prompt": "Trait aux Noirs. Le roi blanc a été chassé jusqu'en c1. Trouves-tu l'échec et mat ?",
+        "hint": "Ta tour de a2 veut se joindre à la fête.",
+        "explanation": "41...Rc2# La tour donne échec en c2 et est protégée par le fou de b3. Le roi ne peut aller ni en b1 ni en d1 à cause du cavalier de c3, et la tour couvre b2 et d2."
+      }
+    ]
+  },
+  "kasparov-topalov-1999": {
+    "title": "L'Immortelle de Kasparov",
+    "event": "Tournoi Hoogovens, Wijk aan Zee",
+    "opening": "Défense Pirc",
+    "summary": "Kasparov donne une tour puis chasse le roi de Topalov d'un bout à l'autre de l'échiquier. Souvent considérée comme la plus grande partie d'attaque jamais jouée, elle montre qu'un roi exposé peut être traqué même quand l'attaquant a moins de matériel.",
+    "annotations": [
+      {
+        "text": "Wijk aan Zee, 1999. Le champion du monde Garry Kasparov, au sommet de sa forme, affronte la jeune star bulgare Veselin Topalov. Ce qui suit est souvent appelé **l'Immortelle de Kasparov**."
+      },
+      {
+        "text": "La **défense Pirc** : les Noirs laissent les Blancs construire un grand centre de pions, avec l'idée de l'attaquer plus tard avec des pièces et des pions."
+      },
+      {
+        "text": "Kasparov fait le grand roque, côté aile dame. Son roi y sera en sécurité tant que les pièces autour de lui restent solides."
+      },
+      {
+        "text": "Topalov fait lui aussi le grand roque, mais ses pions a6, b5 et c6 ont déjà avancé. Cela laisse des trous autour de son roi, et ça comptera plus tard."
+      },
+      {
+        "text": "**18.Na5** installe un cavalier juste à côté du roi noir. Il est gênant et difficile à chasser pour les Noirs."
+      },
+      {
+        "text": "**21...d4** attaque le cavalier de c3 et semble fort pour les Noirs. Kasparov répond en sautant en d5."
+      },
+      {
+        "text": "La position semble calme. Le pion noir de d4 paraît bien protégé et la dame noire vise les pièces blanches. Mais Kasparov a vu quelque chose d'incroyable."
+      },
+      {
+        "text": "Topalov prend la tour. La longue poursuite commence : la tour blanche vient en e7 avec échec, et le roi noir est chassé de son abri.",
+        "label": "Sacrifice de tour !"
+      },
+      {
+        "text": "Le roi noir avance en b6. Il est déjà à découvert, avec la dame et la tour blanches tout près."
+      },
+      {
+        "text": "Le roi prend le cavalier en a5 et continue de monter sur l'échiquier. Chaque pas l'éloigne encore de sa propre armée.",
+        "label": "La chasse au roi commence"
+      },
+      {
+        "text": "Le roi est maintenant en a4, en plein dans la moitié blanche de l'échiquier. Kasparov continue d'amener des pièces pour l'encercler."
+      },
+      {
+        "text": "Le roi noir continue de ramasser des pions, mais chaque prise l'entraîne plus loin dans le danger."
+      },
+      {
+        "text": "Le roi noir est en c3 ! Les Blancs continuent de donner des échecs pour le pousser encore plus loin."
+      },
+      {
+        "text": "Le roi a marché de c8 jusqu'à d1, à travers tout l'échiquier. Kasparov a maintenant besoin du coup de grâce.",
+        "label": "À travers tout l'échiquier"
+      },
+      {
+        "text": "**36.Bf1!** est un coup calme qui fait très mal. Le fou attaque la dame noire en c4 et resserre le filet autour du roi.",
+        "label": "Calme mais mortel"
+      },
+      {
+        "text": "Encore une tour offerte. **37.Rd7** défie la tour noire de la colonne d et la détourne de la défense."
+      },
+      {
+        "text": "Les Blancs ont récupéré du matériel et ont maintenant une dame contre une tour. Le reste, c'est de la technique."
+      },
+      {
+        "text": "Après **44.Qa7**, Topalov abandonne : la dame blanche et le matériel en plus décident. La leçon : quand le roi adverse quitte son abri, fais-le courir avec des échecs et amène toutes tes pièces à la chasse.",
+        "label": "Les Noirs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le pion noir de d4 semble en sécurité. Kasparov a trouvé l'un des coups les plus célèbres de l'histoire. Et toi ?",
+        "hint": "Donne une tour pour ouvrir la colonne e.",
+        "explanation": "**24.Rxd4!!** donne une tour contre un pion. Après **24...cxd4 25.Re7+**, le roi noir est tiré à découvert, et la dame blanche rejoint la poursuite."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le fou noir est venu en b7 pour protéger le roi. Qu'en fais-tu ?",
+        "hint": "Élimine le défenseur.",
+        "explanation": "**30.Rxb7!** prend le fou défenseur. La tour contrôle maintenant la colonne b, et le roi noir a encore moins d'endroits où se cacher."
+      },
+      {
+        "prompt": "Trait aux Blancs. Topalov vient de prendre la tour en d7. Comment les Blancs récupèrent-ils le matériel ?",
+        "hint": "Regarde ce que le fou de f1 attaque.",
+        "explanation": "**38.Bxc4** prend la dame noire. C'était l'idée de **36.Bf1** : le fou visait c4 depuis le début."
+      }
+    ]
+  },
+  "reti-tartakower-1910": {
+    "title": "La miniature brillante de Réti",
+    "event": "Vienne (partie amicale)",
+    "opening": "Défense Caro-Kann",
+    "summary": "En seulement onze coups, Réti sacrifie sa dame et fait mat avec un fou et une tour. Un exemple parfait d'échec double à la découverte. La leçon : quand tu fais le grand roque, la tour arrive sur la colonne d, et ça peut être mortel contre un roi resté au centre.",
+    "annotations": [
+      {
+        "text": "Vienne, 1910. Deux futures légendes des échecs, Richard Réti et Savielly Tartakower, se rencontrent dans une partie amicale. Elle ne dure que onze coups."
+      },
+      {
+        "text": "1...c6, c'est la défense Caro-Kann. Les Noirs préparent ...d5 pour contester le centre de façon solide."
+      },
+      {
+        "text": "3...dxe4 Les Noirs échangent au centre. Les Blancs reprennent avec le cavalier, qui obtient une belle case centrale."
+      },
+      {
+        "text": "5.Qd3 est inhabituel. La dame protège le cavalier et prépare le grand roque, pour placer une tour sur la colonne d."
+      },
+      {
+        "text": "5...e5 Les Noirs offrent un pion pour ouvrir des lignes pendant que le roi blanc est encore au milieu."
+      },
+      {
+        "text": "6...Qa5+ met le roi en échec et attaque en même temps le pion e5 : les Noirs récupèrent ainsi le pion."
+      },
+      {
+        "text": "7...Qxe5 cloue le cavalier de e4 sur le roi blanc. On dirait que les Noirs gagnent une pièce."
+      },
+      {
+        "text": "8.O-O-O! Les Blancs roquent : le cavalier n'est plus cloué, mais il reste en prise. La tour arrive en d1, derrière le fou de d2.",
+        "label": "Roquer vers l'attaque"
+      },
+      {
+        "text": "8...Nxe4? Les Noirs prennent le cavalier, mais oublient que leur roi est toujours en e8 et que la colonne d est ouverte.",
+        "label": "La prise fatale"
+      },
+      {
+        "text": "9...Kxd8 était forcé. Maintenant, seul le fou de d2 se trouve entre la tour de d1 et le roi noir."
+      },
+      {
+        "text": "10.Bg5+ est un **échec double** : le fou donne échec sur la diagonale et la tour sur la colonne d. Seul un coup de roi peut aider.",
+        "label": "Échec double !"
+      },
+      {
+        "text": "10...Kc7 Après 10...Ke8, les Blancs font mat avec 11.Rd8#. Kc7 perd aussi, mais de façon encore plus belle."
+      },
+      {
+        "text": "11.Bd8# Échec et mat ! Le fou est protégé par la tour, et les propres pièces noires bloquent la fuite du roi. **Ne laisse pas ton roi au centre quand la colonne d s'ouvre.**",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Tu as perdu un cavalier, mais le roi noir est toujours au centre. Trouves-tu un coup choc ?",
+        "hint": "La colonne d est ouverte. Et si le roi noir était forcé d'aller en d8 ?",
+        "explanation": "9.Qd8+!! Le roi doit prendre, puis 10.Bg5+ donne un échec double avec le fou et la tour, ce qui mène au mat."
+      },
+      {
+        "prompt": "Trait aux Blancs, mat en un. Le vois-tu ?",
+        "hint": "La tour de d1 contrôle toute la colonne d.",
+        "explanation": "11.Bd8# Le fou met en échec le roi en c7, la tour le protège, et les propres pions et pièces noirs ne laissent aucune fuite."
+      }
+    ]
+  },
+  "lasker-thomas-1912": {
+    "title": "La chasse au roi de Lasker",
+    "event": "Londres (partie amicale)",
+    "opening": "Défense hollandaise",
+    "summary": "Après un sacrifice de dame en h7, le roi noir est chassé à coups d'échecs de g8 jusqu'en g1, et maté sur la propre dernière rangée des Blancs. C'est la chasse au roi la plus célèbre des échecs. La leçon : un roi tiré hors de son abri peut être traqué par quelques pièces actives.",
+    "annotations": [
+      {
+        "text": "Londres, 1912. Edward Lasker (à ne pas confondre avec le champion du monde Emanuel Lasker) affronte Sir George Thomas. Prépare-toi pour la marche du roi la plus célèbre des échecs."
+      },
+      {
+        "text": "2...f5 donne une structure de défense hollandaise. Elle lutte pour e4 mais affaiblit les cases autour du roi noir."
+      },
+      {
+        "text": "5.Bxf6 élimine le cavalier qui gardait e4, pour que les Blancs puissent ouvrir le centre avec e4."
+      },
+      {
+        "text": "7.Nxe4 Une fois les pions e échangés, le cavalier arrive au centre, pointé vers l'aile roi noire."
+      },
+      {
+        "text": "8.Ne5 Les deux cavaliers sont maintenant sur de fortes cases centrales, prêts à sauter vers le roi."
+      },
+      {
+        "text": "9.Bd3 pointe le fou vers h7. Le cavalier de e4 se trouve devant lui, et ça va bientôt compter."
+      },
+      {
+        "text": "10.Qh5 La dame rejoint l'attaque et frappe aussi h7. Les pièces blanches sont rassemblées près du roi qui a roqué."
+      },
+      {
+        "text": "10...Qe7? semble naturel, mais n'aide pas le roi. Les Noirs devaient d'abord s'occuper des cavaliers."
+      },
+      {
+        "text": "11...Kxh7 était forcé. Les Blancs ont donné la dame, mais maintenant le roi est sorti de son abri.",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "12.Nxf6+ est un **échec double** : le cavalier donne échec, et en bougeant il démasque le fou de d3 qui vise h7. Le roi doit bouger.",
+        "label": "Échec double !"
+      },
+      {
+        "text": "13.Neg4+ L'autre cavalier s'en mêle, et le roi est poussé encore plus haut sur l'échiquier.",
+        "label": "La chasse au roi commence"
+      },
+      {
+        "text": "14.h4+ Un pion donne échec. Les Blancs font courir le roi à chaque coup."
+      },
+      {
+        "text": "15.g3+ Encore un échec de pion, qui pousse le roi encore plus loin dans le camp blanc."
+      },
+      {
+        "text": "16.Be2+ Le fou s'y met aussi. Le roi a marché de g8 jusqu'en f3, entouré par l'armée blanche."
+      },
+      {
+        "text": "17.Rh2+ La tour donne échec et le roi est forcé d'aller en g1, sur la propre dernière rangée des Blancs."
+      },
+      {
+        "text": "18.Kd2# Échec et mat ! Le coup de roi démasque la tour de a1. Le grand roque aurait aussi fait mat. **Un roi tiré à découvert peut être traqué jusqu'au bout.**",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Toutes tes pièces visent le roi noir. Trouves-tu le premier coup choc ?",
+        "hint": "Souviens-toi du fou caché derrière le cavalier de e4.",
+        "explanation": "11.Qxh7+!! Le roi doit prendre, puis 12.Nxf6+ est un échec double qui lance la chasse."
+      },
+      {
+        "prompt": "Trait aux Blancs, mat en un. Le roi noir est en g1. Le trouves-tu ?",
+        "hint": "Ta tour de a1 est prête, si seulement ton propre roi s'écartait.",
+        "explanation": "18.Kd2# Le roi s'écarte et démasque la tour de a1, qui donne échec le long de la dernière rangée. Le grand roque (18.O-O-O#) fait aussi mat."
+      }
+    ]
+  },
+  "steinitz-bardeleben-1895": {
+    "title": "La tour intouchable",
+    "event": "Tournoi de Hastings",
+    "opening": "Partie italienne (Giuoco Piano)",
+    "summary": "Le premier champion du monde, à 59 ans, accumule la pression sur la colonne e puis lâche une tour qu'on ne peut pas prendre. Une brillante leçon sur la façon de garder l'initiative : quand chaque coup est un échec, ton adversaire n'a jamais le temps d'exécuter ses propres menaces.",
+    "annotations": [
+      {
+        "text": "Hastings, 1895. Wilhelm Steinitz, premier champion du monde officiel, a 59 ans et joue avec les Blancs contre le fort maître allemand Curt von Bardeleben. Cette partie a remporté le prix de beauté du tournoi."
+      },
+      {
+        "text": "3.Bc4. La partie italienne : le fou blanc vise directement f7, le point le plus faible près du roi noir."
+      },
+      {
+        "text": "6...Bb4+. Les Blancs ont construit un grand centre de pions, alors les Noirs donnent un échec pour freiner le développement blanc."
+      },
+      {
+        "text": "7...d5. Bonne réponse ! Les Noirs contre-attaquent au centre avant que les pions blancs ne puissent avancer."
+      },
+      {
+        "text": "13...Nxe7. Après une série d'échanges, remarque une chose : le roi noir est toujours au milieu, en e8."
+      },
+      {
+        "text": "14.Re1. La tour prend la colonne e ouverte. Le cavalier noir de e7 est maintenant **cloué** : il ne peut pas bouger sans exposer le roi.",
+        "label": "Cloué sur la colonne e"
+      },
+      {
+        "text": "14...f6. Les Noirs prévoient ...Kf7 pour sortir du clouage, mais ce coup de pion affaiblit les cases autour de leur roi."
+      },
+      {
+        "text": "17.d5! Les Blancs donnent un pion pour libérer la case d4 pour leur cavalier. De là, il peut sauter vers le roi noir.",
+        "label": "Sacrifice de pion"
+      },
+      {
+        "text": "18...Kf7. Le roi sort enfin du clouage et espère relier ses tours."
+      },
+      {
+        "text": "19.Ne6! Le cavalier s'installe profondément dans le camp noir. Aucun pion noir ne peut le chasser, et il vise c7, d8, f8 et g7.",
+        "label": "Cavalier en avant-poste"
+      },
+      {
+        "text": "19...Rhc8. Les Noirs ripostent sur la colonne c et se préparent à échanger ou gagner la tour blanche de c1."
+      },
+      {
+        "text": "20...g6. La dame blanche menaçait Qxg7+, donc les Noirs doivent boucher la colonne g."
+      },
+      {
+        "text": "21...Ke8. Regarde bien : le cavalier a quitté e6, donc la dame noire attaque maintenant la dame blanche en g4. La tour blanche de c1 est attaquée aussi. Deux pièces sont en prise !"
+      },
+      {
+        "text": "22...Kf8. Les Noirs menacent toujours ...Qxg4 et ...Rxc1+. Les Blancs doivent donc continuer à donner échec, coup après coup."
+      },
+      {
+        "text": "23.Rf7+! La tour continue de donner échec. On ne peut pas la prendre, car le cavalier de g5 protège f7.",
+        "label": "La danse de la tour"
+      },
+      {
+        "text": "24.Rg7+. Encore ! Si 24...Kxg7, alors 25.Qxd7+ gagne la dame noire, car la dame de g4 voit maintenant d7 par la diagonale."
+      },
+      {
+        "text": "25.Rxh7+. À ce moment, von Bardeleben quitte discrètement la salle et ne revient jamais, perdant au temps. Steinitz montre ensuite au public un mat forcé qui commence par 25...Kg8 26.Rg7+ Kh8 27.Qh4+. La leçon : quand chaque coup est un échec, les menaces adverses n'ont jamais leur tour.",
+        "label": "Bardeleben quitte la salle"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le cavalier de e6 est un monstre, et les Noirs viennent de boucher la colonne g. Trouves-tu un coup forcé qui rapproche encore le cavalier du roi ?",
+        "hint": "Cherche un saut de cavalier qui donne échec.",
+        "explanation": "21.Ng5+! L'échec fait gagner du temps et le cavalier continue de garder f7 et h7. Il ouvre bien la ligne entre les deux dames, mais Steinitz avait vu beaucoup plus loin."
+      },
+      {
+        "prompt": "Trait aux Blancs. Ta dame et ta tour de c1 sont toutes deux attaquées. Au lieu de défendre, trouves-tu un coup qui continue de donner échec ?",
+        "hint": "Le cavalier cloué de e7 n'est gardé que par le roi et la dame.",
+        "explanation": "22.Rxe7+!! La tour prend le cavalier avec échec et ne peut pas être prise : 22...Qxe7 23.Rxc8+ Rxc8 24.Qxc8+ gagne, et 22...Kxe7 23.Re1+ envoie le roi dans une attaque mortelle."
+      },
+      {
+        "prompt": "Trait aux Blancs. La tour a donné trois échecs de suite. Comment continuer l'attaque ?",
+        "hint": "Le cavalier de g5 protège encore une case à côté du roi.",
+        "explanation": "25.Rxh7+! Encore un échec, et le cavalier de g5 protège la tour. Après 25...Kg8 26.Rg7+ Kh8 27.Qh4+, la dame entre en jeu et le mat est imparable."
+      }
+    ]
+  },
+  "botvinnik-capablanca-1938": {
+    "title": "Le chef-d'œuvre de Botvinnik à l'AVRO",
+    "event": "Tournoi AVRO, Pays-Bas",
+    "opening": "Défense nimzo-indienne",
+    "summary": "Le jeune Botvinnik bat le légendaire Capablanca en faisant avancer ses pions du centre, puis en sacrifiant un fou et un cavalier pour qu'un seul pion atteigne la huitième rangée. Une leçon parfaite : un pion passé peut valoir plus qu'une pièce entière.",
+    "annotations": [
+      {
+        "text": "Le tournoi AVRO de 1938 a réuni les meilleurs joueurs du monde. Ici, l'étoile montante soviétique Mikhaïl Botvinnik affronte l'ancien champion du monde José Raúl Capablanca, célèbre pour ne presque jamais perdre."
+      },
+      {
+        "text": "Avec **5...Bxc3+**, les Noirs donnent leur fou pour doubler les pions c blancs. Les Blancs obtiennent la paire de fous et un centre fort ; les Noirs espèrent que les pions doublés deviendront des cibles. Un compromis classique."
+      },
+      {
+        "text": "**14...c4** bloque l'aile dame et donne aux Noirs un pion de plus de ce côté. Mais cela relâche aussi la pression sur le centre, et les Blancs sont libres de préparer **e3-e4** avec leurs propres pions centraux."
+      },
+      {
+        "text": "Le cavalier de Capablanca fait un long voyage jusqu'en b3, au fond du camp blanc, et sa dame va ensuite prendre le pion a4. Mais remarque à quel point ces pièces sont maintenant loin de leur propre roi."
+      },
+      {
+        "text": "Botvinnik ne défend pas le pion a. **19.e4** lance le vrai plan : ses pions avancent au centre et sur l'aile roi, là où les Noirs ont moins de défenseurs.",
+        "label": "La rupture centrale"
+      },
+      {
+        "text": "Les Noirs ont un pion de plus, mais leur dame et leur cavalier sont tous les deux à l'autre bout de l'échiquier. Aux échecs, l'emplacement des pièces compte souvent plus que le compte des pions."
+      },
+      {
+        "text": "**22.f4** amène un autre pion à l'attaque. La menace est **f4-f5**, pour ouvrir des lignes vers le roi noir."
+      },
+      {
+        "text": "**24.f5** continue la poussée. Les pions blancs agissent comme un bélier contre l'aile roi noire."
+      },
+      {
+        "text": "Après les échanges de tours, les Blancs ont un **pion passé** en e6 : aucun pion noir ne pourra jamais l'arrêter. Il n'est qu'à deux pas de devenir une dame.",
+        "label": "Un pion passé en e6"
+      },
+      {
+        "text": "Capablanca place sa dame en e7, juste devant le pion, pour le bloquer. La dame fait un travail vital. Les Blancs peuvent-ils la chasser de cette case ?"
+      },
+      {
+        "text": "Les Noirs doivent prendre : si la dame quitte la colonne e, le pion avance en e7. Mais maintenant la dame est en a3, loin de l'action, et la dame et le cavalier blancs foncent sur le roi.",
+        "label": "Sacrifice de fou !"
+      },
+      {
+        "text": "Capablanca prend aussi la deuxième pièce. Son roi a perdu son bouclier de pions, et la dame blanche peut maintenant donner des échecs et prendre le cavalier de f6."
+      },
+      {
+        "text": "**33.Qxf6+** gagne le cavalier avec échec. Les Blancs ont donné deux pièces, mais le pion e est sur le point de franchir la ligne d'arrivée."
+      },
+      {
+        "text": "Le seul espoir des Noirs est un **échec perpétuel** : donner échec au roi blanc à l'infini pour forcer la nulle. Botvinnik doit trouver une cachette sûre.",
+        "label": "À la recherche de la nulle"
+      },
+      {
+        "text": "Le roi blanc monte courageusement sur l'échiquier, ramassant même le pion h5. Ça fait peur, mais Botvinnik a calculé que les échecs allaient s'arrêter."
+      },
+      {
+        "text": "**40.g4** pare l'échec avec un pion. Le roi a maintenant un abri en h5."
+      },
+      {
+        "text": "Après **41.Kh5**, les Noirs n'ont plus d'échec utile, et rien ne peut empêcher **e8=Q**. Capablanca abandonne. La leçon : un pion passé très avancé peut valoir plus qu'un fou et un cavalier.",
+        "label": "Les Noirs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. La dame noire bloque le pion e. Comment les Blancs peuvent-ils l'éloigner de e7 ?",
+        "hint": "Cherche une pièce que tu pourrais offrir à la dame.",
+        "explanation": "**30.Ba3!** attaque la dame. Si elle quitte la colonne e, le pion file en e7 ; si elle prend le fou, elle se retrouve loin de son roi. Dans les deux cas, les Blancs gagnent."
+      },
+      {
+        "prompt": "Trait aux Blancs. La dame noire est partie en a3. Il est temps de frapper le roi. Que jouerais-tu ?",
+        "hint": "Un échec de cavalier démasque quelque chose.",
+        "explanation": "**31.Nh5+!** donne le cavalier. Après **31...gxh5**, le roi noir est exposé, et la dame blanche peut donner échec en g5 puis prendre le cavalier de f6."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le cavalier de f6 a disparu. Quel est le moyen le plus rapide de gagner ?",
+        "hint": "Ton meilleur joueur est un pion.",
+        "explanation": "**34.e7!** menace **e8=Q**. Les Noirs ne peuvent que donner des échecs, et Botvinnik a déjà calculé que son roi y échapperait."
+      }
+    ]
+  },
+  "fischer-spassky-1972-g6": {
+    "title": "Fischer–Spassky, 6e partie",
+    "event": "Championnat du monde, Reykjavik",
+    "opening": "Gambit dame refusé (Tartakower)",
+    "summary": "Fischer surprend tout le monde avec 1.c4, met la pression sur les pions centraux noirs et transforme une position calme en attaque écrasante sur l'aile roi. Si belle que Spassky lui-même a applaudi. Un modèle de pression construite lentement avant de frapper.",
+    "annotations": [
+      {
+        "text": "Reykjavik, 1972, Championnat du monde. Le match est à égalité, 2½–2½. Tout le monde s'attend à ce que Fischer ouvre par 1.e4, comme il le fait presque toujours."
+      },
+      {
+        "text": "1.c4! Fischer n'avait presque jamais ouvert ainsi. Une surprise dès le premier coup.",
+        "label": "1.c4, une surprise !"
+      },
+      {
+        "text": "Les joueurs arrivent dans un gambit dame refusé classique. Avec 7...b6, Spassky choisit un système solide qu'il jouait depuis des années."
+      },
+      {
+        "text": "Beaucoup d'échanges. Les Noirs ont un pion en d5 et en auront bientôt un en c5. Des pions côte à côte comme ça sont forts s'ils avancent, mais ils peuvent aussi devenir des cibles."
+      },
+      {
+        "text": "Les Noirs ont maintenant leur paire de pions centraux en c5 et d5. Le plan des Blancs est de faire pression sur eux et de les empêcher d'avancer."
+      },
+      {
+        "text": "16...Ra7 est une façon inhabituelle d'amener la tour vers le centre. Fischer améliore tranquillement ses pièces."
+      },
+      {
+        "text": "Les Blancs échangent leur cavalier contre le fou. Le nouveau pion noir en e6 protège d5, mais c'est une cible de plus pour les pièces blanches."
+      },
+      {
+        "text": "Spassky pousse en avant. Son pion d est maintenant passé et protégé, mais il est bloqué, et les cases e5 et c4 appartiennent désormais aux Blancs."
+      },
+      {
+        "text": "22.e5 gagne de l'espace et prive le cavalier noir de la case f6. Les pièces blanches vont s'accumuler contre e6."
+      },
+      {
+        "text": "Le fou arrive sur sa diagonale de rêve, visant e6 et, plus loin, g8.",
+        "label": "Diagonale de rêve"
+      },
+      {
+        "text": "24.Qh3 rejoint le fou contre e6. Les pièces noires sont attachées à sa défense."
+      },
+      {
+        "text": "La colonne f est ouverte, et les tours de Fischer vont s'y aligner. Le roi noir a très peu de défenseurs."
+      },
+      {
+        "text": "31.e6! Le pion devient un monstre : passé, protégé par le fou, et il coupe les pièces noires en deux.",
+        "label": "Un monstre en e6"
+      },
+      {
+        "text": "Fischer améliore calmement ses pièces avec a4, R1f2, R2f3 et Bd3, tandis que Spassky ne peut que déplacer sa dame d'une case à l'autre. Inutile de se presser quand l'adversaire n'a aucun coup utile."
+      },
+      {
+        "text": "Après 38...gxf6 39.Rxf6, le roi noir est complètement à découvert. La dame, la tour et le fou blancs sont tous prêts à frapper."
+      },
+      {
+        "text": "41.Qf4 menace Qxh6+ et plus encore, et Spassky abandonne. Il s'est ensuite joint au public pour applaudir Fischer. Fischer a pris la tête pour la première fois et est ensuite devenu champion du monde.",
+        "label": "Spassky applaudit"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Les pions noirs c5 et d5 tiennent le centre. Comment les contester tout de suite ?",
+        "hint": "Frappe le pion d5 avec un de tes pions.",
+        "explanation": "20.e4! attaque d5. Si les Noirs prennent, leur centre s'effondre ; s'ils poussent 20...d4, comme dans la partie, leurs pions se retrouvent bloqués et les pièces blanches s'emparent des cases devant eux."
+      },
+      {
+        "prompt": "Trait aux Blancs. Tes pièces visent l'aile roi noire. Quelle poussée de pion ouvre des lignes pour tes tours ?",
+        "hint": "Ton pion f veut avancer.",
+        "explanation": "26.f5! ouvre la colonne f. Après 26...exf5 27.Rxf5, la tour blanche rejoint l'attaque et le pion e5 devient un pion passé."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le cavalier de f6 est le dernier défenseur du roi noir. Quelle est la façon la plus énergique de s'en occuper ?",
+        "hint": "Parfois, une tour vaut moins qu'un roi à découvert.",
+        "explanation": "38.Rxf6! donne une tour contre le cavalier. Après 38...gxf6 39.Rxf6, le roi est nu, et la dame, la tour, le fou et le pion e blancs sont trop forts."
+      }
+    ]
+  },
+  "deep-blue-kasparov-1996": {
+    "title": "La première victoire de Deep Blue",
+    "event": "Match Deep Blue contre Kasparov, Philadelphie",
+    "opening": "Défense sicilienne, variante Alapine",
+    "summary": "La première fois qu'un ordinateur bat un champion du monde en titre dans une partie à cadence normale. Deep Blue ramasse calmement des pions pendant que Kasparov attaque son roi, car il a calculé que sa propre attaque arrivera la première. Kasparov a tout de même gagné le match 4-2.",
+    "annotations": [
+      {
+        "text": "Philadelphie, février 1996. Deep Blue d'IBM, une machine qui examine des millions de positions par seconde, affronte le champion du monde Garry Kasparov dans la 1re partie d'un match en six parties."
+      },
+      {
+        "text": "Contre la sicilienne, Deep Blue choisit **2.c3**, un coup calme qui prépare **d2-d4** pour construire un centre de pions complet."
+      },
+      {
+        "text": "La dame de Kasparov sort tôt en d5. Ici, c'est sans problème, car les Blancs n'ont pas encore de cavalier en c3 pour la chasser."
+      },
+      {
+        "text": "Les Blancs ont maintenant un **pion isolé** en d4 : aucun pion ami sur les colonnes c ou e ne peut le protéger. Il donne aux Blancs des pièces actives, mais il peut aussi devenir une faiblesse."
+      },
+      {
+        "text": "**13.Nb5** chasse la dame noire et vise la case d6. Deep Blue garde ses pièces actives."
+      },
+      {
+        "text": "Après **18.Bxf6 gxf6**, les pions de l'aile roi noire sont brisés. En échange, Kasparov obtient une colonne g ouverte à utiliser contre le roi blanc."
+      },
+      {
+        "text": "**23.d5!** se débarrasse du pion isolé et ouvre des lignes pour les pièces blanches. Une façon nette de transformer une faiblesse en activité.",
+        "label": "Se libérer"
+      },
+      {
+        "text": "Kasparov met son roi en h8 pour que sa tour puisse utiliser la colonne g. Il est prêt à donner des pions pour attaquer le roi blanc."
+      },
+      {
+        "text": "La tour noire arrive en g8, pointée droit sur le roi blanc. La course est lancée : les Noirs attaquent le roi, les Blancs comptent les pions."
+      },
+      {
+        "text": "Deep Blue prend encore un pion pendant que les pièces noires se rassemblent près de son roi. Beaucoup d'humains paniqueraient. La machine avait calculé que c'était sans danger.",
+        "label": "Courageux ou gourmand ?"
+      },
+      {
+        "text": "**30...f3** titille le roi blanc et menace de percer en g2. Ça devient tranchant."
+      },
+      {
+        "text": "**31.g3** garde l'aile roi fermée. Deep Blue ne défend que ce qui est nécessaire."
+      },
+      {
+        "text": "Kasparov jette toutes ses forces dans la bataille avec **33...Re1+**. Sa tour, son cavalier, sa dame et son pion f3 sont tous près du roi blanc."
+      },
+      {
+        "text": "Les pièces noires grouillent autour du roi blanc, et si les Blancs hésitent, l'attaque noire va passer. Mais c'est aux Blancs de jouer, et Deep Blue a des échecs."
+      },
+      {
+        "text": "Après **37.Rxh7+**, le roi noir est pris au piège et le mat est proche, alors Kasparov abandonne. Pour la première fois, une machine avait battu le champion du monde. Kasparov s'est repris et a gagné le match 4-2.",
+        "label": "Un moment historique"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le pion noir b6 n'a aucun défenseur. Peut-on le prendre sans risque ?",
+        "hint": "Compte qui protège b6.",
+        "explanation": "**26.Qxb6** gagne tout simplement un pion. Deep Blue avait calculé que la contre-attaque noire n'arriverait pas à temps."
+      },
+      {
+        "prompt": "Trait aux Blancs. Les Noirs menacent de percer contre ton roi. Peux-tu attaquer le premier ?",
+        "hint": "Les échecs d'abord. Regarde le pion f7.",
+        "explanation": "**35.Nxf7+!** lance une série d'échecs. Le roi noir est tiré dehors, et le cavalier, la tour et la dame blancs se referment sur lui avant que les Noirs ne puissent frapper."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le roi noir est en h6. Comment conclure l'attaque ?",
+        "hint": "La tour prend un pion avec échec.",
+        "explanation": "**37.Rxh7+** arrache le dernier pion près du roi. La dame, la tour et le cavalier blancs l'emprisonnent maintenant, alors Kasparov abandonne."
+      }
+    ]
+  },
+  "rotlewi-rubinstein-1907": {
+    "title": "L'Immortelle de Rubinstein",
+    "event": "Łódź",
+    "opening": "Gambit dame refusé",
+    "summary": "Rubinstein sacrifie sa dame et une tour pour que ses deux fous balaient le roi blanc le long des grandes diagonales. Un exemple parfait de la façon dont des pièces actives et bien dirigées peuvent battre une grosse pile de matériel en plus.",
+    "annotations": [
+      {
+        "text": "Łódź, 1907. Akiba Rubinstein, un génie discret qui deviendra l'un des meilleurs joueurs du monde, joue avec les Noirs contre Georg Rotlewi. La fin est si spectaculaire qu'on appelle cette partie **l'Immortelle de Rubinstein**."
+      },
+      {
+        "text": "6.dxc5. Les Blancs relâchent la tension au centre. Les Noirs reprennent avec le fou, en développant une pièce en même temps."
+      },
+      {
+        "text": "7...a6. Les deux camps se copient, en empêchant les pièces adverses de venir en b5 et en se préparant à avancer sur l'aile dame."
+      },
+      {
+        "text": "11...dxc4. Les Noirs prennent pour que le fou blanc doive encore bouger, et il sera bientôt chassé une nouvelle fois par ...b5."
+      },
+      {
+        "text": "12...b5. Les Noirs gagnent de l'espace avec gain de temps et font de la place au fou en b7."
+      },
+      {
+        "text": "14...Bb7. Retiens bien ce fou ! Dès que le cavalier de c6 s'écartera, il fixera la grande diagonale en direction du roi blanc."
+      },
+      {
+        "text": "16...Bxe5. Après l'échange, la grande diagonale est grande ouverte de b7 jusqu'à g2."
+      },
+      {
+        "text": "17.f4. Les Blancs chassent le fou et prévoient e4 et e5. Mais bouger le pion f ouvre aussi une diagonale vers leur propre roi en g1."
+      },
+      {
+        "text": "17...Bc7. Le fou recule calmement. Il réapparaîtra bientôt en b6, visant directement le roi blanc."
+      },
+      {
+        "text": "19.e5. Les Blancs chassent le cavalier de f6 et semblent très actifs. Rubinstein a préparé une réponse stupéfiante."
+      },
+      {
+        "text": "19...Bb6+. Échec ! Le pion f ayant quitté f2, le fou traverse tout jusqu'à g1."
+      },
+      {
+        "text": "20...Ng4. Le cavalier saute vers le roi blanc. Ensuite vient ...Qh4, qui vise h2."
+      },
+      {
+        "text": "21...Qh4. Les Noirs menacent 22...Qxh2 mat. Les Blancs doivent y faire face."
+      },
+      {
+        "text": "23.gxh4. Les Blancs prennent la dame. Les Noirs ont une dame entière de moins, mais regarde ces deux fous pointés sur le roi blanc !",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "24.Qxd2. Les Blancs prennent aussi la tour. Mais maintenant la dame a quitté e2 et ne protège plus le fou de e4.",
+        "label": "Sacrifice de tour !"
+      },
+      {
+        "text": "24...Bxe4+. Échec sur la grande diagonale ! Le fou qui attendait en b7 depuis le début frappe enfin."
+      },
+      {
+        "text": "25...Rh3! La dame blanche est clouée sur son roi par le fou de e4, elle ne peut donc pas prendre la tour. Il n'y a aucun bon moyen d'empêcher ...Rxh2 mat, et les Blancs abandonnent. Deux fous pointés sur un roi peuvent valoir plus qu'une dame !",
+        "label": "Mat imparable"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. Les Blancs viennent d'attaquer ta dame avec 22.g3. Au lieu de la déplacer, trouves-tu un coup audacieux qui fait travailler la grande diagonale pour toi ?",
+        "hint": "Le cavalier de c3 est la pièce qui garde e4.",
+        "explanation": "22...Rxc3!! Les Noirs ignorent la dame et éliminent le défenseur de e4. Si 23.gxh4, le coup suivant 23...Rd2!! fait voler en éclats la position blanche."
+      },
+      {
+        "prompt": "Trait aux Noirs. Tu as donné ta dame. Trouve maintenant le coup qui détourne la dame blanche de la défense du fou de e4.",
+        "hint": "Une tour peut arriver sur la deuxième rangée avec une attaque.",
+        "explanation": "23...Rd2!! La tour attaque la dame blanche. Après 24.Qxd2, la réponse 24...Bxe4+ ouvre la grande diagonale avec échec."
+      },
+      {
+        "prompt": "Trait aux Noirs. Les Blancs ont paré l'échec avec la dame en g2. Trouve le coup calme qui termine la partie.",
+        "hint": "La dame de g2 ne peut pas bouger librement. Quel coup de tour vise h2 ?",
+        "explanation": "25...Rh3! La dame ne peut pas prendre, car elle est clouée sur son roi. Les Noirs menacent ...Rxh2 mat, et les Blancs n'ont aucune bonne défense."
+      }
+    ]
+  },
+  "paulsen-morphy-1857": {
+    "title": "Le sacrifice de dame de Morphy",
+    "event": "1er Congrès américain d'échecs, New York",
+    "opening": "Partie des quatre cavaliers",
+    "summary": "En finale du premier Congrès américain d'échecs, Morphy donne sa dame pour faire voler en éclats l'aile roi blanche. Ses tours et ses fous traquent ensuite le roi jusqu'à l'abandon de Paulsen. La leçon : quand tes pièces sont bien plus actives, un gros sacrifice peut payer.",
+    "annotations": [
+      {
+        "text": "New York, 1857. En finale du premier Congrès américain d'échecs, Paul Morphy, 20 ans, affronte Louis Paulsen, un fort maître allemand. Nous suivons la partie du côté de Morphy, avec les Noirs."
+      },
+      {
+        "text": "6...Re8 Paulsen a pris le pion e5, mais Morphy ne se presse pas pour le récupérer. Il se développe et place sa tour sur la colonne e ouverte."
+      },
+      {
+        "text": "7...dxc6 Reprendre vers le centre ouvre la colonne d et libère le fou de c8. Les pièces noires ont beaucoup d'espace."
+      },
+      {
+        "text": "9...Nxe4 Morphy récupère le pion grâce à une petite tactique. Sa tour de e8 soutient le cavalier, donc après les échanges, les Noirs ont regagné le pion."
+      },
+      {
+        "text": "10...Rxe4 La tour noire est maintenant très active au milieu de l'échiquier."
+      },
+      {
+        "text": "12...Qd3! La dame saute au fond du camp blanc. Elle bloque le pion d, si bien que le fou de c1 et la tour de a1 blancs ont du mal à se développer."
+      },
+      {
+        "text": "15...Bd7 Morphy sort calmement sa dernière pièce mineure. Toutes ses pièces visent maintenant le roi blanc."
+      },
+      {
+        "text": "16...Rae8 Les deux tours sont sur la colonne e. La dame blanche est partie chasser des pions sur l'aile dame, loin de chez elle."
+      },
+      {
+        "text": "18.gxf3 Les Blancs ont dû prendre la dame, mais le bouclier de pions devant le roi est maintenant brisé.",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "19...Bh3 Le fou menace ...Bg2+ et des idées de mat sur la colonne g. Le roi blanc est en réel danger."
+      },
+      {
+        "text": "21...Bxf3+ Morphy ramasse un pion avec échec. Chacun de ses coups vient avec une menace."
+      },
+      {
+        "text": "24...Bxf2 L'autre fou entre en jeu et couvre maintenant g1. Les Noirs menacent ...Bg2 échec et mat, et les Blancs ne peuvent l'empêcher qu'en donnant la dame."
+      },
+      {
+        "text": "25...Bxf1 Les Blancs ont rendu la dame pour stopper le mat : les Noirs ont donc maintenant l'avantage matériel, et l'attaque continue.",
+        "label": "La dame récupérée"
+      },
+      {
+        "text": "26...Re2 La tour envahit la deuxième rangée, tout près du roi blanc."
+      },
+      {
+        "text": "27...Rh6 L'autre tour bascule sur la colonne h, en visant h2."
+      },
+      {
+        "text": "28...Be3 Le fou couvre g1, donc ...Rxh2 sera échec et mat et les Blancs ne peuvent pas l'empêcher longtemps. Paulsen abandonne. **Des pièces actives près du roi adverse peuvent valoir plus qu'une dame.**",
+        "label": "Les Blancs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. La dame blanche est loin, en a6. Trouves-tu un moyen audacieux d'ouvrir en grand le roi blanc ?",
+        "hint": "Quelle pièce blanche garde le roi, et qu'est-ce qui peut la prendre ?",
+        "explanation": "17...Qxf3!! Après 18.gxf3, le roi perd son bouclier de pions, et la tour et les fous noirs déferlent avec des échecs."
+      },
+      {
+        "prompt": "Trait aux Noirs. Tu as donné ta dame et l'aile roi blanche est ouverte. Comment continuer l'attaque ?",
+        "hint": "Cherche un échec sur la colonne g qui vient de s'ouvrir.",
+        "explanation": "18...Rg6+ La tour donne échec sur la colonne g, et le fou de cases blanches va bientôt la rejoindre avec ...Bh3 et ...Bg2+."
+      }
+    ]
+  },
+  "fischer-benko-1963": {
+    "title": "La tour de Fischer en f6",
+    "event": "Championnat des États-Unis, New York",
+    "opening": "Défense Pirc (attaque autrichienne)",
+    "summary": "En route vers un score parfait de 11 sur 11 au championnat des États-Unis, Fischer ouvre la colonne f et pose une tour juste devant le roi noir. La partie montre comment des lignes ouvertes et une tour qu'on ne peut pas prendre sans danger peuvent décider d'une partie en quelques coups.",
+    "annotations": [
+      {
+        "text": "New York, décembre 1963. Fischer est en route vers un score parfait de **11 sur 11** au championnat des États-Unis. Son adversaire, Pal Benko, est un fort grand maître et un joueur dangereux lui aussi."
+      },
+      {
+        "text": "Benko choisit un système souple : le fou en g7, puis ...d6 et ...Nf6. Il laisse les Blancs prendre le centre et espère contre-attaquer plus tard."
+      },
+      {
+        "text": "4.f4, c'est l'**attaque autrichienne**. Les Blancs prennent encore plus d'espace et se préparent à pousser le pion f vers le roi noir."
+      },
+      {
+        "text": "Benko donne son fou contre le cavalier. Les Blancs gardent leurs deux fous, et leur dame vient en f3, déjà tournée vers l'aile roi."
+      },
+      {
+        "text": "11.f5! Le pion fonce. Après 11...gxf5 12.Qxf5, la colonne f est ouverte pour la tour blanche, et le roi noir perd un pion défenseur.",
+        "label": "Ouvrir la colonne f"
+      },
+      {
+        "text": "12...Nd4 saute sur une excellente case centrale et chasse la dame blanche. Les Noirs essaient de riposter."
+      },
+      {
+        "text": "L'autre cavalier noir se dirige vers d6 pour aider à défendre. Mais défendre prend du temps, et les Blancs en profitent."
+      },
+      {
+        "text": "Le roque place la tour en f1, en plein sur la colonne ouverte. Maintenant, toutes les pièces blanches visent l'aile roi."
+      },
+      {
+        "text": "La dame est passée par g3, g4 et maintenant h5, toujours près du roi noir et en visant h7."
+      },
+      {
+        "text": "18.Bxd4 exd4 a éliminé le fort cavalier de d4. La tour blanche a maintenant une route vers le camp noir, et quelque chose d'incroyable se prépare."
+      },
+      {
+        "text": "Benko écarte son roi. Prendre la tour n'était pas mieux : après 19...Bxf6 20.e5, le fou de d3 rejoint la dame contre h7 et l'attaque passe.",
+        "label": "La tour est imprenable"
+      },
+      {
+        "text": "20...h6 bloque pour l'instant le chemin de la dame vers h7. Mais les pièces noires sont à l'étroit et leur roi reste sous le feu."
+      },
+      {
+        "text": "21.Ne2! amène la dernière pièce à l'attaque : le cavalier se dirige vers f4 pour rejoindre la dame et la tour. Benko voit qu'il ne peut pas tout défendre et abandonne.",
+        "label": "Benko abandonne"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Toutes les pièces blanches visent le roi noir. Trouves-tu le coup de tour stupéfiant de Fischer ?",
+        "hint": "Place ta tour là où elle semble pouvoir être prise tout simplement.",
+        "explanation": "19.Rf6!! arrive devant le roi, attaque le cavalier de d6 et bloque le fou de g7. Si 19...Bxf6, alors 20.e5 ouvre la diagonale du fou vers h7 et l'attaque est imparable."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le roi noir vient de fuir en g8. Un coup de pion ouvre une ligne mortelle. Lequel ?",
+        "hint": "Ton fou de d3 adorerait voir h7.",
+        "explanation": "20.e5! libère la voie au fou de d3 : les Blancs menacent Qxh7 échec et mat. Le pion attaque aussi le cavalier de d6."
+      }
+    ]
+  },
+  "levitsky-marshall-1912": {
+    "title": "La partie des pièces d'or",
+    "event": "Breslau",
+    "opening": "Défense française",
+    "summary": "Frank Marshall gagne avec l'un des coups les plus spectaculaires jamais joués : un coup de dame sur une case où elle peut être prise de trois façons, et chaque prise perd. Découvre comment les cavaliers et les tours s'associent contre un roi, et pourquoi les lignes ouvertes comptent.",
+    "annotations": [
+      {
+        "text": "Breslau, 1912. Frank Marshall, champion des États-Unis et attaquant intrépide, a les Noirs contre Stepan Levitsky. La légende raconte que les spectateurs, enthousiasmés par le dernier coup, ont couvert l'échiquier de pièces d'or."
+      },
+      {
+        "text": "3...c5. Les Noirs frappent tout de suite le centre blanc : une version agressive de la défense française."
+      },
+      {
+        "text": "5...exd5. Le centre s'ouvre. Les lignes ouvertes profitent en général au camp dont les pièces sont prêtes à les utiliser."
+      },
+      {
+        "text": "9.dxc5. Les Blancs prennent un pion, mais les pièces noires sont pleines de vie et vont bientôt le récupérer."
+      },
+      {
+        "text": "11...fxe6. Les Noirs reprennent vers le centre et obtiennent une colonne f semi-ouverte pour leur tour. Cette colonne comptera plus tard.",
+        "label": "La colonne f s'ouvre"
+      },
+      {
+        "text": "15...Rxf6. La tour reprend et se tient maintenant en f6, prête à glisser le long de la sixième rangée."
+      },
+      {
+        "text": "17...Bxc3. Les Noirs donnent le fou contre le cavalier pour abîmer les pions blancs de l'aile dame."
+      },
+      {
+        "text": "18...Qxc3. Les Noirs gagnent un pion et leur dame est maintenant très active."
+      },
+      {
+        "text": "19.Rxd5. Les Blancs récupèrent le pion d5, mais leur dame en e2 va bientôt être harcelée."
+      },
+      {
+        "text": "19...Nd4! Le cavalier bondit au centre, attaque la dame blanche et vise les cases e2 et f3, près du roi blanc.",
+        "label": "Cavalier en d4 !"
+      },
+      {
+        "text": "20.Qh5. La dame s'échappe vers le roi noir, en espérant du contre-jeu."
+      },
+      {
+        "text": "21...Rh6. La tour glisse sur la sixième rangée et chasse la dame blanche. Derrière la dame se trouve le fou en h3."
+      },
+      {
+        "text": "22.Qg5. La dame s'écarte, mais maintenant le fou en h3 est dans le viseur de la tour."
+      },
+      {
+        "text": "23.Rc5. Les Blancs attaquent la dame noire. La plupart des joueurs la mettraient simplement à l'abri, mais Marshall avait bien mieux."
+      },
+      {
+        "text": "23...Qg3!! La dame saute sur une case où trois unités blanches peuvent la prendre, et chaque prise perd : 24.hxg3 Ne2 mat, 24.fxg3 Ne2+ 25.Kh1 Rxf1 mat, et 24.Qxg3 Ne2+ 25.Kh1 Nxg3+ laisse les Noirs avec une pièce de plus. En même temps, ...Qxh2 mat est menacé. Les Blancs abandonnent.",
+        "label": "Le coup en or"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. La dame blanche vient d'aller en g5. Vois-tu un moyen de gagner du matériel ?",
+        "hint": "Si le pion g2 reprend, quel saut de cavalier attaque le roi et la dame en même temps ?",
+        "explanation": "22...Rxh3! Le fou tombe. Si 23.gxh3, alors 23...Nf3+ fait une fourchette sur le roi blanc et la dame en g5."
+      },
+      {
+        "prompt": "Trait aux Noirs. Les Blancs attaquent ta dame en c3. Ne recule pas : trouve le coup qui, selon la légende, a valu une pluie de pièces d'or !",
+        "hint": "Place ta dame là où elle peut être prise de trois façons différentes.",
+        "explanation": "23...Qg3!! Chaque prise perd : hxg3 se heurte à ...Ne2 mat, fxg3 à ...Ne2+ et ...Rxf1 mat, et Qxg3 à ...Ne2+ et ...Nxg3+. Si les Blancs l'ignorent, ...Qxh2 est mat."
+      }
+    ]
+  },
+  "short-timman-1991": {
+    "title": "La marche du roi de Short",
+    "event": "Tilburg",
+    "opening": "Défense Alekhine",
+    "summary": "Short paralyse les pièces noires, puis fait marcher son propre roi de g1 à g5 pour aider à donner le mat. Cette marche du roi est l'une des plus célèbres de l'histoire et enseigne une leçon surprenante : quand l'adversaire ne peut pas attaquer, même le roi peut devenir un attaquant.",
+    "annotations": [
+      {
+        "text": "Tilburg, 1991. L'Anglais Nigel Short affronte la star néerlandaise Jan Timman. On se souvient de cette partie pour l'un des plans les plus surprenants de l'histoire des échecs."
+      },
+      {
+        "text": "**La défense Alekhine** : les Noirs invitent les pions blancs à avancer, en espérant qu'ils deviennent des cibles plus tard."
+      },
+      {
+        "text": "Les Blancs gardent un pion en e5. Il enlève les cases f6 et d6 aux pièces noires et met les Noirs à l'étroit."
+      },
+      {
+        "text": "La dame noire est centralisée en d4, mais les Blancs vont bientôt la pourchasser en gagnant du temps."
+      },
+      {
+        "text": "**21.Qh4** amène la dame blanche à l'aile roi, à côté du roi noir."
+      },
+      {
+        "text": "**23.Bh6** propose d'échanger le meilleur défenseur des Noirs, le fou en g7, qui garde les cases noires autour du roi."
+      },
+      {
+        "text": "Timman évite l'échange avec **23...Bh8**, mais en h8 le fou est très passif."
+      },
+      {
+        "text": "**24.Rd8** fait pénétrer la tour et cloue les pièces noires sur la dernière rangée."
+      },
+      {
+        "text": "La tour s'installe en d7, sur la septième rangée, et attaque c7 et f7. Les Noirs sont étouffés peu à peu."
+      },
+      {
+        "text": "La dame blanche est en f6, juste à côté du roi noir. Un attaquant de plus sur g7 ou h8, et ce serait mat. Mais quelle pièce peut y arriver ?"
+      },
+      {
+        "text": "Pour l'instant, les Noirs tiennent : aucune pièce blanche ne peut atteindre g7 ou h8. Mais les pièces noires sont figées, et Timman ne peut que faire des allers-retours."
+      },
+      {
+        "text": "**31.Kh2!** La réponse, c'est le roi ! Les Noirs n'ont aucun moyen de l'attaquer, alors le roi blanc peut remonter l'échiquier et aider à mater.",
+        "label": "La marche du roi commence"
+      },
+      {
+        "text": "Deuxième étape : **32.Kg3**. Les pièces de Timman ne peuvent que faire des allers-retours."
+      },
+      {
+        "text": "**33.Kf4** continue l'ascension, en utilisant les cases noires que les Noirs ne peuvent plus défendre."
+      },
+      {
+        "text": "Timman abandonne. Le plan est **Kh6**, puis **Qg7** mat. La leçon : si l'adversaire n'a aucun moyen de l'attaquer, ton roi peut devenir une pièce d'attaque redoutable.",
+        "label": "Les Noirs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le fou noir en g7 protège les cases noires autour du roi. Que ferais-tu ?",
+        "hint": "Élimine le défenseur.",
+        "explanation": "**27.Bxg7** échange le meilleur défenseur des Noirs. Les cases noires autour du roi noir sont maintenant faibles, et la dame blanche peut s'y installer."
+      },
+      {
+        "prompt": "Trait aux Blancs. Sans son fou, le roi noir a des trous tout autour de lui. Où est la place de la dame ?",
+        "hint": "Trouve un échec sur une case noire.",
+        "explanation": "**29.Qf6+** place la dame juste à côté du roi. Depuis f6, elle vise g7 et h8, et les Noirs devront les défendre pour toujours."
+      },
+      {
+        "prompt": "Trait aux Blancs. Ton roi a déjà atteint f4. Quelle est la prochaine étape de la marche ?",
+        "hint": "Continue à marcher vers h6.",
+        "explanation": "**34.Kg5!** Le roi se dirige vers h6, d'où il protégera la dame en g7 pour le mat. Les Noirs ne peuvent pas l'arrêter."
+      }
+    ]
+  },
+  "saemisch-nimzowitsch-1923": {
+    "title": "La partie du zugzwang immortel",
+    "event": "Copenhague",
+    "opening": "Défense ouest-indienne",
+    "summary": "Nimzowitsch étouffe lentement les Blancs jusqu'à ce que chacune de leurs pièces soit paralysée. À la fin, les Blancs ont plein de coups légaux mais aucun de bon : un zugzwang rare en plein milieu de partie, avec presque toutes les pièces encore sur l'échiquier.",
+    "annotations": [
+      {
+        "text": "Copenhague, 1923. Aron Nimzowitsch, l'un des penseurs les plus profonds de l'histoire des échecs, a les Noirs contre Friedrich Sämisch. La fin est si inhabituelle qu'on l'appelle **la partie du zugzwang immortel** : les Blancs n'ont plus de bons coups alors que l'échiquier est encore plein de pièces."
+      },
+      {
+        "text": "1...Nf6. Nimzowitsch aimait contrôler le centre à distance avec ses pièces, plutôt que de précipiter ses pions vers l'avant."
+      },
+      {
+        "text": "4...Bb7. La défense ouest-indienne : le fou noir surveille la grande diagonale et la case clé e4."
+      },
+      {
+        "text": "8.Ne5. Le cavalier blanc saute en avant et ouvre la diagonale du fou g2 vers l'aile dame noire."
+      },
+      {
+        "text": "11...b5. Les Noirs gagnent de l'espace à l'aile dame et enlèvent la case c4 aux pièces blanches."
+      },
+      {
+        "text": "15...Nh5. Le cavalier va au bord dans un but précis : il attaque le fou en f4 et prépare ...f5."
+      },
+      {
+        "text": "16...f5. Les Noirs prennent fermement le contrôle de e4. Les pièces blanches commencent à manquer de bonnes cases."
+      },
+      {
+        "text": "18.Nb1. Le cavalier doit retourner jusqu'à sa case de départ. Les Blancs sont de plus en plus à l'étroit.",
+        "label": "Repoussé"
+      },
+      {
+        "text": "18...Bb5. Le fou trouve une superbe diagonale, il vise e2 et les cases blanches du camp blanc."
+      },
+      {
+        "text": "20.e4. Les Blancs tentent enfin de se libérer. Le pion e ayant quitté e2, leur dame en d1 attaque maintenant le cavalier en h5."
+      },
+      {
+        "text": "21.Qxh5. Les Blancs gagnent le cavalier, mais les Noirs obtiennent en échange des pions, la colonne f ouverte et une attaque durable.",
+        "label": "Sacrifice de cavalier"
+      },
+      {
+        "text": "22.Qg5. La dame revient en hâte pour défendre, mais les pièces blanches en b1, c1 et d2 dorment toujours."
+      },
+      {
+        "text": "22...Raf8. Les Noirs doublent les tours sur la colonne f. Les deux tours visent maintenant le roi blanc."
+      },
+      {
+        "text": "23...R8f5. La tour chasse la dame blanche de g5."
+      },
+      {
+        "text": "24...Bd3. Le fou atterrit en d3 et coupe la position blanche en deux. Les pièces noires dominent tout l'échiquier.",
+        "label": "Paralysie totale"
+      },
+      {
+        "text": "25...h6!! Un coup de pion tranquille qui donne aussi une case de fuite au roi noir. Les Blancs sont maintenant en **zugzwang** : ils ont beaucoup de coups légaux, mais chacun perd du matériel ou laisse passer l'attaque noire. Sämisch abandonne.",
+        "label": "Zugzwang !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. Les Blancs ont attaqué ton pion f5, et leur dame en d1 attaque maintenant ton cavalier en h5. Quelle est la réponse courageuse ?",
+        "hint": "Ouvre des lignes pour tes tours, même si ça coûte une pièce.",
+        "explanation": "20...fxe4! Les Noirs abandonnent le cavalier. En échange, ils obtiennent des pions, une colonne f ouverte et une attaque durable contre le roi blanc."
+      },
+      {
+        "prompt": "Trait aux Noirs. Les Blancs viennent de prendre ton cavalier. Contre-attaque maintenant sur la colonne f ouverte !",
+        "hint": "Quel pion à côté du roi blanc n'est pas protégé ?",
+        "explanation": "21...Rxf2! La tour fait irruption sur la deuxième rangée blanche, cloue le fou g2 sur le roi, et la dame blanche est loin, en h5."
+      }
+    ]
+  },
+  "adams-torre-1920": {
+    "title": "Adams contre Torre : la danse de la dernière rangée",
+    "event": "La Nouvelle-Orléans",
+    "opening": "Défense Philidor",
+    "summary": "Les Blancs offrent leur dame encore et encore, et les Noirs ne peuvent jamais la prendre parce que leur dernière rangée est trop faible. La leçon la plus célèbre sur la faiblesse de la dernière rangée et la déviation : une pièce qui doit garder quelque chose peut être pourchassée jusqu'à ce qu'elle craque.",
+    "annotations": [
+      {
+        "text": "La Nouvelle-Orléans, 1920. Edwin Adams affronte Carlos Torre, un jeune joueur talentueux venu du Mexique. C'est la combinaison sur la **dernière rangée** la plus célèbre de tous les temps (certains historiens la soupçonnent d'avoir été composée, mais les idées valent de l'or)."
+      },
+      {
+        "text": "2...d6, c'est la défense Philidor : solide, mais un peu passive. Les pièces noires auront moins de place."
+      },
+      {
+        "text": "Le cavalier noir a attaqué la dame blanche en d4, alors 5.Bb5 le cloue sur le roi noir."
+      },
+      {
+        "text": "Les deux camps se développent et roquent. La vraie histoire va se jouer sur la colonne e, qui est sur le point de s'ouvrir."
+      },
+      {
+        "text": "Les pions sont échangés. Les colonnes e et c sont maintenant ouvertes, et la partie devient une bataille de tours et de dames."
+      },
+      {
+        "text": "16.Rae1 : les tours blanches sont doublées sur la colonne e ouverte et fixent la tour en e8.",
+        "label": "Tours doublées"
+      },
+      {
+        "text": "17.Bxf6 élimine le cavalier. La dernière rangée noire a maintenant un problème : le roi n'a pas de case de fuite, et seule la dame protège e8."
+      },
+      {
+        "text": "La dame va en b5 et garde toujours e8 par la diagonale. La danse a commencé !",
+        "label": "La danse commence"
+      },
+      {
+        "text": "19.Qc4! La dame est de nouveau offerte. La prendre permet Rxe8+ et mat, donc la dame noire doit encore bouger."
+      },
+      {
+        "text": "Retour en d7, toujours en surveillant e8. La dame noire manque de bonnes cases."
+      },
+      {
+        "text": "Les Noirs ne peuvent pas prendre en c7 : 20...Qxc7 comme 20...Rxc7 permettent aux Blancs de prendre en e8 avec le mat à suivre. La dame revient donc en b5."
+      },
+      {
+        "text": "21.a4! Même un pion s'en mêle. La seule case qui garde encore e8 est a4, alors les Noirs doivent prendre.",
+        "label": "Même un pion s'en mêle"
+      },
+      {
+        "text": "22.Re4! a attaqué la dame, et elle a de nouveau dû trouver une case qui garde e8 : b5. Voici maintenant le coup final."
+      },
+      {
+        "text": "23.Qxb7! La dame noire ne peut pas quitter la diagonale a4–e8 et ne peut pas rester attaquée. Les Noirs abandonnent. La leçon : une dernière rangée faible peut transformer ta pièce la plus forte en prisonnière.",
+        "label": "Les Noirs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. La dame noire en d7 est la seule gardienne de la tour en e8. Comment l'attirer ailleurs ?",
+        "hint": "Place ta dame là où la dame noire pourrait la prendre.",
+        "explanation": "18.Qg4! Si 18...Qxg4, alors 19.Rxe8+ Rxe8 20.Rxe8 est mat. La dame noire doit donc continuer à garder e8 et ne peut pas accepter le cadeau."
+      },
+      {
+        "prompt": "Trait aux Blancs. La dame noire est revenue en d7. Trouveras-tu le coup de dame le plus audacieux de tous ?",
+        "hint": "Offre ta dame là où deux pièces noires peuvent la prendre.",
+        "explanation": "20.Qc7!! Ni la dame ni la tour en c8 ne peuvent la prendre : chaque prise permet aux Blancs de prendre en e8 avec mat. En même temps, les Blancs menacent Qxb7 et de continuer à pourchasser la dame."
+      },
+      {
+        "prompt": "Trait aux Blancs. La dame noire a pris en a4 et garde toujours e8. Comment la pourchasser encore ?",
+        "hint": "Une tour peut attaquer le long de la quatrième rangée.",
+        "explanation": "22.Re4! attaque la dame. Prendre la tour perdrait simplement la dame après 23.Rxe4, donc la dame doit trouver une autre case qui garde encore e8, et il ne reste que b5."
+      }
+    ]
+  },
+  "alekhine-nimzowitsch-1930": {
+    "title": "Le canon d'Alekhine",
+    "event": "San Remo",
+    "opening": "Défense française, variante Winawer",
+    "summary": "Le champion du monde Alekhine gagne de l'espace, plante un pion profondément en a6 et empile ses pièces lourdes sur la colonne c jusqu'à ce que les Noirs soient complètement paralysés. Cette batterie de deux tours avec la dame derrière s'appelle encore aujourd'hui le canon d'Alekhine.",
+    "annotations": [
+      {
+        "text": "San Remo, 1930. Le champion du monde Alexandre Alekhine a les Blancs contre Aron Nimzowitsch, un maître dans l'art de restreindre les pièces adverses. Ici, Alekhine le bat sur son propre terrain et remporte le tournoi avec panache."
+      },
+      {
+        "text": "3...Bb4. La variante Winawer de la française : les Noirs clouent le cavalier c3 et font pression sur e4."
+      },
+      {
+        "text": "4.e5. Les Blancs prennent de l'espace au centre. La chaîne de pions met à l'étroit les pièces noires de l'aile roi."
+      },
+      {
+        "text": "6.Nb5. Le cavalier se dirige vers d6, une case que les Noirs auront du mal à garder."
+      },
+      {
+        "text": "6...Bxd2+. Les Noirs cèdent leur fou de cases noires. Sans lui, d6 devient un trou, un repaire idéal pour le cavalier blanc.",
+        "label": "Un trou en d6"
+      },
+      {
+        "text": "9.f4. Les Blancs soutiennent le pion e5. Le centre est bloqué et les Blancs ont plus d'espace."
+      },
+      {
+        "text": "11.a4. Alekhine commence à s'étendre à l'aile dame, où il veut ouvrir des lignes."
+      },
+      {
+        "text": "13.cxb4. La colonne c est maintenant ouverte. Celui qui la contrôlera aura l'avantage."
+      },
+      {
+        "text": "14...f5. Les Noirs ferment la porte de l'aile roi. La bataille va désormais se décider à l'aile dame, où les Blancs sont bien plus forts."
+      },
+      {
+        "text": "16.Nxb7. Alekhine échange son fier cavalier contre le fou noir, car maintenant son propre fou peut régner sur les cases blanches."
+      },
+      {
+        "text": "17.a6! Le pion s'enfonce en a6 et fige l'aile dame noire. Les pièces noires vont manquer de place pour le reste de la partie.",
+        "label": "Une épine en a6"
+      },
+      {
+        "text": "18.Bb5. Le fou prend un superbe poste et fait pression sur le cavalier en c6."
+      },
+      {
+        "text": "20.Rfc1. Les deux camps s'alignent sur la colonne c, mais les Blancs ont beaucoup plus d'espace pour amener des renforts."
+      },
+      {
+        "text": "22...Rab8. Les Noirs n'ont presque plus de coups utiles et ne peuvent que déplacer leurs pièces en attendant."
+      },
+      {
+        "text": "26.Qc1. Deux tours avec la dame derrière, toutes sur la colonne c. Cette batterie s'appelle encore aujourd'hui **le canon d'Alekhine**.",
+        "label": "Le canon d'Alekhine"
+      },
+      {
+        "text": "27.Ba4. Le fou recule mais garde le cavalier c6 cloué sur la dame noire en d7."
+      },
+      {
+        "text": "28...Ke8. Le roi noir marche vers l'aile dame pour aider à défendre, la seule partie de l'échiquier qui compte désormais."
+      },
+      {
+        "text": "30.h4. Alekhine joue un coup de pion tranquille et attend. Les Noirs sont complètement ligotés : leur cavalier c6 est cloué, ils n'ont presque aucun coup utile, et b5 arrive pour gagner le cavalier. Nimzowitsch abandonne.",
+        "label": "Paralysie totale"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le fou de cases noires des Noirs a disparu. Où ton cavalier en b5 doit-il atterrir ?",
+        "hint": "Cherche une case du camp noir qu'aucun pion noir ne peut attaquer.",
+        "explanation": "14.Nd6! Le cavalier s'installe dans le trou en d6. Aucun pion noir ne peut le chasser, et de là il attaque le fou en b7 et pèse profondément sur la position noire."
+      },
+      {
+        "prompt": "Trait aux Blancs. Les Noirs viennent de pousser 27...b5 pour attaquer ton fou. Quelle est la meilleure réponse ?",
+        "hint": "Le pion en b5 est-il protégé ?",
+        "explanation": "28.Bxb5! Les Blancs gagnent simplement un pion, et le fou retrouve aussitôt son poste idéal, toujours en pressant sur c6."
+      }
+    ]
+  },
+  "fischer-fine-1963": {
+    "title": "Fischer contre Fine : le gambit Evans",
+    "event": "Partie amicale, New York",
+    "opening": "Gambit Evans",
+    "summary": "Dans une partie amicale, Fischer donne des pions pour sortir vite ses pièces, et un ancien grand maître de classe mondiale est perdu en 17 coups. Une leçon parfaite : le développement et la sécurité du roi comptent plus que de ramasser des pions.",
+    "annotations": [
+      {
+        "text": "New York, 1963. Dans une partie amicale, Fischer affronte Reuben Fine, un ancien grand maître de classe mondiale. Fischer choisit une vieille ouverture de cape et d'épée pour montrer qu'un **développement rapide** peut battre des pions de plus."
+      },
+      {
+        "text": "Les deux fous visent les cases les plus faibles de chaque camp : f7 et f2. C'est la partie italienne."
+      },
+      {
+        "text": "4.b4!? est le **gambit Evans**. Les Blancs donnent un pion pour gagner du temps : quand les Noirs le prennent, les Blancs bâtissent un grand centre avec c3 et d4, en attaquant au passage.",
+        "label": "Le gambit Evans"
+      },
+      {
+        "text": "6.d4 ouvre des lignes. Fischer ne s'inquiète pas des pions ; il veut sortir ses pièces rapidement."
+      },
+      {
+        "text": "Fine prend un troisième pion. Quelle gourmandise ! Les Noirs ont plus de matériel, mais la plupart de leurs pièces sont encore à la maison et leur roi est au centre."
+      },
+      {
+        "text": "8.Qb3 aligne la dame et le fou contre f7, le point le plus faible à côté du roi noir."
+      },
+      {
+        "text": "Les Blancs récupèrent un pion et sortent une pièce de plus. Regarde la différence : presque toutes les pièces blanches sont en jeu, alors que les Noirs n'en ont sorti que trois et que leur roi est toujours au centre."
+      },
+      {
+        "text": "10.Nd5 saute en avant et attaque la dame en e7. Presque chaque coup blanc s'accompagne d'une menace."
+      },
+      {
+        "text": "Les Noirs essaient d'échanger des pièces. Échanger est une bonne façon de se défendre, mais le roi noir est toujours coincé au milieu."
+      },
+      {
+        "text": "13.Bb2 amène le dernier fou sur la grande diagonale ; il attaque la dame en e5 et vise g7."
+      },
+      {
+        "text": "14.h4! offre encore un pion pour éloigner la dame noire. Fischer la veut le plus loin possible de l'action.",
+        "label": "Encore un pion offert"
+      },
+      {
+        "text": "Fine le prend, mais sa dame se retrouve maintenant sur le bord de l'échiquier, loin de son roi."
+      },
+      {
+        "text": "15.Bxg7 prend un pion et attaque la tour en h8. Dès que la tour bouge, les Noirs ne peuvent plus faire le petit roque."
+      },
+      {
+        "text": "Le roi se glisse en d8, mais il est entouré de ses propres pièces et n'a aucun abri sûr."
+      },
+      {
+        "text": "Fine abandonne. Si 17...Qxg3, alors 18.Bf6 est mat, et sinon 18.Bf6+ gagne la dame noire. Seulement 17 coups : le développement a battu le matériel.",
+        "label": "Les Noirs abandonnent"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le roi noir est toujours au centre et la colonne e est grande ouverte. Comment le poursuivre ?",
+        "hint": "Fais entrer une tour dans le jeu avec échec.",
+        "explanation": "16.Rfe1+ utilise la colonne e ouverte. Le roi n'a pas de bonne case : 16...Kd8 le laisse enfermé, juste là où le fou et la dame blancs peuvent l'atteindre."
+      },
+      {
+        "prompt": "Trait aux Blancs. Trouveras-tu le coup de dame tranquille qui laisse les Noirs sans défense ?",
+        "hint": "Propose un échange de dames que les Noirs ne peuvent pas accepter.",
+        "explanation": "17.Qg3! prépare 18.Bf6+, qui donne échec au roi et attaque en même temps la dame en h4. Si les Noirs prennent la dame, 18.Bf6 est mat, car la tour en e1 contrôle e8 et e7."
+      }
+    ]
+  },
+  "deep-blue-kasparov-1997": {
+    "title": "Deep Blue remporte le match",
+    "event": "Match revanche Deep Blue contre Kasparov, New York",
+    "opening": "Défense Caro-Kann",
+    "summary": "La partie décisive du match revanche de 1997. Kasparov se trompe dans l'ouverture, Deep Blue sacrifie un cavalier pour garder le roi noir coincé au centre, et le champion du monde abandonne après seulement 19 coups. C'était la première fois qu'un ordinateur gagnait un match contre un champion du monde en titre.",
+    "annotations": [
+      {
+        "text": "New York, mai 1997. Le match revanche entre Kasparov et une version améliorée de Deep Blue est à égalité 2,5-2,5 avant la sixième et dernière partie. Tout se joue maintenant."
+      },
+      {
+        "text": "Kasparov choisit la **Caro-Kann**, une défense très solide qu'il jouait rarement. Il espérait éviter les combats tranchants contre la machine."
+      },
+      {
+        "text": "**4...Nd7** prépare **...Ngf6**, pour que, si les Blancs échangent les cavaliers, les Noirs puissent reprendre avec l'autre cavalier et garder une structure de pions saine."
+      },
+      {
+        "text": "**5.Ng5** est une idée tranchante : le cavalier vise f7 et e6, deux cases sensibles près du roi noir."
+      },
+      {
+        "text": "**7...h6?** chasse le cavalier, mais dans cette position précise c'est une erreur connue : elle permet un sacrifice de cavalier en e6. Kasparov a confondu l'ordre des coups.",
+        "label": "Une erreur fatale"
+      },
+      {
+        "text": "Kasparov ne prend pas tout de suite. Sa dame en e7 attaque le cavalier et bloque la colonne e pour l'instant."
+      },
+      {
+        "text": "Deep Blue ne se précipite pas. Il roque d'abord, rapprochant la tour de la colonne e, où le roi noir va rester coincé."
+      },
+      {
+        "text": "Les Noirs ont un cavalier de plus, mais leur roi est toujours au centre et le pion f a bougé, ce qui ouvre la diagonale vers e8."
+      },
+      {
+        "text": "**10.Bg6+** force le roi à bouger. Les Noirs ne pourront plus jamais roquer, et leurs pièces se gênent les unes les autres.",
+        "label": "Plus de roque"
+      },
+      {
+        "text": "Kasparov essaie de faire de la place à son roi à l'aile dame avec **11...b5**. La réponse blanche, **12.a4**, attaque aussitôt ce pion."
+      },
+      {
+        "text": "Le roi file en c8, mais le fou en f8 et la tour en h8 dorment toujours. Le cavalier de plus des Noirs ne sert pas à grand-chose."
+      },
+      {
+        "text": "**16.Qd3** fait entrer la dame dans l'attaque. Toutes les pièces blanches sont actives ; la moitié des pièces noires ne le sont pas."
+      },
+      {
+        "text": "Le matériel est à peu près égal de nouveau, mais le roi noir est à découvert et ses pièces sont emmêlées. L'attaque blanche continue."
+      },
+      {
+        "text": "**19.c4** ouvre encore plus de lignes vers le roi noir, et Kasparov abandonne. C'était la première victoire d'un ordinateur en match contre un champion du monde. La leçon : connais l'ordre des coups de tes ouvertures, et un roi coincé au centre est une grosse cible.",
+        "label": "Kasparov abandonne"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Les Noirs viennent de jouer 7...h6 et attaquent le cavalier en g5. Où le cavalier peut-il aller avec fracas ?",
+        "hint": "Le pion e6 protège le roi noir.",
+        "explanation": "**8.Nxe6!** donne le cavalier pour un pion. Si les Noirs le prennent, le roi reste coincé au centre, entouré de lignes ouvertes."
+      },
+      {
+        "prompt": "Trait aux Blancs. La dame noire en e7 est sur la même colonne que ta tour, avec seulement le pion e6 entre les deux. Comment éliminer ce pion ?",
+        "hint": "Offre un fou que le pion ne peut pas refuser.",
+        "explanation": "**17.Bf5!** Si **17...exf5**, la colonne e s'ouvre et la tour blanche attaque la dame noire."
+      },
+      {
+        "prompt": "Trait aux Blancs. La colonne e est ouverte. Que prends-tu ?",
+        "hint": "Il y a quelque chose de gros en e7.",
+        "explanation": "**18.Rxe7** gagne la dame contre une tour, et le roi noir reste exposé."
+      }
+    ]
+  },
+  "spassky-bronstein-1960": {
+    "title": "La partie de « Bons baisers de Russie »",
+    "event": "Championnat d'URSS, Leningrad",
+    "opening": "Gambit du roi accepté",
+    "summary": "Le jeune Spassky joue l'audacieux gambit du roi, laisse les Noirs faire une nouvelle dame et continue d'attaquer malgré tout. Une version de la position finale apparaît dans le film de James Bond « Bons baisers de Russie ». La leçon : une attaque contre le roi peut valoir bien plus qu'une tour.",
+    "annotations": [
+      {
+        "text": "Leningrad, 1960, championnat d'URSS. Le jeune Boris Spassky joue l'audacieux gambit du roi contre David Bronstein, l'un des joueurs les plus créatifs de tous les temps. Une version de cette partie est apparue plus tard dans un film de James Bond."
+      },
+      {
+        "text": "2.f4 offre un pion pour détourner le pion e noir du centre et ouvrir la colonne f à la tour blanche. Un choix romantique et offensif.",
+        "label": "Le gambit du roi"
+      },
+      {
+        "text": "Bronstein riposte tout de suite au centre. Rendre un pion pour libérer ses pièces est une réponse classique au gambit."
+      },
+      {
+        "text": "Les deux camps se développent rapidement. Le plan des Blancs : roquer, récupérer le pion f4 et utiliser la colonne f ouverte."
+      },
+      {
+        "text": "9.Ne4 laisse les Noirs prendre en d5. Spassky préfère des pièces actives à un pion : le cavalier se dirige vers d6 et f6."
+      },
+      {
+        "text": "10...Ne3 est une fourchette sur la dame en d1 et la tour en f1. Spassky prend simplement le cavalier."
+      },
+      {
+        "text": "Les Noirs ont maintenant un pion en e3, profondément dans la position blanche. Garde un œil sur lui !"
+      },
+      {
+        "text": "12.c5 chasse le fou de d6, la case que veut le cavalier blanc."
+      },
+      {
+        "text": "14...e2! Le pion attaque la tour en f1 et veut devenir dame. La plupart des joueurs sauveraient la tour. Spassky a d'autres projets.",
+        "label": "Le pion frappe"
+      },
+      {
+        "text": "Bronstein amène le cavalier en f8 pour garder h7. Mais maintenant, le pion f7 est faible."
+      },
+      {
+        "text": "Les Noirs font une nouvelle dame avec échec ! Mais les Blancs la reprennent simplement, et leurs pièces grouillent autour du roi noir."
+      },
+      {
+        "text": "Les Noirs essaient de bloquer la dame blanche, mais le fou en f5 est tout simplement perdu."
+      },
+      {
+        "text": "Le matériel est de nouveau à peu près égal, et le cavalier en f7 est planté comme une épine juste à côté du roi noir."
+      },
+      {
+        "text": "Le second cavalier saute en e5. Les deux cavaliers blancs sont maintenant juste devant le roi noir."
+      },
+      {
+        "text": "21.Bb3 place le fou derrière le cavalier f7, en visant le roi en g8. Quand le cavalier bougera, ce sera un **échec à la découverte**."
+      },
+      {
+        "text": "22.Nxe5+ est cet échec à la découverte. Le roi doit fuir en h7.",
+        "label": "Échec à la découverte"
+      },
+      {
+        "text": "23.Qe4+ et Bronstein abandonne. Le roi ne peut pas revenir en g8 à cause du fou en b3, et la dame, la tour et le cavalier blancs vont percer.",
+        "label": "Bronstein abandonne"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le pion noir en e2 attaque ta tour et veut devenir dame. Que ferais-tu ?",
+        "hint": "Oublie la tour. Quel point près du roi noir est le plus faible ?",
+        "explanation": "15.Nd6!! ignore la menace. Le cavalier attaque la tour en e8 et vise f7. Si 15...Bxd6, alors 16.Qh7+ lance une attaque féroce. Spassky a jugé que son attaque valait plus qu'une tour."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le cavalier noir est allé en f8 pour défendre. Où ton cavalier frappe-t-il ensuite ?",
+        "hint": "Regarde le pion à côté du roi noir.",
+        "explanation": "16.Nxf7! prend le pion, attaque la dame en d8 et ouvre la colonne f vers le roi noir. Les Noirs peuvent faire une nouvelle dame en f1, mais elle est simplement reprise."
+      }
+    ]
+  },
+  "bernstein-capablanca-1914": {
+    "title": "La foudre de Capablanca sur la dernière rangée",
+    "event": "Moscou (partie d'exhibition)",
+    "opening": "Gambit dame refusé",
+    "summary": "Capablanca pousse patiemment un pion passé, laisse les Blancs le gagner, puis frappe avec un coup de dame stupéfiant qui exploite la faiblesse de la dernière rangée blanche. Un rappel classique : n'oublie jamais la case de fuite de ton roi.",
+    "annotations": [
+      {
+        "text": "Moscou, 1914. José Raúl Capablanca, la star cubaine qui deviendra champion du monde en 1921, a les Noirs dans une partie d'exhibition contre le fort maître Ossip Bernstein. Garde un œil sur la dernière rangée blanche."
+      },
+      {
+        "text": "5...O-O. Un gambit dame refusé classique : les Noirs gardent un centre solide et roquent rapidement."
+      },
+      {
+        "text": "8...exd5. Après l'échange au centre, les Noirs ont un pion solide en d5 et une ligne ouverte pour leur fou de cases blanches."
+      },
+      {
+        "text": "10.Ba6. Les Blancs proposent d'échanger les fous de cases blanches, ce qui élimine un bon défenseur de l'aile dame noire."
+      },
+      {
+        "text": "11...c5. Les Noirs contestent le centre et donnent plus de place à leurs pièces."
+      },
+      {
+        "text": "13...bxc5. Les Noirs ont maintenant deux pions côte à côte en c5 et d5, appelés **pions pendants** : forts ensemble, mais ils demandent de l'attention."
+      },
+      {
+        "text": "15...c4. Les Noirs avancent et gagnent de l'espace à l'aile dame."
+      },
+      {
+        "text": "16...Rfd8. La tour noire prend la colonne d. Retiens-la : cette tour jouera le premier rôle tout à la fin."
+      },
+      {
+        "text": "17...Bb4. Le fou cloue le cavalier c3 et accentue la pression sur l'aile dame blanche."
+      },
+      {
+        "text": "19...dxc4. Les Blancs n'ont plus de pions sur les colonnes b, c ou d : le pion c noir est donc maintenant un **pion passé**, libre d'avancer.",
+        "label": "Un pion passé"
+      },
+      {
+        "text": "21...Nd5. Le cavalier atterrit sur une superbe case : il attaque la tour en c3 et soutient le pion c."
+      },
+      {
+        "text": "23...Rc5. La tour protège le pion c3 par-derrière et le maintient en vie."
+      },
+      {
+        "text": "26.Nb5. Le cavalier blanc vise le pion c3. Bernstein travaille dur pour le gagner."
+      },
+      {
+        "text": "27.Nxc3. Les Blancs gagnent enfin le pion, et une série d'échanges en c3 suit.",
+        "label": "Les Blancs gagnent le pion"
+      },
+      {
+        "text": "29.Rxc3. Les Blancs ont un pion de plus et se sentent en sécurité. Mais regarde leur roi : il n'a pas de case de fuite, et la tour noire règne toujours sur la colonne d."
+      },
+      {
+        "text": "29...Qb2!! Un coup de tonnerre dans un ciel serein. La dame blanche ne peut pas prendre à cause de ...Rd1 mat, et elle ne peut pas garder à la fois la dernière rangée et la tour en c3. Bernstein abandonne. Laisse toujours un peu d'air à ton roi !",
+        "label": "Coup de tonnerre"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Noirs. Ton pion passé en c4 est bien soutenu par le cavalier en d5. Comment le rendre encore plus dangereux ?",
+        "hint": "Les pions passés doivent être poussés !",
+        "explanation": "22...c3! Le pion se rapproche d'une case de la promotion, protégé par le cavalier. Les pièces blanches doivent maintenant passer leur temps à l'arrêter."
+      },
+      {
+        "prompt": "Trait aux Noirs. Les Blancs viennent de gagner un pion et ont l'air contents. Regarde leur dernière rangée : trouveras-tu le coup qui termine la partie sur-le-champ ?",
+        "hint": "Attaque la dame et la tour blanches en même temps.",
+        "explanation": "29...Qb2!! La dame attaque à la fois la dame blanche et la tour en c3. 30.Qxb2 se heurte à 30...Rd1 mat, car le roi blanc n'a pas de case de fuite. Sinon, les Blancs perdent du matériel."
+      }
+    ]
+  },
+  "lasker-bauer-1889": {
+    "title": "Le double sacrifice de fous de Lasker",
+    "event": "Tournoi d'Amsterdam",
+    "opening": "Ouverture Bird",
+    "summary": "Le jeune Emanuel Lasker sacrifie ses deux fous pour éventrer le roque noir, puis récupère le matériel grâce à une tour qui monte à l'attaque et une double attaque. Le double sacrifice de fous en h7 et g7 est devenu un schéma d'attaque classique que tout joueur devrait connaître.",
+    "annotations": [
+      {
+        "text": "Amsterdam, 1889. Emanuel Lasker, 20 ans, qui sera plus tard champion du monde pendant 27 ans, a les Blancs contre Johann Bauer. Regarde où visent les deux fous blancs."
+      },
+      {
+        "text": "1.f4. L'ouverture Bird : les Blancs prennent le contrôle de la case e5 avec un pion, au lieu des habituels 1.e4 ou 1.d4."
+      },
+      {
+        "text": "5.Bd3. Les deux fous visent maintenant l'aile roi noire : l'un vers h7, l'autre le long de la grande diagonale."
+      },
+      {
+        "text": "8...O-O. Les Noirs roquent en plein dans la ligne de mire de ces deux fous."
+      },
+      {
+        "text": "10.Ng3. Le cavalier se dirige vers h5, prêt à se joindre à l'attaque contre le roi noir."
+      },
+      {
+        "text": "12.Bxe5. Après l'échange, le fou est en e5 et fixe g7. Seul le cavalier f6 tient encore la position noire."
+      },
+      {
+        "text": "13...a6? Les Noirs préparent une avancée à l'aile dame et oublient leur roi. Ce coup lent donne à Lasker le temps dont il a besoin.",
+        "label": "Un coup lent"
+      },
+      {
+        "text": "14.Nh5! Les Blancs offrent le cavalier pour détourner le cavalier f6, le défenseur clé de h7."
+      },
+      {
+        "text": "15...Kxh7. Le premier fou est parti, mais maintenant 16.Qxh5+ récupère le cavalier avec échec, et la dame se joint à l'attaque.",
+        "label": "Premier sacrifice de fou"
+      },
+      {
+        "text": "17...Kxg7. Les deux fous ont été sacrifiés, mais le roi noir a perdu tout son abri de pions.",
+        "label": "Le deuxième fou !"
+      },
+      {
+        "text": "19...e5. La seule défense. Ce coup ouvre la sixième rangée pour que la dame noire puisse s'interposer en h6 contre un échec."
+      },
+      {
+        "text": "21.Rxh6+. Les Blancs gagnent la dame noire. Fais le compte : Lasker a donné deux fous et une tour, et a récupéré un cavalier, la dame et deux pions.",
+        "label": "La dame est gagnée"
+      },
+      {
+        "text": "23.Qxb7. Le fou tombe. Le matériel est maintenant à peu près égal, mais le roi noir est à découvert et la dame et la tour blanches continuent de presser."
+      },
+      {
+        "text": "27.fxe5. Les Blancs ouvrent la colonne f pour leur tour, pointée droit sur le roi noir en f8."
+      },
+      {
+        "text": "28.e6. Le pion de plus avance, met les Noirs à l'étroit et affaiblit encore davantage la défense autour de leur roi."
+      },
+      {
+        "text": "30.Rxf6+! La tour fait irruption. Après 30...Bxf6 31.Qxf6+, la dame pourchasse le roi et vise la tour non défendue en b7."
+      },
+      {
+        "text": "34.Qxb7. La tour b7 tombe grâce aux échecs de la dame. Les Blancs ont maintenant une dame contre une tour : une finale gagnante."
+      },
+      {
+        "text": "38.Qxd3. Le dernier espoir des Noirs, le pion d passé, a disparu, et Bauer abandonne. Le sacrifice en h7 et g7 est aujourd'hui connu sous le nom de **combinaison de Lasker**. Méfie-toi quand les deux fous adverses visent ton roi !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Les Noirs viennent de prendre ton cavalier en h5. Tes deux fous visent le roi noir. Quelle est la suite audacieuse ?",
+        "hint": "Commence par un échec en h7.",
+        "explanation": "15.Bxh7+! Le fou arrache le pion h7 avec échec. Après 15...Kxh7 16.Qxh5+, les Blancs récupèrent le cavalier avec échec, et le roi noir est exposé."
+      },
+      {
+        "prompt": "Trait aux Blancs. Tu as déjà donné un fou. Trouveras-tu le coup suivant ?",
+        "hint": "Ton autre fou, en e5, a lui aussi une cible.",
+        "explanation": "17.Bxg7! Le deuxième fou élimine le dernier bouclier de pions. Il menace aussi 18.Qh8 mat ; et si les Noirs le prennent, la dame et la tour déferlent."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le roi noir est à découvert en h7. Comment amener une pièce de plus à l'attaque ?",
+        "hint": "Une tour peut voyager le long de la troisième rangée.",
+        "explanation": "19.Rf3! La tour glisse vers h3 pour un échec mortel. La seule défense des Noirs est 19...e5 20.Rh3+ Qh6, et ensuite les Blancs gagnent la dame."
+      },
+      {
+        "prompt": "Trait aux Blancs. Ton attaque a récupéré le matériel. Trouve maintenant un coup qui attaque deux pièces noires à la fois !",
+        "hint": "Regarde les fous en e7 et b7.",
+        "explanation": "22.Qd7! Une double attaque : la dame attaque à la fois le fou en e7 et le fou en b7. Les Noirs ne peuvent en sauver qu'un."
+      }
+    ]
+  },
+  "tal-smyslov-1959": {
+    "title": "Tal contre Smyslov : le magicien",
+    "event": "Tournoi des candidats, Yougoslavie",
+    "opening": "Défense Caro-Kann",
+    "summary": "Mikhaïl Tal, le magicien de Riga, abandonne un fou, lance ses pièces sur le roi d'un ancien champion du monde et conclut par un sacrifice de dame. Une partie qui montre que l'activité et les menaces peuvent valoir plus que le matériel.",
+    "annotations": [
+      {
+        "text": "Yougoslavie, 1959 : le tournoi des candidats, qui désignait le challenger du champion du monde. Mikhaïl Tal, **le magicien de Riga**, affronte l'ancien champion du monde Vassily Smyslov."
+      },
+      {
+        "text": "2.d3 est une réponse calme et inhabituelle à la Caro-Kann. Tal quitte les sentiers battus pour aller vers la bagarre."
+      },
+      {
+        "text": "Le centre s'ouvre rapidement. Sans les pions, ce sont les pièces actives qui vont tout décider."
+      },
+      {
+        "text": "9.O-O-O : Tal fait le grand roque alors que les Noirs vont faire le petit roque. Avec les rois de chaque côté, c'est une course à l'attaque."
+      },
+      {
+        "text": "10.Nd6! Le cavalier plonge profondément dans le camp noir, vise f7 et b7 et gêne les pièces noires.",
+        "label": "Le cavalier plonge en d6"
+      },
+      {
+        "text": "12.Bd2!? attaque la dame en a5 et laisse simplement filer le fou c4. Tal fait plus confiance à son attaque qu'à son matériel.",
+        "label": "Le fou laissé en prise"
+      },
+      {
+        "text": "Le cavalier file en f5 et vise le fou en e7 ainsi que les cases proches du roi noir. Les pièces de Tal se rassemblent à l'aile roi."
+      },
+      {
+        "text": "Les Noirs prennent enfin le fou. Ils ont une pièce de plus, mais la dame et le cavalier blancs sont tout près de leur roi."
+      },
+      {
+        "text": "17...Qxa2 riposte : la dame noire plonge à côté du roi blanc et menace ...Qa1+."
+      },
+      {
+        "text": "18...Nf6 attaque la dame blanche. Les deux rois sont maintenant en danger. Qui frappera le premier ?"
+      },
+      {
+        "text": "19.Qxf7!! La dame se jette dans la gueule du loup. Tal a vu que son cavalier en h6 et sa tour en d1 vont récupérer le matériel.",
+        "label": "Sacrifice de dame !"
+      },
+      {
+        "text": "Smyslov donne échec le premier. Le roi blanc va en d2, et remarque : la dame noire en a1 se trouve maintenant devant la tour blanche en d1."
+      },
+      {
+        "text": "La fumée se dissipe. Les Blancs ont deux tours contre une, et le roi noir est à découvert."
+      },
+      {
+        "text": "24.Nxc6 gagne un pion et attaque le fou en d8 ainsi que le pion a7."
+      },
+      {
+        "text": "26.Bd4 pare l'échec. Les Blancs ont la qualité de plus et les pièces noires sont dispersées : Smyslov abandonne. Tal a gagné le tournoi et est devenu champion du monde en 1960.",
+        "label": "Smyslov abandonne"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le fou en d8 attaque ta dame en g5. Peux-tu sauver la dame et gagner quelque chose en même temps ?",
+        "hint": "Un échec de cavalier d'abord.",
+        "explanation": "16.Nh6+! repousse le roi dans le coin (si 16...gxh6, la dame prend quand même h5 et le roi noir est grand ouvert). Ensuite, 17.Qxh5 récupère le cavalier et l'attaque continue."
+      },
+      {
+        "prompt": "Trait aux Blancs. La tour noire vient de prendre ta dame. Peux-tu tout récupérer ?",
+        "hint": "Reprends avec échec, puis regarde a1.",
+        "explanation": "21.Nxf7+ prend la tour avec échec. Après le coup du roi, 22.Rxa1 ramasse la dame noire, et les Blancs sortent gagnants."
+      }
+    ]
+  },
+  "legal-mate-1750": {
+    "title": "Le mat de Légal",
+    "event": "Café de la Régence, Paris",
+    "opening": "Défense Philidor",
+    "summary": "Une miniature en sept coups qui a donné son nom à un piège classique. Les Blancs abandonnent leur dame, et trois pièces mineures donnent le mat. La leçon : un clouage n'en est un que si le rompre fait vraiment perdre quelque chose, et prendre la dame sans regarder peut être fatal.",
+    "annotations": [
+      {
+        "text": "Paris, vers 1750, au célèbre Café de la Régence. Légal, l'un des meilleurs joueurs de son époque, tend un piège qui fait encore des victimes aujourd'hui."
+      },
+      {
+        "text": "1.e4 prend le centre et ouvre des lignes pour la dame et le fou."
+      },
+      {
+        "text": "1...e5 Les Noirs répondent de la même façon et réclament leur part du centre."
+      },
+      {
+        "text": "2.Bc4 pointe le fou sur f7, le point le plus faible du camp noir, protégé seulement par le roi."
+      },
+      {
+        "text": "2...d6 protège e5 et ouvre la voie au fou c8."
+      },
+      {
+        "text": "3.Nf3 développe un cavalier et attaque le pion e5."
+      },
+      {
+        "text": "3...Bg4 cloue le cavalier sur la dame blanche : si le cavalier bouge, la dame en d1 est exposée.",
+        "label": "Le clouage"
+      },
+      {
+        "text": "4.Nc3 développe une autre pièce et ajoute discrètement un attaquant sur la case d5."
+      },
+      {
+        "text": "4...g6? Un coup lent. Les Noirs devraient développer leurs pièces, et ce coup ne fait rien contre l'astuce cachée des Blancs en e5."
+      },
+      {
+        "text": "5...Bxd1? Les Noirs prennent la dame sans regarder ce que menacent les Blancs. C'est le coup perdant.",
+        "label": "Mordre à l'hameçon"
+      },
+      {
+        "text": "6.Bxf7+ Le fou frappe f7 avec échec, protégé par le cavalier en e5. Le roi n'a qu'une seule case : e7."
+      },
+      {
+        "text": "6...Ke7 était le seul coup. Regarde maintenant quelles cases autour du roi sont encore libres."
+      },
+      {
+        "text": "7.Nd5# Échec et mat avec trois pièces mineures ! Les Noirs ont une dame de plus mais ont perdu la partie. **Avant de prendre du matériel, demande-toi toujours ce que menace ton adversaire.**",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Ton cavalier en f3 est cloué sur la dame. Peux-tu quand même rompre le clouage ?",
+        "hint": "Perdre la dame est-il vraiment un problème si tu as quelque chose de plus fort en réserve ?",
+        "explanation": "5.Nxe5! Si les Noirs prennent la dame avec 5...Bxd1, les Blancs matent par 6.Bxf7+ et 7.Nd5#. Si plutôt 5...dxe5, alors 6.Qxg4 et les Blancs ont un pion de plus."
+      },
+      {
+        "prompt": "Les Blancs jouent et font mat en un coup. Les Noirs viennent de prendre ta dame. Peux-tu les punir ?",
+        "hint": "Ton cavalier en c3 a un saut qui donne échec.",
+        "explanation": "7.Nd5# Le cavalier donne échec depuis d5, et le fou et l'autre cavalier contrôlent toutes les cases de fuite."
+      }
+    ]
+  },
+  "carlsen-ernst-2004": {
+    "title": "Carlsen à 13 ans",
+    "event": "Tournoi Corus, groupe C, Wijk aan Zee",
+    "opening": "Défense Caro-Kann",
+    "summary": "À 13 ans, Magnus Carlsen sacrifie un cavalier, un fou et une tour pour ouvrir le roi noir et termine par un superbe mat. Cette partie a fait connaître le futur champion du monde et montre comment un pion en h5 peut devenir le fer de lance d'une attaque.",
+    "annotations": [
+      {
+        "text": "Wijk aan Zee, janvier 2004. Magnus Carlsen, 13 ans, affronte le grand maître néerlandais Sipke Ernst. Cette attaque a attiré l'attention de tout le monde des échecs. Carlsen est devenu champion du monde en 2013."
+      },
+      {
+        "text": "La **Caro-Kann** : les Noirs soutiennent **...d5** avec le pion c, une façon solide de lutter pour le centre."
+      },
+      {
+        "text": "**4...Bf5** sort le fou de cases blanches avant de jouer **...e6**, pour qu'il ne reste pas enfermé."
+      },
+      {
+        "text": "**6.h4** pousse le pion h pour chasser le fou et gagner de l'espace à l'aile roi."
+      },
+      {
+        "text": "Le pion arrive en h5. Retiens-le : il jouera un rôle de premier plan plus tard."
+      },
+      {
+        "text": "Carlsen fait le grand roque. Avec les rois de chaque côté, les deux joueurs peuvent lancer pions et pièces sur le roi adverse."
+      },
+      {
+        "text": "Ernst fait le petit roque, juste en face du pion blanc en h5. Ce pion contrôle déjà g6."
+      },
+      {
+        "text": "**16.Ne5** place le cavalier sur une forte case centrale, d'où il vise f7 et g6."
+      },
+      {
+        "text": "Ernst contre-attaque au centre avec **17...c5**. Mais les pièces blanches visent le roi noir. Y a-t-il un moyen de percer ?"
+      },
+      {
+        "text": "Ernst prend le cavalier. Le pion e6 a maintenant perdu son ami en f7, et le pion blanc h5 peut reprendre en g6.",
+        "label": "Sacrifice de cavalier !"
+      },
+      {
+        "text": "**19.Qxe6+** fait irruption avec échec et attaque le fou en e7."
+      },
+      {
+        "text": "Le pion h se trouve maintenant en g6, une épine juste à côté du roi noir. Les Blancs veulent ensuite ouvrir la colonne h."
+      },
+      {
+        "text": "La colonne h est ouverte, et les Blancs donnent une tour pour qu'elle le reste. Le roi noir manque de défenseurs.",
+        "label": "Sacrifice de tour aussi !"
+      },
+      {
+        "text": "**23.Qxe7** prend le fou et menace **Qh7#**, le pion g6 protégeant la dame."
+      },
+      {
+        "text": "Les Noirs ont interposé **23...Nf7**, alors le pion le prend tout simplement. Le pion est maintenant en f7, au cœur du camp noir."
+      },
+      {
+        "text": "**25.Rd3!** La dernière tour se déplace vers la colonne g pour se joindre à l'attaque.",
+        "label": "La tour monte à l'attaque"
+      },
+      {
+        "text": "**29.Qd7#** Échec et mat ! La dame donne échec le long de la septième rangée et la tour en g3 contrôle la colonne g. Une fin brillante signée par un joueur de 13 ans.",
+        "label": "Échec et mat !"
+      }
+    ],
+    "questions": [
+      {
+        "prompt": "Trait aux Blancs. Le pion noir f7 protège e6 et g6. Peux-tu l'attirer ailleurs ?",
+        "hint": "Une offre de cavalier à côté du roi.",
+        "explanation": "**18.Ng6!** Si **18...fxg6**, le pion e6 tombe avec échec et le pion h5 reprend en g6, juste à côté du roi noir."
+      },
+      {
+        "prompt": "Trait aux Blancs. Le roi noir se cache derrière le pion h6. Comment faire sauter la colonne h ?",
+        "hint": "Un fou peut prendre un pion.",
+        "explanation": "**21.Bxh6!** Si **21...gxh6**, alors **22.Rxh6+** suit et la colonne h est grande ouverte."
+      },
+      {
+        "prompt": "Les Blancs jouent et font mat en un coup !",
+        "hint": "Ta tour en g3 contrôle déjà la colonne g.",
+        "explanation": "**29.Qd7#** donne échec le long de la septième rangée. Le roi ne peut pas aller sur la colonne g à cause de la tour, et e6, e7 et e8 sont contrôlées par la dame."
+      }
+    ]
+  }
+}
