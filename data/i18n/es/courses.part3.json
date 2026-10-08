@@ -114,7 +114,7 @@
             "text": "La dama negra acaba de saltar a b6.",
             "task": {
               "prompt": "Haz clic en la pieza blanca colgada.",
-              "success": "¡Sí! El **peón de b2** está atacado por la dama y nada lo defiende. Una jugada como **Db3** o **Dc2** lo soluciona.",
+              "success": "¡Sí! El **peón de b2** está atacado por la dama y nada lo defiende. Una jugada como **Qb3** o **Qc2** lo soluciona.",
               "hint": "Sigue las líneas de la dama desde b6."
             }
           },
@@ -122,7 +122,7 @@
             "text": "Las blancas acaban de capturar en d5 con el caballo. Juegas con negras.",
             "task": {
               "prompt": "Haz clic en la pieza blanca colgada.",
-              "success": "¡Correcto! Nada defiende el **caballo de d5**. Tu caballo de f6 parece clavado, pero **Cxd5!** funciona: si **Axd8**, entonces **Ab4+** recupera la dama y te quedas con una pieza de más. Es la famosa **trampa del elefante**.",
+              "success": "¡Correcto! Nada defiende el **caballo de d5**. Tu caballo de f6 parece clavado, pero **Nxd5!** funciona: si **Bxd8**, entonces **Bb4+** recupera la dama y te quedas con una pieza de más. Es la famosa **trampa del elefante**.",
               "hint": "¿Qué pieza blanca está justo al lado de las tuyas?"
             }
           },
@@ -142,7 +142,7 @@
             "text": "El caballo negro acaba de saltar a f6.",
             "task": {
               "prompt": "Encuentra las **dos** piezas blancas colgadas.",
-              "success": "Exacto: la **dama de h5** y el **peón de e4** están atacados. Pero antes de salvarlos, busca siempre los jaques: ¡aquí **Dxf7#** es jaque mate!",
+              "success": "Exacto: la **dama de h5** y el **peón de e4** están atacados. Pero antes de salvarlos, busca siempre los jaques: ¡aquí **Qxf7#** es jaque mate!",
               "hint": "¿Qué ataca el caballo de f6?"
             }
           },
@@ -158,7 +158,7 @@
             "text": "El caballo blanco acaba de llegar a d5. Juegas con negras.",
             "task": {
               "prompt": "¿Qué piezas tuyas están colgadas? Hay dos.",
-              "success": "¡Bien visto! El caballo ataca a tu **dama de f6** y al **peón de c7**, y **Cxc7+** además haría un ataque doble al rey y a la torre.",
+              "success": "¡Bien visto! El caballo ataca a tu **dama de f6** y al **peón de c7**, y **Nxc7+** además haría un ataque doble al rey y a la torre.",
               "hint": "El caballo ataca en forma de L, hasta ocho casillas."
             }
           }
@@ -178,16 +178,16 @@
               "success": "¡Jaque mate! Mira siempre primero los **jaques y las capturas**.",
               "options": [
                 {
-                  "text": "Dh3: salvar la dama",
+                  "text": "Qh3: salvar la dama",
                   "explain": "Es segura, ¡pero te pierdes un mate en una!"
                 },
                 {
-                  "text": "Dxf7#: capturar en f7",
+                  "text": "Qxf7#: capturar en f7",
                   "explain": "¡Jaque mate! Solo el rey defendía f7, y el alfil de c4 apoya a la dama."
                 },
                 {
-                  "text": "Dxe5+: comer un peón con jaque",
-                  "explain": "El caballo de c6 defiende e5: tras **Cxe5** pierdes la dama."
+                  "text": "Qxe5+: comer un peón con jaque",
+                  "explain": "El caballo de c6 defiende e5: tras **Nxe5** pierdes la dama."
                 }
               ]
             }
@@ -199,15 +199,15 @@
               "success": "¡Buen plan! Primero defiende y después sigue desarrollando.",
               "options": [
                 {
-                  "text": "Ce5: ignorarlo y atacar",
+                  "text": "Ne5: ignorarlo y atacar",
                   "explain": "Las negras capturan en b2, ganan un peón y atacan tu torre."
                 },
                 {
-                  "text": "Ac7: atacar a la dama",
+                  "text": "Bc7: atacar a la dama",
                   "explain": "Nada defiende el alfil en c7, así que la dama se lo come."
                 },
                 {
-                  "text": "Db3: defender b2 y ofrecer cambio",
+                  "text": "Qb3: defender b2 y ofrecer cambio",
                   "explain": "Sólido: b2 queda protegido y un cambio de damas te deja una posición sana."
                 }
               ]
@@ -220,15 +220,15 @@
               "success": "¡Sí! Una clavada solo es peligrosa si la pieza de detrás se puede capturar gratis de verdad.",
               "options": [
                 {
-                  "text": "Cxd5: capturar el caballo",
-                  "explain": "Si **Axd8**, entonces **Ab4+** recupera la dama y terminas con una pieza de más."
+                  "text": "Nxd5: capturar el caballo",
+                  "explain": "Si **Bxd8**, entonces **Bb4+** recupera la dama y terminas con una pieza de más."
                 },
                 {
                   "text": "c6: echar al caballo",
                   "explain": "Se puede jugar, pero te pierdes ganar un caballo entero."
                 },
                 {
-                  "text": "Ae7: romper primero la clavada",
+                  "text": "Be7: romper primero la clavada",
                   "explain": "Es seguro, pero el caballo regalado se escapa."
                 }
               ]
@@ -254,7 +254,7 @@
         "summary": "Un sacrificio de dama que lleva siglos engañando a los jugadores.",
         "steps": [
           {
-            "text": "**Légal vs. Saint Brie, París 1750.** Una de las trampas más antiguas que se conocen. Las negras han clavado el caballo blanco contra la dama con **...Ag4**. El caballo parece atrapado... ¿o no?"
+            "text": "**Légal vs. Saint Brie, París 1750.** Una de las trampas más antiguas que se conocen. Las negras han clavado el caballo blanco contra la dama con **...Bg4**. El caballo parece atrapado... ¿o no?"
           },
           {
             "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
@@ -264,9 +264,9 @@
               "hint": "¿De verdad el caballo clavado no se puede mover?",
               "game": "Légal vs. Saint Brie, París 1750",
               "notes": [
-                "**Cxe5!** ignora la clavada y ofrece la dama.",
-                "**Axf7+**: el alfil da jaque y obliga al rey a avanzar.",
-                "**Cd5#**: tres piezas menores dan mate. ¡La dama de más de las negras no sirve de nada!"
+                "**Nxe5!** ignora la clavada y ofrece la dama.",
+                "**Bxf7+**: el alfil da jaque y obliga al rey a avanzar.",
+                "**Nd5#**: tres piezas menores dan mate. ¡La dama de más de las negras no sirve de nada!"
               ]
             }
           },
@@ -286,13 +286,13 @@
             "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
             "task": {
               "prompt": "Adivina la siguiente jugada de las blancas. Si aciertas, 3 puntos; una buena alternativa suma puntos parciales.",
-              "success": "¡Gran juego de ataque! Las negras respondieron **12...Td8**. Ahora remata el trabajo.",
+              "success": "¡Gran juego de ataque! Las negras respondieron **12...Rd8**. Ahora remata el trabajo.",
               "hint": "Desarrolla una pieza con amenaza.",
               "game": "Paul Morphy vs. el duque Karl y el conde Isouard, París 1858",
               "notes": [
-                "**Ag5** desarrolla y clava el caballo de f6.",
-                "**Cxb5!** entrega un caballo para abrir líneas hacia el rey negro.",
-                "**Axb5+**: jaque, y ahora el caballo de d7 quedará clavado.",
+                "**Bg5** desarrolla y clava el caballo de f6.",
+                "**Nxb5!** entrega un caballo para abrir líneas hacia el rey negro.",
+                "**Bxb5+**: jaque, y ahora el caballo de d7 quedará clavado.",
                 "**O-O-O** lleva la torre directamente a la columna d, apuntando al caballo clavado."
               ]
             }
@@ -305,11 +305,11 @@
               "hint": "El caballo de d7 está clavado. Ataca con más piezas.",
               "game": "Paul Morphy vs. el duque Karl y el conde Isouard, París 1858",
               "notes": [
-                "**Txd7!** entrega una torre para mantener el ataque.",
-                "**Td1**: la segunda torre se suma a la clavada en d7.",
-                "**Axd7+** elimina otro defensor.",
-                "**Db8+!!** Un sacrificio de dama que aparta al caballo de d7.",
-                "**Td8#**: jaque mate con las dos últimas piezas, alfil y torre."
+                "**Rxd7!** entrega una torre para mantener el ataque.",
+                "**Rd1**: la segunda torre se suma a la clavada en d7.",
+                "**Bxd7+** elimina otro defensor.",
+                "**Qb8+!!** Un sacrificio de dama que aparta al caballo de d7.",
+                "**Rd8#**: jaque mate con las dos últimas piezas, alfil y torre."
               ]
             }
           },
@@ -334,9 +334,9 @@
               "game": "Richard Réti vs. Savielly Tartakower, Viena 1910",
               "notes": [
                 "**O-O-O!** enroca y coloca la torre en la columna d abierta. A las blancas no les importa perder el caballo de e4.",
-                "**Dd8+!!** ¡Un sacrificio de dama! El rey tiene que capturar.",
-                "**Ag5+** es un **jaque doble**: el alfil y la torre dan jaque a la vez, así que el rey tiene que moverse.",
-                "**Ad8#**: el alfil llega a d8 y da mate."
+                "**Qd8+!!** ¡Un sacrificio de dama! El rey tiene que capturar.",
+                "**Bg5+** es un **jaque doble**: el alfil y la torre dan jaque a la vez, así que el rey tiene que moverse.",
+                "**Bd8#**: el alfil llega a d8 y da mate."
               ]
             }
           },
@@ -360,9 +360,9 @@
               "hint": "¿A qué casilla querría huir el rey negro? Quítasela.",
               "game": "Adolf Anderssen vs. Lionel Kieseritzky, Londres 1851",
               "notes": [
-                "**Ad6!** ignora las dos torres atacadas y le quita al rey negro la casilla f8.",
+                "**Bd6!** ignora las dos torres atacadas y le quita al rey negro la casilla f8.",
                 "**e5!** cierra la gran diagonal, así que la dama negra ya no puede defender g7.",
-                "**Re2** sale del jaque. Las blancas tienen dos torres menos, pero las piezas negras están lejos de su rey."
+                "**Ke2** sale del jaque. Las blancas tienen dos torres menos, pero las piezas negras están lejos de su rey."
               ]
             }
           },
@@ -374,9 +374,9 @@
               "hint": "Empieza con un jaque.",
               "game": "Adolf Anderssen vs. Lionel Kieseritzky, Londres 1851",
               "notes": [
-                "**Cxg7+**: jaque, que lleva al rey a d8.",
-                "**Df6+!!** entrega también la dama y aparta al caballo de la defensa de e7.",
-                "**Ae7#**: las piezas menores dan mate a un rey rodeado del material de más de las negras."
+                "**Nxg7+**: jaque, que lleva al rey a d8.",
+                "**Qf6+!!** entrega también la dama y aparta al caballo de la defensa de e7.",
+                "**Be7#**: las piezas menores dan mate a un rey rodeado del material de más de las negras."
               ]
             }
           },
@@ -390,7 +390,7 @@
         "summary": "Una jugada tranquila de torre, un sacrificio de dama y un jaque doble.",
         "steps": [
           {
-            "text": "**Adolf Anderssen vs. Jean Dufresne, Berlín 1852.** Las piezas blancas rodean al rey negro en el centro, pero las negras amenazan **...Dxf3** y **...Txg2+**. Juegan las blancas."
+            "text": "**Adolf Anderssen vs. Jean Dufresne, Berlín 1852.** Las piezas blancas rodean al rey negro en el centro, pero las negras amenazan **...Qxf3** y **...Rxg2+**. Juegan las blancas."
           },
           {
             "text": "Juegas con blancas. Busca primero las jugadas forzadas: jaques, capturas y amenazas.",
@@ -400,8 +400,8 @@
               "hint": "Mete en juego tu última pieza.",
               "game": "Adolf Anderssen vs. Jean Dufresne, Berlín 1852",
               "notes": [
-                "**Tad1!!** Una jugada tranquila que ignora las amenazas negras y suma la última pieza al ataque.",
-                "**Txe7+!** elimina un defensor con jaque."
+                "**Rad1!!** Una jugada tranquila que ignora las amenazas negras y suma la última pieza al ataque.",
+                "**Rxe7+!** elimina un defensor con jaque."
               ]
             }
           },
@@ -413,15 +413,15 @@
               "hint": "Todas las jugadas son jaque. Empieza por el mayor sacrificio.",
               "game": "Adolf Anderssen vs. Jean Dufresne, Berlín 1852",
               "notes": [
-                "**Dxd7+!!** El sacrificio de dama abre la columna d.",
-                "**Af5+**: jaque doble del alfil y la torre de d1.",
-                "**Ad7+** sigue dando jaque y no deja escapatoria al rey.",
-                "**Axe7#**: ¡mate! Uno de los finales más bellos de la historia."
+                "**Qxd7+!!** El sacrificio de dama abre la columna d.",
+                "**Bf5+**: jaque doble del alfil y la torre de d1.",
+                "**Bd7+** sigue dando jaque y no deja escapatoria al rey.",
+                "**Bxe7#**: ¡mate! Uno de los finales más bellos de la historia."
               ]
             }
           },
           {
-            "text": "**Mete todas las piezas en el ataque antes de rematar.** La tranquila **Tad1** hizo posibles todos los fuegos artificiales."
+            "text": "**Mete todas las piezas en el ataque antes de rematar.** La tranquila **Rad1** hizo posibles todos los fuegos artificiales."
           }
         ]
       }
