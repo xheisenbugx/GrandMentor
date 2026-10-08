@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-board-theme="green">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>GrandMentor — Learn chess the friendly way</title>
+  <meta name="description" content="Play bots, review your games with a coach, solve puzzles, and learn openings, tactics, middlegames and endgames.">
+  <meta name="theme-color" content="#1b1e21">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <script>
+    // Apply the saved theme before first paint to avoid a flash.
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('grandmentor.settings.v1') || '{}');
+        var r = document.documentElement;
+        if (s.theme === 'light' || s.theme === 'dark') r.setAttribute('data-theme', s.theme);
+        if (typeof s.boardTheme === 'string') r.setAttribute('data-board-theme', s.boardTheme);
+      } catch (e) { /* storage unavailable */ }
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/board.css">
+  <link rel="stylesheet" href="/css/play.css">
+  <link rel="stylesheet" href="/css/analysis.css" id="gm-analysis-css">
+  <link rel="stylesheet" href="/css/learn.css" data-gm-css="learn">
+  <link rel="stylesheet" href="/css/puzzles.css" data-page-css="puzzles">
+  <link rel="stylesheet" href="/css/hub.css" data-hub-css>
+  <link rel="modulepreload" href="/js/ui.js">
+  <link rel="modulepreload" href="/js/api.js">
+  <link rel="modulepreload" href="/js/settings.js">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <a class="sr-only" href="#view">Skip to content</a>
+  <div class="route-progress" id="route-progress" aria-hidden="true"></div>
+
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation"></aside>
+    <main class="main" id="main">
+      <div class="view" id="view" tabindex="-1">
+        <div class="loading-center" role="status">
+          <div class="spinner spinner-lg"></div>
+          <div>Setting up the board…</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottombar" id="bottombar" aria-label="Main navigation"></nav>
+  <div class="more-sheet" id="more-sheet" aria-hidden="true"></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div style="max-width:520px;margin:15vh auto;padding:24px;text-align:center;font-family:system-ui,sans-serif;color:#eceef1;">
+      <h1>GrandMentor needs JavaScript</h1>
+      <p>Please enable JavaScript to play, analyse and learn chess.</p>
+    </div>
+  </noscript>
+</body>
+</html>

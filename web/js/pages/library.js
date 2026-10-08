@@ -1,0 +1,663 @@
+// Library page (#/library): saved games with search, filters, sort, cheap static board
+// thumbnails, favourites, notes/tags, PGN download/import and delete.
+// Also exports small shared helpers used by home.js and profile.js (hub pages).
+
+import { api, qs, isAbort } from '../api.js';
+import {
+  h, icon, pageHeader, emptyState, skeleton, disposables, debounce, modal, confirmDialog,
+  toast, formatRelative, formatDate, escapeHtml,
+} from '../ui.js';
+import { getSetting, pieceUrl } from '../settings.js';
+
+export const title = 'Library';
+
+// ---------------------------------------------------------------------------
+// Shared hub helpers
+// ---------------------------------------------------------------------------
+
+/** Load web/css/hub.css once (it is not linked from index.html). */
+let hubCssPromise = null;
+/** Load web/css/hub.css once (it is not linked from index.html). Resolves when loaded (or after 1.5s). */
+export function ensureHubCss() {
+  if (hubCssPromise) return hubCssPromise;
+  const existing = document.querySelector('link[data-hub-css], link[href$="/css/hub.css"]');
+  if (existing && existing.sheet) { hubCssPromise = Promise.resolve(); return hubCssPromise; }
+  hubCssPromise = new Promise((resolve) => {
+    const link = existing || document.createElement('link');
+    let timer = 0;
+    const done = () => { clearTimeout(timer); link.removeEventListener('load', done); link.removeEventListener('error', done); resolve(); };
+    link.addEventListener('load', done);
+    link.addEventListener('error', done);
+    timer = setTimeout(done, 1500);
+    if (!existing) {
+      link.rel = 'stylesheet';
+      link.href = '/css/hub.css';
+      link.dataset.hubCss = '1';
+      document.head.appendChild(link);
+    }
+  });
+  return hubCssPromise;
+}
+
+const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+// Dark squares of an 8x8 board in a single path (a8 = top-left is light).
+const DARK_PATH = (() => {
+  let d = '';
+  for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if ((x + y) % 2 === 1) d += `M${x} ${y}h1v1h-1z`;
+  return d;
+})();
+
+const FILES = 'abcdefgh';
+function squareXY(sq, flip) {
+  if (typeof sq !== 'string' || sq.length !== 2) return null;
+  const f = FILES.indexOf(sq[0]);
+  const r = Number(sq[1]);
+  if (f < 0 || !(r >= 1 && r <= 8)) return null;
+  const x = flip ? 7 - f : f;
+  const y = flip ? r - 1 : 8 - r;
+  return { x, y };
+}
+
+/**
+ * Lightweight static board as an SVG string (one element, no listeners).
+ * fenBoardSvg(fen, { orientation: 'white'|'black', lastMove: 'e2e4' | ['e2','e4'], label })
+ */
+export function fenBoardSvg(fen, { orientation = 'white', lastMove = null, label = 'Chess position', pieceSet } = {}) {
+  const flip = orientation === 'black';
+  const placement = String(fen || START_FEN).trim().split(/\s+/)[0] || '';
+  const set = pieceSet || getSetting('pieceSet') || 'cburnett';
+  let pieces = '';
+  const rows = placement.split('/');
+  if (rows.length === 8) {
+    for (let ry = 0; ry < 8; ry++) {
+      let fx = 0;
+      for (const ch of rows[ry]) {
+        if (fx > 7) break;
+        if (ch >= '1' && ch <= '8') { fx += Number(ch); continue; }
+        const lower = ch.toLowerCase();
+        if (!'kqrbnp'.includes(lower)) { fx++; continue; }
+        const code = (ch === lower ? 'b' : 'w') + lower.toUpperCase();
+        const x = flip ? 7 - fx : fx;
+        const y = flip ? 7 - ry : ry;
+        pieces += `<image href="${pieceUrl(code, set)}" x="${x}" y="${y}" width="1" height="1"/>`;
+        fx++;
+      }
+    }
+  }
+  let hl = '';
+  if (lastMove) {
+    const [from, to] = Array.isArray(lastMove) ? lastMove : [String(lastMove).slice(0, 2), String(lastMove).slice(2, 4)];
+    for (const sq of [from, to]) {
+      const p = squareXY(sq, flip);
+      if (p) hl += `<rect class="hub-sq-last" x="${p.x}" y="${p.y}" width="1" height="1"/>`;
+    }
+  }
+  return `<svg class="hub-mini-board" viewBox="0 0 8 8" role="img" aria-label="${escapeHtml(label)}" shape-rendering="crispEdges">`
+    + `<rect class="hub-sq-l" width="8" height="8"/><path class="hub-sq-d" d="${DARK_PATH}"/>${hl}`
+    + `<g shape-rendering="auto">${pieces}</g></svg>`;
+}
+
+let chessPromise = null;
+/** Lazily load the vendored chess.js (cached). */
+export function loadChess() {
+  if (!chessPromise) {
+    chessPromise = import('/vendor/chess.js').then((m) => m.Chess).catch((e) => { chessPromise = null; throw e; });
+  }
+  return chessPromise;
+}
+
+/** Apply UCI moves to a FEN with chess.js; returns {fen, lastMove, turn} (stops at the first illegal move). */
+export async function playUci(startFen, moves, maxMoves = 1200) {
+  const Chess = await loadChess();
+  let c;
+  try { c = new Chess(startFen || START_FEN); } catch { c = new Chess(); }
+  let last = null;
+  const list = Array.isArray(moves) ? moves.slice(0, maxMoves) : [];
+  for (const u of list) {
+    if (typeof u !== 'string' || u.length < 4) break;
+    try {
+      c.move({ from: u.slice(0, 2), to: u.slice(2, 4), promotion: u[4] || undefined });
+      last = u;
+    } catch { break; }
+  }
+  return { fen: c.fen(), lastMove: last, turn: c.turn() === 'w' ? 'white' : 'black' };
+}
+
+// Bounded LRU cache of final positions for thumbnails: key "id:updated_at".
+const FEN_CACHE_MAX = 300;
+const fenCache = new Map();
+function cacheGet(k) {
+  if (!fenCache.has(k)) return undefined;
+  const v = fenCache.get(k);
+  fenCache.delete(k);
+  fenCache.set(k, v);
+  return v;
+}
+function cacheSet(k, v) {
+  fenCache.delete(k);
+  fenCache.set(k, v);
+  while (fenCache.size > FEN_CACHE_MAX) fenCache.delete(fenCache.keys().next().value);
+}
+
+// Tiny concurrency limiter for thumbnail fetches (slot hand-off avoids over-subscription).
+const MAX_FETCH = 4;
+let activeFetch = 0;
+const waiters = [];
+async function withSlot(fn, signal) {
+  if (activeFetch < MAX_FETCH) activeFetch++;
+  else {
+    await new Promise((resolve, reject) => {
+      const w = { resolve };
+      waiters.push(w);
+      if (signal) {
+        const onAbort = () => {
+          const i = waiters.indexOf(w);
+          if (i >= 0) { waiters.splice(i, 1); reject(new DOMException('Aborted', 'AbortError')); }
+        };
+        if (signal.aborted) onAbort(); else signal.addEventListener('abort', onAbort, { once: true });
+        w.resolve = () => { signal.removeEventListener('abort', onAbort); resolve(); };
+      }
+    });
+  }
+  try { return await fn(); }
+  finally {
+    const next = waiters.shift();
+    if (next) next.resolve(); else activeFetch--;
+  }
+}
+
+/** Final position of a saved game (summary or full record). Cached; fetches the record if needed. */
+export async function gameFinalPosition(game, { signal } = {}) {
+  const key = `${game.id}:${game.updated_at || ''}`;
+  const hit = cacheGet(key);
+  if (hit) return hit;
+  let moves = game.moves;
+  let start = game.start_fen;
+  if (!Array.isArray(moves)) {
+    const rec = await withSlot(() => api.get(`/api/games/${encodeURIComponent(game.id)}`, { signal }), signal);
+    moves = rec?.moves || [];
+    start = rec?.start_fen || start;
+  }
+  const pos = await playUci(start, moves);
+  cacheSet(key, pos);
+  return pos;
+}
+
+/** Outcome of a game from the user's perspective. */
+export function gameOutcome(g) {
+  const r = g?.result;
+  if (r === '1/2-1/2') return 'draw';
+  if (r !== '1-0' && r !== '0-1') return 'ongoing';
+  const uc = g.user_color;
+  if (uc !== 'white' && uc !== 'black') return r === '1-0' ? 'white' : 'black';
+  return (r === '1-0') === (uc === 'white') ? 'win' : 'loss';
+}
+
+const OUTCOME_META = {
+  win: { cls: 'result-win', short: 'W', label: 'Won' },
+  loss: { cls: 'result-loss', short: 'L', label: 'Lost' },
+  draw: { cls: 'result-draw', short: '½', label: 'Draw' },
+  ongoing: { cls: 'result-draw', short: '…', label: 'Unfinished' },
+  white: { cls: 'result-draw', short: '1-0', label: 'White won' },
+  black: { cls: 'result-draw', short: '0-1', label: 'Black won' },
+};
+
+/** Small result marker element (W / L / ½). */
+export function resultMarker(g) {
+  const m = OUTCOME_META[gameOutcome(g)];
+  return h('span', { class: `result ${m.cls}`, title: m.label, 'aria-label': m.label }, m.short);
+}
+
+export function outcomeLabel(g) { return OUTCOME_META[gameOutcome(g)].label; }
+
+/** User's accuracy in a game (or null). */
+export function userAccuracy(g) {
+  const v = g?.user_color === 'black' ? g.accuracy_black : g?.user_color === 'white' ? g.accuracy_white : null;
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
+}
+
+/** Accuracy pill element. */
+export function accuracyPill(acc) {
+  if (acc == null) return h('span', { class: 'hub-acc hub-acc-none', title: 'Not reviewed yet' }, '—');
+  const tier = acc >= 85 ? 'hi' : acc >= 65 ? 'mid' : 'lo';
+  return h('span', { class: `hub-acc hub-acc-${tier}`, title: 'Your accuracy' }, acc.toFixed(1));
+}
+
+/** "You vs Martin" style title. */
+export function gameTitle(g, botsById) {
+  const uc = g.user_color;
+  if (uc === 'white' || uc === 'black') {
+    const opp = uc === 'white' ? g.black : g.white;
+    const bot = g.bot_id && botsById ? botsById.get(g.bot_id) : null;
+    return `You vs ${bot?.name || opp || 'Opponent'}`;
+  }
+  return `${g.white || 'White'} vs ${g.black || 'Black'}`;
+}
+
+export function fullMoves(g) {
+  const n = Number(g?.move_count ?? (Array.isArray(g?.moves) ? g.moves.length : 0)) || 0;
+  return Math.ceil(n / 2);
+}
+
+// ---------------------------------------------------------------------------
+// Library page
+// ---------------------------------------------------------------------------
+
+const PAGE_SIZE = 100;
+const MAX_LOADED = 2000;
+const MAX_PGN_BYTES = 4 * 1024 * 1024;
+const MAX_TAGS = 12;
+
+// Remember filters while the app is open (small, bounded state).
+const remembered = { search: '', outcome: 'all', botId: '', favorite: false, sort: 'newest' };
+
+const SORTS = {
+  newest: { label: 'Newest first', fn: (a, b) => cmpStr(b.created_at, a.created_at) || b.id - a.id },
+  oldest: { label: 'Oldest first', fn: (a, b) => cmpStr(a.created_at, b.created_at) || a.id - b.id },
+  longest: { label: 'Most moves', fn: (a, b) => (b.move_count || 0) - (a.move_count || 0) },
+  accuracy: { label: 'Best accuracy', fn: (a, b) => (userAccuracy(b) ?? -1) - (userAccuracy(a) ?? -1) },
+};
+function cmpStr(a, b) { return String(a || '').localeCompare(String(b || '')); }
+
+export async function mount(root) {
+  await ensureHubCss();
+  const bag = disposables();
+  const ctrl = new AbortController();
+  bag.add(() => ctrl.abort());
+  const signal = ctrl.signal;
+
+  const state = {
+    ...remembered,
+    games: [],
+    offset: 0,
+    hasMore: false,
+    loading: false,
+    error: null,
+    bots: [],
+    botsById: new Map(),
+  };
+  let listReq = null; // AbortController for the current list request
+  bag.add(() => listReq?.abort());
+  let openModal = null;
+  bag.add(() => openModal?.close());
+
+  // ---- Thumbnails: lazy, observed only while visible -----------------------
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(onIntersect, { rootMargin: '200px 0px' }) : null;
+  bag.add(() => io?.disconnect());
+  function onIntersect(entries) {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      io.unobserve(e.target);
+      fillThumb(e.target);
+    }
+  }
+  function fillThumb(el) {
+    const id = Number(el.dataset.id);
+    const g = state.games.find((x) => x.id === id);
+    if (!g) return;
+    gameFinalPosition(g, { signal }).then((pos) => {
+      if (signal.aborted || !el.isConnected) return;
+      el.innerHTML = fenBoardSvg(pos.fen, { orientation: g.user_color === 'black' ? 'black' : 'white', lastMove: pos.lastMove, label: `Final position of ${gameTitle(g, state.botsById)}` });
+      el.classList.remove('loading');
+    }).catch((e) => {
+      if (isAbort(e) || !el.isConnected) return;
+      el.classList.remove('loading');
+      el.innerHTML = fenBoardSvg(g.start_fen || START_FEN, { orientation: g.user_color === 'black' ? 'black' : 'white' });
+    });
+  }
+
+  // ---- Layout ----------------------------------------------------------------
+  const importBtn = h('button', { class: 'btn btn-primary', type: 'button', html: icon('upload') + '<span>Import PGN</span>', onClick: () => openImport() });
+  const searchInput = h('input', { class: 'input', type: 'search', placeholder: 'Search players, openings, notes…', value: state.search, 'aria-label': 'Search games', maxlength: '100' });
+  const outcomeSeg = h('div', { class: 'segmented', role: 'group', 'aria-label': 'Result filter' },
+    [['all', 'All'], ['win', 'Won'], ['loss', 'Lost'], ['draw', 'Drawn']].map(([v, l]) =>
+      h('button', { type: 'button', class: state.outcome === v ? 'active' : null, dataset: { v }, 'aria-pressed': String(state.outcome === v) }, l)));
+  const botSelect = h('select', { class: 'select', 'aria-label': 'Opponent filter' }, h('option', { value: '' }, 'All opponents'));
+  const favChip = h('button', { type: 'button', class: ['chip', state.favorite && 'active'], 'aria-pressed': String(state.favorite), html: icon('star', { size: 16 }) + '<span>Favorites</span>' });
+  const sortSelect = h('select', { class: 'select', 'aria-label': 'Sort games' },
+    Object.entries(SORTS).map(([v, s]) => h('option', { value: v, selected: v === state.sort }, s.label)));
+  const summaryEl = h('div', { class: 'hub-lib-summary', 'aria-live': 'polite' });
+  const listEl = h('div', { class: 'hub-game-list' });
+  const moreBtn = h('button', { class: 'btn btn-secondary', type: 'button', hidden: true }, 'Load more games');
+  const footer = h('div', { class: 'hub-lib-footer' }, moreBtn);
+
+  const page = h('div', { class: 'page hub-page' },
+    pageHeader({ title: 'Library', subtitle: 'Every game you play is saved here. Review, analyze, star and annotate them.', icon: 'library', actions: [importBtn] }),
+    h('div', { class: 'card hub-lib-filters' },
+      h('div', { class: 'input-group hub-lib-search', html: icon('search') }, searchInput),
+      outcomeSeg,
+      h('div', { class: 'row-sm hub-lib-selects' }, botSelect, sortSelect, favChip)),
+    summaryEl,
+    listEl,
+    footer);
+  root.appendChild(page);
+
+  // ---- Events (delegated) ------------------------------------------------------
+  const onSearch = debounce(() => { state.search = searchInput.value.trim(); remembered.search = state.search; reload(); }, 280);
+  bag.add(onSearch.cancel);
+  bag.on(searchInput, 'input', onSearch);
+  bag.on(outcomeSeg, 'click', (e) => {
+    const b = e.target.closest('button[data-v]');
+    if (!b) return;
+    state.outcome = remembered.outcome = b.dataset.v;
+    for (const x of outcomeSeg.children) { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', String(on)); }
+    renderList();
+  });
+  bag.on(botSelect, 'change', () => { state.botId = remembered.botId = botSelect.value; reload(); });
+  bag.on(sortSelect, 'change', () => { state.sort = remembered.sort = sortSelect.value; renderList(); });
+  bag.on(favChip, 'click', () => {
+    state.favorite = remembered.favorite = !state.favorite;
+    favChip.classList.toggle('active', state.favorite);
+    favChip.setAttribute('aria-pressed', String(state.favorite));
+    reload();
+  });
+  bag.on(moreBtn, 'click', () => loadPage(false));
+  bag.on(listEl, 'click', onListClick);
+
+  // ---- Data --------------------------------------------------------------------
+  api.get('/api/bots', { signal }).then((bots) => {
+    if (!Array.isArray(bots)) return;
+    state.bots = bots;
+    state.botsById = new Map(bots.map((b) => [b.id, b]));
+    for (const b of [...bots].sort((a, b2) => (a.elo || 0) - (b2.elo || 0))) {
+      botSelect.appendChild(h('option', { value: b.id, selected: b.id === state.botId }, `${b.avatar || ''} ${b.name} (${b.elo})`));
+    }
+    renderList();
+  }).catch(() => { /* filter just stays minimal */ });
+
+  function reload() { loadPage(true); }
+
+  async function loadPage(reset) {
+    listReq?.abort();
+    const req = new AbortController();
+    listReq = req;
+    const onOuter = () => req.abort();
+    signal.addEventListener('abort', onOuter, { once: true });
+    if (reset) {
+      state.offset = 0;
+      state.games = [];
+      io?.disconnect();
+      listEl.replaceChildren(skeleton('list', 5));
+      summaryEl.textContent = '';
+    }
+    state.loading = true;
+    moreBtn.classList.add('loading');
+    try {
+      const rows = await api.get('/api/games' + qs({
+        search: state.search, bot_id: state.botId, favorite: state.favorite ? 'true' : null,
+        limit: PAGE_SIZE, offset: state.offset,
+      }), { signal: req.signal });
+      if (req.signal.aborted) return;
+      const list = Array.isArray(rows) ? rows : [];
+      const seen = new Set(state.games.map((g) => g.id));
+      for (const g of list) if (g && typeof g.id === 'number' && !seen.has(g.id)) state.games.push(normalize(g));
+      state.offset += list.length;
+      state.hasMore = list.length === PAGE_SIZE && state.games.length < MAX_LOADED;
+      state.error = null;
+    } catch (e) {
+      if (isAbort(e) || req.signal.aborted) return;
+      state.error = e?.message || 'Could not load your games.';
+    } finally {
+      signal.removeEventListener('abort', onOuter);
+      if (listReq === req) { state.loading = false; moreBtn.classList.remove('loading'); listReq = null; }
+    }
+    renderList();
+  }
+
+  function normalize(g) {
+    return { ...g, tags: Array.isArray(g.tags) ? g.tags.filter((t) => typeof t === 'string' && t) : [], notes: typeof g.notes === 'string' ? g.notes : '' };
+  }
+
+  function visibleGames() {
+    let list = state.games;
+    if (state.outcome !== 'all') list = list.filter((g) => gameOutcome(g) === state.outcome);
+    return [...list].sort(SORTS[state.sort]?.fn || SORTS.newest.fn);
+  }
+
+  function renderSummary(list) {
+    const counts = { win: 0, loss: 0, draw: 0 };
+    for (const g of state.games) { const o = gameOutcome(g); if (o in counts) counts[o]++; }
+    const total = state.games.length;
+    summaryEl.replaceChildren(
+      h('span', { class: 'semibold' }, `${list.length} ${list.length === 1 ? 'game' : 'games'}`),
+      total ? h('span', { class: 'hub-lib-counts' },
+        h('span', { class: 'hub-dot hub-dot-win' }), `${counts.win} won`,
+        h('span', { class: 'hub-dot hub-dot-draw' }), `${counts.draw} drawn`,
+        h('span', { class: 'hub-dot hub-dot-loss' }), `${counts.loss} lost`) : null);
+  }
+
+  function renderList() {
+    if (state.loading && !state.games.length) return;
+    io?.disconnect();
+    moreBtn.hidden = !state.hasMore;
+    if (state.error && !state.games.length) {
+      summaryEl.textContent = '';
+      listEl.replaceChildren(emptyState({ icon: 'wifi-off', title: 'We couldn’t load your games', text: state.error, action: { label: 'Try again', icon: 'refresh', onClick: reload } }));
+      return;
+    }
+    const list = visibleGames();
+    renderSummary(list);
+    if (!list.length) {
+      const filtered = state.search || state.botId || state.favorite || state.outcome !== 'all';
+      listEl.replaceChildren(filtered
+        ? emptyState({ icon: 'filter', title: 'No games match these filters', text: 'Try a different search or clear the filters.', action: { label: 'Clear filters', kind: 'secondary', onClick: clearFilters } })
+        : emptyState({ emoji: '♟️', title: 'No saved games yet', text: 'Play a bot and your games will appear here automatically. You can also import games from a PGN file.', action: { label: 'Play a bot', href: '#/play', icon: 'play' } }));
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    for (const g of list) frag.appendChild(renderRow(g));
+    listEl.replaceChildren(frag);
+    observeThumbs(listEl);
+  }
+
+  function observeThumbs(scope) {
+    for (const t of scope.querySelectorAll('.hub-thumb.loading')) {
+      if (io) io.observe(t); else fillThumb(t);
+    }
+  }
+
+  function clearFilters() {
+    Object.assign(state, { search: '', outcome: 'all', botId: '', favorite: false });
+    Object.assign(remembered, { search: '', outcome: 'all', botId: '', favorite: false });
+    searchInput.value = '';
+    botSelect.value = '';
+    favChip.classList.remove('active');
+    favChip.setAttribute('aria-pressed', 'false');
+    for (const x of outcomeSeg.children) { const on = x.dataset.v === 'all'; x.classList.toggle('active', on); x.setAttribute('aria-pressed', String(on)); }
+    reload();
+  }
+
+  function renderRow(g) {
+    const bot = g.bot_id ? state.botsById.get(g.bot_id) : null;
+    const key = `${g.id}:${g.updated_at || ''}`;
+    const cached = cacheGet(key);
+    const orientation = g.user_color === 'black' ? 'black' : 'white';
+    const thumb = h('a', {
+      class: ['hub-thumb', !cached && 'loading'], href: `#/review/${g.id}`, dataset: { id: g.id },
+      'aria-label': `Review ${gameTitle(g, state.botsById)}`,
+      html: cached ? fenBoardSvg(cached.fen, { orientation, lastMove: cached.lastMove }) : '',
+    });
+    const meta = [
+      g.opening_name || null,
+      `${fullMoves(g)} moves`,
+      g.time_control && g.time_control !== '-' ? g.time_control : null,
+      formatRelative(g.created_at) || null,
+    ].filter(Boolean);
+    const tags = g.tags.length ? h('div', { class: 'hub-tags' }, g.tags.map((t) => h('span', { class: 'badge hub-tag' }, `#${t}`))) : null;
+    const notes = g.notes ? h('p', { class: 'hub-game-notes', title: g.notes }, g.notes) : null;
+    const acc = userAccuracy(g);
+    const actBtn = (action, ic, label, extra = {}) => h('button', { type: 'button', class: 'btn btn-ghost btn-icon btn-sm', dataset: { action, id: g.id }, 'aria-label': label, 'data-tooltip': label, html: icon(ic), ...extra });
+    return h('article', { class: ['hub-game', g.favorite && 'is-fav'], dataset: { id: g.id } },
+      thumb,
+      h('div', { class: 'hub-game-main' },
+        h('div', { class: 'hub-game-title' },
+          resultMarker(g),
+          bot ? h('span', { class: 'avatar avatar-xs', 'aria-hidden': 'true' }, bot.avatar || '🤖') : null,
+          h('a', { class: 'truncate', href: `#/review/${g.id}` }, gameTitle(g, state.botsById)),
+          bot ? h('span', { class: 'muted text-sm nowrap' }, `(${bot.elo})`) : null),
+        h('div', { class: 'hub-game-sub muted text-sm', title: formatDate(g.created_at) }, meta.join(' · ')),
+        tags, notes),
+      h('div', { class: 'hub-game-acc' }, h('span', { class: 'subtle text-xs' }, 'Accuracy'), accuracyPill(acc)),
+      h('div', { class: 'hub-game-actions' },
+        h('button', {
+          type: 'button', class: ['btn btn-ghost btn-icon btn-sm hub-star', g.favorite && 'on'], dataset: { action: 'fav', id: g.id },
+          'aria-pressed': String(!!g.favorite), 'aria-label': g.favorite ? 'Remove from favorites' : 'Add to favorites',
+          html: icon(g.favorite ? 'star-filled' : 'star'),
+        }),
+        h('a', { class: 'btn btn-primary btn-sm', href: `#/review/${g.id}`, html: icon('sparkles', { size: 16 }) + '<span>Review</span>' }),
+        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `#/analysis?game=${g.id}`, 'aria-label': 'Analyze', 'data-tooltip': 'Analyze', html: icon('analysis') }),
+        h('a', { class: 'btn btn-ghost btn-icon btn-sm', href: `/api/games/${g.id}/pgn`, download: `grandmentor-game-${g.id}.pgn`, 'aria-label': 'Download PGN', 'data-tooltip': 'Download PGN', html: icon('download') }),
+        actBtn('edit', 'edit', 'Notes & tags'),
+        actBtn('delete', 'trash', 'Delete game')));
+  }
+
+  function replaceRow(g) {
+    const old = listEl.querySelector(`.hub-game[data-id="${g.id}"]`);
+    if (!old) return;
+    if (state.outcome !== 'all' && gameOutcome(g) !== state.outcome) { renderList(); return; }
+    const row = renderRow(g);
+    old.replaceWith(row);
+    observeThumbs(row);
+  }
+
+  function onListClick(e) {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    const g = state.games.find((x) => x.id === id);
+    if (!g) return;
+    if (btn.dataset.action === 'fav') toggleFav(g);
+    else if (btn.dataset.action === 'edit') openEdit(g);
+    else if (btn.dataset.action === 'delete') deleteGame(g);
+  }
+
+  async function toggleFav(g) {
+    const next = !g.favorite;
+    g.favorite = next;
+    replaceRow(g);
+    try {
+      const rec = await api.put(`/api/games/${g.id}`, { favorite: next }, { signal });
+      if (rec && typeof rec === 'object') { g.updated_at = rec.updated_at || g.updated_at; }
+      if (state.favorite && !next) { state.games = state.games.filter((x) => x.id !== g.id); renderList(); }
+      toast(next ? 'Added to favorites' : 'Removed from favorites', 'success', { duration: 1800 });
+    } catch (e) {
+      if (isAbort(e)) return;
+      g.favorite = !next;
+      replaceRow(g);
+      toast(e?.message || 'Could not update favorite', 'error');
+    }
+  }
+
+  function openEdit(g) {
+    const notesEl = h('textarea', { class: 'textarea', rows: '5', maxlength: '5000', placeholder: 'What did you learn from this game? e.g. “Castle earlier!”' });
+    notesEl.value = g.notes || '';
+    const tagsEl = h('input', { class: 'input', placeholder: 'e.g. endgame, sicilian, comeback', value: g.tags.join(', '), maxlength: '300' });
+    const preview = h('div', { class: 'hub-tags' });
+    const updatePreview = () => preview.replaceChildren(...parseTags(tagsEl.value).map((t) => h('span', { class: 'badge hub-tag' }, `#${t}`)));
+    tagsEl.addEventListener('input', updatePreview); // freed with the modal DOM
+    updatePreview();
+    const body = h('div', { class: 'stack' },
+      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Notes'), notesEl),
+      h('div', { class: 'field' }, h('label', { class: 'label' }, 'Tags'), tagsEl,
+        h('div', { class: 'help' }, 'Separate tags with commas. Use them to group games you want to study.'), preview));
+    openModal = modal({
+      title: `Notes · ${gameTitle(g, state.botsById)}`,
+      body,
+      actions: [
+        { label: 'Cancel', kind: 'ghost' },
+        {
+          label: 'Save', kind: 'primary', icon: 'save',
+          onClick: async () => {
+            const patch = { notes: notesEl.value.slice(0, 5000), tags: parseTags(tagsEl.value) };
+            const rec = await api.put(`/api/games/${g.id}`, patch, { signal });
+            Object.assign(g, patch, rec && typeof rec === 'object' ? { updated_at: rec.updated_at || g.updated_at } : {});
+            replaceRow(g);
+            toast('Notes saved', 'success');
+          },
+        },
+      ],
+      onClose: () => { openModal = null; },
+    });
+  }
+
+  async function deleteGame(g) {
+    const ok = await confirmDialog({
+      title: 'Delete this game?',
+      message: `“${gameTitle(g, state.botsById)}” and its review will be removed permanently. This can’t be undone.`,
+      confirmLabel: 'Delete game',
+      danger: true,
+    });
+    if (!ok || signal.aborted) return;
+    try {
+      await api.del(`/api/games/${g.id}`, { signal });
+      state.games = state.games.filter((x) => x.id !== g.id);
+      state.offset = Math.max(0, state.offset - 1);
+      renderList();
+      toast('Game deleted', 'success');
+    } catch (e) {
+      if (!isAbort(e)) toast(e?.message || 'Could not delete the game', 'error');
+    }
+  }
+
+  function openImport() {
+    const ta = h('textarea', { class: 'textarea mono hub-pgn-input', rows: '10', placeholder: '[Event "Casual game"]\n[White "Me"]\n[Black "Friend"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 …', spellcheck: 'false' });
+    const fileInput = h('input', { type: 'file', accept: '.pgn,.txt,application/x-chess-pgn,text/plain', class: 'sr-only' });
+    const fileName = h('span', { class: 'muted text-sm truncate' }, 'No file chosen');
+    const pickBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('folder') + '<span>Choose a .pgn file</span>' });
+    const drop = h('div', { class: 'hub-drop' }, ta, h('div', { class: 'hub-drop-hint subtle text-xs' }, 'Tip: you can drop a .pgn file here'));
+    const readFile = async (file) => {
+      if (!file) return;
+      if (file.size > MAX_PGN_BYTES) { toast('That file is too large (max 4 MB).', 'warning'); return; }
+      try {
+        ta.value = await file.text();
+        fileName.textContent = file.name;
+      } catch { toast('Could not read that file', 'error'); }
+    };
+    pickBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => readFile(fileInput.files?.[0]));
+    drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); readFile(e.dataTransfer?.files?.[0]); });
+    const body = h('div', { class: 'stack' },
+      h('p', { class: 'muted' }, 'Paste one or more games in PGN format (the standard chess file format used by chess.com, lichess and others), or upload a file.'),
+      drop,
+      h('div', { class: 'row-sm' }, pickBtn, fileInput, fileName));
+    openModal = modal({
+      title: 'Import games',
+      size: 'lg',
+      body,
+      actions: [
+        { label: 'Cancel', kind: 'ghost' },
+        {
+          label: 'Import', kind: 'primary', icon: 'upload',
+          onClick: async () => {
+            const pgn = ta.value.trim();
+            if (!pgn) { toast('Paste a PGN or choose a file first', 'warning'); ta.focus(); return false; }
+            if (pgn.length > MAX_PGN_BYTES) { toast('That PGN is too large (max 4 MB).', 'warning'); return false; }
+            const res = await api.post('/api/games/import', { pgn }, { signal, timeout: 120000 });
+            const n = Array.isArray(res) ? res.length : 0;
+            if (!n) { toast('No games were found in that PGN', 'warning'); return false; }
+            toast(`Imported ${n} ${n === 1 ? 'game' : 'games'}`, 'success');
+            reload();
+            return true;
+          },
+        },
+      ],
+      onClose: () => { openModal = null; },
+    });
+  }
+
+  reload();
+  return bag.dispose;
+}
+
+function parseTags(text) {
+  const out = [];
+  for (const raw of String(text || '').split(',')) {
+    const t = raw.trim().replace(/^#+/, '').replace(/\s+/g, '-').toLowerCase().slice(0, 24);
+    if (t && !out.includes(t)) out.push(t);
+    if (out.length >= MAX_TAGS) break;
+  }
+  return out;
+}

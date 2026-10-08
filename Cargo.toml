@@ -1,0 +1,48 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+gm-engine = { path = "crates/gm-engine" }
+gm-content = { path = "crates/gm-content" }
+gm-bots = { path = "crates/gm-bots" }
+gm-analysis = { path = "crates/gm-analysis" }
+gm-mentor = { path = "crates/gm-mentor" }
+gm-store = { path = "crates/gm-store" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+tokio = { version = "1", features = ["full"] }
+shakmaty = "0.27"
+rusqlite = { version = "0.32", features = ["bundled"] }
+axum = { version = "0.7", features = ["ws"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["fs", "compression-gzip", "compression-br", "cors", "trace", "set-header", "limit"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+parking_lot = "0.12"
+rand = "0.8"
+futures-util = "0.3"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
+panic = "unwind"
+
+# Keep the engine fast even in debug/test builds.
+[profile.dev.package.gm-engine]
+opt-level = 3
+[profile.dev.package.shakmaty]
+opt-level = 3

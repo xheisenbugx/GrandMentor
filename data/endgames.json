@@ -1,0 +1,550 @@
+[
+ {
+  "id": "kq-vs-k",
+  "title": "Queen Checkmate",
+  "category": "basic",
+  "level": "beginner",
+  "fen": "4k3/8/8/8/8/8/8/3QK3 w - - 0 1",
+  "goal": "win",
+  "description": "Checkmate the lone king with your king and queen. The most important basic mate — you should be able to do it in under 10 moves.",
+  "hint": "Place the queen a knight's move away from the enemy king to box it in, then bring your own king up.",
+  "technique": [
+   "Shrink the king's box with the queen (a knight's move away mirrors it)",
+   "Push the king to the edge",
+   "Bring your king close — the queen can't mate alone",
+   "Always leave the king a legal move until the mate (no stalemate!)"
+  ]
+ },
+ {
+  "id": "kq-vs-k-center",
+  "title": "Queen Mate from the Centre",
+  "category": "basic",
+  "level": "beginner",
+  "fen": "8/8/8/3k4/8/8/8/Q3K3 w - - 0 1",
+  "goal": "win",
+  "description": "The black king starts in the middle of the board. Drive it to the edge and mate it.",
+  "hint": "Qf6! takes away a whole block of squares at once.",
+  "technique": [
+   "Restrict the king with the queen first",
+   "Walk the king towards the edge",
+   "Mate with the queen protected by the king"
+  ]
+ },
+ {
+  "id": "kr-vs-k",
+  "title": "Rook Checkmate",
+  "category": "basic",
+  "level": "beginner",
+  "fen": "4k3/8/8/8/8/8/8/R3K3 w - - 0 1",
+  "goal": "win",
+  "description": "Checkmate the lone king with king and rook. The king must help, and the opposition is the key.",
+  "hint": "Cut the king off with your rook along a rank, then bring your king up to face the enemy king.",
+  "technique": [
+   "Cut the king off along a rank or file",
+   "Bring your king to face the enemy king (opposition)",
+   "Check along the edge when the kings face each other",
+   "Use a waiting rook move to gain the opposition"
+  ]
+ },
+ {
+  "id": "kr-vs-k-center",
+  "title": "Rook Mate from the Centre",
+  "category": "basic",
+  "level": "beginner",
+  "fen": "8/8/8/4k3/8/8/8/4K2R w - - 0 1",
+  "goal": "win",
+  "description": "A harder version: the enemy king is centralised. Box it in step by step.",
+  "hint": "Start with Rh4 or Rh5 to cut the king off, then approach with your king.",
+  "technique": [
+   "Make the box smaller with every rook move",
+   "Protect the rook with your king when it is attacked",
+   "Opposition + check on the edge = mate"
+  ]
+ },
+ {
+  "id": "two-rooks-ladder",
+  "title": "Two Rooks: The Ladder",
+  "category": "basic",
+  "level": "beginner",
+  "fen": "8/8/8/4k3/8/8/8/R3K2R w - - 0 1",
+  "goal": "win",
+  "description": "With two rooks you don't even need your king. Walk the enemy king to the edge like climbing a ladder.",
+  "hint": "One rook cuts off a rank, the other checks on the next rank. Keep the rooks far from the king.",
+  "technique": [
+   "Rook 1 cuts off a rank",
+   "Rook 2 gives check on the next rank",
+   "Leapfrog until the king reaches the edge",
+   "If the king attacks a rook, move it to the far side of the board"
+  ]
+ },
+ {
+  "id": "two-bishops-mate",
+  "title": "Two Bishops Checkmate",
+  "category": "basic",
+  "level": "intermediate",
+  "fen": "8/8/8/4k3/8/8/8/2B1KB2 w - - 0 1",
+  "goal": "win",
+  "description": "Two bishops side by side form a wall the king can't cross. Drive it into a corner and mate.",
+  "hint": "Place the bishops next to each other in the centre and use your king to push the enemy king back.",
+  "technique": [
+   "Bishops side by side make an impassable diagonal wall",
+   "The king helps to take away squares",
+   "Drive the king to a corner",
+   "Watch out for stalemate in the corner"
+  ]
+ },
+ {
+  "id": "bishop-knight-mate",
+  "title": "Bishop and Knight Checkmate",
+  "category": "minor",
+  "level": "advanced",
+  "fen": "8/8/8/4k3/8/8/8/1N2KB2 w - - 0 1",
+  "goal": "win",
+  "description": "The hardest basic mate: it can take up to 33 moves. You can only force mate in a corner of the **bishop's colour** (a8 or h1 here).",
+  "hint": "First push the king to the edge, then use the 'W manoeuvre' with the knight to drive it to a light corner.",
+  "technique": [
+   "Centralise all three pieces",
+   "Drive the king to the edge",
+   "If it runs to the wrong (dark) corner, use the knight's W manoeuvre",
+   "Mate in the corner of the bishop's colour (a8 or h1)"
+  ]
+ },
+ {
+  "id": "queen-vs-rook",
+  "title": "Queen vs Rook",
+  "category": "queen",
+  "level": "advanced",
+  "fen": "3k4/3r4/3K4/8/8/8/8/7Q w - - 0 1",
+  "goal": "win",
+  "description": "Queen against rook is a win, but the technique is demanding. Win the rook with a fork or force mate.",
+  "hint": "Aim for the Philidor position: put the defending side in zugzwang so the rook must separate from its king.",
+  "technique": [
+   "Keep your king close to the enemy king",
+   "Use zugzwang: make a waiting queen move",
+   "Once the rook leaves the king, look for a queen fork (check + rook)"
+  ]
+ },
+ {
+  "id": "kp-key-squares",
+  "title": "King and Pawn: Key Squares",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "4k3/8/8/4K3/4P3/8/8/8 w - - 0 1",
+  "goal": "win",
+  "description": "Promote your pawn. With your king in front of the pawn on the 5th rank, you can always reach a key square.",
+  "hint": "Play Kd6 or Kf6: the king in front of the pawn wins.",
+  "technique": [
+   "King in front of the pawn, not behind it",
+   "Reach a key square (d6, e6 or f6)",
+   "Use the opposition when the kings meet"
+  ]
+ },
+ {
+  "id": "kp-opposition",
+  "title": "Taking the Opposition",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "8/8/8/4k3/8/3K4/4P3/8 w - - 0 1",
+  "goal": "win",
+  "description": "Only one move wins. Take the opposition and escort the pawn.",
+  "hint": "Ke3! — face the black king with one square between the kings.",
+  "technique": [
+   "Kings on the same file with one square between = opposition",
+   "The side that does NOT have to move has the opposition",
+   "Outflank: when the enemy king steps aside, move forward on the other side"
+  ]
+ },
+ {
+  "id": "kp-king-sixth",
+  "title": "King on the Sixth Rank",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "1k6/8/K7/1P6/8/8/8/8 w - - 0 1",
+  "goal": "win",
+  "description": "Your king is beside its pawn. One move wins, the others draw.",
+  "hint": "Kb6 — the king in front of the pawn on the 6th rank always wins.",
+  "technique": [
+   "King on the 6th rank in front of the pawn wins regardless of the opposition",
+   "Then push the pawn with the king's support"
+  ]
+ },
+ {
+  "id": "kp-defend-opposition",
+  "title": "Defending: Hold the Opposition",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "8/4k3/8/4P3/4K3/8/8/8 b - - 0 1",
+  "goal": "draw",
+  "description": "You are defending. Keep your king in front of the pawn and use the opposition to draw.",
+  "hint": "Stay on the e-file in front of the pawn. When the white king comes to the 6th rank, take the opposition.",
+  "technique": [
+   "Stay directly in front of the pawn",
+   "Retreat straight back (to e8), not to the side",
+   "When the white king reaches the 6th rank, take the opposition",
+   "If the pawn reaches the 7th with check, go to the corner square in front"
+  ]
+ },
+ {
+  "id": "rook-pawn-draw",
+  "title": "Rook Pawn: Run to the Corner",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "1k6/8/1K6/P7/8/8/8/8 b - - 0 1",
+  "goal": "draw",
+  "description": "A rook pawn is the weakest pawn. If the defending king reaches the corner, it can never be driven out.",
+  "hint": "Keep your king on a8, b8 or nearby; White can only stalemate you.",
+  "technique": [
+   "Get the king into the corner in front of the pawn",
+   "Shuffle between a8 and b8/b7",
+   "White's only try ends in stalemate"
+  ]
+ },
+ {
+  "id": "square-of-the-pawn",
+  "title": "The Square of the Pawn",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "7k/8/8/8/8/1P4K1/8/8 b - - 0 1",
+  "goal": "draw",
+  "description": "The white king is far away. Can your king catch the passed pawn?",
+  "hint": "Step diagonally into the square of the pawn: Kg7!",
+  "technique": [
+   "Draw the square from the pawn to its promotion square",
+   "If your king can step into the square, it catches the pawn",
+   "Diagonal moves are as fast as straight ones"
+  ]
+ },
+ {
+  "id": "reti-manoeuvre",
+  "title": "The Réti Manoeuvre",
+  "category": "pawn",
+  "level": "advanced",
+  "fen": "7K/8/k1P5/7p/8/8/8/8 w - - 0 1",
+  "goal": "draw",
+  "description": "Réti's famous study (1921). The white king seems hopelessly far from both pawns — yet it's a draw!",
+  "hint": "Kg7! The king chases the h-pawn and approaches c6 at the same time, walking along the diagonal.",
+  "technique": [
+   "A king moving diagonally can pursue two goals at once",
+   "Threaten to support your own pawn",
+   "Force Black to spend time, then step into the square of the h-pawn"
+  ]
+ },
+ {
+  "id": "outside-passed-pawn",
+  "title": "The Outside Passed Pawn",
+  "category": "pawn",
+  "level": "intermediate",
+  "fen": "8/5pk1/6p1/P6p/7P/6P1/5PK1/8 w - - 0 1",
+  "goal": "win",
+  "description": "Your a-pawn is far away from the other pawns. Use it as a decoy to win the kingside pawns.",
+  "hint": "Push the a-pawn. When the black king runs after it, march your king to the kingside pawns.",
+  "technique": [
+   "The outside passer drags the enemy king away",
+   "Your king attacks the pawns left behind",
+   "Don't rush to promote if the king is already in the square — use it as a decoy"
+  ]
+ },
+ {
+  "id": "pawn-breakthrough",
+  "title": "The Pawn Breakthrough",
+  "category": "pawn",
+  "level": "intermediate",
+  "fen": "7k/ppp5/8/PPP5/8/8/8/7K w - - 0 1",
+  "goal": "win",
+  "description": "Three pawns against three, both kings far away. There is a brilliant way to create a passed pawn.",
+  "hint": "b6!! — after axb6 c6! or cxb6 a6!, one white pawn promotes.",
+  "technique": [
+   "Sacrifice the middle pawn first",
+   "Then sacrifice the second pawn to clear the way",
+   "The last pawn runs through"
+  ]
+ },
+ {
+  "id": "wrong-bishop",
+  "title": "The Wrong Rook Pawn",
+  "category": "minor",
+  "level": "intermediate",
+  "fen": "7k/8/8/6KP/8/8/4B3/8 b - - 0 1",
+  "goal": "draw",
+  "description": "White is a bishop and a pawn up, yet it's a draw: the bishop does not control the h8 promotion square.",
+  "hint": "Stay in the corner. Shuffle between h8 and g8 (or g7). White can't drive you out without stalemating you.",
+  "technique": [
+   "Rook pawn + bishop of the wrong colour = draw if the defending king reaches the corner",
+   "Keep your king on h8/g8/g7",
+   "Don't leave the corner"
+  ]
+ },
+ {
+  "id": "lucena",
+  "title": "The Lucena Position",
+  "category": "rook",
+  "level": "intermediate",
+  "fen": "1K6/1P2k3/8/8/8/8/2r5/3R4 w - - 0 1",
+  "goal": "win",
+  "description": "The most important winning rook endgame. Your pawn is on the 7th, your king in front of it, and the enemy king is cut off.",
+  "hint": "Build a bridge: Rd4!, then bring the king out and block the checks with the rook on the 4th rank.",
+  "technique": [
+   "Lift your rook to the 4th rank (Rd4)",
+   "Bring your king out from in front of the pawn",
+   "When the checks come, interpose the rook on the b-file (Rb4)",
+   "Promote the pawn"
+  ]
+ },
+ {
+  "id": "philidor",
+  "title": "The Philidor Defence",
+  "category": "rook",
+  "level": "intermediate",
+  "fen": "4k3/R7/1r6/4PK2/8/8/8/8 b - - 0 1",
+  "goal": "draw",
+  "description": "You are a pawn down. Use Philidor's third-rank defence to hold the draw.",
+  "hint": "Keep your rook on the 6th rank until the pawn advances to e6, then drop it to the 1st rank and check from behind.",
+  "technique": [
+   "Rook on your 3rd rank (here the 6th) stops the king advancing",
+   "Keep your king in front of the pawn",
+   "When the pawn reaches e6, give checks from behind from the far end",
+   "The white king has no shelter"
+  ]
+ },
+ {
+  "id": "vancura",
+  "title": "The Vancura Position",
+  "category": "rook",
+  "level": "advanced",
+  "fen": "R7/6k1/P4r2/8/8/8/8/6K1 b - - 0 1",
+  "goal": "draw",
+  "description": "Rook against rook and a-pawn. With the white rook in front of the pawn, the Vancura defence holds: attack the pawn from the side.",
+  "hint": "Keep your rook on the 6th rank attacking a6 from the side, and your king near g7/h7.",
+  "technique": [
+   "Rook attacks the pawn from the side (from f6)",
+   "Your king stays on g7/h7, out of rook checks along the 7th",
+   "If the white king comes close, give checks from the side and return to the 6th rank"
+  ]
+ },
+ {
+  "id": "rook-behind-passer",
+  "title": "Rook Behind the Passed Pawn",
+  "category": "rook",
+  "level": "intermediate",
+  "fen": "8/r4pk1/P5p1/7p/7P/6P1/5PK1/R7 w - - 0 1",
+  "goal": "win",
+  "description": "Tarrasch's rule: rooks belong behind passed pawns. Your rook supports the a-pawn from behind while Black's rook is stuck passively in front of it.",
+  "hint": "Black's rook can't leave a7. March your king towards the queenside (or attack the kingside pawns) and Black runs out of moves.",
+  "technique": [
+   "Rook behind your passed pawn",
+   "Advance the pawn to tie Black's rook down",
+   "Activate your king"
+  ]
+ },
+ {
+  "id": "rook-vs-pawn",
+  "title": "Rook vs Pawn",
+  "category": "rook",
+  "level": "intermediate",
+  "fen": "8/8/8/8/1pk5/8/8/4K2R w - - 0 1",
+  "goal": "win",
+  "description": "A rook usually beats a pawn, but only if your king helps in time. Stop the pawn and win it.",
+  "hint": "Bring your king towards the pawn at once (Kd2!) and use the rook to stop it from behind or on the b-file.",
+  "technique": [
+   "Rook behind or in front of the pawn's path",
+   "Bring your king towards the pawn",
+   "Watch out: if the pawn promotes with the enemy king's support, it may be a draw"
+  ]
+ },
+ {
+  "id": "cut-off-king",
+  "title": "Cut Off the King",
+  "category": "rook",
+  "level": "intermediate",
+  "fen": "r7/8/4k3/2P5/2K5/8/8/3R4 w - - 0 1",
+  "goal": "win",
+  "description": "Your rook cuts the black king off along the d-file. Keep it cut off and escort the c-pawn.",
+  "hint": "Advance the king with the pawn; if Black checks from the side, approach the rook to block.",
+  "technique": [
+   "The cut-off king can't help its rook",
+   "King and pawn advance together",
+   "Aim for the Lucena position"
+  ]
+ },
+ {
+  "id": "queen-vs-knight-pawn",
+  "title": "Queen vs Pawn on the 7th (Knight Pawn)",
+  "category": "queen",
+  "level": "intermediate",
+  "fen": "6Q1/8/8/8/8/8/1pk5/7K w - - 0 1",
+  "goal": "win",
+  "description": "A pawn on the 7th supported by its king. With a knight pawn (or centre pawn) the queen wins.",
+  "hint": "Check and attack the pawn so the king must stand in front of it. Each time, bring your king one step closer.",
+  "technique": [
+   "Force the enemy king in front of its pawn with checks",
+   "That gives you a free tempo to bring your king closer",
+   "Repeat until your king helps capture the pawn or mate"
+  ]
+ },
+ {
+  "id": "triangulation-black",
+  "title": "Triangulation as Black (Alburt–Kasparov 1978)",
+  "category": "pawn",
+  "level": "advanced",
+  "fen": "8/8/8/8/4k2p/5p1P/8/5K2 b - - 0 1",
+  "goal": "win",
+  "description": "Kasparov, playing Black, won this ending by triangulating. White's king can only shuttle between f1, g1 and f2.",
+  "hint": "...Kf5! Kg1 Ke5! — your king reaches e4 again with White to move.",
+  "technique": [
+   "Find the zugzwang position (Black king on e4, White to move)",
+   "Lose a tempo with a king triangle f5–e5–e4",
+   "Then invade via f4 and g3 to win the h3 pawn"
+  ]
+ },
+ {
+  "id": "rook-triangulation",
+  "title": "Rook Triangulation (Topalov–Karpov 2002)",
+  "category": "rook",
+  "level": "advanced",
+  "fen": "1K6/1P1k4/7R/8/r6p/8/8/8 w - - 0 1",
+  "goal": "win",
+  "description": "Even rooks can lose a tempo. White uses checks to return to the same position with Black to move.",
+  "hint": "Rh7+ Kd8 Rh8+ Kd7 Rh6 — now Black is in zugzwang.",
+  "technique": [
+   "Give two checks that return the rook to h6",
+   "Black's king must step away from the pawn",
+   "Then free your king with Ka7 and promote"
+  ]
+ },
+ {
+  "id": "triangulation",
+  "title": "Triangulation",
+  "category": "pawn",
+  "level": "advanced",
+  "fen": "8/1p1k4/1P6/2PK4/8/8/8/8 w - - 0 1",
+  "goal": "win",
+  "description": "With Black to move this position is lost for Black — but it's White to move. Lose a tempo with the king so Black ends up in zugzwang.",
+  "hint": "Ke5! Kc6 Kd4! Kd7 Kd5 — the king walks around a triangle while Black's king can only shuttle between two squares.",
+  "technique": [
+   "Recognise the mutual zugzwang",
+   "Walk your king around a triangle of three squares",
+   "Return to the same position with the opponent to move",
+   "Then invade with Ke6–d6–e7–d7"
+  ]
+ },
+ {
+  "id": "kp-far-pawn",
+  "title": "King and Pawn from the Start",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "4k3/8/8/8/8/8/4P3/4K3 w - - 0 1",
+  "goal": "win",
+  "description": "Even with the pawn on its starting square, White wins — if the king leads the way.",
+  "hint": "Kd2 or Kf2 first — the king must lead the way. Pushing the pawn too early lets Black take the opposition.",
+  "technique": [
+   "King first, pawn later",
+   "Aim for the key squares d4, e4 and f4",
+   "Use the pawn's one-or-two step choice to win the opposition"
+  ]
+ },
+ {
+  "id": "two-connected-pawns",
+  "title": "Two Pawns vs King",
+  "category": "pawn",
+  "level": "beginner",
+  "fen": "8/8/4k3/8/8/3P1P2/8/4K3 w - - 0 1",
+  "goal": "win",
+  "description": "Two pawns are usually an easy win. Advance them together, supported by your king.",
+  "hint": "Bring the king up first; pawns side by side defend each other.",
+  "technique": [
+   "Pawns side by side control the squares in front of them",
+   "If the king attacks one pawn, push the other",
+   "Use your king to escort them"
+  ]
+ },
+ {
+  "id": "right-bishop",
+  "title": "Rook Pawn with the Right Bishop",
+  "category": "minor",
+  "level": "beginner",
+  "fen": "7k/8/6K1/7P/8/4B3/8/8 w - - 0 1",
+  "goal": "win",
+  "description": "Here the bishop controls the dark h8 promotion square, so the rook pawn wins. Beware of stalemate!",
+  "hint": "Cover g8/g7 with the bishop before pushing the pawn to h7.",
+  "technique": [
+   "The bishop must control the queening square",
+   "Don't stalemate the king in the corner",
+   "Push h7 with check at the right moment"
+  ]
+ },
+ {
+  "id": "knight-and-pawn",
+  "title": "Knight and Pawn vs King",
+  "category": "minor",
+  "level": "intermediate",
+  "fen": "8/8/8/4k3/8/2N5/3P4/3K4 w - - 0 1",
+  "goal": "win",
+  "description": "Knight and pawn win easily if the pawn is protected and the king supports it.",
+  "hint": "Bring the king in front of the pawn; use the knight to keep the black king away.",
+  "technique": [
+   "Protect the pawn with the king or knight",
+   "King in front of the pawn",
+   "Knight checks gain tempi"
+  ]
+ },
+ {
+  "id": "rook-vs-bishop-draw",
+  "title": "Rook vs Bishop: The Right Corner",
+  "category": "minor",
+  "level": "intermediate",
+  "fen": "7k/R7/5K2/8/4b3/8/8/8 b - - 0 1",
+  "goal": "draw",
+  "description": "Rook against bishop is usually a draw. Keep your king in the corner the bishop does NOT control (h8 is dark, your bishop is light).",
+  "hint": "Stay in the h8 corner and use the bishop to block checks on g8 or h7.",
+  "technique": [
+   "The safe corner is the one of the opposite colour to your bishop",
+   "Block rook checks with the bishop",
+   "Avoid the corner of your bishop's colour — mating nets appear there"
+  ]
+ },
+ {
+  "id": "rook-vs-knight-draw",
+  "title": "Rook vs Knight: Stay Together",
+  "category": "minor",
+  "level": "intermediate",
+  "fen": "8/8/8/4k3/8/8/5n2/R3K3 b - - 0 1",
+  "goal": "draw",
+  "description": "Rook against knight is a draw if the knight stays close to its king. A lone knight far away gets trapped.",
+  "hint": "Bring the knight back towards your king (Nh3–f4 or Ng4), and keep the king in the centre.",
+  "technique": [
+   "Keep the knight next to the king",
+   "Stay away from the corners",
+   "Don't let the knight get cut off"
+  ]
+ },
+ {
+  "id": "queen-vs-centre-pawn",
+  "title": "Queen vs Central Pawn",
+  "category": "queen",
+  "level": "intermediate",
+  "fen": "8/8/8/8/8/8/3pk3/Q6K w - - 0 1",
+  "goal": "win",
+  "description": "Black's pawn is about to promote, but against a centre pawn the queen wins with checks and pins.",
+  "hint": "Check the king until it has to stand in front of the pawn, then bring your king closer.",
+  "technique": [
+   "Approach with checks and queen moves that attack the pawn",
+   "Each time the king blocks the pawn, use the tempo to bring your king",
+   "Finish by winning the pawn or with mate"
+  ]
+ },
+ {
+  "id": "queen-vs-pawn-2",
+  "title": "Queen vs Pawn: The Staircase",
+  "category": "queen",
+  "level": "intermediate",
+  "fen": "8/8/8/8/2k5/8/1p6/6KQ w - - 0 1",
+  "goal": "win",
+  "description": "The black king supports a knight pawn on b2. Stop it and win.",
+  "hint": "Keep the pawn under control with the queen (Qb1 blocks it for good) and march your king over.",
+  "technique": [
+   "Control the queening square",
+   "Bring your king to help",
+   "Don't allow a stalemate in the corner"
+  ]
+ }
+]

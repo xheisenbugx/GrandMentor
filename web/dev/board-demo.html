@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Board Kit Demo</title>
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/board.css">
+  <style>
+    body { background: var(--bg); color: var(--text); font-family: var(--font-sans, system-ui, sans-serif); margin: 0; }
+    .demo { max-width: 1240px; margin: 0 auto; padding: 16px; }
+    .demo h1 { font-size: 22px; margin: 0 0 4px; }
+    .demo p.sub { margin: 0 0 16px; color: var(--text-muted); font-size: 14px; }
+    .demo-grid { display: grid; grid-template-columns: auto minmax(260px, 1fr); gap: 20px; align-items: start; }
+    .demo-board-row { display: flex; gap: 8px; }
+    #evalbar { width: 26px; height: min(80vw, 560px); }
+    #board { width: min(80vw, 560px); height: min(80vw, 560px); }
+    .controls { display: flex; flex-direction: column; gap: 12px; }
+    .box { background: var(--surface); border: 1px solid var(--divider); border-radius: 12px; padding: 12px; }
+    .box h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
+    .btns { display: flex; flex-wrap: wrap; gap: 6px; }
+    .btns button, .btns select { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+    .btns button:hover { background: var(--surface-3); }
+    #moves { height: 220px; }
+    #log { font-family: var(--font-mono, monospace); font-size: 12px; color: var(--text-muted); white-space: pre-wrap; max-height: 120px; overflow: auto; }
+    input[type=range] { width: 100%; }
+    input.fen { width: 100%; box-sizing: border-box; font: 12px var(--font-mono, monospace); padding: 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); }
+    @media (max-width: 860px) { .demo-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="demo">
+  <h1>Board UI kit</h1>
+  <p class="sub">Drag or click to move · right-drag for arrows (Shift = red, Alt = blue) · right-click for circles · left-click clears drawings.</p>
+  <div class="demo-grid">
+    <div class="demo-board-row">
+      <div id="evalbar"></div>
+      <div id="board"></div>
+    </div>
+    <div class="controls">
+      <div class="box">
+        <h3>Board</h3>
+        <div class="btns">
+          <button id="flip">Flip</button>
+          <button id="reset">Reset</button>
+          <button id="undo">Undo</button>
+          <button id="interactive">Interactive: on</button>
+          <select id="movable"><option value="both">Move: both</option><option value="white">Move: white</option><option value="black">Move: black</option></select>
+          <select id="theme"><option>green</option><option>brown</option><option>blue</option><option>purple</option><option>gray</option></select>
+          <select id="pieces"><option>cburnett</option><option>merida</option><option>alpha</option></select>
+          <button id="light">Light/Dark</button>
+          <button id="coords">Coords</button>
+          <button id="autoq">Auto-queen: off</button>
+          <button id="sounds">Sounds: on</button>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Positions</h3>
+        <div class="btns">
+          <button data-fen="r3k2r/pppq1ppp/2npbn2/2b1p3/2B1P3/2NPBN2/PPPQ1PPP/R3K2R w KQkq - 0 1">Castling</button>
+          <button data-fen="rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3">En passant</button>
+          <button data-fen="8/2P2k2/8/8/8/8/2p2K2/8 w - - 0 1">Promotion</button>
+          <button data-fen="r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4">Scholar's mate</button>
+          <button id="anim">Animate opening</button>
+        </div>
+        <input class="fen mt-2" id="fen" spellcheck="false" style="margin-top:8px">
+      </div>
+      <div class="box">
+        <h3>Annotations</h3>
+        <div class="btns">
+          <button id="arrows">Arrows</button>
+          <button id="hl">Highlights</button>
+          <button id="badges">Badges</button>
+          <button id="clear">Clear all</button>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Eval bar</h3>
+        <input type="range" id="eval" min="-1000" max="1000" value="0">
+        <div class="btns" style="margin-top:6px">
+          <button data-eval='{"mate":3}'>M3</button><button data-eval='{"mate":-2}'>-M2</button>
+          <button data-eval='{"cp":0}'>0.0</button><button data-eval='null'>none</button>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Sounds</h3>
+        <div class="btns" id="sfx"></div>
+      </div>
+      <div class="box"><h3>Moves</h3><div id="moves"></div></div>
+      <div class="box">
+        <h3>Lifecycle</h3>
+        <div class="btns"><button id="stress">Destroy/recreate ×200</button></div>
+        <div id="log"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { Board } from '../js/components/board.js';
+  import { EvalBar } from '../js/components/evalbar.js';
+  import { MoveList } from '../js/components/movelist.js';
+  import { playSound, SOUND_NAMES } from '../js/components/sound.js';
+  import { setSetting, getSetting } from '../js/settings.js';
+
+  const $ = (id) => document.getElementById(id);
+  const log = (m) => { $('log').textContent = (m + '\n' + $('log').textContent).slice(0, 4000); };
+  const CLS = ['brilliant', 'great', 'best', 'excellent', 'good', 'book', 'inaccuracy', 'mistake', 'miss', 'blunder', 'forced'];
+
+  let history = []; // {san, fen, from, to, classification}
+  let startFen = 'start';
+  let cursor = 0;
+  let movable = 'both';
+  let interactive = true;
+  let autoQueen = false;
+
+  const evalbar = new EvalBar($('evalbar'));
+  const moves = new MoveList($('moves'), { onSelect: (ply) => goto(ply) });
+  let board = makeBoard();
+
+  function makeBoard() {
+    return new Board($('board'), {
+      fen: startFen, interactive, movableColor: movable, autoQueen,
+      onMove: (m) => {
+        history = history.slice(0, cursor);
+        history.push({ san: m.san, fen: m.fen, from: m.from, to: m.to, classification: CLS[Math.floor(Math.random() * CLS.length)] });
+        cursor = history.length;
+        moves.setMoves(history);
+        moves.setCurrent(cursor);
+        $('fen').value = m.fen;
+        board.clearBadges();
+        board.setBadge(m.to, history[cursor - 1].classification);
+        log(`move ${m.uci} ${m.san} flags=${m.flags}`);
+      },
+      onSquareClick: (sq) => {},
+    });
+  }
+
+  function goto(ply) {
+    cursor = Math.max(0, Math.min(history.length, ply));
+    const h = history[cursor - 1];
+    board.setPosition(h ? h.fen : startFen, { lastMove: h ? [h.from, h.to] : null });
+    board.clearBadges();
+    if (h) board.setBadge(h.to, h.classification);
+    moves.setCurrent(cursor);
+    $('fen').value = board.getFen();
+  }
+
+  function load(fen) {
+    startFen = fen; history = []; cursor = 0;
+    board.setPosition(fen, { animate: true });
+    moves.setMoves([], { startColor: board.chess.turn() === 'b' ? 'black' : 'white' });
+    $('fen').value = board.getFen();
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowLeft') goto(cursor - 1);
+    if (e.key === 'ArrowRight') goto(cursor + 1);
+    if (e.key === 'f') board.flip();
+  });
+
+  $('flip').onclick = () => { board.flip(); evalbar.setOrientation(board.orientation); };
+  $('reset').onclick = () => load('start');
+  $('undo').onclick = () => goto(cursor - 1);
+  $('interactive').onclick = (e) => { interactive = !interactive; board.setInteractive(interactive, movable); e.target.textContent = `Interactive: ${interactive ? 'on' : 'off'}`; };
+  $('movable').value = movable;
+  $('movable').onchange = (e) => { movable = e.target.value; board.setInteractive(interactive, movable); };
+  $('theme').value = getSetting('boardTheme');
+  $('theme').onchange = (e) => setSetting('boardTheme', e.target.value);
+  $('pieces').value = getSetting('pieceSet');
+  $('pieces').onchange = (e) => setSetting('pieceSet', e.target.value);
+  $('light').onclick = () => setSetting('theme', getSetting('theme') === 'dark' ? 'light' : 'dark');
+  $('coords').onclick = () => setSetting('showCoords', !getSetting('showCoords'));
+  $('autoq').onclick = (e) => { autoQueen = !autoQueen; board.opts.autoQueen = autoQueen; e.target.textContent = `Auto-queen: ${autoQueen ? 'on' : 'off'}`; };
+  $('sounds').textContent = `Sounds: ${getSetting('sounds') ? 'on' : 'off'}`;
+  $('sounds').onclick = (e) => { setSetting('sounds', !getSetting('sounds')); e.target.textContent = `Sounds: ${getSetting('sounds') ? 'on' : 'off'}`; };
+  for (const b of document.querySelectorAll('[data-fen]')) b.onclick = () => load(b.dataset.fen);
+  $('fen').onchange = (e) => { if (!board.setPosition(e.target.value)) log('invalid FEN'); else load(e.target.value); };
+  $('anim').onclick = async () => {
+    load('start');
+    const line = ['e2e4', 'e7e5', 'g1f3', 'b8c6', 'f1c4', 'g8f6', 'e1g1', 'f6e4', 'f1e1', 'd7d5'];
+    for (const uci of line) {
+      await new Promise((r) => setTimeout(r, 450));
+      const m = board.move(uci);
+      if (!m) break;
+      history.push({ san: m.san, fen: m.fen, from: m.from, to: m.to });
+      cursor = history.length;
+      moves.setMoves(history); moves.setCurrent(cursor);
+    }
+  };
+  $('arrows').onclick = () => board.setArrows([
+    { from: 'e2', to: 'e4', color: 'green' }, { from: 'g1', to: 'f3', color: 'blue' },
+    { from: 'b8', to: 'c6', color: 'red' }, { from: 'd1', to: 'h5', color: 'yellow' },
+  ]);
+  $('hl').onclick = () => board.setHighlights([
+    { square: 'd4', kind: 'hint' }, { square: 'e5', kind: 'good' }, { square: 'f6', kind: 'bad' },
+    { square: 'c3', kind: 'selected' }, { square: 'd5', kind: 'target' },
+  ]);
+  $('badges').onclick = () => {
+    const sqs = ['a8', 'c6', 'e4', 'g2', 'h1', 'h8', 'b3', 'd7', 'f5', 'a1', 'e6'];
+    CLS.forEach((c, i) => board.setBadge(sqs[i], c));
+  };
+  $('clear').onclick = () => { board.clearArrows(); board.clearHighlights(); board.clearBadges(); board.clearUserShapes(); };
+  $('eval').oninput = (e) => evalbar.set({ cp: Number(e.target.value) });
+  for (const b of document.querySelectorAll('[data-eval]')) b.onclick = () => evalbar.set(JSON.parse(b.dataset.eval));
+  for (const name of SOUND_NAMES) {
+    const b = document.createElement('button');
+    b.textContent = name;
+    b.onclick = () => playSound(name, { force: true });
+    $('sfx').appendChild(b);
+  }
+  $('stress').onclick = () => {
+    const t0 = performance.now();
+    for (let i = 0; i < 200; i++) { board.destroy(); board = makeBoard(); }
+    log(`recreated 200× in ${(performance.now() - t0).toFixed(0)} ms; nodes in #board: ${$('board').querySelectorAll('*').length}`);
+  };
+  load('start');
+  evalbar.set({ cp: 25 });
+  window.__demo = { get board() { return board; }, evalbar, moves };
+</script>
+</body>
+</html>
