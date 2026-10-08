@@ -62,11 +62,16 @@ pub fn router() -> Router<AppState> {
 // Localized messages
 // ---------------------------------------------------------------------------------------------
 
-fn tr(lang: Lang, en: &str, es: &str) -> String {
+/// Pick the message for `lang` from `[en, es, pt, fr, de]`.
+fn tr(lang: Lang, s: [&str; 5]) -> String {
     match lang {
-        Lang::Es => es.to_string(),
-        _ => en.to_string(),
+        Lang::En => s[0],
+        Lang::Es => s[1],
+        Lang::Pt => s[2],
+        Lang::Fr => s[3],
+        Lang::De => s[4],
     }
+    .to_string()
 }
 
 /// Maps store errors to `{error}`; backup-file problems become a localized 400.
@@ -78,19 +83,48 @@ fn backup_err(e: anyhow::Error, lang: Lang) -> ApiError {
 }
 
 fn file_err(e: &BackupError, lang: Lang) -> ApiError {
+    let mb = backup::MAX_BACKUP_BYTES >> 20;
     let msg = match (e, lang) {
-        (BackupError::Malformed(_), Lang::Es) => "Este archivo no es una copia de seguridad válida.".to_string(),
-        (BackupError::Malformed(_), _) => "This file is not a valid backup.".to_string(),
-        (BackupError::NotABackup, Lang::Es) => "Este archivo no es una copia de seguridad de GrandMentor.".to_string(),
-        (BackupError::NotABackup, _) => "This file is not a GrandMentor backup.".to_string(),
+        (BackupError::Malformed(_), _) => tr(
+            lang,
+            [
+                "This file is not a valid backup.",
+                "Este archivo no es una copia de seguridad válida.",
+                "Este arquivo não é um backup válido.",
+                "Ce fichier n'est pas une sauvegarde valide.",
+                "Diese Datei ist keine gültige Sicherung.",
+            ],
+        ),
+        (BackupError::NotABackup, _) => tr(
+            lang,
+            [
+                "This file is not a GrandMentor backup.",
+                "Este archivo no es una copia de seguridad de GrandMentor.",
+                "Este arquivo não é um backup do GrandMentor.",
+                "Ce fichier n'est pas une sauvegarde GrandMentor.",
+                "Diese Datei ist keine GrandMentor-Sicherung.",
+            ],
+        ),
+        (BackupError::UnsupportedVersion { found, supported }, Lang::En) => format!(
+            "This backup uses format {found}, but this GrandMentor only understands up to {supported}. Update the app and try again."
+        ),
         (BackupError::UnsupportedVersion { found, supported }, Lang::Es) => format!(
             "Esta copia usa el formato {found}, pero esta versión de GrandMentor solo entiende hasta el {supported}. Actualiza la aplicación e inténtalo de nuevo."
         ),
-        (BackupError::UnsupportedVersion { found, supported }, _) => format!(
-            "This backup uses format {found}, but this GrandMentor only understands up to {supported}. Update the app and try again."
+        (BackupError::UnsupportedVersion { found, supported }, Lang::Pt) => format!(
+            "Este backup usa o formato {found}, mas esta versão do GrandMentor só entende até o {supported}. Atualize o aplicativo e tente de novo."
         ),
-        (BackupError::TooLarge, Lang::Es) => format!("La copia es demasiado grande (máximo {} MB).", backup::MAX_BACKUP_BYTES >> 20),
-        (BackupError::TooLarge, _) => format!("The backup is too large (max {} MB).", backup::MAX_BACKUP_BYTES >> 20),
+        (BackupError::UnsupportedVersion { found, supported }, Lang::Fr) => format!(
+            "Cette sauvegarde utilise le format {found}, mais cette version de GrandMentor ne comprend que jusqu'au format {supported}. Mets l'application à jour et réessaie."
+        ),
+        (BackupError::UnsupportedVersion { found, supported }, Lang::De) => format!(
+            "Diese Sicherung verwendet Format {found}, aber diese GrandMentor-Version versteht nur bis Format {supported}. Aktualisiere die App und versuch es erneut."
+        ),
+        (BackupError::TooLarge, Lang::En) => format!("The backup is too large (max {mb} MB)."),
+        (BackupError::TooLarge, Lang::Es) => format!("La copia es demasiado grande (máximo {mb} MB)."),
+        (BackupError::TooLarge, Lang::Pt) => format!("O backup é grande demais (máximo de {mb} MB)."),
+        (BackupError::TooLarge, Lang::Fr) => format!("La sauvegarde est trop volumineuse ({mb} Mo maximum)."),
+        (BackupError::TooLarge, Lang::De) => format!("Die Sicherung ist zu groß (höchstens {mb} MB)."),
     };
     let status = if matches!(e, BackupError::TooLarge) { StatusCode::PAYLOAD_TOO_LARGE } else { StatusCode::BAD_REQUEST };
     ApiError::new(status, msg)
@@ -149,7 +183,16 @@ async fn export(State(st): State<AppState>, ReqLang(lang): ReqLang, ApiQuery(q):
 
 async fn parse_body(body: Bytes, lang: Lang) -> ApiResult<BackupFile> {
     if body.is_empty() {
-        return Err(ApiError::bad_request(tr(lang, "Choose a backup file first.", "Primero elige un archivo de copia de seguridad.")));
+        return Err(ApiError::bad_request(tr(
+            lang,
+            [
+                "Choose a backup file first.",
+                "Primero elige un archivo de copia de seguridad.",
+                "Primeiro escolha um arquivo de backup.",
+                "Choisis d'abord un fichier de sauvegarde.",
+                "Wähle zuerst eine Sicherungsdatei aus.",
+            ],
+        )));
     }
     blocking(move || backup::parse_backup(&body)).await?.map_err(|e| file_err(&e, lang))
 }
@@ -178,12 +221,26 @@ async fn import(
     body: Bytes,
 ) -> ApiResult<Json<backup::ImportReport>> {
     let mode = ImportMode::parse(q.mode.as_deref().unwrap_or("merge"))
-        .ok_or_else(|| ApiError::bad_request(tr(lang, "`mode` must be `merge` or `replace`.", "`mode` debe ser `merge` o `replace`.")))?;
+        .ok_or_else(|| ApiError::bad_request(tr(
+                lang,
+                [
+                    "`mode` must be `merge` or `replace`.",
+                    "`mode` debe ser `merge` o `replace`.",
+                    "`mode` deve ser `merge` ou `replace`.",
+                    "`mode` doit valoir `merge` ou `replace`.",
+                    "`mode` muss `merge` oder `replace` sein.",
+                ],
+            )))?;
     if mode == ImportMode::Replace && q.confirm.as_deref() != Some("replace") {
         return Err(ApiError::bad_request(tr(
             lang,
-            "Replacing everything needs `confirm=replace`.",
-            "Para reemplazarlo todo hace falta `confirm=replace`.",
+            [
+                "Replacing everything needs `confirm=replace`.",
+                "Para reemplazarlo todo hace falta `confirm=replace`.",
+                "Para substituir tudo é preciso `confirm=replace`.",
+                "Pour tout remplacer, il faut `confirm=replace`.",
+                "Zum Ersetzen von allem ist `confirm=replace` nötig.",
+            ],
         )));
     }
     let source = if q.source.as_deref() == Some("sync") { ImportSource::Sync } else { ImportSource::File };
@@ -279,8 +336,13 @@ fn forbid_remote(lang: Lang) -> ApiError {
         StatusCode::FORBIDDEN,
         tr(
             lang,
-            "Pairing codes can only be created on the device that runs GrandMentor.",
-            "Los códigos de enlace solo se pueden crear en el dispositivo donde se ejecuta GrandMentor.",
+            [
+                "Pairing codes can only be created on the device that runs GrandMentor.",
+                "Los códigos de enlace solo se pueden crear en el dispositivo donde se ejecuta GrandMentor.",
+                "Os códigos de pareamento só podem ser criados no dispositivo que executa o GrandMentor.",
+                "Les codes d'appairage ne peuvent être créés que sur l'appareil qui exécute GrandMentor.",
+                "Kopplungscodes können nur auf dem Gerät erstellt werden, auf dem GrandMentor läuft.",
+            ],
         ),
     )
 }
@@ -337,8 +399,13 @@ fn require_pair(headers: &HeaderMap, lang: Lang) -> ApiResult<()> {
         StatusCode::UNAUTHORIZED,
         tr(
             lang,
-            "That pairing code is wrong or has expired. Create a new one on the other device.",
-            "Ese código de enlace no es correcto o ha caducado. Crea uno nuevo en el otro dispositivo.",
+            [
+                "That pairing code is wrong or has expired. Create a new one on the other device.",
+                "Ese código de enlace no es correcto o ha caducado. Crea uno nuevo en el otro dispositivo.",
+                "Esse código de pareamento está errado ou expirou. Crie um novo no outro dispositivo.",
+                "Ce code d'appairage est incorrect ou a expiré. Crées-en un nouveau sur l'autre appareil.",
+                "Dieser Kopplungscode ist falsch oder abgelaufen. Erstelle auf dem anderen Gerät einen neuen.",
+            ],
         ),
     ))
 }

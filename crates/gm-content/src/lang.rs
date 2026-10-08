@@ -13,6 +13,10 @@ pub enum Lang {
     #[default]
     En,
     Es,
+    /// Portuguese (Brazilian). `pt`, `pt-BR` and `pt-PT` all map here.
+    Pt,
+    Fr,
+    De,
 }
 
 /// Longest `Accept-Language` header we bother to look at (bounded work on hostile input).
@@ -22,13 +26,16 @@ const MAX_RANGES: usize = 16;
 
 impl Lang {
     /// Every supported language, default first.
-    pub const ALL: [Lang; 2] = [Lang::En, Lang::Es];
+    pub const ALL: [Lang; 5] = [Lang::En, Lang::Es, Lang::Pt, Lang::Fr, Lang::De];
 
     /// ISO 639-1 code, as used on the wire, in `?lang=` and in `data/i18n/<code>/`.
     pub fn code(self) -> &'static str {
         match self {
             Lang::En => "en",
             Lang::Es => "es",
+            Lang::Pt => "pt",
+            Lang::Fr => "fr",
+            Lang::De => "de",
         }
     }
 
@@ -37,10 +44,13 @@ impl Lang {
         match self {
             Lang::En => "English",
             Lang::Es => "Español",
+            Lang::Pt => "Português",
+            Lang::Fr => "Français",
+            Lang::De => "Deutsch",
         }
     }
 
-    /// Parses a language tag such as `es`, `ES`, `es-MX` or `es_ES` by its primary subtag.
+    /// Parses a language tag such as `es`, `ES`, `es-MX`, `pt-BR` or `de_CH` by its primary subtag.
     /// Returns `None` for unsupported or malformed tags.
     pub fn parse(tag: &str) -> Option<Lang> {
         let tag = tag.trim();
@@ -118,7 +128,16 @@ mod tests {
         assert_eq!(Lang::parse("ES-mx"), Some(Lang::Es));
         assert_eq!(Lang::parse("es_ES"), Some(Lang::Es));
         assert_eq!(Lang::parse(" en-US "), Some(Lang::En));
-        assert_eq!(Lang::parse("fr"), None);
+        assert_eq!(Lang::parse("fr"), Some(Lang::Fr));
+        assert_eq!(Lang::parse("fr-CA"), Some(Lang::Fr));
+        assert_eq!(Lang::parse("pt"), Some(Lang::Pt));
+        assert_eq!(Lang::parse("pt-BR"), Some(Lang::Pt));
+        assert_eq!(Lang::parse("pt_PT"), Some(Lang::Pt));
+        assert_eq!(Lang::parse("de"), Some(Lang::De));
+        assert_eq!(Lang::parse("de-AT"), Some(Lang::De));
+        assert_eq!(Lang::parse("DE-ch"), Some(Lang::De));
+        assert_eq!(Lang::parse("it"), None);
+        assert_eq!(Lang::parse("port"), None);
         assert_eq!(Lang::parse(""), None);
         assert_eq!(Lang::parse("espanol"), None);
         assert_eq!("es".parse::<Lang>(), Ok(Lang::Es));
@@ -129,11 +148,16 @@ mod tests {
     fn accept_language() {
         assert_eq!(Lang::from_accept_language("es-MX,es;q=0.9,en;q=0.8"), Some(Lang::Es));
         assert_eq!(Lang::from_accept_language("en-US,en;q=0.9,es;q=0.8"), Some(Lang::En));
-        assert_eq!(Lang::from_accept_language("fr-FR,fr;q=0.9,es;q=0.8,en;q=0.7"), Some(Lang::Es));
+        assert_eq!(Lang::from_accept_language("fr-FR,fr;q=0.9,es;q=0.8,en;q=0.7"), Some(Lang::Fr));
+        assert_eq!(Lang::from_accept_language("it-IT,it;q=0.9,es;q=0.8,en;q=0.7"), Some(Lang::Es));
+        assert_eq!(Lang::from_accept_language("pt-BR,pt;q=0.9,en-US;q=0.8"), Some(Lang::Pt));
+        assert_eq!(Lang::from_accept_language("de-CH, de;q=0.9, en;q=0.5"), Some(Lang::De));
+        assert_eq!(Lang::from_accept_language("en;q=0.3, de-AT;q=0.7, fr-CA;q=0.8"), Some(Lang::Fr));
+        assert_eq!(Lang::from_accept_language("ja, pt-PT;q=0.4"), Some(Lang::Pt));
         assert_eq!(Lang::from_accept_language("en;q=0.2, es;q=0.9"), Some(Lang::Es));
         assert_eq!(Lang::from_accept_language("es;q=0, en"), Some(Lang::En));
-        assert_eq!(Lang::from_accept_language("fr, de"), None);
-        assert_eq!(Lang::from_accept_language("fr, *;q=0.5"), Some(Lang::En));
+        assert_eq!(Lang::from_accept_language("it, nl"), None);
+        assert_eq!(Lang::from_accept_language("it, *;q=0.5"), Some(Lang::En));
         assert_eq!(Lang::from_accept_language(""), None);
         assert_eq!(Lang::from_accept_language("es;q=abc, en;q=0.1"), Some(Lang::En));
         let long = "x,".repeat(10_000);
@@ -145,11 +169,20 @@ mod tests {
         assert_eq!(Lang::negotiate(Some("es"), Some("en")), Lang::Es);
         assert_eq!(Lang::negotiate(Some("xx"), Some("es-AR")), Lang::Es);
         assert_eq!(Lang::negotiate(None, None), Lang::En);
+        assert_eq!(Lang::negotiate(Some("pt-BR"), Some("es")), Lang::Pt);
+        assert_eq!(Lang::negotiate(Some("zz"), Some("de-DE,en;q=0.5")), Lang::De);
     }
 
     #[test]
     fn serde_snake_case() {
         assert_eq!(serde_json::to_string(&Lang::Es).unwrap(), "\"es\"");
         assert_eq!(serde_json::from_str::<Lang>("\"en\"").unwrap(), Lang::En);
+        for l in Lang::ALL {
+            let json = serde_json::to_string(&l).unwrap();
+            assert_eq!(json, format!("\"{}\"", l.code()));
+            assert_eq!(serde_json::from_str::<Lang>(&json).unwrap(), l);
+            assert_eq!(Lang::parse(l.code()), Some(l));
+            assert!(!l.name().is_empty());
+        }
     }
 }

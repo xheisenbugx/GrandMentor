@@ -224,3 +224,51 @@ async fn review_relocalizes_stored_text_without_engine() {
     assert_ne!(a["summary"], b["summary"]);
     assert_eq!(b["opening"]["name"], "King's Pawn Game", "untranslated opening falls back to English");
 }
+
+/// Portuguese, French and German end to end: regional tags negotiate, bots, mentor, errors and
+/// review text are localized, and content without an overlay folder falls back to English.
+#[tokio::test]
+async fn portuguese_french_german() {
+    let app = test_app();
+    let italian = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3";
+    let (_, en_bots) = req(&app, Method::GET, "/api/bots", None, None).await;
+    let cases = [
+        ("pt-BR,pt;q=0.9", "Oi", "O que devo fazer?", "Não foi possível encontrar a partida 999", "FEN inválido", "Precisão"),
+        ("fr-CA,fr;q=0.9", "Coucou", "Que dois-je faire ?", "Impossible de trouver la partie 999", "FEN invalide", "Précision"),
+        ("de-AT,de;q=0.9", "Hallo", "Was soll ich tun?", "Partie 999 wurde nicht gefunden", "Ungültige FEN", "Genauigkeit"),
+    ];
+    for (accept, hello, question, not_found, bad_fen, accuracy) in cases {
+        let lang = Some(accept);
+        let (_, bots) = req(&app, Method::GET, "/api/bots", lang, None).await;
+        assert_eq!(bots[0]["name"], en_bots[0]["name"]);
+        assert!(bots[0]["greeting"].as_str().unwrap().starts_with(hello), "{accept}: {}", bots[0]["greeting"]);
+
+        let (_, v) = req(&app, Method::GET, "/api/games/999", lang, None).await;
+        assert_eq!(v["error"], not_found, "{accept}");
+        let (_, v) = req(&app, Method::GET, "/api/openings/lookup?fen=garbage", lang, None).await;
+        assert!(v["error"].as_str().unwrap().starts_with(bad_fen), "{accept}: {v}");
+
+        let (s, v) = req(
+            &app,
+            Method::POST,
+            "/api/mentor/chat",
+            lang,
+            Some(json!({"question": question, "fen": italian, "engine_lines": ["+0.25: Bc5 c3 Nf6"]})),
+        )
+        .await;
+        assert_eq!(s, StatusCode::OK);
+        let answer = v["answer"].as_str().unwrap();
+        assert!(answer.contains("**Bc5**") && !answer.contains("engine's"), "{accept}: {answer}");
+
+        // No overlay folder for these languages in the fixture: English content.
+        let (_, c) = req(&app, Method::GET, "/api/courses", lang, None).await;
+        assert_eq!(c[0]["title"], "Chess Basics", "{accept}");
+        let (_, o) = req(&app, Method::GET, "/api/openings/italian-game", lang, None).await;
+        assert_eq!(o["name"], "Italian Game", "{accept}");
+
+        let body = json!({"moves": ["e2e4", "e7e5", "g1f3"], "depth": 5});
+        let (s, r) = req(&app, Method::POST, "/api/review", lang, Some(body)).await;
+        assert_eq!(s, StatusCode::OK, "{r}");
+        assert!(r["summary"].as_str().unwrap().contains(accuracy), "{accept}: {}", r["summary"]);
+    }
+}

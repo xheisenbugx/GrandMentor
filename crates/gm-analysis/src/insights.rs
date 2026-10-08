@@ -887,6 +887,36 @@ fn theme_name(lang: Lang, theme: &str) -> &'static str {
         (Lang::Es, "mateIn2") => "mates en dos",
         (Lang::Es, "mateIn3") => "mates en tres",
         (Lang::Es, _) => "tácticas",
+        (Lang::Pt, "fork") => "garfos",
+        (Lang::Pt, "pin") => "cravadas",
+        (Lang::Pt, "skewer") => "espetos",
+        (Lang::Pt, "discoveredAttack") => "ataques descobertos",
+        (Lang::Pt, "backRankMate") => "mates na última fileira",
+        (Lang::Pt, "hangingPiece") => "peças penduradas",
+        (Lang::Pt, "mateIn1") => "mates em um",
+        (Lang::Pt, "mateIn2") => "mates em dois",
+        (Lang::Pt, "mateIn3") => "mates em três",
+        (Lang::Pt, _) => "táticas",
+        (Lang::Fr, "fork") => "fourchettes",
+        (Lang::Fr, "pin") => "clouages",
+        (Lang::Fr, "skewer") => "enfilades",
+        (Lang::Fr, "discoveredAttack") => "attaques à la découverte",
+        (Lang::Fr, "backRankMate") => "mats du couloir",
+        (Lang::Fr, "hangingPiece") => "pièces en prise",
+        (Lang::Fr, "mateIn1") => "mats en un coup",
+        (Lang::Fr, "mateIn2") => "mats en deux coups",
+        (Lang::Fr, "mateIn3") => "mats en trois coups",
+        (Lang::Fr, _) => "tactiques",
+        (Lang::De, "fork") => "Gabeln",
+        (Lang::De, "pin") => "Fesselungen",
+        (Lang::De, "skewer") => "Spieße",
+        (Lang::De, "discoveredAttack") => "Abzugsangriffe",
+        (Lang::De, "backRankMate") => "Grundreihenmatts",
+        (Lang::De, "hangingPiece") => "ungedeckte Figuren",
+        (Lang::De, "mateIn1") => "Matts in einem Zug",
+        (Lang::De, "mateIn2") => "Matts in zwei Zügen",
+        (Lang::De, "mateIn3") => "Matts in drei Zügen",
+        (Lang::De, _) => "Taktiken",
     }
 }
 
@@ -897,6 +927,13 @@ fn times(lang: Lang, n: u32) -> String {
         (Lang::En, n) => format!("{n} times"),
         (Lang::Es, 1) => "una vez".into(),
         (Lang::Es, n) => format!("{n} veces"),
+        (Lang::Pt, 1) => "uma vez".into(),
+        (Lang::Pt, n) => format!("{n} vezes"),
+        (Lang::Fr, 1) => "une fois".into(),
+        (Lang::Fr, n) => format!("{n} fois"),
+        (Lang::De, 1) => "einmal".into(),
+        (Lang::De, 2) => "zweimal".into(),
+        (Lang::De, n) => format!("{n}-mal"),
     }
 }
 
@@ -906,6 +943,27 @@ fn games_word(lang: Lang, n: u32) -> String {
         (Lang::En, n) => format!("{n} games"),
         (Lang::Es, 1) => "1 partida".into(),
         (Lang::Es, n) => format!("{n} partidas"),
+        (Lang::Pt, 1) => "1 partida".into(),
+        (Lang::Pt, n) => format!("{n} partidas"),
+        (Lang::Fr, 0 | 1) => format!("{n} partie"),
+        (Lang::Fr, n) => format!("{n} parties"),
+        (Lang::De, 1) => "1 Partie".into(),
+        (Lang::De, n) => format!("{n} Partien"),
+    }
+}
+
+/// "{n} costly mistakes" with the right plural, as a direct object (pt/fr/de only; the English
+/// and Spanish texts inline the number).
+fn costly_mistakes(lang: Lang, n: u32) -> String {
+    match (lang, n) {
+        (Lang::Pt, 1) => "1 erro caro".into(),
+        (Lang::Pt, n) => format!("{n} erros caros"),
+        (Lang::Fr, 0 | 1) => format!("{n} erreur coûteuse"),
+        (Lang::Fr, n) => format!("{n} erreurs coûteuses"),
+        (Lang::De, 1) => "1 teuren Fehler".into(),
+        (Lang::De, n) => format!("{n} teure Fehler"),
+        (Lang::En, n) => format!("{n} costly mistakes"),
+        (Lang::Es, n) => format!("{n} errores costosos"),
     }
 }
 
@@ -914,6 +972,7 @@ fn texts(lang: Lang, id: &str, count: u32, games: u32, theme: Option<&str>) -> (
     let t = times(lang, count);
     let g = games_word(lang, games);
     let th = theme_name(lang, theme.unwrap_or(""));
+    let cm = costly_mistakes(lang, count);
     let (a, b, c) = match lang {
         Lang::En => match id {
             "hanging_pieces" => (
@@ -987,6 +1046,117 @@ fn texts(lang: Lang, id: &str, count: u32, games: u32, theme: Option<&str>) -> (
                 "Errores con poco tiempo en el reloj".to_string(),
                 format!("Con menos de {LOW_TIME_SECS} segundos cometiste {count} errores costosos en {g}. Ahorra tiempo al principio con aperturas conocidas y jugadas seguras."),
                 "Entrena la velocidad con Puzzle Rush".to_string(),
+            ),
+        },
+        Lang::Pt => match id {
+            "hanging_pieces" => (
+                "Deixar peças desprotegidas".to_string(),
+                format!("Você deixou uma peça que podia ser capturada de graça {t} em {g}. Antes de cada lance, pergunte-se: \"Tudo o que é meu continua protegido?\""),
+                "Pratique encontrar peças penduradas".to_string(),
+            ),
+            "missed_tactics" => (
+                format!("Táticas que escapam: {th}"),
+                format!("Você teve uma tática vencedora ({th}) {t} em {g} e não a jogou. Procure primeiro xeques, capturas e ataques: muitas vezes a tática já está ali."),
+                format!("Pratique encontrar {th}"),
+            ),
+            "endgame" => (
+                "Tropeços no final".to_string(),
+                format!("Com poucas peças no tabuleiro, você cometeu {cm} em {g}. Finais recompensam a técnica tranquila: ative seu rei e avance os peões passados."),
+                "Treine finais".to_string(),
+            ),
+            "opening" => (
+                "Problemas na abertura".to_string(),
+                format!("Você cometeu {cm} nos dez primeiros lances de {g}. Um repertório pequeno e conhecido leva você a um bom meio-jogo com segurança."),
+                "Monte seu repertório".to_string(),
+            ),
+            "conversion" => (
+                "Partidas ganhas que escapam".to_string(),
+                format!("Você estava claramente ganhando (+3 ou mais) e não venceu {t}. Quando estiver na frente, troque peças, proteja seu rei e não dê contrajogo."),
+                "Pratique ganhar uma posição ganha".to_string(),
+            ),
+            "repeated" => (
+                "Repetir os mesmos erros".to_string(),
+                format!("A mesma posição deu errado {t} em partidas diferentes. Revisar esses momentos uma vez resolve o problema de vez."),
+                "Revise seus erros".to_string(),
+            ),
+            _ => (
+                "Erros com pouco tempo no relógio".to_string(),
+                format!("Com menos de {LOW_TIME_SECS} segundos, você cometeu {cm} em {g}. Economize tempo no início com aberturas conhecidas e lances seguros."),
+                "Treine a velocidade com o Puzzle Rush".to_string(),
+            ),
+        },
+        Lang::Fr => match id {
+            "hanging_pieces" => (
+                "Laisser des pièces sans protection".to_string(),
+                format!("Tu as laissé une pièce prenable gratuitement {t} sur {g}. Avant chaque coup, demande-toi : « Est-ce que tout est encore protégé ? »"),
+                "Entraîne-toi à repérer les pièces en prise".to_string(),
+            ),
+            "missed_tactics" => (
+                format!("Tactiques manquées : {th}"),
+                format!("Tu as manqué une tactique gagnante ({th}) {t} sur {g}. Cherche d'abord les échecs, les captures et les attaques : la tactique est souvent déjà là."),
+                format!("Entraîne-toi à repérer les {th}"),
+            ),
+            "endgame" => (
+                "Faux pas en finale".to_string(),
+                format!("Avec peu de pièces sur l'échiquier, tu as commis {cm} sur {g}. Les finales récompensent une technique calme : active ton roi et pousse les pions passés."),
+                "Entraîne-toi aux finales".to_string(),
+            ),
+            "opening" => (
+                "Difficultés dans l'ouverture".to_string(),
+                format!("Tu as commis {cm} dans les dix premiers coups de {g}. Un petit répertoire bien connu t'amène sereinement à un bon milieu de partie."),
+                "Construis ton répertoire".to_string(),
+            ),
+            "conversion" => (
+                "Des parties gagnées qui t'échappent".to_string(),
+                format!("Tu étais nettement gagnant (+3 ou plus) et tu n'as pas gagné {t}. Quand tu mènes, échange des pièces, protège ton roi et ne donne pas de contre-jeu."),
+                "Entraîne-toi à gagner une position gagnante".to_string(),
+            ),
+            "repeated" => (
+                "Répéter les mêmes erreurs".to_string(),
+                format!("La même position a mal tourné {t} dans des parties différentes. Revoir ces moments une fois suffit à les corriger pour de bon."),
+                "Revois tes erreurs".to_string(),
+            ),
+            _ => (
+                "Erreurs quand la pendule presse".to_string(),
+                format!("Avec moins de {LOW_TIME_SECS} secondes à la pendule, tu as commis {cm} sur {g}. Gagne du temps au début avec des ouvertures familières et des coups sûrs."),
+                "Travaille ta vitesse avec Puzzle Rush".to_string(),
+            ),
+        },
+        Lang::De => match id {
+            "hanging_pieces" => (
+                "Ungedeckte Figuren".to_string(),
+                format!("Du hast {t} in {g} eine Figur so stehen lassen, dass sie umsonst geschlagen werden konnte. Frag dich vor jedem Zug: „Ist noch alles gedeckt?“"),
+                "Übe, ungedeckte Figuren zu erkennen".to_string(),
+            ),
+            "missed_tactics" => (
+                format!("Verpasste Taktik: {th}"),
+                format!("Du hast {t} in {g} eine gewinnende Taktik ({th}) verpasst. Such zuerst nach Schachgeboten, Schlagzügen und Angriffen – oft ist die Taktik schon da."),
+                format!("Übe, {th} zu erkennen"),
+            ),
+            "endgame" => (
+                "Patzer im Endspiel".to_string(),
+                format!("Mit wenigen Figuren auf dem Brett hast du in {g} {cm} gemacht. Endspiele belohnen ruhige Technik: Aktiviere deinen König und schiebe Freibauern vor."),
+                "Trainiere Endspiele".to_string(),
+            ),
+            "opening" => (
+                "Probleme in der Eröffnung".to_string(),
+                format!("Du hast in den ersten zehn Zügen von {g} {cm} gemacht. Ein kleines, vertrautes Repertoire bringt dich sicher in ein gutes Mittelspiel."),
+                "Baue dein Repertoire auf".to_string(),
+            ),
+            "conversion" => (
+                "Gewonnene Partien aus der Hand gegeben".to_string(),
+                format!("Du standest klar auf Gewinn (+3 oder mehr) und hast {t} nicht gewonnen. Wenn du vorn liegst: Figuren tauschen, den König sicher halten und kein Gegenspiel zulassen."),
+                "Übe, gewonnene Stellungen zu verwerten".to_string(),
+            ),
+            "repeated" => (
+                "Immer wieder dieselben Fehler".to_string(),
+                format!("Dieselbe Stellung ist dir {t} in verschiedenen Partien misslungen. Wenn du diese Momente einmal durchgehst, sitzt die Lektion für immer."),
+                "Geh deine Fehler durch".to_string(),
+            ),
+            _ => (
+                "Fehler bei knapper Zeit".to_string(),
+                format!("Mit weniger als {LOW_TIME_SECS} Sekunden auf der Uhr hast du in {g} {cm} gemacht. Spar früh Zeit mit vertrauten Eröffnungen und sicheren Zügen."),
+                "Trainiere dein Tempo mit Puzzle Rush".to_string(),
             ),
         },
     };
@@ -1117,6 +1287,16 @@ mod tests {
         // Repeated mistakes: same position in four games.
         let es = aggregate(&games, Lang::Es);
         assert!(es.weaknesses.iter().all(|w| !w.explanation.contains("times")));
+        for lang in [Lang::Pt, Lang::Fr, Lang::De] {
+            let r = aggregate(&games, lang);
+            assert_eq!(r.weaknesses.len(), es.weaknesses.len(), "{lang}");
+            for w in &r.weaknesses {
+                assert!(!w.title.trim().is_empty() && !w.explanation.trim().is_empty(), "{lang}");
+                for leak in ["times", " games", "You ", "costly"] {
+                    assert!(!w.explanation.contains(leak), "{lang}: {}", w.explanation);
+                }
+            }
+        }
     }
 
     #[test]
@@ -1140,6 +1320,30 @@ mod tests {
         assert!(parse_clocks("1. e4 e5 2. Nf3 *", 100).is_empty());
         assert_eq!(parse_hms("1:02:03"), Some(3723));
         assert_eq!(parse_hms("abc"), None);
+    }
+
+    /// Every weakness text, in every language, for singular and plural counts, is non-empty
+    /// and fully filled.
+    #[test]
+    fn weakness_texts_in_every_language() {
+        let ids = ["hanging_pieces", "missed_tactics", "endgame", "opening", "conversion", "repeated", "time"];
+        for lang in Lang::ALL {
+            for id in ids {
+                for (count, games) in [(1, 1), (2, 3), (5, 7)] {
+                    let (title, explanation, label) = texts(lang, id, count, games, Some("fork"));
+                    for s in [&title, &explanation, &label] {
+                        assert!(!s.trim().is_empty(), "{lang} {id}");
+                        assert!(!s.contains('{') && !s.contains('}'), "{lang} {id}: {s}");
+                    }
+                }
+            }
+            for theme in ["fork", "pin", "skewer", "discoveredAttack", "backRankMate", "hangingPiece", "mateIn1", "mateIn2", "mateIn3", "other"] {
+                assert!(!theme_name(lang, theme).is_empty());
+            }
+        }
+        assert_eq!(texts(Lang::De, "endgame", 1, 1, None).1.split('.').next(), Some("Mit wenigen Figuren auf dem Brett hast du in 1 Partie 1 teuren Fehler gemacht"));
+        assert!(texts(Lang::Fr, "opening", 3, 2, None).1.starts_with("Tu as commis 3 erreurs coûteuses dans les dix premiers coups de 2 parties."));
+        assert!(texts(Lang::Pt, "missed_tactics", 2, 2, Some("pin")).1.contains("(cravadas) 2 vezes em 2 partidas"));
     }
 
     #[test]

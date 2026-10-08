@@ -38,6 +38,21 @@ pub(crate) fn system_prompt(lang: Lang) -> String {
 Address the student informally with \"tú\" in a warm, encouraging tone. Use standard Spanish chess terms: rey, dama, torre, alfil, \
 caballo, peón, jaque, jaque mate, enroque, clavada, ataque doble, enfilada, pieza colgada, peón pasado, columna abierta, \
 apertura, medio juego, final. Keep moves in English SAN exactly as given (e.g. **Nf3**, **O-O**); never translate move notation.",
+        Lang::Pt => "- Answer in Brazilian Portuguese (português do Brasil), the student's language, even if parts of the context are in English. \
+Address the student informally with \"você\" in a warm, encouraging tone. Use standard Brazilian chess terms: rei, dama, torre, bispo, \
+cavalo, peão, lance, xeque, xeque-mate, roque, cravada, garfo, espeto, peça pendurada, peão passado, coluna aberta, \
+abertura, meio-jogo, final; the sides are \"as brancas\" and \"as pretas\". Keep moves in English SAN exactly as given \
+(e.g. **Nf3**, **O-O**); never translate move notation.",
+        Lang::Fr => "- Answer in French (français), the student's language, even if parts of the context are in English. \
+Address the student informally with \"tu\" in a warm, encouraging tone. Use standard French chess terms: roi, dame, tour, fou, \
+cavalier, pion, coup, échec, échec et mat, roque, clouage, fourchette, enfilade, pièce en prise, pion passé, colonne ouverte, \
+ouverture, milieu de partie, finale; the sides are \"les Blancs\" and \"les Noirs\". Keep moves in English SAN exactly as given \
+(e.g. **Nf3**, **O-O**, not Cf3); never translate move notation.",
+        Lang::De => "- Answer in German (Deutsch), the student's language, even if parts of the context are in English. \
+Address the student informally with \"du\" in a warm, encouraging tone. Use standard German chess terms: König, Dame, Turm, Läufer, \
+Springer, Bauer, Zug, Schach, Schachmatt, Rochade, Fesselung, Gabel, Spieß, ungedeckte Figur, Freibauer, offene Linie, \
+Eröffnung, Mittelspiel, Endspiel; the sides are \"Weiß\" and \"Schwarz\". Keep moves in English SAN exactly as given \
+(e.g. **Nf3**, **O-O**, not Sf3); never translate move notation.",
     };
     format!("{SYSTEM_PROMPT}\n{language}")
 }
@@ -303,6 +318,16 @@ mod tests {
         assert!(body["system"].as_str().unwrap_or("").ends_with("Answer in English."));
         let es = build_body("claude-opus-5-5", &req(), true, Lang::Es);
         assert!(es["system"].as_str().unwrap_or("").contains("Answer in Spanish"));
+        for (lang, needle, term) in [
+            (Lang::Pt, "Answer in Brazilian Portuguese", "xeque-mate"),
+            (Lang::Fr, "Answer in French", "échec et mat"),
+            (Lang::De, "Answer in German", "Schachmatt"),
+        ] {
+            let b = build_body("claude-opus-5-5", &req(), true, lang);
+            let system = b["system"].as_str().unwrap_or("");
+            assert!(system.contains(needle) && system.contains(term) && system.contains("English SAN"), "{lang}: {system}");
+            assert!(system.starts_with(SYSTEM_PROMPT));
+        }
         assert_eq!(body["model"], "claude-opus-5-5");
         assert_eq!(body["output_config"]["effort"], "low");
         assert_eq!(body["fallbacks"], "default");

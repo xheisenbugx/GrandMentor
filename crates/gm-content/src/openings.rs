@@ -26,6 +26,9 @@ pub fn start_name(lang: Lang) -> &'static str {
     match lang {
         Lang::En => START_NAME,
         Lang::Es => "Posición inicial",
+        Lang::Pt => "Posição inicial",
+        Lang::Fr => "Position initiale",
+        Lang::De => "Ausgangsstellung",
     }
 }
 

@@ -693,9 +693,59 @@ fn tip_text(lang: Lang) -> &'static TipText {
             "¡Los peones pasados hay que avanzarlos! Un peón sin peones rivales delante es muy peligroso.",
         ],
     };
+    // Portuguese, French and German avoid possessives ("seu/sua", "ton/ta", "dein/deine")
+    // whose form depends on the piece's gender: they use the article phrase instead.
+    static PT: TipText = TipText {
+        took_loose: "{P} em {sq} não estava protegid{p_o}, então eu capturei. Antes de cada lance, confira se todas as suas peças estão seguras!",
+        loose: "Atenção: {p} em {sq} está sendo atacad{p_o} e mal defendid{p_o}.",
+        attacks: "Com este lance, {m} ataca {t}. O que você vai fazer?",
+        uncastled: "Seu rei ainda está no centro. Fazer o roque logo vai deixá-lo seguro e conectar suas torres.",
+        undeveloped: "Você ainda tem {n} cavalos ou bispos nas casas iniciais. Desenvolva-os antes de partir para o ataque!",
+        general: [
+            "Antes de cada lance, procure xeques, capturas e ameaças, para os dois lados.",
+            "Tente colocar suas peças em casas de onde elas controlem o centro.",
+            "As torres adoram colunas abertas. Existe alguma coluna sem peões para a sua torre?",
+            "Pergunte-se: qual é a minha peça mais mal posicionada e como posso melhorá-la?",
+            "No final, o seu rei vira uma peça forte. Leve-o para o centro!",
+            "Peões passados devem avançar! Um peão sem peões adversários à frente é muito perigoso.",
+        ],
+    };
+    static FR: TipText = TipText {
+        took_loose: "{P} en {sq} n'était pas protégé{p_o}, alors je l'ai pris{p_o}. Avant chaque coup, vérifie que toutes tes pièces sont à l'abri !",
+        loose: "Attention : {p} en {sq} est attaqué{p_o} et mal défendu{p_o}.",
+        attacks: "Avec ce coup, {m} attaque {t}. Que vas-tu faire ?",
+        uncastled: "Ton roi est encore au centre. Roquer bientôt le mettra à l'abri et reliera tes tours.",
+        undeveloped: "Tu as encore {n} cavaliers ou fous sur leurs cases de départ. Sors-les avant de lancer une attaque !",
+        general: [
+            "Avant chaque coup, cherche les échecs, les captures et les menaces, pour les deux camps.",
+            "Essaie de placer tes pièces sur des cases d'où elles contrôlent le centre.",
+            "Les tours adorent les colonnes ouvertes. Y a-t-il une colonne sans pions pour ta tour ?",
+            "Demande-toi : quelle est ma pièce la plus mal placée, et comment l'améliorer ?",
+            "En finale, ton roi devient une pièce forte. Amène-le vers le centre !",
+            "Les pions passés doivent avancer ! Un pion sans pion adverse devant lui est très dangereux.",
+        ],
+    };
+    static DE: TipText = TipText {
+        took_loose: "{P} auf {sq} war nicht gedeckt, also habe ich {p_lo} geschlagen. Prüfe vor jedem Zug, ob alle deine Figuren sicher stehen!",
+        loose: "Achtung: {P} auf {sq} wird angegriffen und ist schlecht gedeckt.",
+        attacks: "Mit diesem Zug greift {m} {t_acc} an. Was machst du jetzt?",
+        uncastled: "Dein König steht noch im Zentrum. Eine baldige Rochade bringt ihn in Sicherheit und verbindet deine Türme.",
+        undeveloped: "Du hast noch {n} Springer oder Läufer auf ihren Ausgangsfeldern. Entwickle sie, bevor du angreifst!",
+        general: [
+            "Prüfe vor jedem Zug Schachgebote, Schlagzüge und Drohungen – für beide Seiten.",
+            "Stell deine Figuren auf Felder, von denen aus sie das Zentrum kontrollieren.",
+            "Türme lieben offene Linien. Gibt es eine Linie ohne Bauern für deinen Turm?",
+            "Frag dich: Welche meiner Figuren steht am schlechtesten, und wie kann ich sie verbessern?",
+            "Im Endspiel wird dein König zu einer starken Figur. Bring ihn ins Zentrum!",
+            "Freibauern müssen laufen! Ein Bauer ohne gegnerische Bauern vor sich ist sehr gefährlich.",
+        ],
+    };
     match lang {
         Lang::En => &EN,
         Lang::Es => &ES,
+        Lang::Pt => &PT,
+        Lang::Fr => &FR,
+        Lang::De => &DE,
     }
 }
 

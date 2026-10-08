@@ -345,3 +345,92 @@ fn adaptive_bot_plays_at_requested_level() {
         assert!(!r.uci.is_empty());
     }
 }
+
+
+/// Portuguese, French and German: roster text, greetings, coach tips with grammatical piece
+/// phrases, and chat that never leaks English.
+#[test]
+fn new_language_roster_tips_and_chat() {
+    let en = list(Lang::En);
+    for (lang, hello, mia, leak) in [
+        (Lang::Pt, "Oi", "sou a Mia", [" the ", "Your ", " your ", "Check!"]),
+        (Lang::Fr, "Coucou", "je suis Mia", [" the ", "Your ", " your ", "Check!"]),
+        (Lang::De, "Hallo", "ich bin Mia", [" the ", "Your ", " your ", "Check!"]),
+    ] {
+        let bots = list(lang);
+        assert_eq!(bots.len(), en.len());
+        for (a, b) in en.iter().zip(&bots) {
+            assert_eq!((&a.id, &a.name, a.elo, &a.avatar, &a.style, &a.category), (&b.id, &b.name, b.elo, &b.avatar, &b.style, &b.category));
+            assert_ne!(a.greeting, b.greeting, "{lang} {}: greeting not translated", a.id);
+            assert_ne!(a.description, b.description, "{lang} {}: description not translated", a.id);
+        }
+        assert!(get("pawnny", lang).expect("pawnny").greeting.starts_with(hello), "{lang}");
+        assert!(get("coach", lang).expect("coach").greeting.contains(mia), "{lang}");
+
+        let content = content();
+        let mut engine = Engine::new(4);
+        let mut rng = StdRng::seed_from_u64(3);
+        for (fen, moves) in random_positions(6, 21) {
+            for bot in ["coach", "coach-leo", "max", "pawnny"] {
+                let r = choose_move_with(&mut engine, &content, bot, &fen, &moves, &mut rng, Some(15), lang).expect("move");
+                let chat = r.chat.unwrap_or_default();
+                assert!(!chat.contains('{') && !chat.contains('}'), "{lang}: {chat}");
+                for w in leak {
+                    assert!(!chat.contains(w), "{lang}: English leaked into {bot} chat: {chat}");
+                }
+            }
+        }
+    }
+
+    let fill_tip = |lang: Lang, role: Role, sq: &str, pick: fn(&TipText) -> &'static str| {
+        let mut vars = PieceRef::new(role).vars("p", lang);
+        vars.extend(kv(&[("sq", sq)]));
+        fill(pick(tip_text(lang)), &vars)
+    };
+    assert_eq!(fill_tip(Lang::Pt, Role::Rook, "a1", |t| t.loose), "Atenção: a torre em a1 está sendo atacada e mal defendida.");
+    assert_eq!(fill_tip(Lang::Fr, Role::Rook, "a1", |t| t.loose), "Attention : la tour en a1 est attaquée et mal défendue.");
+    assert_eq!(fill_tip(Lang::De, Role::Rook, "a1", |t| t.loose), "Achtung: Der Turm auf a1 wird angegriffen und ist schlecht gedeckt.");
+    assert!(fill_tip(Lang::Pt, Role::Bishop, "c4", |t| t.took_loose).starts_with("O bispo em c4 não estava protegido, então eu capturei."));
+    assert!(fill_tip(Lang::Fr, Role::Queen, "d5", |t| t.took_loose).starts_with("La dame en d5 n'était pas protégée, alors je l'ai prise."));
+    assert!(fill_tip(Lang::De, Role::Pawn, "e5", |t| t.took_loose).starts_with("Der Bauer auf e5 war nicht gedeckt, also habe ich ihn geschlagen."));
+    let mut vars = PieceRef::new(Role::Knight).vars("m", Lang::De);
+    vars.extend(PieceRef::new(Role::Queen).vars("t", Lang::De));
+    assert_eq!(fill(tip_text(Lang::De).attacks, &vars), "Mit diesem Zug greift der Springer die Dame an. Was machst du jetzt?");
+    let mut vars = PieceRef::new(Role::Bishop).vars("m", Lang::Fr);
+    vars.extend(PieceRef::new(Role::Rook).vars("t", Lang::Fr));
+    assert_eq!(fill(tip_text(Lang::Fr).attacks, &vars), "Avec ce coup, le fou attaque la tour. Que vas-tu faire ?");
+}
+
+/// No persona or tip text is empty in any language; translated lines differ from English and
+/// keep the `{opening}` placeholder wherever English has it.
+#[test]
+fn every_persona_line_in_every_language() {
+    for p in personas::PERSONAS {
+        let en = p.lines(Lang::En);
+        for lang in Lang::ALL {
+            let l = p.lines(lang);
+            assert!(!l.description.trim().is_empty() && !l.greeting.trim().is_empty(), "{} {lang}", p.id);
+            let lists = [l.opening, l.capture, l.captured, l.blunder, l.check, l.winning, l.losing, l.win];
+            for list in lists {
+                assert!(!list.is_empty(), "{} {lang}: empty list", p.id);
+                for line in list {
+                    assert!(!line.trim().is_empty(), "{} {lang}: empty line", p.id);
+                }
+            }
+            for line in l.opening {
+                assert!(line.contains("{opening}"), "{} {lang}: {line}", p.id);
+            }
+            if lang != Lang::En {
+                assert_ne!(l.description, en.description, "{} {lang}", p.id);
+                assert_ne!(l.greeting, en.greeting, "{} {lang}", p.id);
+                assert_ne!(l.win, en.win, "{} {lang}", p.id);
+            }
+        }
+    }
+    for lang in Lang::ALL {
+        let t = tip_text(lang);
+        for s in [t.took_loose, t.loose, t.attacks, t.uncastled, t.undeveloped].into_iter().chain(t.general) {
+            assert!(!s.trim().is_empty(), "{lang}");
+        }
+    }
+}
