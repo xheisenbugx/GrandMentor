@@ -104,4 +104,16 @@ export default {
       text: "Mit Tab zum Brett, mit den Pfeiltasten bewegen, Enter oder Leertaste nimmt eine Figur auf und setzt sie wieder ab. Esc bricht ab. Du kannst Züge auch eintippen, z. B. Nf3.",
     },
   },
+  speech: {
+    title: "Züge vorlesen",
+    desc: "Dein Computer liest die Züge deines Gegners vor, z. B. „Schwarz: Springer nach f6“. Ideal für Blindschach.",
+    own: {
+      title: "Auch meine Züge vorlesen",
+      desc: "Liest auch die Züge vor, die du spielst.",
+    },
+    test: "Ausprobieren",
+    testLabel: "Ein Beispiel anhören",
+    unsupported: "Dieser Browser kann nicht vorlesen.",
+    noVoice: "Für diese Sprache ist keine Stimme installiert, daher kann eine andere Stimme zu hören sein.",
+  },
 };

@@ -12,6 +12,7 @@ import {
   h, icon, toast, modal, confirmDialog, disposables, loadingBlock, emptyState,
   classificationMeta, mdLite, escapeHtml,
 } from '../ui.js';
+import { DEFAULT_AVATAR } from '../ui.js';
 import { getSettings } from '../settings.js';
 import { Board } from '../components/board.js';
 import { parseMoveText, looksLikeMove } from '../components/moveinput.js';
@@ -183,7 +184,7 @@ function ensureCss() {
 }
 
 function avatarNode(value, cls = '') {
-  const v = String(value || '🙂');
+  const v = String(value || DEFAULT_AVATAR);
   const isImg = /^(https?:|\/|data:image)/.test(v);
   return h('div', { class: `avatar ${cls}`.trim(), 'aria-hidden': 'true' }, isImg ? h('img', { src: v, alt: '' }) : v);
 }

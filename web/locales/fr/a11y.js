@@ -105,4 +105,16 @@ export default {
       text: "Atteins l’échiquier avec Tab, déplace-toi avec les flèches, appuie sur Entrée ou Espace pour prendre une pièce, puis à nouveau pour la poser. Échap annule. Tu peux aussi saisir des coups comme Nf3.",
     },
   },
+  speech: {
+    title: "Lire les coups à voix haute",
+    desc: "Ton ordinateur annonce les coups de ton adversaire, par exemple « Noirs : cavalier en f6 ». Idéal pour jouer à l’aveugle.",
+    own: {
+      title: "Lire aussi mes coups",
+      desc: "Annonce aussi les coups que tu joues.",
+    },
+    test: "Essayer",
+    testLabel: "Écouter un exemple",
+    unsupported: "Ce navigateur ne peut pas lire à voix haute.",
+    noVoice: "Aucune voix n’est installée pour cette langue : une autre voix peut être utilisée.",
+  },
 };

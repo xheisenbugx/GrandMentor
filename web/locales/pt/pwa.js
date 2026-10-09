@@ -12,8 +12,6 @@ export default {
     gotIt: 'Entendi',
   },
   offline: {
-    banner: 'Offline — problemas e lições continuam funcionando',
-    bannerShort: 'Offline',
     backOnline: 'Conectado de novo',
     retry: 'Tentar de novo',
     retryLabel: 'Verificar a conexão de novo',
@@ -26,5 +24,15 @@ export default {
   queue: {
     saved: 'Salvo neste dispositivo. Vamos sincronizar quando você estiver online de novo.',
     synced: { zero: '{count} resultados feitos offline foram sincronizados.', one: '{count} resultado feito offline foi sincronizado.', other: '{count} resultados feitos offline foram sincronizados.' },
+  },
+  connection: {
+    server: {
+      title: "O motor do GrandMentor não está rodando",
+      text: "Os problemas e as lições que você já abriu continuam funcionando; jogar contra bots, analisar e revisar partidas precisam do motor. Inicie-o no seu computador e esta página se reconecta sozinha.",
+    },
+    device: {
+      title: "Você está sem conexão",
+      text: "Este dispositivo está sem conexão e não alcança o GrandMentor. Os problemas e as lições que você já abriu continuam funcionando.",
+    },
   },
 };

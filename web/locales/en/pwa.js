@@ -12,8 +12,6 @@ export default {
     gotIt: 'Got it',
   },
   offline: {
-    banner: 'Offline — puzzles and lessons still work',
-    bannerShort: 'Offline',
     backOnline: 'Back online',
     retry: 'Retry',
     retryLabel: 'Check the connection again',
@@ -28,6 +26,16 @@ export default {
     synced: {
       one: 'Synced {count} result you made offline.',
       other: 'Synced {count} results you made offline.',
+    },
+  },
+  connection: {
+    server: {
+      title: "GrandMentor's engine isn't running",
+      text: "Puzzles and lessons you've opened still work; playing bots, analysis and review need it. Start it on your computer and this page reconnects automatically.",
+    },
+    device: {
+      title: "You're offline",
+      text: "This device has no connection and can't reach GrandMentor. Puzzles and lessons you've opened still work.",
     },
   },
 };

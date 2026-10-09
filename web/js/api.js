@@ -15,6 +15,14 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Tell the PWA layer (pwa.js) whether the server answered. A network failure is only a hint:
+ * pwa.js confirms it with a health probe before showing the "engine isn't running" banner.
+ */
+function signalReach(ok) {
+  try { window.dispatchEvent(new Event(ok ? 'gm:server-reachable' : 'gm:server-unreachable')); } catch { /* no window */ }
+}
+
 async function request(method, path, body, opts = {}) {
   const ctrl = new AbortController();
   const timeoutMs = opts.timeout ?? DEFAULT_TIMEOUT_MS;
@@ -43,12 +51,14 @@ async function request(method, path, body, opts = {}) {
       // Caller aborted: always surface a standard AbortError so callers can ignore it via isAbort().
       throw new DOMException('Request aborted', 'AbortError');
     }
+    signalReach(false);
     throw new ApiError('Cannot reach the GrandMentor server. Is it running?', 0);
   } finally {
     if (timer) clearTimeout(timer);
     if (outer) outer.removeEventListener('abort', onOuterAbort);
   }
 
+  signalReach(true);
   const type = res.headers.get('content-type') || '';
   let data = null;
   try {
@@ -231,9 +241,11 @@ export class EngineClient {
     }
   }
 
-  _handleClose() {
+  _handleClose(ev) {
     this._teardownSocket(false);
     if (this._closed) return;
+    // Dropped while waiting for results (1006 = abnormal): maybe the server stopped.
+    if (this._active && ev && ev.code === 1006) signalReach(false);
     // Only reconnect if someone is waiting for results; otherwise connect lazily next time.
     if (this._active) this._scheduleReconnect();
   }

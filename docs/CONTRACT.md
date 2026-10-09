@@ -344,10 +344,11 @@ export class EngineClient {           // one websocket, lazy-connect, auto-recon
 }
 ```
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
-Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|alpha), `sounds` (bool),
+Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|chessnut; a stored `alpha` is migrated to `chessnut`), `sounds` (bool),
 `showCoords`, `showLegal`, `animationMs` (number), `showEvalBar`, `autoQueen`, `theme` (dark|light), `moveNotation` (san|figurine).
 Accessibility keys (see "Accessibility" below): `highContrast` (bool), `cbPalette` (bool), `motion` (system|reduce|full),
-`announceMoves` (bool, default true), `squareNames` (bool), `uiScale` (100|115|130).
+`announceMoves` (bool, default true), `squareNames` (bool), `uiScale` (100|115|130),
+`speakMoves` (bool, default false: read the opponent's moves aloud), `speakOwnMoves` (bool, default false: also the user's).
 Also exported: `reducedMotion()` (true when `motion` is reduce, or system + `prefers-reduced-motion`), `scrollBehavior()`
 (`'auto'|'smooth'` for `scrollIntoView`), `UI_SCALES`.
 **`web/js/ui.js`**: `toast(msg, kind)`, `modal({title, body /*Node|string*/, actions:[{label, kind, onClick}]}) → {close}`,
@@ -418,6 +419,21 @@ describeMove(move) → "White knight to f3" | "Black captures on d5, check" | "�
 announceMove(move); announceTurn(color, { you });      // respect the announceMoves setting
 squareLabel(square, code?), pieceName(role), coloredPiece('wN')
 ```
+`clearAnnouncements()` also stops speech (`cancelSpeech()`).
+
+### `components/speech.js` (read moves aloud, Web Speech API)
+
+```js
+speakMove(move, { mine = false }) → bool   // describeMove() text, only when speakMoves (and speakOwnMoves for mine) is on
+speak(text) → bool                         // say translated text in the UI language; never throws, no-op when unsupported
+cancelSpeech(); speechSupported() → bool; voiceAvailable() → true|false|null; onVoicesChanged(fn) → unsubscribe
+```
+The voice is the best installed voice for the UI language (`en-US`, `es-ES`, `pt-BR`, `fr-FR`, `de-DE`); the utterance
+always carries the language tag. At most 2 utterances are queued (older ones are dropped). `Board` calls `speakMove` for
+every move on a board where the user plays one side (`movableColor` `white`/`black`, remembered while the opponent
+moves; `both` boards and view-only boards stay silent). `mine` = the move's colour is the user's. Opt out per board
+with `speak: false` (preview boards with `announce: false` stay silent too). Settings → Accessibility has the switches and a "Try it" button (`a11y.speech.*`).
+
 `toast()` messages are spoken through `announce()` (errors/warnings assertive); the toast stack itself is not a live region.
 
 ### `components/moveinput.js`
@@ -436,7 +452,8 @@ lessons, Analysis, Play a friend, endgame practice and the repertoire builder/dr
 
 ### `ui.js` additions
 `tOr(key, englishFallback, params)` (for code that may run before i18n loads, e.g. the global error toast),
-`focusableIn(container)`; modals trap Tab (also when nothing inside is focusable) and restore focus on close;
+`focusableIn(container)`, `DEFAULT_AVATAR` ('♟️', same as the server default) and `userAvatar(profile)` (the player's
+avatar or the default; used on Home, Play, Review and Profile); modals trap Tab (also when nothing inside is focusable) and restore focus on close;
 `classificationMeta(cls).color` follows the colour-blind palette when `cbPalette` is on (`cssVar` always follows the
 active palette).
 
@@ -496,10 +513,19 @@ GrandMentor can be installed as an app and keeps puzzles and lessons working wit
 **Frontend (`web/js/pwa.js`)** — `initPwa()` (called once from `app.js` boot after the shell renders) and `destroyPwa()`.
 - Registers `/sw.js` (scope `/`, `updateViaCache: 'none'`) in secure contexts (https or localhost); checks for updates when the tab becomes visible (at most every 30 min).
 - Update flow: a waiting worker shows a sticky toast "A new version is available — Reload"; Reload posts `skipWaiting` and reloads on `controllerchange` (fallback reload after 3 s).
-- Offline: `navigator.onLine` + a `/api/health` probe (4 s timeout; re-probed every 15 s while offline and on `online`). Shows `#offline-banner` ("Offline — puzzles and lessons still work", Retry) and sets `html.is-offline`; "Back online" for 2.5 s when the connection returns, then asks the worker to replay the queue.
+- Connection status `connectionStatus()` → `'ok' | 'server' | 'device'`, from a `/api/health` probe (4 s timeout) 1.5 s after boot, on
+  `online`/`offline`, when the tab becomes visible while down, every 15 s while down, and (throttled to one per 3 s) when
+  `api.js` dispatches `gm:server-unreachable` (a REST call failed with a network error, or the engine WebSocket closed
+  abnormally while analysing) or `gm:server-reachable` while down. Failing probe + `navigator.onLine === false` = `'device'`
+  ("You're offline"), otherwise `'server'` ("GrandMentor's engine isn't running … reconnects automatically"). A passing probe is
+  always `'ok'`, even without internet (the server runs on localhost).
+- `#offline-banner` is the first child of `<main>`, in the normal flow above the page (never over the board), with Retry;
+  hidden and zero-size while `'ok'` (so the QA sweep, which runs with the server up, never sees it). Sets `html.is-offline` and
+  `html[data-connection=server|device]`, dispatches `gm:connection` `{status, previous}` on every change (`app.js` refreshes
+  the engine status dot), and on recovery shows a "Back online" toast (2.5 s) and asks the worker to replay the queue.
 - Install: captures `beforeinstallprompt` and adds an "Install app" entry to the sidebar footer and the mobile "More" sheet (re-injected when `app.js` re-renders the shell); on iOS Safari (not standalone) the entry opens "Share → Add to Home Screen" instructions. Hidden once installed / in standalone mode.
 - Keeps `<meta name="theme-color">` in sync with the in-app theme (`--bg-elev`).
-- Strings: `pwa.*` in `web/locales/{en,es}/pwa.js`. Styles: `web/css/pwa.css`.
+- Strings: `pwa.*` in `web/locales/*/pwa.js` (`pwa.connection.*` for the banner). Styles: `web/css/pwa.css`.
 
 ## Daily plan, streaks and goals
 
