@@ -16,6 +16,7 @@
 
 mod accuracy;
 pub mod insights;
+pub mod reason;
 mod see;
 
 use std::collections::{BTreeMap, HashMap};
@@ -130,6 +131,10 @@ pub struct MoveReview {
     pub win_chance_loss: f32,
     pub explanation: String,
     pub opening_name: Option<String>,
+    /// Engine-grounded "why" for inaccuracies, mistakes, misses and blunders (see
+    /// [`reason`]); absent for other moves and in reviews stored before it existed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<reason::MoveReason>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -216,7 +221,11 @@ async fn evaluate_positions(
     positions: &[Chess],
     depth: u8,
     progress: Option<&tokio::sync::mpsc::UnboundedSender<f32>>,
+    stop: Arc<AtomicBool>,
 ) -> Result<Vec<Option<SearchInfo>>, String> {
+    if stop.load(Ordering::Relaxed) {
+        return Err(REVIEW_CANCELLED.to_string());
+    }
     // Map each non-terminal position to a unique search job.
     let mut job_of: Vec<Option<usize>> = Vec::with_capacity(positions.len());
     let mut jobs: Vec<Chess> = Vec::new();
@@ -235,7 +244,6 @@ async fn evaluate_positions(
     }
     drop(seen);
 
-    let stop = Arc::new(AtomicBool::new(false));
     let _guard = StopOnDrop(Arc::clone(&stop));
     let limits = SearchLimits {
         depth: Some(depth),
@@ -269,9 +277,14 @@ async fn evaluate_positions(
             if e.is_panic() {
                 "engine failed while analysing the game".to_string()
             } else {
-                "analysis was cancelled".to_string()
+                REVIEW_CANCELLED.to_string()
             }
         })?;
+        // Cancelled from outside: searches return early with partial results, so stop here
+        // (dropping the JoinSet aborts the tasks still waiting for an engine).
+        if stop.load(Ordering::Relaxed) {
+            return Err(REVIEW_CANCELLED.to_string());
+        }
         if let Some(slot) = results.get_mut(idx) {
             *slot = Some(info);
         }
@@ -671,6 +684,9 @@ fn key_moments(moves: &[MoveReview], white_wins: &[f32]) -> Vec<usize> {
     plies
 }
 
+/// Error text returned by a review whose stop flag was raised.
+pub const REVIEW_CANCELLED: &str = "analysis was cancelled";
+
 /// Full game review with text in `lang`. See module docs. `content` may be the source content
 /// or any language view of it (opening names come from `content.localized(lang)`).
 pub async fn review_game(
@@ -681,6 +697,24 @@ pub async fn review_game(
     depth: u8,
     progress: Option<tokio::sync::mpsc::UnboundedSender<f32>>,
     lang: Lang,
+) -> Result<GameReview, String> {
+    review_game_cancellable(pool, content, start_fen, moves, depth, progress, lang, Arc::new(AtomicBool::new(false)))
+        .await
+}
+
+/// [`review_game`] with an external stop flag: raising `stop` (client gone, server shutting
+/// down) halts every in-flight search promptly and the review returns `Err(REVIEW_CANCELLED)`.
+/// Dropping the future also raises the flag.
+#[allow(clippy::too_many_arguments)]
+pub async fn review_game_cancellable(
+    pool: &EnginePool,
+    content: Arc<gm_content::Content>,
+    start_fen: &str,
+    moves: &[String],
+    depth: u8,
+    progress: Option<tokio::sync::mpsc::UnboundedSender<f32>>,
+    lang: Lang,
+    stop: Arc<AtomicBool>,
 ) -> Result<GameReview, String> {
     let content = content.localized(lang);
     if moves.len() > MAX_PLIES {
@@ -709,7 +743,7 @@ pub async fn review_game(
     let depth = depth.clamp(1, 30);
 
     // 2. Evaluate.
-    let infos = evaluate_positions(pool, &positions, depth, progress.as_ref()).await?;
+    let infos = evaluate_positions(pool, &positions, depth, progress.as_ref(), stop).await?;
     let data: Vec<PosData> = positions
         .into_iter()
         .zip(infos)
@@ -799,7 +833,20 @@ pub async fn review_game(
         let best = before.lines.first();
         let best_move_san = best.and_then(|l| l.san.first()).cloned().unwrap_or_default();
         let best_line_san: Vec<String> = best.map(|l| l.san.iter().take(10).cloned().collect()).unwrap_or_default();
-        let explanation = gm_mentor::explain_move(
+        let reason = reason::derive(&reason::ReasonInput {
+            before: &before.pos,
+            played: m,
+            refutation: after.lines.first().map(|l| l.moves.as_slice()).unwrap_or(&[]),
+            best: before.lines.first().map(|l| l.moves.as_slice()).unwrap_or(&[]),
+            eval_before: before.score,
+            eval_after: after.score,
+            classification,
+        })
+        .map(|mut r| {
+            r.text = reason::render(&r, lang);
+            r
+        });
+        let rule_based = gm_mentor::explain_move(
             &gm_mentor::MoveContext {
                 fen_before: before.fen.clone(),
                 played_uci: uci.to_string(),
@@ -813,6 +860,7 @@ pub async fn review_game(
             },
             lang,
         );
+        let explanation = grounded_explanation(rule_based, reason.as_ref());
         reviews.push(MoveReview {
             ply: i + 1,
             san,
@@ -829,6 +877,7 @@ pub async fn review_game(
             win_chance_loss: (loss * 100.0).round() / 100.0,
             explanation,
             opening_name,
+            reason,
         });
     }
 
@@ -867,6 +916,15 @@ pub async fn review_game(
     Ok(review)
 }
 
+/// A concrete engine-grounded reason (material, mate, tactic) replaces the rule-based
+/// explanation, which can only look one move ahead; a positional one keeps it.
+fn grounded_explanation(rule_based: String, reason: Option<&reason::MoveReason>) -> String {
+    match reason {
+        Some(r) if r.kind.is_concrete() && !r.text.is_empty() => r.text.clone(),
+        _ => rule_based,
+    }
+}
+
 /// The explanation context for a reviewed move, rebuilt from its stored fields.
 fn move_context(m: &MoveReview) -> gm_mentor::MoveContext {
     gm_mentor::MoveContext {
@@ -890,7 +948,10 @@ pub fn relocalize(review: &GameReview, content: &gm_content::Content, lang: Lang
     let content = content.localized(lang);
     let mut out = review.clone();
     for m in &mut out.moves {
-        m.explanation = gm_mentor::explain_move(&move_context(m), lang);
+        if let Some(r) = &mut m.reason {
+            r.text = reason::render(r, lang);
+        }
+        m.explanation = grounded_explanation(gm_mentor::explain_move(&move_context(m), lang), m.reason.as_ref());
         if m.opening_name.is_some() {
             if let Some(om) = content.lookup_opening(&m.fen_after) {
                 m.opening_name = Some(om.opening.name);

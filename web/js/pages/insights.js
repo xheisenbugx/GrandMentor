@@ -7,6 +7,7 @@ import { api, isAbort } from '../api.js';
 import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml } from '../ui.js';
 import { t, hasKey, formatNumber, formatDateIntl } from '../i18n.js';
 import { pieceUrl } from '../settings.js';
+import { weeklyInsightsCard } from '../components/weekly-card.js';
 
 export const title = () => t('insights.title');
 
@@ -128,6 +129,14 @@ export async function mount(root) {
   let batch = null;
   bag.add(() => batch?.ctrl.abort());
   let data = null;
+  // "Your weekly set" card (own fetch); rebuilt on every render.
+  let weekly = null;
+  bag.add(() => weekly?.destroy());
+  const weeklyCard = () => {
+    weekly?.destroy();
+    weekly = weeklyInsightsCard();
+    return weekly.el;
+  };
 
   const reviewBtn = h('button', { class: 'btn btn-secondary', type: 'button', hidden: true, html: icon('sparkles') + span('insights.review.start') });
   bag.on(reviewBtn, 'click', () => runBatch());
@@ -223,7 +232,7 @@ export async function mount(root) {
   function render() {
     renderBanner();
     if (!data.ready) {
-      content.replaceChildren(renderEmpty());
+      content.replaceChildren(renderEmpty(), weeklyCard());
       return;
     }
     const sections = [
@@ -232,6 +241,7 @@ export async function mount(root) {
       h('div', { class: 'ins-grid' },
         renderPhases(),
         renderTactics(),
+        weeklyCard(),
         renderHanging(),
         renderTrend(),
         renderColors(),

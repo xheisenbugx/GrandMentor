@@ -104,4 +104,16 @@ export default {
       text: 'Pulsa Tab hasta llegar al tablero, muévete con las flechas y pulsa Intro o Espacio para coger una pieza y otra vez para soltarla. Esc cancela. También puedes escribir jugadas como Nf3.',
     },
   },
+  speech: {
+    title: "Leer las jugadas en voz alta",
+    desc: "Tu ordenador dice en voz alta las jugadas de tu rival, como «Negras: caballo a f6». Ideal para jugar a ciegas.",
+    own: {
+      title: "Leer también mis jugadas",
+      desc: "Dice también las jugadas que haces tú.",
+    },
+    test: "Probar",
+    testLabel: "Escuchar un ejemplo",
+    unsupported: "Este navegador no puede leer en voz alta.",
+    noVoice: "No hay una voz instalada para este idioma, así que puede sonar otra voz.",
+  },
 };

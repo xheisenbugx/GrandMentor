@@ -2,13 +2,14 @@
 // recent games, tip of the day and a mini daily-puzzle preview.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName } from '../ui.js';
+import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName, userAvatar } from '../ui.js';
 import { t, hasKey, formatDateIntl } from '../i18n.js';
 import {
   ensureHubCss, fenBoardSvg, playUci, resultMarker, outcomeLabel, userAccuracy, accuracyPill,
   gameTitle, fullMoves,
 } from './library.js';
 import { DailyPanel, ensureDailyCss } from '../components/daily.js';
+import { FirstWeekCard } from '../components/firstweek.js';
 
 export const title = () => t('nav.routes.home');
 
@@ -84,9 +85,11 @@ export async function mount(root) {
   const ratingEl = h('div', { class: 'card hub-rating-card' }, skeleton('text', 3));
   const tipEl = h('div', { class: 'card hub-tip' });
   const dailyEl = h('div', { class: 'hub-daily-plan' });
+  const firstWeekEl = h('div', { class: 'hub-first-week' });
 
   const page = h('div', { class: 'page hub-page hub-home' },
     heroEl,
+    firstWeekEl,
     dailyEl,
     ctaEl,
     h('section', { class: 'hub-section' },
@@ -104,6 +107,9 @@ export async function mount(root) {
   root.appendChild(page);
   const dailyPanel = new DailyPanel(dailyEl);
   bag.add(() => dailyPanel.destroy());
+  const firstWeek = new FirstWeekCard(firstWeekEl);
+  bag.add(() => firstWeek.destroy());
+  firstWeek.load().catch((e) => { if (!isAbort(e)) console.error('[home] first week', e); });
 
   // ---- Tip of the day (local, instant) -------------------------------------
   let tipIndex = dayOfYear() % TIP_IDS.length;
@@ -163,7 +169,7 @@ export async function mount(root) {
     const played = games.length;
     heroEl.replaceChildren(
       h('div', { class: 'hub-hero-main' },
-        h('div', { class: 'avatar avatar-lg avatar-round hub-hero-avatar', 'aria-hidden': 'true' }, profile?.avatar || '♟️'),
+        h('div', { class: 'avatar avatar-lg avatar-round hub-hero-avatar', 'aria-hidden': 'true' }, userAvatar(profile)),
         h('div', { class: 'stack-sm', style: 'min-width:0' },
           h('div', { class: 'hub-eyebrow' }, formatDateIntl(new Date(), { weekday: 'long', month: 'long', day: 'numeric' })),
           h('h1', { class: 'hub-hero-title' }, greetingNodes(greetingKey(), name)),

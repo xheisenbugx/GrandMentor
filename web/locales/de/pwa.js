@@ -12,8 +12,6 @@ export default {
     gotIt: 'Verstanden',
   },
   offline: {
-    banner: 'Offline – Aufgaben und Lektionen funktionieren weiter',
-    bannerShort: 'Offline',
     backOnline: 'Wieder online',
     retry: 'Nochmal',
     retryLabel: 'Verbindung erneut prüfen',
@@ -28,6 +26,16 @@ export default {
     synced: {
       one: '{count} Ergebnis von unterwegs synchronisiert.',
       other: '{count} Ergebnisse von unterwegs synchronisiert.',
+    },
+  },
+  connection: {
+    server: {
+      title: "Die GrandMentor-Engine läuft nicht",
+      text: "Bereits geöffnete Aufgaben und Lektionen funktionieren weiter; für Bots, Analyse und Partiebesprechung braucht es die Engine. Starte sie auf deinem Computer – diese Seite verbindet sich dann von selbst.",
+    },
+    device: {
+      title: "Du bist offline",
+      text: "Dieses Gerät hat keine Verbindung und erreicht GrandMentor nicht. Bereits geöffnete Aufgaben und Lektionen funktionieren weiter.",
     },
   },
 };

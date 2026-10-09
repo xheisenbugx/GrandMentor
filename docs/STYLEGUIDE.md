@@ -410,7 +410,7 @@ engine.stop(); engine.close();   // close() in cleanup!
 import { getSettings, getSetting, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, DEFAULTS, pieceUrl } from '../settings.js';
 const off = onSettingsChange((s, key, value) => {...});   // call off() in cleanup
 ```
-Settings keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett|merida|alpha), `sounds`,
+Settings keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett|merida|chessnut; a stored `alpha` is migrated to `chessnut`), `sounds`,
 `showCoords`, `showLegal`, `animationMs` (0–1000), `showEvalBar`, `autoQueen`, `theme` (dark|light),
 `moveNotation` (san|figurine), plus shell-only `sidebarCollapsed`. Invalid values are rejected.
 

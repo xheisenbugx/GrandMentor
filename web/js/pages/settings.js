@@ -10,6 +10,10 @@ import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES,
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 import { createBackupSection } from '../components/backup.js';
+import { createFirstWeekSection } from '../components/firstweek.js';
+import { createPhoneSection } from '../components/phone.js';
+import { speak, speechSupported, cancelSpeech, voiceAvailable, onVoicesChanged } from '../components/speech.js';
+import { describeMove } from '../components/announcer.js';
 import { SOUND_EVENTS, SOUND_PRESETS, stylesFor, defaultStyle, resolveStyle, presetPicks, matchPreset } from '../sound-catalog.js';
 
 export const title = () => t('nav.routes.settings');
@@ -244,6 +248,21 @@ export async function mount(root) {
     }
   });
 
+  const resetPuzzlesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('refresh') + `<span>${t('settings.resetPuzzles.button')}</span>` });
+  bag.on(resetPuzzlesBtn, 'click', async () => {
+    const ok = await confirmDialog({ title: t('settings.resetPuzzles.confirmTitle'), message: t('settings.resetPuzzles.confirmMessage'), confirmLabel: t('settings.resetPuzzles.button'), danger: true });
+    if (!ok || bag.disposed) return;
+    resetPuzzlesBtn.classList.add('loading');
+    try {
+      await api.post('/api/profile/puzzles/reset', { confirm: true }, { signal: ctrl.signal });
+      toast(t('settings.resetPuzzles.done'), 'success');
+    } catch (e) {
+      if (!isAbort(e)) toast(e?.message || t('settings.resetPuzzles.failed'), 'error');
+    } finally {
+      resetPuzzlesBtn.classList.remove('loading');
+    }
+  });
+
   const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('x-circle') + `<span>${t('settings.clearData.button')}</span>` });
   bag.on(clearLocalBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.clearData.confirmTitle'), message: t('settings.clearData.confirmMessage'), confirmLabel: t('settings.clearData.confirmButton'), danger: true });
@@ -268,6 +287,30 @@ export async function mount(root) {
     else setSetting('boardTheme', lastBoardTheme === 'contrast' ? 'green' : lastBoardTheme);
   });
   syncers.push((s) => { boardContrastInput.checked = s.boardTheme === 'contrast'; if (s.boardTheme !== 'contrast') lastBoardTheme = s.boardTheme; });
+  // Read moves aloud (Web Speech API): main switch + "Try it", and "my moves too" under it.
+  const canSpeak = speechSupported();
+  const speakToggle = toggle('speakMoves', t('a11y.speech.title'));
+  const speakOwnToggle = toggle('speakOwnMoves', t('a11y.speech.own.title'));
+  const speakTestBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', 'aria-label': t('a11y.speech.testLabel'), html: icon('volume') + `<span>${t('a11y.speech.test')}</span>` });
+  bag.on(speakTestBtn, 'click', () => speak(describeMove({ color: 'w', piece: 'n', from: 'g1', to: 'f3', san: 'Nf3', flags: 'n' })));
+  bag.add(cancelSpeech);
+  const speakOwnRow = row(t('a11y.speech.own.title'), t('a11y.speech.own.desc'), speakOwnToggle);
+  speakOwnRow.classList.add('hub-setting-sub');
+  syncers.push((s) => {
+    const off = !canSpeak || !s.speakMoves;
+    speakOwnToggle.querySelector('input').disabled = off;
+    speakOwnRow.classList.toggle('is-disabled', off);
+    speakTestBtn.disabled = !canSpeak;
+  });
+  if (!canSpeak) speakToggle.querySelector('input').disabled = true;
+  const speakRow = row(t('a11y.speech.title'), canSpeak ? t('a11y.speech.desc') : t('a11y.speech.unsupported'),
+    h('div', { class: 'row-sm hub-speech-controls' }, speakTestBtn, speakToggle));
+  const noVoiceNote = h('div', { class: 'setting-row-desc subtle text-xs', hidden: true }, t('a11y.speech.noVoice'));
+  speakRow.querySelector('.setting-row-text')?.appendChild(noVoiceNote);
+  const syncVoiceNote = () => { noVoiceNote.hidden = voiceAvailable() !== false; };
+  syncVoiceNote();
+  bag.add(onVoicesChanged(syncVoiceNote));
+
   const a11ySection = h('section', { class: 'card', id: 'accessibility', 'aria-labelledby': 'settings-a11y-title' },
     h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-a11y-title', html: icon('eye') + `<span>${t('a11y.settings.section')}</span>` })),
     h('p', { class: 'muted text-sm' }, t('a11y.settings.intro')),
@@ -277,6 +320,8 @@ export async function mount(root) {
     row(t('a11y.settings.motion.title'), t('a11y.settings.motion.desc'),
       segmented('motion', [['system', t('a11y.settings.motion.system')], ['reduce', t('a11y.settings.motion.reduce')], ['full', t('a11y.settings.motion.full')]], t('a11y.settings.motion.title'))),
     row(t('a11y.settings.announce.title'), t('a11y.settings.announce.desc'), toggle('announceMoves', t('a11y.settings.announce.title'))),
+    speakRow,
+    speakOwnRow,
     row(t('a11y.settings.squareNames.title'), t('a11y.settings.squareNames.desc'), toggle('squareNames', t('a11y.settings.squareNames.title'))),
     row(t('a11y.settings.scale.title'), t('a11y.settings.scale.desc'),
       segmented('uiScale', UI_SCALES.map((v) => [v, t('a11y.settings.scale.option', { percent: v })]), t('a11y.settings.scale.title'))),
@@ -288,6 +333,10 @@ export async function mount(root) {
   // ---- Your data (backup, restore, device sync) — self-contained component -----------
   const dataSection = createBackupSection();
   bag.add(dataSection.destroy);
+  const firstWeekSection = createFirstWeekSection();
+  bag.add(firstWeekSection.destroy);
+  const phoneSection = createPhoneSection(); // "Use on your phone" — components/phone.js
+  bag.add(phoneSection.destroy);
 
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
@@ -319,11 +368,14 @@ export async function mount(root) {
           row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria')))),
         soundSection,
         a11ySection,
+        firstWeekSection.el,
         dataSection.el,
+        phoneSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),
           row(t('settings.deleteGames.button'), t('settings.deleteGames.desc'), deleteGamesBtn),
+          row(t('settings.resetPuzzles.button'), t('settings.resetPuzzles.desc'), resetPuzzlesBtn),
           row(t('settings.clearData.button'), t('settings.clearData.desc'), clearLocalBtn))),
       h('aside', { class: 'hub-settings-aside' },
         h('div', { class: 'card hub-preview-card' },

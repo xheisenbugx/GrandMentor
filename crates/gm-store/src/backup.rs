@@ -675,6 +675,8 @@ impl Store {
             ImportMode::Merge => merge_all(&tx, &infos, file, &mut report)?,
         }
         tx.execute_batch("INSERT OR IGNORE INTO profile (id) VALUES (1)")?;
+        // Games from older backups have no thumbnail position yet.
+        crate::game_fen::backfill(&tx)?;
         set_meta_now(&tx, if source == ImportSource::Sync { "last_sync_at" } else { "last_restore_at" })?;
         tx.commit().context("committing backup import")?;
 

@@ -1,0 +1,109 @@
+/* Guided first week: #/start page, Home card, 7-dot path, confetti. Loaded by components/firstweek.js. */
+
+/* ---- 7-dot path ---------------------------------------------------------- */
+.fw-path { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); position: relative; }
+.fw-path::before {
+  content: ""; position: absolute; left: calc(100% / 14); right: calc(100% / 14); top: 19px; height: 3px;
+  background: var(--surface-3); border-radius: var(--r-full);
+}
+.fw-path.compact::before { top: 13px; }
+.fw-dot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.fw-dot-mark {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; position: relative;
+  font-weight: var(--fw-bold); font-size: var(--fs-sm); background: var(--surface-2); color: var(--text-subtle);
+  border: 2px solid var(--border-strong);
+}
+.fw-path.compact .fw-dot-mark { width: 28px; height: 28px; font-size: var(--fs-xs); }
+.fw-dot.done .fw-dot-mark { background: var(--primary-fill); border-color: var(--primary); color: var(--primary-contrast); }
+.fw-dot.today .fw-dot-mark { border-color: var(--gold); color: var(--text); box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 22%, transparent); }
+.fw-dot.open .fw-dot-mark { border-color: var(--primary); color: var(--text); }
+.fw-dot.locked .fw-dot-mark { opacity: 0.7; }
+.fw-dot-label { font-size: var(--fs-xs); color: var(--text-muted); white-space: nowrap; }
+.fw-dot.today .fw-dot-label { color: var(--text); font-weight: var(--fw-semibold); }
+
+/* ---- Home card ----------------------------------------------------------- */
+.hub-first-week { margin-top: var(--sp-5); }
+.fw-card {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-4); align-items: start;
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 55%), var(--surface);
+}
+.fw-card-emoji { font-size: 40px; line-height: 1; width: 64px; height: 64px; display: grid; place-items: center; border-radius: var(--r-lg); background: var(--surface-2); }
+.fw-card-main { min-width: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.fw-card-title { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-black); line-height: var(--lh-tight); }
+.fw-card-title a { color: inherit; text-decoration: none; }
+.fw-card-title a:hover { text-decoration: underline; }
+.fw-card-text { margin: 0; }
+.fw-card .fw-path { max-width: 420px; margin: var(--sp-1) 0; }
+.fw-card-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+
+/* ---- Page ---------------------------------------------------------------- */
+.fw-page { display: flex; flex-direction: column; gap: var(--sp-4); max-width: 920px; }
+.fw-hero {
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  background: radial-gradient(120% 140% at 100% 0%, var(--primary-soft), transparent 55%), var(--surface);
+}
+.fw-hero.complete { background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 60%), var(--surface); }
+.fw-hero-top { display: flex; gap: var(--sp-4); align-items: center; }
+.fw-hero-emoji { font-size: 48px; line-height: 1; flex: none; }
+.fw-hero-title { margin: 0; font-size: var(--fs-2xl); font-weight: var(--fw-black); line-height: var(--lh-tight); }
+.fw-hero p { margin: 0; }
+.fw-hero-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+.fw-days { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.fw-day { display: flex; flex-direction: column; gap: var(--sp-3); }
+.fw-day.today { border-color: color-mix(in srgb, var(--gold) 55%, var(--border)); }
+.fw-day.locked { opacity: 0.78; }
+.fw-day-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--sp-3); align-items: start; }
+.fw-day-emoji { font-size: 28px; width: 48px; height: 48px; border-radius: var(--r-md); display: grid; place-items: center; background: var(--surface-2); }
+.fw-day-titles { min-width: 0; }
+.fw-day-title { margin: 2px 0 0; font-size: var(--fs-lg); font-weight: var(--fw-bold); }
+.fw-day-desc { margin: 2px 0 0; }
+.fw-day-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.fw-day-meta .badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.fw-day-note { margin: 0; }
+
+.fw-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.fw-step {
+  display: grid; grid-template-columns: 26px 34px minmax(0, 1fr) auto; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--divider);
+}
+.fw-check {
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  border: 2px solid var(--border-strong); color: var(--primary-contrast);
+}
+.fw-step.done .fw-check { background: var(--primary-fill); border-color: var(--primary); }
+.fw-step-icon { width: 34px; height: 34px; border-radius: var(--r-md); display: grid; place-items: center; color: var(--primary-text); background: var(--primary-soft); }
+.fw-step-main { min-width: 0; }
+.fw-step-title { font-weight: var(--fw-semibold); }
+.fw-step-sub { font-size: var(--fs-sm); color: var(--text-muted); }
+.fw-step.done .fw-step-title { color: var(--text-muted); }
+.fw-step.locked .fw-step-icon { color: var(--text-subtle); background: var(--surface-3); }
+.fw-step-actions { display: flex; gap: var(--sp-1); flex-wrap: wrap; justify-content: flex-end; }
+.fw-step-actions .btn { min-width: 48px; justify-content: center; }
+.fw-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.fw-foot p { margin: 0; }
+
+@media (max-width: 640px) {
+  .fw-path::before { top: 15px; }
+  .fw-dot-mark { width: 32px; height: 32px; }
+  .fw-dot-label { font-size: 10px; }
+  .fw-card { grid-template-columns: minmax(0, 1fr); }
+  .fw-card-emoji { display: none; }
+  .fw-hero-emoji { font-size: 36px; }
+  .fw-day-head { grid-template-columns: auto minmax(0, 1fr); }
+  .fw-day-meta { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
+  .fw-step { grid-template-columns: 26px minmax(0, 1fr); }
+  .fw-step-icon { display: none; }
+  .fw-step-actions { grid-column: 2; justify-content: flex-start; }
+}
+
+/* ---- Confetti (never shown under reduced motion: JS skips it) ------------- */
+.fw-confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 900; }
+.fw-confetti i {
+  position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; opacity: 0.95;
+  animation-name: fw-fall; animation-timing-function: cubic-bezier(.25,.6,.4,1); animation-fill-mode: forwards;
+}
+@keyframes fw-fall {
+  to { transform: translate(var(--fw-drift, 0), 105vh) rotate(var(--fw-spin, 360deg)); opacity: 0.6; }
+}
+@media (prefers-reduced-motion: reduce) { .fw-confetti { display: none; } }

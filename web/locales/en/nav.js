@@ -26,6 +26,7 @@ export default {
     home: 'Home',
     play: 'Play',
     analysis: 'Analysis',
+    editor: 'Board editor',
     review: 'Game Review',
     puzzleRush: 'Puzzle Rush',
     dailyPuzzle: 'Daily Puzzle',

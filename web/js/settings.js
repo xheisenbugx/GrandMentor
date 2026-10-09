@@ -24,8 +24,11 @@ export const UI_SCALES = Object.freeze([100, 115, 130]);
 export const PIECE_SETS = Object.freeze({
   cburnett: { labelKey: 'settings.pieceSets.cburnett' },
   merida: { labelKey: 'settings.pieceSets.merida' },
-  alpha: { labelKey: 'settings.pieceSets.alpha' },
+  chessnut: { labelKey: 'settings.pieceSets.chessnut' },
 });
+
+/** Piece sets that were removed, mapped to their replacement (applied when settings load). */
+const RENAMED_PIECE_SETS = Object.freeze({ alpha: 'chessnut' });
 
 export const DEFAULTS = Object.freeze({
   boardTheme: 'green',
@@ -49,6 +52,8 @@ export const DEFAULTS = Object.freeze({
   announceMoves: true,     // screen-reader announcements of moves
   squareNames: false,      // show the square name on hover / keyboard focus
   uiScale: 100,            // UI text scale in percent (UI_SCALES)
+  speakMoves: false,       // read the opponent's moves aloud (Web Speech API)
+  speakOwnMoves: false,    // ... and the user's own moves too
 });
 
 // Validators keep corrupted storage from breaking the app.
@@ -73,6 +78,8 @@ const VALIDATE = {
   announceMoves: (v) => typeof v === 'boolean',
   squareNames: (v) => typeof v === 'boolean',
   uiScale: (v) => UI_SCALES.includes(v),
+  speakMoves: (v) => typeof v === 'boolean',
+  speakOwnMoves: (v) => typeof v === 'boolean',
 };
 
 const listeners = new Set();
@@ -85,6 +92,8 @@ function load() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
+        // Migrate removed piece sets (e.g. the non-commercial `alpha` set) to their replacement.
+        if (Object.hasOwn(RENAMED_PIECE_SETS, parsed.pieceSet)) parsed.pieceSet = RENAMED_PIECE_SETS[parsed.pieceSet];
         for (const [k, v] of Object.entries(parsed)) {
           if (VALIDATE[k] ? VALIDATE[k](v) : false) s[k] = v;
         }

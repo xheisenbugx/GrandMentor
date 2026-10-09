@@ -34,7 +34,7 @@ export default {
   pieceSets: {
     cburnett: 'Clásico',
     merida: 'Merida',
-    alpha: 'Alpha',
+    chessnut: 'Chessnut',
   },
   coords: {
     title: 'Mostrar coordenadas',
@@ -154,6 +154,14 @@ export default {
     alreadyEmpty: 'Tu biblioteca ya estaba vacía',
     failed: 'No se pudieron eliminar las partidas',
     partial: { one: '{message} ({count} eliminada)', other: '{message} ({count} eliminadas)' },
+  },
+  resetPuzzles: {
+    button: 'Reiniciar rating de problemas',
+    desc: 'Empieza de cero tu rating y tus estadísticas de problemas.',
+    confirmTitle: '¿Reiniciar tu rating de problemas?',
+    confirmMessage: 'Tu rating de problemas vuelve a 1200 y se borran los problemas resueltos, los intentos y la gráfica de rating. Se conservan las puntuaciones de Puzzle Rush, las partidas y las lecciones. No se puede deshacer.',
+    done: 'Rating de problemas reiniciado: ¡a empezar de nuevo!',
+    failed: 'No se pudo reiniciar tu rating de problemas',
   },
   clearData: {
     button: 'Borrar datos del navegador',

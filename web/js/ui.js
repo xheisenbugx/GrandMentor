@@ -734,3 +734,12 @@ export function comingSoon(root, { title, icon: iconName = 'sparkles', text } = 
   root.appendChild(page);
   return () => page.remove();
 }
+
+/** The player's avatar when the profile has none (matches the server's default, gm-store). */
+export const DEFAULT_AVATAR = '♟️';
+
+/** The player's avatar (an emoji or an image URL) from a profile object, or the default. */
+export function userAvatar(profile) {
+  const v = profile && typeof profile.avatar === 'string' ? profile.avatar.trim() : '';
+  return v || DEFAULT_AVATAR;
+}

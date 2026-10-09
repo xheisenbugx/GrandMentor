@@ -10,10 +10,13 @@ pub mod backup;
 pub mod classics;
 pub mod daily;
 pub mod drills;
+pub mod first_week;
 pub mod insights;
 pub mod mistakes;
+pub mod puzzle_profile;
 pub mod repertoire;
 pub mod training;
+pub mod weekly;
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -22,8 +25,11 @@ pub fn router() -> Router<AppState> {
         .merge(classics::router())
         .merge(daily::router())
         .merge(drills::router())
+        .merge(first_week::router())
         .merge(insights::router())
         .merge(mistakes::router())
+        .merge(puzzle_profile::router())
         .merge(repertoire::router())
         .merge(training::router())
+        .merge(weekly::router())
 }

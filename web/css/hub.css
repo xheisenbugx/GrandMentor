@@ -368,3 +368,20 @@ a.card.hub-cta-main { background: linear-gradient(135deg, var(--primary-soft), t
 /* Language picker: wraps instead of overflowing when many languages are available. */
 .segmented.lang-picker { flex-wrap: wrap; max-width: 100%; }
 .segmented.lang-picker button { flex: 1 0 auto; }
+
+/* Profile stat tiles: line the values up across a row even when one label wraps to two lines
+   (e.g. "GAMES PLAYED" vs "WIN RATE"). Each tile shares the grid's rows: label / value / delta. */
+@supports (grid-template-rows: subgrid) {
+  .hub-stat-grid { grid-auto-rows: auto; }
+  .hub-stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 2px; align-content: start; }
+  .hub-stat .stat-label { align-self: start; }
+  .hub-stat .stat-value { align-self: start; }
+}
+@supports not (grid-template-rows: subgrid) {
+  .hub-stat .stat-label { min-height: calc(2 * 1.4em); }
+}
+
+/* Settings → Accessibility → read moves aloud */
+.hub-speech-controls { flex: none; flex-wrap: nowrap; }
+.setting-row.hub-setting-sub { padding-left: var(--sp-5); }
+.setting-row.hub-setting-sub.is-disabled .setting-row-text { opacity: 0.55; }

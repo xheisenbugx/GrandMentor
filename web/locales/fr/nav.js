@@ -26,6 +26,7 @@ export default {
     home: 'Accueil',
     play: 'Jouer',
     analysis: 'Analyse',
+    editor: 'Éditeur d’échiquier',
     review: 'Bilan de la partie',
     puzzleRush: 'Puzzle Rush',
     dailyPuzzle: 'Problème du jour',

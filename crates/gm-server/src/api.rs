@@ -329,7 +329,7 @@ struct ReviewReq {
     force: bool,
 }
 
-async fn run_review(
+pub(crate) async fn run_review(
     st: &AppState,
     start_fen: String,
     moves: Vec<String>,
@@ -338,19 +338,35 @@ async fn run_review(
 ) -> ApiResult<GameReview> {
     let pool = st.pool.clone();
     let content = Arc::clone(&st.content);
+    // One stop flag for the whole review. It is raised when this handler future is dropped
+    // (client disconnected / navigated away) and when the server starts shutting down, so a
+    // review never keeps burning engines for nobody.
+    let stop = Arc::new(AtomicBool::new(false));
+    let _guard = StopOnDrop(Arc::clone(&stop));
+    let mut shutdown = st.shutdown.subscribe();
+    let flag = Arc::clone(&stop);
     // Spawned so a panic in the analysis crate becomes a 500 rather than a dropped connection.
-    tokio::spawn(async move {
-        gm_analysis::review_game(&pool, content, &start_fen, &moves, depth, None, lang).await
-    })
-    .await
-    .map_err(|e| {
+    let handle = tokio::spawn(async move {
+        let review =
+            gm_analysis::review_game_cancellable(&pool, content, &start_fen, &moves, depth, None, lang, flag);
+        tokio::select! {
+            r = review => r,
+            // Dropping the review future raises its stop flag too.
+            _ = shutdown.wait_for(|v| *v) => Err(gm_analysis::REVIEW_CANCELLED.to_string()),
+        }
+    });
+    let res = handle.await.map_err(|e| {
         if e.is_panic() {
             ApiError::internal("analysis error")
         } else {
             ApiError::unavailable("server is shutting down")
         }
-    })?
-    .map_err(ApiError::bad_request)
+    })?;
+    match res {
+        Ok(review) => Ok(review),
+        Err(e) if e == gm_analysis::REVIEW_CANCELLED => Err(ApiError::unavailable("the review was cancelled")),
+        Err(e) => Err(ApiError::bad_request(e)),
+    }
 }
 
 /// Re-localize a review's text (explanations, summary, opening names) without the engine.
@@ -973,6 +989,8 @@ async fn puzzle_attempt(
 #[serde(default)]
 struct RushReq {
     score: u32,
+    /// Rush mode (`"3"`, `"5"`, `"survival"`); when given, the per-mode best is kept too.
+    mode: Option<String>,
 }
 
 async fn record_rush(
@@ -980,8 +998,28 @@ async fn record_rush(
     ApiJson(req): ApiJson<RushReq>,
 ) -> ApiResult<Json<Value>> {
     let score = req.score.min(10_000);
-    let best = store_op(&st.store, move |s| s.record_rush(score)).await?;
-    Ok(Json(json!({ "best": best })))
+    let mode = req.mode.map(|m| m.trim().to_string()).filter(|m| !m.is_empty());
+    if let Some(m) = &mode {
+        if !gm_store::puzzle_profile::valid_mode(m) {
+            return Err(ApiError::bad_request(format!("invalid Puzzle Rush mode {m:?}")));
+        }
+    }
+    let (best, mode_bests) = store_op(&st.store, move |s| {
+        let best = s.record_rush(score)?;
+        // A full mode table (16 modes) only means this mode's best is not kept.
+        let mode_bests = match &mode {
+            Some(m) => s.record_rush_best(m, score).ok(),
+            None => None,
+        };
+        Ok((best, mode_bests))
+    })
+    .await?;
+    let mut out = json!({ "best": best });
+    if let Some((prev, now)) = mode_bests {
+        out["mode_best"] = json!(now);
+        out["previous_mode_best"] = json!(prev);
+    }
+    Ok(Json(out))
 }
 
 // ---------------------------------------------------------------------------------------------

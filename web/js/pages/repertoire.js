@@ -24,6 +24,7 @@ import {
   ensureLearnCss, START_FEN, fenKey, timerSet, confetti, sfx, setFeedback, readStore, writeStore,
 } from './learn.js';
 import { t } from '../i18n.js';
+import { practiceHref, MAX_LINE_PLIES } from '../components/practice.js';
 
 export const title = () => t('nav.routes.repertoire');
 
@@ -570,17 +571,25 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     };
     note.addEventListener('blur', saveNote);
     const del = h('button', { class: 'btn btn-ghost btn-sm rep-delete', type: 'button', html: icon('trash') + `<span>${escapeHtml(t('repertoire.details.delete'))}</span>`, onClick: () => deleteNode(n) });
+    // Play a real game vs a bot that starts with this line (#/play?line=…).
+    const lineUcis = pathTo(n.id).map((x) => x.uci);
+    const practice = lineUcis.length <= MAX_LINE_PLIES
+      ? h('a', { class: 'btn btn-secondary btn-sm rep-practice', href: practiceHref({ line: lineUcis, color: side === 'black' ? 'b' : 'w' }), title: t('practice.cta.hint'), html: icon('robot') + `<span>${escapeHtml(t('practice.cta.practiceLine'))}</span>` })
+      : null;
     const badge = n.mine
       ? h('span', { class: ['badge', n.is_due ? 'badge-warning' : 'badge-primary'] }, dueText(n))
       : h('span', { class: 'badge' }, t('repertoire.details.opponentMove'));
-    details.replaceChildren(
+    // Native replaceChildren() would print a null child as "null": drop it first.
+    details.replaceChildren(...[
       h('div', { class: 'rep-details-head' },
         h('div', { class: 'rep-details-move' }, moveLabel(n.ply, n.san)),
         h('span', { class: ['rep-role', n.mine ? 'mine' : 'theirs'] }, n.mine ? t('repertoire.details.yourMove') : t('repertoire.details.theirMove')),
         h('span', { class: 'spacer' }), badge),
       note,
       h('div', { class: 'row-sm rep-details-actions' }, promptEl, h('span', { class: 'spacer' }), del),
-      feedback);
+      practice ? h('div', { class: 'row-sm' }, practice) : null,
+      feedback,
+    ].filter(Boolean));
   }
 
   // ---------------------------------------------------------- editing

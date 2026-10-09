@@ -1,7 +1,8 @@
 // GrandMentor — Puzzles page.
 // Routes (see app.js): #/puzzles (hub), #/puzzles?play=1[&theme=fork] (rated solver),
 // #/puzzles/rush (params.mode = 'rush'), #/puzzles/daily (params.mode = 'daily'),
-// #/puzzles/mistakes (params.mode = 'mistakes': spaced-repetition cards from the user's own games).
+// #/puzzles/mistakes (params.mode = 'mistakes': spaced-repetition cards from the user's own games),
+// #/puzzles/weekly (params.mode = 'weekly': your weekly set, see puzzles-weekly.js).
 // Contract: docs/CONTRACT.md §4 (puzzle API) and §5 (Board, sound); UX: docs/FEATURES.md §3.5–3.6.
 //
 // Memory hygiene: every view owns a `disposables()` bag; every puzzle runner owns a timer set that is
@@ -15,8 +16,9 @@ import { createMoveInput } from '../components/moveinput.js';
 import { playSound } from '../components/sound.js';
 import { Chess } from '../../vendor/chess.js';
 import { t, hasKey, formatDateIntl, formatNumber, getLocale } from '../i18n.js';
+import { weeklyHubEntry } from '../components/weekly-card.js';
 
-const TITLE_KEYS = { rush: 'puzzles.rushTitle', daily: 'puzzles.dailyTitle', mistakes: 'puzzles.mistakes.title' };
+const TITLE_KEYS = { rush: 'puzzles.rushTitle', daily: 'puzzles.dailyTitle', mistakes: 'puzzles.mistakes.title', weekly: 'weekly.title' };
 export const title = (params) => t(TITLE_KEYS[params?.mode] || 'puzzles.title');
 
 // ---------------------------------------------------------------------------
@@ -400,6 +402,10 @@ export async function mount(root, { params = {}, query = {} } = {}) {
 
   if (params.mode === 'rush') mountRush(root, ctx);
   else if (params.mode === 'mistakes') mountMistakes(root, ctx);
+  else if (params.mode === 'weekly') {
+    const weekly = await import('./puzzles-weekly.js');
+    if (!bag.disposed) weekly.mountWeekly(root, ctx);
+  }
   else if (params.mode === 'daily') mountSolver(root, ctx, { mode: 'daily' });
   else if (query.play || query.theme) mountSolver(root, ctx, { mode: 'rated', theme: query.theme || '' });
   else await mountHub(root, ctx);
@@ -473,6 +479,9 @@ async function mountHub(root, { bag, signal }) {
     const entry = mistakesEntry(mistakes);
     if ((mistakes.due | 0) > 0) content.unshift(entry); else content.push(entry);
   }
+  const weekly = weeklyHubEntry();
+  bag.add(() => weekly.destroy());
+  content.push(weekly.el);
 
   const list = Array.isArray(themes) ? themes.filter((x) => x && x.theme && !HIDDEN_FILTER_THEMES.has(x.theme)) : [];
   list.sort((a, b) => (b.count || 0) - (a.count || 0));
@@ -1368,9 +1377,34 @@ const RUSH_MODES = {
 };
 function rushText(mode, field) { return t(`puzzles.rush.modes.${mode}.${field}`); }
 
+// Per-mode bests live on the server (GET/POST /api/puzzles/rush/bests). Older builds kept them in
+// this browser only; those are migrated once (the server keeps the max) and then removed.
+const rushBests = new Map();
 function rushBest(mode) {
-  const v = Number(store(`gm.puzzles.rush.best.${mode}`));
+  const v = Number(rushBests.get(mode));
   return Number.isFinite(v) && v > 0 ? v : 0;
+}
+function legacyRushBests() {
+  const out = {};
+  for (const mode of Object.keys(RUSH_MODES)) {
+    const v = Math.floor(Number(store(`gm.puzzles.rush.best.${mode}`)));
+    if (Number.isFinite(v) && v > 0) out[mode] = Math.min(v, 10000);
+  }
+  return out;
+}
+function setRushBests(bests) {
+  if (!bests || typeof bests !== 'object') return;
+  for (const [mode, v] of Object.entries(bests)) if (Number.isFinite(Number(v))) rushBests.set(mode, Number(v));
+}
+async function loadRushBests(signal) {
+  const res = await api.get('/api/puzzles/rush/bests', { signal });
+  setRushBests(res?.bests);
+  const legacy = legacyRushBests();
+  if (!Object.keys(legacy).length) return res;
+  const merged = await api.post('/api/puzzles/rush/bests', { bests: legacy }, { signal });
+  setRushBests(merged?.bests);
+  try { for (const mode of Object.keys(legacy)) localStorage.removeItem(`gm.puzzles.rush.best.${mode}`); } catch { /* storage unavailable */ }
+  return merged;
 }
 
 function mountRush(root, { bag, signal }) {
@@ -1386,11 +1420,12 @@ function mountRush(root, { bag, signal }) {
   bag.add(() => { if (viewBag) viewBag.dispose(); viewBag = null; });
 
   let serverBest = 0;
-  api.get('/api/profile', { signal }).then((pr) => {
-    if (bag.disposed || !pr) return;
-    serverBest = Number(pr.rush_best) || 0;
+  loadRushBests(signal).then((res) => {
+    if (bag.disposed || !res) return;
+    serverBest = Math.max(serverBest, Number(res.overall) || 0);
     const el = page.querySelector('.pz-rush-overall');
     if (el) el.textContent = String(serverBest);
+    for (const b of page.querySelectorAll('.pz-rush-best-value[data-mode]')) b.textContent = String(rushBest(b.dataset.mode));
   }).catch(() => {});
 
   // ----- Mode select -----
@@ -1402,7 +1437,7 @@ function mountRush(root, { bag, signal }) {
     h('div', { class: 'pz-mode-icon', html: icon(m.icon) }),
     h('div', { class: 'pz-mode-title' }, rushText(key, 'label')),
     h('p', { class: 'muted text-sm' }, rushText(key, 'desc')),
-    h('div', { class: 'pz-rush-best' }, h('span', { class: 'subtle text-sm' }, t('puzzles.rush.best')), h('span', { class: 'tabular bold' }, String(rushBest(key))))));
+    h('div', { class: 'pz-rush-best' }, h('span', { class: 'subtle text-sm' }, t('puzzles.rush.best')), h('span', { class: 'tabular bold pz-rush-best-value', dataset: { mode: key } }, String(rushBest(key))))));
 
     page.append(h('div', { class: 'page' },
       pageHeader({
@@ -1562,19 +1597,21 @@ function mountRush(root, { bag, signal }) {
       runner.destroy();
       board.setInteractive(false, null);
       sound('gameEnd');
-      const prevLocal = rushBest(mode);
+      let prevBest = rushBest(mode);
       let best = Math.max(serverBest, run.score);
       try {
-        const res = await api.post('/api/puzzles/rush', { score: run.score }, { signal });
+        const res = await api.post('/api/puzzles/rush', { score: run.score, mode }, { signal });
         if (res && Number.isFinite(res.best)) best = res.best;
+        if (res && Number.isFinite(res.previous_mode_best)) prevBest = res.previous_mode_best;
       } catch (e) {
         if (isAbort(e)) return;
       }
       if (bag.disposed) return;
-      const isPb = run.score > prevLocal && run.score > 0;
-      if (isPb) store(`gm.puzzles.rush.best.${mode}`, run.score);
+      const isPb = run.score > prevBest && run.score > 0;
+      const modeBest = Math.max(prevBest, run.score);
+      rushBests.set(mode, modeBest);
       serverBest = Math.max(serverBest, best);
-      showEnd({ mode, score: run.score, results: run.results.slice(), reason, isPb, modeBest: Math.max(prevLocal, run.score), overall: serverBest });
+      showEnd({ mode, score: run.score, results: run.results.slice(), reason, isPb, modeBest, overall: serverBest });
     }
 
     // Boot: fetch first batch, then start the clock with the first puzzle.
@@ -1633,3 +1670,9 @@ function mountRush(root, { bag, signal }) {
 
   showSelect();
 }
+
+// Shared solver helpers for sibling views (puzzles-weekly.js).
+export const solverKit = {
+  createBoard, btn, Stopwatch, sound, sideLabel, themeLabel,
+  themeEmoji: (id) => THEME_EMOJI[id] || '♟',
+};

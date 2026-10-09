@@ -13,6 +13,7 @@ import {
   readStore, writeStore,
 } from './learn.js';
 import { t } from '../i18n.js';
+import { practiceHref } from '../components/practice.js';
 
 export const title = (params) => (params && params.id ? t('openings.detailTitle') : t('openings.title'));
 
@@ -361,6 +362,8 @@ async function mountDetail(root, id, query, bag, signal) {
   const tabs = h('div', { class: 'tabs', role: 'tablist', style: 'padding:0 var(--sp-3)' });
   const body = h('div', { class: 'panel-body' });
   const analysisLink = h('a', { class: 'btn btn-secondary btn-block', html: icon('analysis') + `<span>${escapeHtml(t('openings.analyze'))}</span>` });
+  // "Practice vs a bot": a real game from the start with this line already played (#/play?opening=…).
+  const practiceLink = h('a', { class: 'btn btn-primary btn-block op-practice', title: t('practice.cta.hint'), html: icon('robot') + `<span>${escapeHtml(t('practice.cta.practice'))}</span>` });
   // "Add to my repertoire": the main line (or, in Explore, the line up to the cursor).
   const repBtn = h('button', {
     class: 'btn btn-secondary btn-block', type: 'button',
@@ -373,7 +376,7 @@ async function mountDetail(root, id, query, bag, signal) {
         .catch(() => {});
     },
   });
-  const footer = h('div', { class: 'panel-footer', style: 'flex-wrap:wrap' }, repBtn, analysisLink);
+  const footer = h('div', { class: 'panel-footer', style: 'flex-wrap:wrap' }, practiceLink, repBtn, analysisLink);
   const panel = h('div', { class: 'panel grow' }, tabs, body, footer);
 
   const head = h('div', { class: 'stack-sm' },
@@ -458,6 +461,18 @@ async function mountDetail(root, id, query, bag, signal) {
     btnPlay.innerHTML = icon(playing ? 'pause' : 'play-circle');
     btnPlay.setAttribute('aria-label', playing ? t('openings.nav.pause') : t('openings.nav.play'));
     analysisLink.href = `#/analysis?fen=${encodeURIComponent(currentFen())}`;
+    practiceLink.href = practiceUrl();
+  }
+
+  /** Main line by default; in Explore, the explored line up to the cursor when it differs. */
+  function practiceUrl() {
+    const color = userSide === 'black' ? 'b' : 'w';
+    if (mode === 'explore' && ply > 0) {
+      const ucis = line.ucis.slice(0, ply);
+      const onMain = ucis.length <= main.ucis.length && ucis.every((u, i) => u === main.ucis[i]);
+      if (!onMain) return practiceHref({ line: ucis, color });
+    }
+    return practiceHref({ opening: o.id, color });
   }
 
   function togglePlay() {
@@ -787,7 +802,8 @@ async function mountDetail(root, id, query, bag, signal) {
         : t('openings.train.found', { ok, total })),
       h('div', { class: 'lrn-nav' },
         h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + `<span>${escapeHtml(t('openings.train.again'))}</span>`, onClick: () => startTrain() }),
-        h('button', { class: 'btn btn-secondary', type: 'button', html: icon('search') + `<span>${escapeHtml(t('openings.train.exploreFromHere'))}</span>`, onClick: () => { line = { ...main }; ply = main.ucis.length; setMode('explore'); } }))));
+        h('button', { class: 'btn btn-secondary', type: 'button', html: icon('search') + `<span>${escapeHtml(t('openings.train.exploreFromHere'))}</span>`, onClick: () => { line = { ...main }; ply = main.ucis.length; setMode('explore'); } }),
+        h('a', { class: 'btn btn-secondary', href: practiceHref({ opening: o.id, color: userSide === 'black' ? 'b' : 'w' }), title: t('practice.cta.hint'), html: icon('robot') + `<span>${escapeHtml(t('practice.cta.afterTrain'))}</span>` }))));
   }
 
   // ------------------------------------------------------------------ keyboard

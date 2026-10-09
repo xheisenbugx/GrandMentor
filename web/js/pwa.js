@@ -45,7 +45,6 @@ export function initPwa() {
     installed: isStandalone(),
     offline: false,
     banner: document.getElementById('offline-banner'),
-    bannerTimer: null,
     probeTimer: null,
     updateEl: null,
     waiting: null,
@@ -72,7 +71,6 @@ export function destroyPwa() {
   for (const o of ctx.observers) o.disconnect();
   for (const id of ctx.timers) { clearTimeout(id); clearInterval(id); }
   for (const u of ctx.unsubs) { try { u(); } catch { /* ignore */ } }
-  if (ctx.bannerTimer) clearTimeout(ctx.bannerTimer);
   if (ctx.probeTimer) clearInterval(ctx.probeTimer);
   document.querySelectorAll('.pwa-install-item').forEach((el) => el.remove());
   ctx.updateEl?.remove();
@@ -102,77 +100,118 @@ function watchThemeColor() {
 }
 
 // ---------------------------------------------------------------------------
-// Offline detection + banner
+// Connection status + banner
 // ---------------------------------------------------------------------------
+// Three states: 'ok', 'server' (this device is online but the GrandMentor server/engine doesn't
+// answer — e.g. the service worker served the cached app while the server is stopped) and 'device'
+// (navigator.onLine is false and the server doesn't answer). The truth comes from GET /api/health
+// (never cached by the worker); api.js reports network failures of other calls as a hint
+// (`gm:server-unreachable`), which triggers a probe instead of being trusted blindly. While not 'ok'
+// we probe every OFFLINE_PROBE_EVERY_MS and the banner goes away by itself when the server answers.
+// The banner sits in the normal flow at the top of the content (never over the board); while the
+// server is up (normal use, the QA sweep) it is hidden and takes no space.
+const HINT_PROBE_GAP_MS = 3000;
+
 function initOffline() {
   const { signal } = ctx;
-  window.addEventListener('offline', () => setOffline(true), { signal });
-  window.addEventListener('online', () => { probe(); }, { signal });
-  if (navigator.onLine === false) setOffline(true);
-  else later(probe, 1500);
+  ctx.status = 'ok';
+  ctx.probing = false;
+  ctx.lastHintProbe = 0;
+  window.addEventListener('offline', () => probe(), { signal });
+  window.addEventListener('online', () => probe(), { signal });
+  // A failed API call: check now (throttled) rather than wait for the next scheduled probe.
+  window.addEventListener('gm:server-unreachable', () => hintProbe(), { signal });
+  // A successful API call while we think we're down: the server may be back (responses from the
+  // worker's cache look successful too, so confirm with a health probe).
+  window.addEventListener('gm:server-reachable', () => { if (ctx && ctx.status !== 'ok') hintProbe(); }, { signal });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && ctx && ctx.status !== 'ok') probe();
+  }, { signal });
+  later(probe, navigator.onLine === false ? 0 : 1500);
+}
+
+function hintProbe() {
+  if (!ctx) return;
+  const now = Date.now();
+  if (now - ctx.lastHintProbe < HINT_PROBE_GAP_MS) return;
+  ctx.lastHintProbe = now;
+  probe();
 }
 
 async function probe() {
-  if (!ctx) return;
-  if (navigator.onLine === false) { setOffline(true); return; }
+  if (!ctx || ctx.probing) return;
+  ctx.probing = true;
   let ok = false;
   const ac = new AbortController();
   const stop = () => ac.abort();
   const timer = setTimeout(stop, PROBE_TIMEOUT_MS);
-  ctx.signal.addEventListener('abort', stop, { once: true });
+  const { signal } = ctx;
+  signal.addEventListener('abort', stop, { once: true });
   try {
+    // Checked even when navigator.onLine is false: the server usually runs on this same
+    // computer (localhost) and keeps working without internet.
     const res = await fetch(HEALTH_URL, { cache: 'no-store', signal: ac.signal });
     ok = res.ok;
   } catch {
     ok = false;
   } finally {
     clearTimeout(timer);
-    ctx?.signal.removeEventListener('abort', stop);
+    signal.removeEventListener('abort', stop);
+    if (ctx) ctx.probing = false;
   }
-  if (!ctx || ctx.signal.aborted) return;
-  setOffline(!ok);
+  if (!ctx || signal.aborted) return;
+  setStatus(ok ? 'ok' : (navigator.onLine === false ? 'device' : 'server'));
 }
 
-function setOffline(offline) {
+/** Current connection status: 'ok' | 'server' | 'device' (docs/CONTRACT.md "Installable app"). */
+export function connectionStatus() {
+  return ctx ? ctx.status : 'ok';
+}
+
+function setStatus(status) {
   if (!ctx) return;
-  const was = ctx.offline;
+  const was = ctx.status;
+  ctx.status = status;
+  const offline = status !== 'ok';
   ctx.offline = offline;
-  document.documentElement.classList.toggle('is-offline', offline);
+  const root = document.documentElement;
+  root.classList.toggle('is-offline', offline);
+  if (offline) root.dataset.connection = status; else delete root.dataset.connection;
   if (offline && !ctx.probeTimer) {
     ctx.probeTimer = setInterval(probe, OFFLINE_PROBE_EVERY_MS);
   } else if (!offline && ctx.probeTimer) {
     clearInterval(ctx.probeTimer);
     ctx.probeTimer = null;
   }
-  if (offline !== was) {
-    renderBanner(!offline && was);
-    if (!offline) postToWorker({ type: 'replay' });
+  if (status === was) return;
+  renderBanner();
+  // Let the shell (engine status dot) and pages react.
+  window.dispatchEvent(new CustomEvent('gm:connection', { detail: { status, previous: was } }));
+  if (!offline) {
+    postToWorker({ type: 'replay' });
+    toast(t('pwa.offline.backOnline'), 'success', { duration: 2500 });
   }
 }
 
-function renderBanner(justReconnected = false) {
+function renderBanner() {
   const el = ctx?.banner;
   if (!el) return;
-  if (ctx.bannerTimer) { clearTimeout(ctx.bannerTimer); ctx.bannerTimer = null; }
-  if (ctx.offline) {
-    el.className = 'offline-banner';
-    el.hidden = false;
-    const retry = h('button', { class: 'offline-banner-retry', type: 'button', 'aria-label': t('pwa.offline.retryLabel'), onClick: () => probe() }, t('pwa.offline.retry'));
-    el.replaceChildren(
-      h('span', { class: 'offline-banner-icon', html: icon('wifi-off') }),
-      h('span', { class: 'offline-banner-text' },
-        h('span', { class: 'offline-banner-long' }, t('pwa.offline.banner')),
-        h('span', { class: 'offline-banner-short' }, t('pwa.offline.bannerShort'))),
-      retry);
-  } else if (justReconnected) {
-    el.className = 'offline-banner online';
-    el.hidden = false;
-    el.replaceChildren(h('span', { class: 'offline-banner-icon', html: icon('wifi') }), h('span', { class: 'offline-banner-text' }, t('pwa.offline.backOnline')));
-    ctx.bannerTimer = setTimeout(() => { if (ctx) { ctx.bannerTimer = null; el.hidden = true; el.replaceChildren(); } }, 2500);
-  } else {
+  if (ctx.status === 'ok') {
     el.hidden = true;
     el.replaceChildren();
+    return;
   }
+  const device = ctx.status === 'device';
+  const key = device ? 'pwa.connection.device' : 'pwa.connection.server';
+  el.className = `offline-banner ${device ? 'is-device' : 'is-server'}`;
+  el.hidden = false;
+  const retry = h('button', { class: 'btn btn-secondary btn-sm offline-banner-retry', type: 'button', 'aria-label': t('pwa.offline.retryLabel'), onClick: () => probe() }, t('pwa.offline.retry'));
+  el.replaceChildren(
+    h('span', { class: 'offline-banner-icon', html: icon(device ? 'wifi-off' : 'alert') }),
+    h('div', { class: 'offline-banner-text' },
+      h('div', { class: 'offline-banner-title' }, t(`${key}.title`)),
+      h('div', { class: 'offline-banner-desc' }, t(`${key}.text`))),
+    retry);
 }
 
 // ---------------------------------------------------------------------------

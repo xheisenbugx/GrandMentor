@@ -145,6 +145,37 @@ async fn dropping_review_does_not_hang_pool() {
     }
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn cancelled_review_returns_quickly_and_frees_pool() {
+    let content = Arc::new(gm_content::Content::default());
+    let p = pool();
+    let moves = ucis("e2e4 e7e5 g1f3 b8c6 f1b5 a7a6 b5a4 g8f6 e1g1 f8e7 f1e1 b7b5 a4b3 d7d6 c2c3 e8g8");
+    let stop = Arc::new(AtomicBool::new(false));
+    let flag = Arc::clone(&stop);
+    let canceller = tokio::spawn(async move {
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+        flag.store(true, Ordering::Relaxed);
+        std::time::Instant::now()
+    });
+    // Depth 30 would take minutes; the flag must end it right after it is raised.
+    let res = review_game_cancellable(&p, content.clone(), "start", &moves, 30, None, Lang::En, stop).await;
+    let returned = std::time::Instant::now();
+    let raised = canceller.await.expect("canceller");
+    assert_eq!(res.err().as_deref(), Some(REVIEW_CANCELLED));
+    assert!(returned.duration_since(raised) < std::time::Duration::from_secs(2), "cancel too slow");
+    // No orphaned searches: every engine is back in the pool quickly.
+    let t0 = std::time::Instant::now();
+    while p.available() < p.size() {
+        assert!(t0.elapsed() < std::time::Duration::from_secs(2), "pool still busy");
+        tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+    }
+    // A pre-cancelled review never touches the engine.
+    let pre = Arc::new(AtomicBool::new(true));
+    let res = review_game_cancellable(&p, content, "start", &moves, 30, None, Lang::En, pre).await;
+    assert_eq!(res.err().as_deref(), Some(REVIEW_CANCELLED));
+    assert_eq!(p.available(), p.size());
+}
+
 #[test]
 fn sacrifice_is_brilliant() {
     // White plays Bc4 into a pawn capture (dxc4 wins a bishop by SEE), engine says it's best.
@@ -380,5 +411,98 @@ async fn new_language_review_text_and_relocalize() {
         let j = to_stored_json(&re, lang).expect("json");
         assert_eq!(from_stored_json(&j).map(|(_, l)| l), Some(lang));
     }
+}
+
+/// 1.e4 e5 2.Qh5 Nc6 3.Qxf7+?? Kxf7: the review must say the queen is lost (for a pawn),
+/// show the refutation line and keep that reason when relocalized.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn queen_blunder_is_explained_as_losing_the_queen() {
+    let content = Arc::new(gm_content::Content::default());
+    let moves = ucis("e2e4 e7e5 d1h5 b8c6 h5f7 e8f7");
+    let r = review_game(&pool(), Arc::clone(&content), "start", &moves, 8, None, Lang::En).await.expect("review");
+    let q = &r.moves[4];
+    assert_eq!(q.san, "Qxf7+");
+    assert_eq!(q.classification, Classification::Blunder, "{q:?}");
+    let reason = q.reason.as_ref().expect("a reason for the blunder");
+    assert_eq!(reason.kind, reason::ReasonKind::LosesMaterial, "{reason:?}");
+    assert_eq!(reason.lost.first().map(String::as_str), Some("queen"), "{reason:?}");
+    assert_eq!(reason.refutation_san.first().map(String::as_str), Some("Kxf7"), "{reason:?}");
+    assert!(q.explanation.contains("queen") && q.explanation.contains("Kxf7"), "{}", q.explanation);
+    assert!(!q.explanation.contains("e4"), "{}", q.explanation);
+    assert!(!reason.better_san.is_empty() && reason.better_uci.len() == reason.better_san.len());
+    // Good moves carry no reason (and the field is omitted from the JSON).
+    assert!(r.moves[0].reason.is_none());
+    let json = serde_json::to_value(&r).expect("json");
+    assert!(json["moves"][0].get("reason").is_none());
+    assert_eq!(json["moves"][4]["reason"]["kind"], "loses_material");
+
+    let es = relocalize(&r, &content, Lang::Es);
+    let qe = &es.moves[4];
+    assert!(qe.explanation.contains("pierdes tu dama"), "{}", qe.explanation);
+    assert_eq!(qe.reason.as_ref().map(|x| x.text.as_str()), Some(qe.explanation.as_str()));
+    assert_eq!(qe.reason.as_ref().map(|x| &x.refutation_uci), Some(&reason.refutation_uci));
+}
+
+/// Fool's mate: 2.g4?? allows mate in one, and the reason says so.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn allowed_mate_reason_in_review() {
+    let content = Arc::new(gm_content::Content::default());
+    let r = review_game(&pool(), content, "start", &ucis("f2f3 e7e5 g2g4 d8h4"), 6, None, Lang::En).await.expect("review");
+    let g4 = &r.moves[2];
+    let reason = g4.reason.as_ref().expect("reason");
+    assert_eq!(reason.kind, reason::ReasonKind::AllowsMate, "{reason:?}");
+    assert_eq!(reason.refutation_san, vec!["Qh4#"]);
+    assert!(g4.explanation.contains("Qh4#"), "{}", g4.explanation);
+}
+
+/// Cost of the grounded reasons (pure CPU, no engine):
+/// `cargo test -p gm-analysis --release -- --ignored --nocapture perf_reason`
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore]
+async fn perf_reason_derivation() {
+    let content = Arc::new(gm_content::Content::default());
+    // A 60-ply "club game": legal moves picked by a fixed LCG, preferring captures half the time,
+    // so it is full of real errors.
+    let mut seed: u32 = 7;
+    let mut rand = move || {
+        seed = seed.wrapping_mul(1_664_525).wrapping_add(1_013_904_223);
+        seed >> 8
+    };
+    let mut pos = Chess::default();
+    let mut moves = Vec::new();
+    while moves.len() < 60 && !pos.is_game_over() {
+        let legal = pos.legal_moves();
+        let captures: Vec<&Move> = legal.iter().filter(|m| m.is_capture()).collect();
+        let m = if !captures.is_empty() && rand() % 2 == 0 {
+            captures[rand() as usize % captures.len()].clone()
+        } else {
+            legal[rand() as usize % legal.len()].clone()
+        };
+        moves.push(gm_engine::move_to_uci(&m));
+        pos.play_unchecked(&m);
+    }
+    let r = review_game(&pool(), content, "start", &moves, 10, None, Lang::En).await.expect("review");
+    let errors: Vec<&MoveReview> = r.moves.iter().filter(|m| m.reason.is_some()).collect();
+    let t0 = std::time::Instant::now();
+    let mut n = 0;
+    for _ in 0..100 {
+        for m in &errors {
+            let pos = parse_fen(&m.fen_before).expect("fen");
+            let mv = uci_to_move(&pos, &m.uci).expect("move");
+            let reason = m.reason.as_ref().expect("reason");
+            let out = reason::derive(&reason::ReasonInput {
+                before: &pos,
+                played: &mv,
+                refutation: &reason.refutation_uci,
+                best: &reason.better_uci,
+                eval_before: m.eval_before,
+                eval_after: m.eval_after,
+                classification: m.classification,
+            });
+            n += out.map(|o| reason::render(&o, Lang::En).len()).unwrap_or(0).min(1);
+        }
+    }
+    let per_game = t0.elapsed() / 100;
+    eprintln!("{} plies, {} errors with reasons ({n} renders): derive+render per game {per_game:?}", r.moves.len(), errors.len());
 }
 

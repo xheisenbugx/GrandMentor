@@ -5,6 +5,7 @@ import ui from './ui.js';
 import home from './home.js';
 import play from './play.js';
 import analysis from './analysis.js';
+import editor from './editor.js';
 import review from './review.js';
 import puzzles from './puzzles.js';
 import themes from './themes.js';
@@ -23,6 +24,11 @@ import classics from './classics.js';
 import pwa from './pwa.js';
 import daily from './daily.js';
 import a11y from './a11y.js';
+import practice from './practice.js';
+import why from './why.js';
+import firstweek from './firstweek.js';
+import weekly from './weekly.js';
+import phone from './phone.js';
 
 export default {
   common,
@@ -31,6 +37,7 @@ export default {
   home,
   play,
   analysis,
+  editor,
   review,
   puzzles,
   themes,
@@ -49,4 +56,9 @@ export default {
   pwa,
   daily,
   a11y,
+  practice,
+  why,
+  firstweek,
+  weekly,
+  phone,
 };

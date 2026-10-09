@@ -4,7 +4,9 @@
 //! 1. **Opening book** — continuations from `gm_content` openings (matched by Zobrist hash, so
 //!    transpositions work), weighted by popularity and the bot's style. Weak bots leave the book
 //!    early and pick flatter.
-//! 2. **Engine search** with per-Elo depth / node / time limits and MultiPV.
+//! 2. **Engine search** with per-Elo depth / node / time limits and MultiPV. The Elo used is the
+//!    bot's calibrated strength setting, not its label (`strength::play_elo`, measured with the
+//!    `gm-calibrate` bin; see `docs/BOT_CALIBRATION.md`).
 //! 3. **Human-like selection** — softmax over the MultiPV candidates with an Elo-dependent
 //!    temperature (in centipawns) plus style preferences (aggressive: checks/captures/king
 //!    attacks; positional: quiet improving moves; defensive: castling and trades; trappy:
@@ -18,6 +20,7 @@
 //! move list. No panics on bad input: everything returns `Err(String)`.
 
 mod book;
+pub mod calibration;
 mod personas;
 mod strength;
 
@@ -134,7 +137,7 @@ pub fn choose_move_at(
     lang: Lang,
 ) -> Result<BotMove, String> {
     let mut rng = StdRng::from_entropy();
-    choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, None, elo, lang)
+    choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, Clock::Wall { cap_ms: None }, elo, lang)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -434,7 +437,37 @@ pub(crate) fn choose_move_with<R: Rng>(
     movetime_cap_ms: Option<u64>,
     lang: Lang,
 ) -> Result<BotMove, String> {
-    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, movetime_cap_ms, None, lang)
+    let clock = Clock::Wall { cap_ms: movetime_cap_ms };
+    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, clock, None, lang)
+}
+
+/// How a bot's per-move time limit is applied.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum Clock {
+    /// Production: wall-clock `movetime_ms` from the strength table, optionally capped (tests).
+    Wall { cap_ms: Option<u64> },
+    /// Calibration: no wall clock at all. The time limit is converted into a node budget at
+    /// `ref_nps` nodes per second, so a game depends only on its seed (not on machine load).
+    Nodes { ref_nps: u64 },
+}
+
+/// Deterministic move choice for the calibration harness (`gm-calibrate`): like
+/// [`choose_move_at`], but with a caller-seeded RNG and the strength table's wall-clock limit
+/// replaced by an equivalent node budget at `ref_nps` nodes/second (see [`Clock`]). Given the
+/// same engine state, seed and inputs it always returns the same move.
+#[allow(clippy::too_many_arguments)]
+pub fn choose_move_deterministic(
+    engine: &mut Engine,
+    content: &gm_content::Content,
+    bot_id: &str,
+    start_fen: &str,
+    moves: &[String],
+    elo: Option<u16>,
+    rng: &mut StdRng,
+    ref_nps: u64,
+) -> Result<BotMove, String> {
+    let clock = Clock::Nodes { ref_nps: ref_nps.max(1_000) };
+    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, clock, elo, Lang::En)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -445,15 +478,21 @@ pub(crate) fn choose_move_inner<R: Rng>(
     start_fen: &str,
     moves: &[String],
     rng: &mut R,
-    movetime_cap_ms: Option<u64>,
+    clock: Clock,
     elo_override: Option<u16>,
     lang: Lang,
 ) -> Result<BotMove, String> {
     let started = Instant::now();
     let persona = personas::find(bot_id).ok_or_else(|| format!("unknown bot: {bot_id}"))?;
-    let elo = elo_override
-        .map(|e| e.clamp(ADAPTIVE_MIN_ELO, ADAPTIVE_MAX_ELO))
-        .unwrap_or(persona.elo);
+    // `label` is the rating the user sees; `elo` the calibrated strength the bot actually plays
+    // with (see `strength::play_elo` and docs/BOT_CALIBRATION.md).
+    let (label, elo) = match elo_override {
+        Some(e) => {
+            let level = e.clamp(ADAPTIVE_MIN_ELO, ADAPTIVE_MAX_ELO);
+            (level, strength::adaptive_play_elo(level))
+        }
+        None => (persona.elo, strength::play_elo(persona.id, persona.elo)),
+    };
     let game = replay(start_fen, moves)?;
     let pos = &game.pos;
     if pos.is_game_over() {
@@ -499,11 +538,14 @@ pub(crate) fn choose_move_inner<R: Rng>(
     }
 
     // ---- 2. Engine search ---------------------------------------------------------------------
-    let movetime = movetime_cap_ms.map_or(st.movetime_ms, |c| st.movetime_ms.min(c.max(1)));
+    let (movetime_ms, nodes) = match clock {
+        Clock::Wall { cap_ms } => (Some(cap_ms.map_or(st.movetime_ms, |c| st.movetime_ms.min(c.max(1)))), st.nodes),
+        Clock::Nodes { ref_nps } => (None, st.nodes.min(st.movetime_ms.saturating_mul(ref_nps) / 1000).max(1)),
+    };
     let limits = SearchLimits {
         depth: Some(st.depth),
-        movetime_ms: Some(movetime),
-        nodes: Some(st.nodes),
+        movetime_ms,
+        nodes: Some(nodes),
         multipv: st.multipv.min(legal.len()).max(1),
     };
     let stop = AtomicBool::new(false);
@@ -562,7 +604,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
     // ---- 4. Chat + think time -----------------------------------------------------------------
     let best_score = cands.first().map(|c| c.score);
     let chat = make_chat(rng, persona, &game, &chosen, chosen_score.or(best_score), best_score, lang);
-    let think = think_time(rng, elo, legal.len(), &cands, pos.is_check(), started);
+    let think = think_time(rng, label, legal.len(), &cands, pos.is_check(), started);
     Ok(finish(pos, &chosen, chat, think))
 }
 

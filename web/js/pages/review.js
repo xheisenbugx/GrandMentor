@@ -11,6 +11,7 @@ import { api, isAbort, EngineClient } from '../api.js';
 import {
   h, icon, formatScore, disposables, classificationMeta, classificationBadge, mdLite, emptyState, formatSan,
 } from '../ui.js';
+import { userAvatar } from '../ui.js';
 import { getSettings, onSettingsChange } from '../settings.js';
 import { Board } from '../components/board.js';
 import { EvalBar } from '../components/evalbar.js';
@@ -18,6 +19,7 @@ import { MoveList } from '../components/movelist.js';
 import { EvalGraph, ensureAnalysisCss } from '../components/evalgraph.js';
 import { MentorPanel } from '../components/mentor.js';
 import { playSound } from '../components/sound.js';
+import { WhyPanel, hasReason } from '../components/whyline.js';
 import { START_FEN, uciSquares, fenPly, numberedLine } from './analysis.js';
 import { t, formatNumber } from '../i18n.js';
 
@@ -91,6 +93,13 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     })));
     return bag.dispose;
   }
+
+  // The player's own avatar (same as on Play and Profile) — best effort, non-blocking.
+  let myAvatar = userAvatar(null);
+  api.get('/api/profile', { signal: ctrl.signal }).then((p) => {
+    myAvatar = userAvatar(p);
+    page.querySelectorAll('[data-user-avatar]').forEach((el) => { el.textContent = myAvatar; });
+  }).catch(() => {});
 
   // Bot avatar (best effort, non-blocking)
   let botAvatar = '🤖';
@@ -205,7 +214,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     const userIsBlack = game.user_color === 'black';
     const avatarFor = (color) => {
       const isUser = color === 'white' ? userIsWhite : userIsBlack;
-      if (isUser) return h('div', { class: 'avatar' }, '🙂');
+      if (isUser) return h('div', { class: 'avatar', dataset: { userAvatar: '1' }, 'aria-hidden': 'true' }, myAvatar);
       if (game.bot_id) return h('div', { class: 'avatar', dataset: { botAvatar: '1' } }, botAvatar);
       return h('div', { class: 'avatar' }, color === 'white' ? '♔' : '♚');
     };
@@ -460,7 +469,12 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     }
 
     // ---- walk-through card ----
+    let why = null; // WhyPanel for the current move ("Why was that a mistake?")
+    bag.add(() => { why?.destroy(); why = null; });
+
     function renderWalk() {
+      why?.destroy();
+      why = null;
       const p = st.ply;
       if (p === 0) {
         const opening = rv.opening?.name || game.opening_name;
@@ -502,6 +516,16 @@ export async function mount(root, { params = {}, query = {} } = {}) {
             h('div', { class: 'rv-try-tip subtle text-xs', html: icon('hint') + spanHtml(t('review.walk.tryTip')) }))));
       const bk = walkCard.querySelector('.rv-book span');
       if (bk) bk.textContent = m.opening_name;
+      const expl = walkCard.querySelector('.rv-expl');
+      if (expl && RETRY_CLASSES.has(m.classification) && hasReason(m)) {
+        const whyHost = h('div', { class: 'rv-why' });
+        expl.after(whyHost);
+        why = new WhyPanel(whyHost, {
+          move: m, ply0, board,
+          onStart: () => { stopLine(); endRetry(); },
+          onExit: () => showPly(st.ply, false),
+        });
+      }
     }
     bag.on(walkCard, 'click', (e) => {
       const b = e.target.closest('[data-act]');
@@ -521,6 +545,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
 
     // ---- show line ----
     function stopLine() {
+      why?.stop(false);
       if (st.lineTimer) { clearTimeout(st.lineTimer); st.lineTimer = 0; }
       if (st.lineActive) { st.lineActive = false; lineBanner.hidden = true; }
     }

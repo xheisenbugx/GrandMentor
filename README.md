@@ -43,6 +43,7 @@ Most chess sites are built for people who already play well. GrandMentor is buil
 ### ♟️ Play against bots with personality
 
 Sixteen opponents from **Pawnny 🐣 (250)** to **Titan 🤖 (3000)**, plus two coach bots who explain their ideas.
+The ratings are measured, not guessed: a 5,520-game tournament between the bots and fixed-strength engine anchors places every bot within its rating's confidence interval ([how it's measured](docs/BOT_CALIBRATION.md)).
 Pick your colour, a time control, and how much help you want — *Friendly* (hints, takebacks, eval bar, coach) or *Challenge* (just you and the board).
 
 <p align="center"><img src="docs/media/play-bots.png" width="860" alt="Bot selection screen" /></p>
@@ -78,6 +79,10 @@ One click after the game ends. You get **accuracy** for both players, an **estim
 </tr>
 </table>
 
+**Why was that a mistake?** Every inaccuracy, mistake and blunder comes with a concrete reason taken from the engine's own lines: *"After Kxf7, you lose your queen for a pawn"*, *"This allows Qh4#"*, *"You missed a chance: exd5 wins the queen"*. Press **Show me** to watch the punishment play out on the board, or **Better** to see what you should have played.
+
+<p align="center"><img src="docs/media/prs/feat-learn-play-home/why-mistake-showme.gif" width="760" alt="The Why? box explaining a lost queen and playing the refutation on the board" /></p>
+
 ### 🧠 Analysis board
 
 A full analysis board with the engine's **top three lines**, best-move arrows, a variation tree, opening names, a position editor, and FEN/PGN import & export.
@@ -94,6 +99,15 @@ Your **puzzle rating** adapts as you solve. Race the clock in **Puzzle Rush** (3
 <tr>
 <td width="50%"><img src="docs/media/puzzle.gif" alt="Solving the daily puzzle: mate in two" /></td>
 <td width="50%"><img src="docs/media/puzzles.png" alt="Puzzle hub with modes and themes" /></td>
+</tr>
+</table>
+
+**Your weekly set**: every week GrandMentor picks the 2–3 tactics you miss most, from your puzzle results and the mistakes in your own games, and builds a set of 12 puzzles for them, including positions from your games. Insights tracks how each theme improves week over week.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learn-play-home/my-puzzles-overview.png" alt="This week's personal puzzle set with the chosen themes" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learn-play-home/my-puzzles-insights.png" alt="Weekly set progress on the Insights page" /></td>
 </tr>
 </table>
 
@@ -129,6 +143,17 @@ Your dashboard, every game you've ever played (search, favourites, notes, PGN im
 <td width="33%"><img src="docs/media/home.png" alt="Home dashboard" /></td>
 <td width="33%"><img src="docs/media/library.png" alt="Game library" /></td>
 <td width="33%"><img src="docs/media/profile.png" alt="Profile and stats" /></td>
+</tr>
+</table>
+
+### 🌱 Your first week
+
+New to chess? A **7-day path** walks you through it: how the pieces move, captures and check, your first checkmates, a first game against Coach Mia, reviewing it, forks and pins, and a graduation game. Steps tick themselves off as you do them, and a new day opens each day.
+
+<table>
+<tr>
+<td width="60%"><img src="docs/media/prs/feat-learn-play-home/first-week-home.png" alt="The first-week card on Home" /></td>
+<td width="40%"><img src="docs/media/prs/feat-learn-play-home/first-week-mobile.png" alt="The 7-day path on a phone" /></td>
 </tr>
 </table>
 
@@ -199,17 +224,32 @@ Thirty-second board-vision games with personal bests (find the square, spot the 
 - **Premoves**, an optional **"confirm move"** step for beginners, **typed moves** (`Nf3`, `O-O`) and a **blindfold** mode.
 - **Play from any position**: take over a game from Game Review, the analysis board, an endgame or a classic game.
 - **Play a friend** on the same device, with clocks, takebacks, draw offers and an automatic Game Review afterwards.
+- **Practise an opening against a bot**: from any opening or repertoire line, start a real game with the opening already on the board. You're told when you or the bot leave the book.
+- **Set up any position** with the board editor: drag pieces from the palette, and it tells you what's wrong if the position is impossible. Then analyse it or play it out against a bot or a friend.
 
 <table>
 <tr>
 <td width="50%"><img src="docs/media/prs/feat-learning-platform/play-premove.gif" alt="Premoves against a bot" /></td>
 <td width="50%"><img src="docs/media/prs/feat-learning-platform/local-pass-and-play.gif" alt="Two players on one device" /></td>
 </tr>
+<tr>
+<td width="50%"><img src="docs/media/prs/feat-learn-play-home/opening-practice-game.png" alt="Practising the Italian Game against a bot" /></td>
+<td width="50%"><img src="docs/media/prs/feat-learn-play-home/board-editor.gif" alt="Building a position in the board editor" /></td>
+</tr>
 </table>
 
 ### 📲 Install it, use it offline, back it up
 
 Install GrandMentor like a native app on your phone or computer. Puzzles and lessons keep working **offline**, and your results sync when you're back. One click downloads a backup of everything; restore it on another machine, or sync two devices on your network with a pairing code.
+
+**On your phone**: turn on *Use on your phone* in Settings, scan two QR codes and type a PIN. GrandMentor serves itself over HTTPS on your home Wi-Fi with its own certificate, so it installs properly as an app on Android and iPhone, and nobody else on the network gets in without the PIN. If the engine on your computer isn't running, the app tells you clearly instead of failing silently. Full guide: [`docs/PHONE.md`](docs/PHONE.md).
+
+<table>
+<tr>
+<td width="60%"><img src="docs/media/prs/feat-learn-play-home/phone-settings-desktop-en.png" alt="Use on your phone settings with QR codes and the PIN" /></td>
+<td width="40%"><img src="docs/media/prs/feat-learn-play-home/phone-login-mobile.png" alt="Entering the PIN on a phone" /></td>
+</tr>
+</table>
 
 <table>
 <tr>
@@ -220,7 +260,7 @@ Install GrandMentor like a native app on your phone or computer. Puzzles and les
 
 ### ♿ Accessible to everyone
 
-Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every move with a screen reader, and switch on high contrast, colour-blind-friendly move colours, reduced motion or larger text in Settings.
+Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every move with a screen reader or have moves **read aloud** (great for blindfold play), and switch on high contrast, colour-blind-friendly move colours, reduced motion or larger text in Settings.
 
 <table>
 <tr>
@@ -285,7 +325,11 @@ Run from the repository root so `./data` and `./web` are found. Your games live 
 | Variable | Default | Meaning |
 |---|---|---|
 | `GM_PORT` | `8080` | HTTP port |
-| `GM_HOST` | `127.0.0.1` | Bind address. `0.0.0.0` exposes it on your LAN — there is no authentication. |
+| `GM_HOST` | `127.0.0.1` | Bind address. Other devices on your LAN must enter the access PIN shown in Settings. |
+| `GM_LAN` | off | `1` serves HTTPS for your phone on the LAN (also a switch in Settings). See [`docs/PHONE.md`](docs/PHONE.md). |
+| `GM_LAN_PORT` | `8443` | HTTPS port for LAN devices |
+| `GM_PHONE_DIR` | next to `GM_DB` | Where the local certificate authority, PIN and device sessions are kept |
+| `GM_ACCESS_PIN` | on | `off` disables the PIN for LAN devices (not recommended) |
 | `GM_DATA_DIR` | `./data` | Content JSON: openings, puzzles, courses, endgames |
 | `GM_DB` | `./grandmentor.db` | SQLite database file (WAL mode) |
 | `GM_WEB_DIR` | `./web` | Static frontend directory |
@@ -377,7 +421,7 @@ node tools/qa/bench-gate.mjs     # engine speed and tactics (for engine changes)
 ## 🙏 Credits
 
 - **Puzzles** — [Lichess puzzle database](https://database.lichess.org/#puzzles) (CC0). See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
-- **Pieces** — from [lichess-org/lila](https://github.com/lichess-org/lila): *cburnett* (Colin M.L. Burnett, GPLv2+), *merida* (Armando Hernandez Marroquin, GPLv2+), *alpha* (Eric Bentzen — personal, non-commercial use only). See [`web/img/pieces/LICENSE.md`](web/img/pieces/LICENSE.md).
+- **Pieces** — from [lichess-org/lila](https://github.com/lichess-org/lila): *cburnett* (Colin M.L. Burnett, GPLv2+), *merida* (Armando Hernandez Marroquin, GPLv2+), *chessnut* (Alexis Luengas, Apache 2.0). See [`web/img/pieces/LICENSE.md`](web/img/pieces/LICENSE.md).
 - **[chess.js](https://github.com/jhlywa/chess.js)** v1.4.0 (BSD-2-Clause) and **[shakmaty](https://github.com/niklasf/shakmaty)** (GPL-3.0+).
 - Opening names follow the standard ECO classification. The *Opera Game* in the screenshots is Morphy vs. Duke Karl / Count Isouard, Paris 1858.
 
