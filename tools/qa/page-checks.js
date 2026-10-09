@@ -2,7 +2,7 @@
 // by Node); it must stay a single self-contained function expression.
 //
 // Input (window.__qaData, injected by the sweep): { keys: [...i18n keys], english: [...phrases] }.
-// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], junk[], english[], layerOverlaps[], buttonOverlaps[],
+// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], junk[], bigIcons[], english[], layerOverlaps[], buttonOverlaps[],
 //           a11y: { names[], alt[], hiddenFocus[], dupIds[], contrast[], touch[] } }.
 (() => {
   const data = window.__qaData || { keys: [], english: [] };
@@ -129,6 +129,14 @@
       const m = (el.getAttribute(attr) || '').match(junkRe);
       if (m) { junk.push({ text: m[1], where: `${describe(el)} [${attr}]` }); break; }
     }
+  }
+
+  // 3c. Oversized icons: an icon() SVG (24×24 viewBox) with no CSS size grows to fill its container.
+  const bigIcons = [];
+  for (const svg of document.querySelectorAll('svg[viewBox="0 0 24 24"]')) {
+    if (bigIcons.length >= MAX) break;
+    const r = svg.getBoundingClientRect();
+    if ((r.width > 64 || r.height > 64) && visible(svg)) bigIcons.push({ where: describe(svg.parentElement || svg), size: `${Math.round(r.width)}×${Math.round(r.height)}` });
   }
 
   // 4. English UI phrases visible on a non-English page.
@@ -290,5 +298,5 @@
     }
   }
 
-  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), junk, english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps, a11y };
+  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), junk, bigIcons, english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps, a11y };
 })()

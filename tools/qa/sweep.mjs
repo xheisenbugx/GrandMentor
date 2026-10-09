@@ -297,6 +297,7 @@ function issuesFromChecks(r) {
   for (const o of r.overflow) out.push({ check: 'overflow', detail: `${o.el} spans ${o.left}..${o.right}px (viewport ${r.innerWidth}px)` });
   for (const k of r.rawKeys) out.push({ check: 'raw-key', detail: `"${k.key}" in ${k.where}` });
   for (const j of r.junk || []) out.push({ check: 'junk-text', detail: `"${j.text}" shown in ${j.where}` });
+  for (const i of r.bigIcons || []) out.push({ check: 'big-icon', detail: `icon in ${i.where} renders at ${i.size}px (no CSS size)` });
   for (const e of r.english) out.push({ check: 'english', detail: `"${e}"` });
   for (const o of r.layerOverlaps) out.push({ check: 'layer-over-board', detail: `${o.layer} covers ${o.board} (${o.overlap})` });
   for (const o of r.buttonOverlaps) out.push({ check: 'button-overlap', detail: `${o.a} overlaps ${o.b} (${o.overlap})` });
