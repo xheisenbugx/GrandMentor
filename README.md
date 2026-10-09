@@ -43,6 +43,7 @@ Most chess sites are built for people who already play well. GrandMentor is buil
 ### ♟️ Play against bots with personality
 
 Sixteen opponents from **Pawnny 🐣 (250)** to **Titan 🤖 (3000)**, plus two coach bots who explain their ideas.
+The ratings are measured, not guessed: a 5,520-game tournament between the bots and fixed-strength engine anchors places every bot within its rating's confidence interval ([how it's measured](docs/BOT_CALIBRATION.md)).
 Pick your colour, a time control, and how much help you want — *Friendly* (hints, takebacks, eval bar, coach) or *Challenge* (just you and the board).
 
 <p align="center"><img src="docs/media/play-bots.png" width="860" alt="Bot selection screen" /></p>
