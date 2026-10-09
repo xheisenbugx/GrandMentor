@@ -188,11 +188,25 @@ async function withSlot(fn, signal) {
   }
 }
 
-/** Final position of a saved game (summary or full record). Cached; fetches the record if needed. */
+/** Final position of a saved summary (`final_fen` + `last_move`), or null for older servers. */
+function summaryPosition(game) {
+  if (typeof game?.final_fen !== 'string' || !game.final_fen) return null;
+  const fen = game.final_fen;
+  const lm = typeof game.last_move === 'string' && game.last_move.length >= 4 ? game.last_move : null;
+  return { fen, lastMove: lm, turn: fen.split(' ')[1] === 'b' ? 'black' : 'white' };
+}
+
+/** Final position of a saved game (summary or full record). Cached; fetches the record only
+ *  when the summary carries no `final_fen` (older servers). */
 export async function gameFinalPosition(game, { signal } = {}) {
   const key = `${game.id}:${game.updated_at || ''}`;
   const hit = cacheGet(key);
   if (hit) return hit;
+  const fromSummary = Array.isArray(game.moves) ? null : summaryPosition(game);
+  if (fromSummary) {
+    cacheSet(key, fromSummary);
+    return fromSummary;
+  }
   let moves = game.moves;
   let start = game.start_fen;
   if (!Array.isArray(moves)) {
@@ -490,12 +504,13 @@ export async function mount(root) {
   function renderRow(g) {
     const bot = g.bot_id ? state.botsById.get(g.bot_id) : null;
     const key = `${g.id}:${g.updated_at || ''}`;
-    const cached = cacheGet(key);
+    let cached = cacheGet(key);
+    if (!cached) { cached = summaryPosition(g); if (cached) cacheSet(key, cached); }
     const orientation = g.user_color === 'black' ? 'black' : 'white';
     const thumb = h('a', {
       class: ['hub-thumb', !cached && 'loading'], href: `#/review/${g.id}`, dataset: { id: g.id },
       'aria-label': t('library.row.reviewAria', { title: gameTitle(g, state.botsById) }),
-      html: cached ? fenBoardSvg(cached.fen, { orientation, lastMove: cached.lastMove }) : '',
+      html: cached ? fenBoardSvg(cached.fen, { orientation, lastMove: cached.lastMove, label: t('library.board.finalPosition', { title: gameTitle(g, state.botsById) }) }) : '',
     });
     const meta = [
       g.opening_name || null,

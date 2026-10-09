@@ -171,6 +171,21 @@ export async function mount(root) {
     }
   });
 
+  const resetPuzzlesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('refresh') + `<span>${t('settings.resetPuzzles.button')}</span>` });
+  bag.on(resetPuzzlesBtn, 'click', async () => {
+    const ok = await confirmDialog({ title: t('settings.resetPuzzles.confirmTitle'), message: t('settings.resetPuzzles.confirmMessage'), confirmLabel: t('settings.resetPuzzles.button'), danger: true });
+    if (!ok || bag.disposed) return;
+    resetPuzzlesBtn.classList.add('loading');
+    try {
+      await api.post('/api/profile/puzzles/reset', { confirm: true }, { signal: ctrl.signal });
+      toast(t('settings.resetPuzzles.done'), 'success');
+    } catch (e) {
+      if (!isAbort(e)) toast(e?.message || t('settings.resetPuzzles.failed'), 'error');
+    } finally {
+      resetPuzzlesBtn.classList.remove('loading');
+    }
+  });
+
   const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('x-circle') + `<span>${t('settings.clearData.button')}</span>` });
   bag.on(clearLocalBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.clearData.confirmTitle'), message: t('settings.clearData.confirmMessage'), confirmLabel: t('settings.clearData.confirmButton'), danger: true });
@@ -251,6 +266,7 @@ export async function mount(root) {
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),
           row(t('settings.deleteGames.button'), t('settings.deleteGames.desc'), deleteGamesBtn),
+          row(t('settings.resetPuzzles.button'), t('settings.resetPuzzles.desc'), resetPuzzlesBtn),
           row(t('settings.clearData.button'), t('settings.clearData.desc'), clearLocalBtn))),
       h('aside', { class: 'hub-settings-aside' },
         h('div', { class: 'card hub-preview-card' },

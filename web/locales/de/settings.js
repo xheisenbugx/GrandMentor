@@ -101,6 +101,14 @@ export default {
     failed: 'Partien konnten nicht gelöscht werden',
     partial: { one: '{message} ({count} gelöscht)', other: '{message} ({count} gelöscht)' },
   },
+  resetPuzzles: {
+    button: 'Puzzle-Wertung zurücksetzen',
+    desc: 'Starte deine Puzzle-Wertung und Puzzle-Statistik von vorn.',
+    confirmTitle: 'Puzzle-Wertung zurücksetzen?',
+    confirmMessage: 'Deine Puzzle-Wertung geht zurück auf 1200, gelöste Puzzles, Versuche und der Wertungsverlauf werden gelöscht. Puzzle-Rush-Ergebnisse, Partien und Lektionen bleiben erhalten. Das lässt sich nicht rückgängig machen.',
+    done: 'Puzzle-Wertung zurückgesetzt – ein Neustart!',
+    failed: 'Puzzle-Wertung konnte nicht zurückgesetzt werden',
+  },
   clearData: {
     button: 'Browserdaten löschen',
     desc: 'Vergisst die in diesem Browser gespeicherten Einstellungen und lädt neu.',

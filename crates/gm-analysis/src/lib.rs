@@ -216,7 +216,11 @@ async fn evaluate_positions(
     positions: &[Chess],
     depth: u8,
     progress: Option<&tokio::sync::mpsc::UnboundedSender<f32>>,
+    stop: Arc<AtomicBool>,
 ) -> Result<Vec<Option<SearchInfo>>, String> {
+    if stop.load(Ordering::Relaxed) {
+        return Err(REVIEW_CANCELLED.to_string());
+    }
     // Map each non-terminal position to a unique search job.
     let mut job_of: Vec<Option<usize>> = Vec::with_capacity(positions.len());
     let mut jobs: Vec<Chess> = Vec::new();
@@ -235,7 +239,6 @@ async fn evaluate_positions(
     }
     drop(seen);
 
-    let stop = Arc::new(AtomicBool::new(false));
     let _guard = StopOnDrop(Arc::clone(&stop));
     let limits = SearchLimits {
         depth: Some(depth),
@@ -269,9 +272,14 @@ async fn evaluate_positions(
             if e.is_panic() {
                 "engine failed while analysing the game".to_string()
             } else {
-                "analysis was cancelled".to_string()
+                REVIEW_CANCELLED.to_string()
             }
         })?;
+        // Cancelled from outside: searches return early with partial results, so stop here
+        // (dropping the JoinSet aborts the tasks still waiting for an engine).
+        if stop.load(Ordering::Relaxed) {
+            return Err(REVIEW_CANCELLED.to_string());
+        }
         if let Some(slot) = results.get_mut(idx) {
             *slot = Some(info);
         }
@@ -671,6 +679,9 @@ fn key_moments(moves: &[MoveReview], white_wins: &[f32]) -> Vec<usize> {
     plies
 }
 
+/// Error text returned by a review whose stop flag was raised.
+pub const REVIEW_CANCELLED: &str = "analysis was cancelled";
+
 /// Full game review with text in `lang`. See module docs. `content` may be the source content
 /// or any language view of it (opening names come from `content.localized(lang)`).
 pub async fn review_game(
@@ -681,6 +692,24 @@ pub async fn review_game(
     depth: u8,
     progress: Option<tokio::sync::mpsc::UnboundedSender<f32>>,
     lang: Lang,
+) -> Result<GameReview, String> {
+    review_game_cancellable(pool, content, start_fen, moves, depth, progress, lang, Arc::new(AtomicBool::new(false)))
+        .await
+}
+
+/// [`review_game`] with an external stop flag: raising `stop` (client gone, server shutting
+/// down) halts every in-flight search promptly and the review returns `Err(REVIEW_CANCELLED)`.
+/// Dropping the future also raises the flag.
+#[allow(clippy::too_many_arguments)]
+pub async fn review_game_cancellable(
+    pool: &EnginePool,
+    content: Arc<gm_content::Content>,
+    start_fen: &str,
+    moves: &[String],
+    depth: u8,
+    progress: Option<tokio::sync::mpsc::UnboundedSender<f32>>,
+    lang: Lang,
+    stop: Arc<AtomicBool>,
 ) -> Result<GameReview, String> {
     let content = content.localized(lang);
     if moves.len() > MAX_PLIES {
@@ -709,7 +738,7 @@ pub async fn review_game(
     let depth = depth.clamp(1, 30);
 
     // 2. Evaluate.
-    let infos = evaluate_positions(pool, &positions, depth, progress.as_ref()).await?;
+    let infos = evaluate_positions(pool, &positions, depth, progress.as_ref(), stop).await?;
     let data: Vec<PosData> = positions
         .into_iter()
         .zip(infos)

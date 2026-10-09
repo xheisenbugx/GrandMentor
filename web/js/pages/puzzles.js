@@ -1368,9 +1368,34 @@ const RUSH_MODES = {
 };
 function rushText(mode, field) { return t(`puzzles.rush.modes.${mode}.${field}`); }
 
+// Per-mode bests live on the server (GET/POST /api/puzzles/rush/bests). Older builds kept them in
+// this browser only; those are migrated once (the server keeps the max) and then removed.
+const rushBests = new Map();
 function rushBest(mode) {
-  const v = Number(store(`gm.puzzles.rush.best.${mode}`));
+  const v = Number(rushBests.get(mode));
   return Number.isFinite(v) && v > 0 ? v : 0;
+}
+function legacyRushBests() {
+  const out = {};
+  for (const mode of Object.keys(RUSH_MODES)) {
+    const v = Math.floor(Number(store(`gm.puzzles.rush.best.${mode}`)));
+    if (Number.isFinite(v) && v > 0) out[mode] = Math.min(v, 10000);
+  }
+  return out;
+}
+function setRushBests(bests) {
+  if (!bests || typeof bests !== 'object') return;
+  for (const [mode, v] of Object.entries(bests)) if (Number.isFinite(Number(v))) rushBests.set(mode, Number(v));
+}
+async function loadRushBests(signal) {
+  const res = await api.get('/api/puzzles/rush/bests', { signal });
+  setRushBests(res?.bests);
+  const legacy = legacyRushBests();
+  if (!Object.keys(legacy).length) return res;
+  const merged = await api.post('/api/puzzles/rush/bests', { bests: legacy }, { signal });
+  setRushBests(merged?.bests);
+  try { for (const mode of Object.keys(legacy)) localStorage.removeItem(`gm.puzzles.rush.best.${mode}`); } catch { /* storage unavailable */ }
+  return merged;
 }
 
 function mountRush(root, { bag, signal }) {
@@ -1386,11 +1411,12 @@ function mountRush(root, { bag, signal }) {
   bag.add(() => { if (viewBag) viewBag.dispose(); viewBag = null; });
 
   let serverBest = 0;
-  api.get('/api/profile', { signal }).then((pr) => {
-    if (bag.disposed || !pr) return;
-    serverBest = Number(pr.rush_best) || 0;
+  loadRushBests(signal).then((res) => {
+    if (bag.disposed || !res) return;
+    serverBest = Math.max(serverBest, Number(res.overall) || 0);
     const el = page.querySelector('.pz-rush-overall');
     if (el) el.textContent = String(serverBest);
+    for (const b of page.querySelectorAll('.pz-rush-best-value[data-mode]')) b.textContent = String(rushBest(b.dataset.mode));
   }).catch(() => {});
 
   // ----- Mode select -----
@@ -1402,7 +1428,7 @@ function mountRush(root, { bag, signal }) {
     h('div', { class: 'pz-mode-icon', html: icon(m.icon) }),
     h('div', { class: 'pz-mode-title' }, rushText(key, 'label')),
     h('p', { class: 'muted text-sm' }, rushText(key, 'desc')),
-    h('div', { class: 'pz-rush-best' }, h('span', { class: 'subtle text-sm' }, t('puzzles.rush.best')), h('span', { class: 'tabular bold' }, String(rushBest(key))))));
+    h('div', { class: 'pz-rush-best' }, h('span', { class: 'subtle text-sm' }, t('puzzles.rush.best')), h('span', { class: 'tabular bold pz-rush-best-value', dataset: { mode: key } }, String(rushBest(key))))));
 
     page.append(h('div', { class: 'page' },
       pageHeader({
@@ -1562,19 +1588,21 @@ function mountRush(root, { bag, signal }) {
       runner.destroy();
       board.setInteractive(false, null);
       sound('gameEnd');
-      const prevLocal = rushBest(mode);
+      let prevBest = rushBest(mode);
       let best = Math.max(serverBest, run.score);
       try {
-        const res = await api.post('/api/puzzles/rush', { score: run.score }, { signal });
+        const res = await api.post('/api/puzzles/rush', { score: run.score, mode }, { signal });
         if (res && Number.isFinite(res.best)) best = res.best;
+        if (res && Number.isFinite(res.previous_mode_best)) prevBest = res.previous_mode_best;
       } catch (e) {
         if (isAbort(e)) return;
       }
       if (bag.disposed) return;
-      const isPb = run.score > prevLocal && run.score > 0;
-      if (isPb) store(`gm.puzzles.rush.best.${mode}`, run.score);
+      const isPb = run.score > prevBest && run.score > 0;
+      const modeBest = Math.max(prevBest, run.score);
+      rushBests.set(mode, modeBest);
       serverBest = Math.max(serverBest, best);
-      showEnd({ mode, score: run.score, results: run.results.slice(), reason, isPb, modeBest: Math.max(prevLocal, run.score), overall: serverBest });
+      showEnd({ mode, score: run.score, results: run.results.slice(), reason, isPb, modeBest, overall: serverBest });
     }
 
     // Boot: fetch first batch, then start the clock with the first puzzle.

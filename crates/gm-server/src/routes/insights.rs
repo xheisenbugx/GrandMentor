@@ -224,19 +224,9 @@ async fn review_next(
     moves.truncate(MAX_REVIEW_PLIES);
     validate_moves(&start_fen, &moves, MAX_REVIEW_PLIES)?;
 
-    // Awaited inline (not spawned): if the client aborts, this future is dropped and the
-    // review's stop flag halts every in-flight search.
-    let review = gm_analysis::review_game(
-        &st.pool,
-        Arc::clone(&st.content),
-        &start_fen,
-        &moves,
-        BATCH_REVIEW_DEPTH,
-        None,
-        lang,
-    )
-    .await
-    .map_err(ApiError::bad_request)?;
+    // If the client aborts (or the server shuts down) the review's stop flag halts every
+    // in-flight search.
+    let review = crate::api::run_review(&st, start_fen, moves, BATCH_REVIEW_DEPTH, lang).await?;
     let patch = GamePatch {
         review_json: gm_analysis::to_stored_json(&review, lang),
         accuracy_white: Some(review.white.accuracy),

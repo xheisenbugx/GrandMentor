@@ -101,6 +101,14 @@ export default {
     failed: 'Impossible de supprimer les parties',
     partial: { one: '{message} ({count} supprimée)', many: '{message} ({count} supprimées)', other: '{message} ({count} supprimées)' },
   },
+  resetPuzzles: {
+    button: 'Réinitialiser le classement',
+    desc: 'Repartez de zéro pour votre classement et vos statistiques de problèmes.',
+    confirmTitle: 'Réinitialiser votre classement des problèmes ?',
+    confirmMessage: 'Votre classement des problèmes revient à 1200 et vos problèmes résolus, tentatives et courbe de classement sont effacés. Les scores de Puzzle Rush, les parties et les leçons sont conservés. Action irréversible.',
+    done: 'Classement des problèmes réinitialisé : nouveau départ !',
+    failed: 'Impossible de réinitialiser votre classement des problèmes',
+  },
   clearData: {
     button: 'Effacer les données',
     desc: 'Oublier les préférences enregistrées dans ce navigateur et recharger.',
