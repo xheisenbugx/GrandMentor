@@ -18,6 +18,7 @@ pub mod adaptive;
 pub mod backup;
 pub mod classics;
 pub mod drills;
+pub mod first_week;
 pub mod pgn;
 pub mod rating;
 pub mod repertoire;
@@ -370,6 +371,7 @@ fn migrate_v2(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
 /// add one `<module>::schema(tx)?;` line per module (keep them sorted).
 fn migrate_v3(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
     let _ = tx;
+    first_week::schema(tx)?;
     Ok(())
 }
 
