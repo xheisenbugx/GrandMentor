@@ -33,6 +33,7 @@ const ARROW_COLORS = new Set(['green', 'red', 'blue', 'yellow']);
 const HIGHLIGHT_KINDS = new Set(['hint', 'good', 'bad', 'selected', 'target']);
 const SQUARE_RE = /^[a-h][1-8]$/;
 const MAX_SHAPES = 128; // bound on user + programmatic shapes
+const DROP_SLACK = 0.5; // squares: drops this far past the board edge snap to the edge square
 
 let cssInjected = false;
 /** board.css is linked by index.html; inject it once for pages that don't (e.g. dev demos). */
@@ -270,6 +271,9 @@ export class Board {
     r.addEventListener('pointercancel', this._onPointerCancel);
     r.addEventListener('lostpointercapture', this._onPointerCancel);
     r.addEventListener('contextmenu', this._onContextMenu);
+    // Any scroll moves the board on screen: re-measure before the next hit test.
+    this._onScroll = () => { this._rect = null; if (this._drag && this._drag.lastEvent) this._positionDrag(this._drag.lastEvent); };
+    window.addEventListener('scroll', this._onScroll, { capture: true, passive: true });
 
     if (typeof ResizeObserver !== 'undefined') {
       this._ro = new ResizeObserver(() => { this._rect = null; this._onResize(); });
@@ -338,12 +342,20 @@ export class Board {
     return this._rect;
   }
 
-  _squareAt(e) {
+  /**
+   * Square under a pointer event. `slack` (in squares) accepts points just outside the board and
+   * snaps them to the nearest edge square: a quick drag to the h-file or the first rank often
+   * ends a few pixels past the edge, and that drop should still count.
+   */
+  _squareAt(e, slack = 0) {
     const rect = this._getRect();
     if (!rect.width) return null;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    if (x < 0 || y < 0 || x >= rect.width || y >= rect.height) return null;
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    const tol = (rect.width / 8) * slack;
+    if (x < -tol || y < -tol || x >= rect.width + tol || y >= rect.height + tol) return null;
+    x = Math.min(Math.max(x, 0), rect.width - 0.01);
+    y = Math.min(Math.max(y, 0), rect.height - 0.01);
     return this._sqFromVis(Math.floor((x / rect.width) * 8), Math.floor((y / rect.height) * 8));
   }
 
@@ -427,11 +439,14 @@ export class Board {
    * landing) doesn't snatch the piece out of the user's hand. Pair with _restoreInteraction.
    */
   _takeInteraction() {
-    if (!this._premoveColor || !this._selected || this._promo) return null;
+    if (!this._selected || this._promo) return null;
     const from = this._selected;
     const code = this._pieces.get(from)?.code;
     if (!code) return null;
     const drag = this._drag && this._drag.from === from ? this._drag : null;
+    // A piece in the user's hand always survives an update; a mere click-selection only does
+    // when premoves are on (otherwise browsing positions would carry stale selections along).
+    if (!drag && !this._premoveColor) return null;
     if (drag) this._drag = null; // keep it alive through _cancelInteraction
     return { from, code, drag };
   }
@@ -443,7 +458,16 @@ export class Board {
     const ok = p && p.code === code && p.el === (drag ? drag.el : p.el) && (this._canMove(from) || this._canPremove(from));
     if (ok) {
       this._select(from);
-      if (drag) this._drag = drag;
+      if (drag) {
+        // Re-attach the drag and keep the piece under the pointer (a re-render may have
+        // re-placed the element on its square).
+        this._drag = drag;
+        drag.el.classList.add('gm-dragging');
+        if (drag.touch) drag.el.classList.add('gm-touch');
+        this.root.classList.add('dragging');
+        try { if (!this.root.hasPointerCapture?.(drag.pointerId)) this.root.setPointerCapture(drag.pointerId); } catch { /* ignore */ }
+        if (drag.lastEvent) this._positionDrag(drag.lastEvent);
+      }
       return;
     }
     if (drag) {
@@ -483,6 +507,9 @@ export class Board {
 
   setInteractive(interactive, movableColor) {
     if (this._destroyed) return;
+    // Pages re-apply interactivity on every render; an unchanged call must never cancel the
+    // drag or selection in progress (that was the main cause of "lost" drops).
+    if (!!interactive === this._interactive && (movableColor === undefined || movableColor === this._movable)) return;
     this._interactive = !!interactive;
     if (movableColor !== undefined) this._movable = movableColor;
     const keep = this._takeInteraction();
@@ -1220,8 +1247,8 @@ export class Board {
         if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < d.threshold) return;
         d.moved = true;
       }
-      const sq = this._squareAt(e);
-      const hover = sq && sq !== d.from && this._dests.has(sq) ? sq : (sq && sq !== d.from ? sq : null);
+      const sq = this._squareAt(e, DROP_SLACK);
+      const hover = sq && sq !== d.from ? sq : null;
       if (hover !== this._hoverSq) {
         if (this._hoverSq) this._sqEl(this._hoverSq).classList.remove('hover');
         this._hoverSq = hover;
@@ -1288,8 +1315,12 @@ export class Board {
     }
     const d = this._drag;
     if (!d || e.pointerId !== d.pointerId) return;
-    const sq = this._squareAt(e);
+    this._rect = null; // measure now: the layout may have shifted while the piece was held
+    const sq = this._squareAt(e, DROP_SLACK);
     const from = d.from;
+    // A fast flick can end before any pointermove crossed the threshold; landing on another
+    // square is still a drag, not a click.
+    if (!d.moved && sq && sq !== from && Math.hypot(e.clientX - d.startX, e.clientY - d.startY) >= d.threshold) d.moved = true;
     if (!d.moved) {
       this._endDrag(false, true);
       const p = this._pieces.get(from);
@@ -1745,6 +1776,7 @@ export class Board {
     r.removeEventListener('pointercancel', this._onPointerCancel);
     r.removeEventListener('lostpointercapture', this._onPointerCancel);
     r.removeEventListener('contextmenu', this._onContextMenu);
+    window.removeEventListener('scroll', this._onScroll, { capture: true });
     r.removeEventListener('keydown', this._onBoardKey);
     r.removeEventListener('focusin', this._onFocusIn);
     r.removeEventListener('focusout', this._onFocusOut);
