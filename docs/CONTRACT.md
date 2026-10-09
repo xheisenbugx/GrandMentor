@@ -1069,3 +1069,34 @@ kind `endgame`. Storage: `gm_store::training` (`Store::training_progress`, `Stor
   or a forced mate) or drawn (|cp| ≤ 25 for two replies in a win drill). Results are posted to
   `/api/training/:id/attempt`; attempts that used help (the best-move hint or a takeback) are not recorded.
   Results link to `#/play?fen=<FEN>&color=w|b` ("Play this position vs a bot") and `#/analysis?fen=`.
+
+## Opening practice vs a bot
+
+A normal bot game from the **standard start** with an opening's moves already on the board (no backend change: the
+frontend reuses `GET /api/openings/:id`, `GET /api/openings/lookup` and `POST /api/games`).
+
+**URL:** `#/play[/:botId]?opening=<openingId>[&line=<uci uci …>][&color=w|b]`
+- `opening` — id from `data/openings.json`; gives the name and the main line (its `uci`). Without `line`, the whole
+  main line is pre-played.
+- `line` — UCI moves from the standard start, separated by spaces (`%20`), `+` or commas; max 40 plies / 400 chars,
+  every move legal and the game not over. Usable alone (e.g. from the repertoire): the banner name then comes from
+  `/api/openings/lookup` of the final position, else "your line".
+- `color` — the user's side (`w|b`, `white|black` also accepted); defaults to the opening's `side`, else white.
+- With practice params, `fen` is ignored. An unknown opening, illegal/finished line or overlong line shows a friendly
+  toast (`practice.error.*`) and the normal setup screen.
+- The setup screen shows a "Practising: <name>" card (numbered line, "Normal start" drops it), the preview board at
+  the line's final position, the chosen colour, and preselects the adaptive bot (else the recommended bot) unless
+  `:botId` is given. The colour picked for a practice game is not stored as the default colour preference.
+
+**Game:** `start_fen` stays the standard start and the pre-played moves are the first `moves` of the game, so it is
+saved, reviewed, named (opening book) and counted by `/api/adaptive/result` like any other game. Extra on save:
+tag `opening-practice` and a note `practice.notes`. Pre-played plies cannot be taken back; the abort rule (< 2 plies
+not saved), draw offers and the clock start count only plies played after them. The game panel shows a
+"Practising: <name>" banner with a gentle note when the game leaves the opening's main line (user: names the book
+move; bot: "left the book line") or when `/api/openings/lookup` stops recognising the position. Rematch keeps the
+practice; the unfinished-game save (`grandmentor.play.current.v1`) gains `practice: {id, name, moves, book, color}`.
+
+**Entry points:** opening detail footer "Practice vs a bot" (main line; in Explore the explored line when it leaves
+the main line) and the Train-complete card "Now play it against a bot"; repertoire move details "Practice this line vs
+a bot" (`?line=…&color=` for the path to the selected move). Helpers: `web/js/components/practice.js`
+(`parseLine`, `numberedSans`, `practiceHref`, `MAX_LINE_PLIES`). Strings: `practice` locale namespace.
