@@ -20,6 +20,7 @@ import { EvalBar } from '../components/evalbar.js';
 import { MoveList } from '../components/movelist.js';
 import { ChessClock } from '../components/clock.js';
 import { t, hasKey } from '../i18n.js';
+import { parseLine, numberedSans, MAX_LINE_PLIES } from '../components/practice.js';
 
 export const title = () => t('play.title');
 
@@ -165,6 +166,59 @@ function loadSavedGame() {
   return s;
 }
 
+/**
+ * Opening practice from the URL (`#/play?opening=<id>&line=<uci moves>&color=w|b`). Resolves to
+ * `{ id, name, moves, sans, book, color, fen }`, `{ error }` (friendly text) or null when absent.
+ * `book` is the opening's main line when the played line follows it (used for "left the book").
+ */
+async function resolvePractice(query, signal) {
+  const id = typeof query.opening === 'string' ? query.opening.trim() : '';
+  const rawLine = typeof query.line === 'string' ? query.line : '';
+  if (!id && !rawLine.trim()) return null;
+  let opening = null;
+  if (id) {
+    if (!/^[A-Za-z0-9_-]{1,80}$/.test(id)) return { error: t('practice.error.notFound') };
+    try { opening = await api.get(`/api/openings/${encodeURIComponent(id)}`, { signal, timeout: 10000 }); } catch (e) {
+      if (isAbort(e)) throw e;
+      return { error: t('practice.error.notFound') };
+    }
+    if (!opening || typeof opening !== 'object') return { error: t('practice.error.notFound') };
+  }
+  const main = opening && Array.isArray(opening.uci) ? opening.uci.filter((u) => typeof u === 'string').slice(0, MAX_LINE_PLIES) : [];
+  const parsed = parseLine(rawLine.trim() ? rawLine : main.join(' '));
+  if (!parsed || parsed.error) {
+    const key = parsed && parsed.error === 'tooLong' ? 'practice.error.tooLong' : parsed && parsed.error === 'finished' ? 'practice.error.finished' : 'practice.error.invalid';
+    return { error: t(key, { count: MAX_LINE_PLIES }) };
+  }
+  const n = Math.min(parsed.moves.length, main.length);
+  const followsBook = main.length > 0 && parsed.moves.slice(0, n).every((u, i) => u === main[i]);
+  let name = opening && typeof opening.name === 'string' ? opening.name : '';
+  if (!name) {
+    try {
+      const m = await api.get('/api/openings/lookup' + qs({ fen: parsed.fen }), { signal, timeout: 8000 });
+      if (m && m.opening && typeof m.opening.name === 'string') name = m.opening.name;
+    } catch (e) { if (isAbort(e)) throw e; }
+  }
+  const qc = String(query.color || '').toLowerCase();
+  const color = qc === 'w' || qc === 'white' ? 'w' : qc === 'b' || qc === 'black' ? 'b' : (opening && opening.side === 'black' ? 'b' : 'w');
+  return {
+    id: opening && typeof opening.id === 'string' ? opening.id : null,
+    name: name.slice(0, 120),
+    moves: parsed.moves, sans: parsed.sans, fen: parsed.fen,
+    book: followsBook ? main : parsed.moves.slice(),
+    color,
+  };
+}
+
+/** A practice record restored from storage (resume), or null if it does not look right. */
+function sanitizePractice(p, moveCount) {
+  if (!p || typeof p !== 'object' || !Array.isArray(p.moves)) return null;
+  const moves = p.moves.filter((u) => typeof u === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(u)).slice(0, MAX_LINE_PLIES);
+  if (!moves.length || moves.length > moveCount) return null;
+  const book = Array.isArray(p.book) ? p.book.filter((u) => typeof u === 'string').slice(0, MAX_LINE_PLIES) : moves.slice();
+  return { id: typeof p.id === 'string' ? p.id : null, name: typeof p.name === 'string' ? p.name.slice(0, 120) : '', moves, sans: [], book, color: p.color === 'b' ? 'b' : 'w' };
+}
+
 /** Inject /css/play.css once; resolves when loaded (or after a short timeout). */
 function ensureCss() {
   const existing = document.querySelector('link[href="/css/play.css"]');
@@ -235,6 +289,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     signal: ac.signal,
     custom: custom && custom.fen ? { fen: custom.fen, color: ['w', 'b'].includes(query.color) ? query.color : custom.turn } : null,
     customError: custom && custom.error ? custom.error : null,
+    practice: null,       // opening practice: see resolvePractice()
   };
 
   await ensureCss();
@@ -265,6 +320,12 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       if (bag.disposed) return;
       ctx.bots = Array.isArray(bots) ? bots.filter((b) => b && typeof b.id === 'string') : [];
       if (!ctx.bots.length) throw new Error(t('play.error.noBots'));
+      if (!ctx.practice && (query.opening || query.line)) {
+        const pr = await resolvePractice(query, ac.signal);
+        if (bag.disposed) return;
+        if (pr && pr.error) ctx.customError = pr.error;
+        else if (pr) { ctx.practice = pr; ctx.custom = null; ctx.customError = null; }
+      }
       showSetup(params.botId || (typeof query.bot === 'string' && query.bot) || null);
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
@@ -300,9 +361,11 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     return (pick || ladder[ladder.length - 1] || bots[0]).id;
   };
 
+  // Opening practice suggests the adaptive bot (it plays at your level) unless a bot was picked.
+  const practiceBot = ctx.practice ? (byId.has(ADAPTIVE_ID) ? ADAPTIVE_ID : recommendedId()) : null;
   const state = {
-    botId: (preselectId && byId.has(preselectId) && preselectId) || (prefs.botId && byId.has(prefs.botId) && prefs.botId) || recommendedId(),
-    color: ctx.custom ? (ctx.custom.color === 'b' ? 'black' : 'white') : prefs.color,
+    botId: (preselectId && byId.has(preselectId) && preselectId) || practiceBot || (prefs.botId && byId.has(prefs.botId) && prefs.botId) || recommendedId(),
+    color: ctx.practice ? (ctx.practice.color === 'b' ? 'black' : 'white') : ctx.custom ? (ctx.custom.color === 'b' ? 'black' : 'white') : prefs.color,
     mode: prefs.mode,
     opts: { ...prefs.opts },
     extras: { ...prefs.extras },
@@ -314,6 +377,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     ctx.customError = null;
   }
   const startFen = () => (ctx.custom ? ctx.custom.fen : START_FEN);
+  const previewFen = () => (ctx.practice ? ctx.practice.fen : startFen());
 
   // ---- Left: board preview with the selected bot -------------------------
   const previewBubble = h('div', { class: 'bubble bubble-bot pop-in' });
@@ -327,13 +391,14 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   let previewBoard = null;
   try {
     const s = getSettings();
-    previewBoard = new Board(previewBoardEl, { fen: startFen(), orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs, keyboard: false, announce: false });
+    previewBoard = new Board(previewBoardEl, { fen: previewFen(), orientation: state.color === 'black' ? 'black' : 'white', interactive: false, movableColor: null, showCoords: s.showCoords, sounds: false, animationMs: s.animationMs, keyboard: false, announce: false });
     bag.add(() => previewBoard.destroy());
   } catch (e) { console.warn('[play] preview board unavailable', e); }
 
   // ---- Right: panel ------------------------------------------------------
   const resumeSlot = h('div');
   const customSlot = h('div');
+  const practiceSlot = h('div');
   const heroSlot = h('div', { class: 'play-hero' });
   const groups = h('div', { class: 'bot-groups' });
   const tileById = new Map();
@@ -427,6 +492,7 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     h('div', { class: 'play-setup-scroll' },
       resumeSlot,
       customSlot,
+      practiceSlot,
       heroSlot,
       h('h2', { class: 'play-section-title' }, t('play.setup.chooseOpponent')),
       groups,
@@ -497,6 +563,27 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
           try { history.replaceState(null, '', '#/play'); } catch { /* ignore */ }
           if (previewBoard) { try { previewBoard.setPosition(START_FEN, { animate: true }); } catch { /* ignore */ } }
           renderCustom();
+        },
+      })));
+  }
+
+  function renderPractice() {
+    practiceSlot.replaceChildren();
+    const pr = ctx.practice;
+    if (!pr) return;
+    practiceSlot.appendChild(h('div', { class: 'custom-card practice-card' },
+      h('span', { class: 'play-option-icon', html: icon('openings') }),
+      h('div', { class: 'resume-text' },
+        h('div', { class: 'semibold' }, t('practice.setup.title', { name: pr.name || t('practice.yourLine') })),
+        h('div', { class: 'subtle text-xs practice-line' }, numberedSans(pr.sans)),
+        h('div', { class: 'subtle text-xs' }, t('practice.setup.detail'))),
+      h('button', {
+        type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 14 }) + `<span>${escapeHtml(t('play.custom.useStandard'))}</span>`,
+        onClick: () => {
+          ctx.practice = null;
+          try { history.replaceState(null, '', '#/play'); } catch { /* ignore */ }
+          if (previewBoard) { try { previewBoard.setPosition(START_FEN, { animate: true }); } catch { /* ignore */ } }
+          renderPractice();
         },
       })));
   }
@@ -592,10 +679,10 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
     if (!bot) return;
     const proceed = () => {
       // A colour picked for a one-off custom position should not become the default.
-      const color = ctx.custom ? prefs.color : state.color;
+      const color = ctx.custom || ctx.practice ? prefs.color : state.color;
       saveJson(PREFS_KEY, { botId: state.botId, color, mode: state.mode, opts: state.opts, extras: state.extras, tc: state.tc });
       const userColor = state.color === 'white' ? 'w' : state.color === 'black' ? 'b' : (Math.random() < 0.5 ? 'w' : 'b');
-      onPlay({ bot, userColor, colorChoice: state.color, opts: { ...state.opts }, extras: { ...state.extras }, tcId: state.tc, startFen: startFen() });
+      onPlay({ bot, userColor, colorChoice: state.color, opts: { ...state.opts }, extras: { ...state.extras }, tcId: state.tc, startFen: startFen(), practice: ctx.practice || null });
     };
     if (saved) {
       confirmDialog({ title: t('play.newGame.title'), message: t('play.newGame.discardUnfinished', { name: saved.bot.name }), confirmLabel: t('play.newGame.start') })
@@ -611,13 +698,14 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
 
   renderResume();
   renderCustom();
+  renderPractice();
   renderEstimate();
   renderHero();
   refreshTiles();
   refreshOptions();
   // Bring the selected tile into view inside the scroll area.
   // (Not for a custom position: its card at the top must stay visible.)
-  if (!ctx.custom) bag.raf(() => { const t = tileById.get(state.botId); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest' }); });
+  if (!ctx.custom && !ctx.practice) bag.raf(() => { const t = tileById.get(state.botId); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest' }); });
 
   bag.on(window, 'keydown', (e) => {
     if (e.key === 'Enter' && !e.defaultPrevented && !isTyping(e) && !document.querySelector('.modal-backdrop') && document.activeElement === document.body) play();
@@ -669,7 +757,14 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     savedId: null,
     savePromise: null,
     ratingUpdate: null,   // response of POST /api/adaptive/result
+    // Opening practice: { id, name, moves (pre-played UCI), book (main line UCI), color }.
+    practice: resume ? sanitizePractice(resume.practice, Array.isArray(resume.moves) ? resume.moves.length : 0)
+      : (cfg.practice && Array.isArray(cfg.practice.moves) && cfg.practice.moves.length ? cfg.practice : null),
+    prefill: 0,           // plies that were on the board before the game began
+    outOfBookPly: 0,      // ply at which the opening book ran out (0 = not yet)
   };
+  // A practice game is a normal game from the standard start.
+  if (g.practice) { g.startFen = START_FEN; g.prefill = g.practice.moves.length; }
   // Prefer the freshest bot profile from the server if we have it.
   const fresh = ctx.bots.find((b) => b.id === g.bot.id);
   if (fresh) g.bot = fresh;
@@ -691,9 +786,22 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       g.moves.push(resume.moves[i]); g.sans.push(mv.san); g.fens.push(chess.fen()); g.lastMoves.push([mv.from, mv.to]);
       g.cls[i + 1] = Array.isArray(resume.cls) ? resume.cls[i + 1] || null : null;
     }
+    if (g.practice && g.moves.length < g.prefill) { g.practice = null; g.prefill = 0; }
+  } else if (g.practice) {
+    for (const uci of g.practice.moves) {
+      const p = parseUci(uci);
+      let mv = null;
+      if (p) { try { mv = chess.move(p); } catch { mv = null; } }
+      if (!mv) break;
+      g.moves.push(uci); g.sans.push(mv.san); g.fens.push(chess.fen()); g.lastMoves.push([mv.from, mv.to]);
+    }
+    g.prefill = g.moves.length;
+    if (!g.prefill) g.practice = null;
   }
 
   const plies = () => g.moves.length;
+  /** Plies actually played in this game (not counting a practice's pre-played moves). */
+  const playedPlies = () => plies() - g.prefill;
   let viewPly = null;           // null = live position
   let botToken = 0;
   let botPending = false;
@@ -744,6 +852,12 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     g.extras.blindfold ? h('span', { class: 'badge badge-info', html: icon('eye-off', { size: 12 }) + ' ' + escapeHtml(t('play.blindfold.badge')) }) : null,
     !g.opts.hints && !g.opts.takebacks && !g.opts.evalBar && !g.opts.coach ? h('span', { class: 'badge badge-danger' }, t('play.modes.challenge.label')) : null);
   const statusEl = h('div', { class: 'play-status', role: 'status', 'aria-live': 'polite' });
+  // "Practising: <opening>" banner with a gentle note once the game leaves the book.
+  const practiceNote = h('div', { class: 'practice-note text-xs', role: 'status', 'aria-live': 'polite', hidden: true });
+  const practiceEl = g.practice ? h('div', { class: 'practice-banner' },
+    h('div', { class: 'practice-banner-title text-sm' }, h('span', { html: icon('openings', { size: 14 }) }),
+      h('span', { class: 'truncate' }, t('practice.game.banner', { name: g.practice.name || t('practice.yourLine') }))),
+    practiceNote) : null;
   const coachText = h('div', { class: 'bubble bubble-mentor coach-text md' });
   const coachBox = h('div', { class: 'coach-box mentor-row', hidden: true },
     h('div', { class: 'avatar avatar-sm avatar-round coach-avatar', 'aria-hidden': 'true' }, '🎓'), coachText);
@@ -804,6 +918,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   const panel = h('aside', { class: 'game-panel' },
     h('div', { class: 'panel grow' },
       h('div', { class: 'panel-header play-panel-head' }, h('span', { html: icon('openings') }), openingEl, h('div', { class: 'spacer' }), modeBadges),
+      practiceEl,
       statusEl,
       coachBox,
       moveListEl,
@@ -930,7 +1045,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   function renderOpening() {
-    openingEl.textContent = g.openingName || (customStart ? t('play.custom.inGame') : (plies() ? t('play.game.inProgress') : t('play.game.startingPosition')));
+    openingEl.textContent = g.openingName || (g.practice && g.practice.name) || (customStart ? t('play.custom.inGame') : (plies() ? t('play.game.inProgress') : t('play.game.startingPosition')));
     openingEl.title = openingEl.textContent;
   }
 
@@ -990,7 +1105,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     acts.hint.disabled = over || !live || botPending || !!pendingConfirm || !userToMove() || hint.loading;
     acts.hint.classList.toggle('stage-2', hint.fen === chess.fen() && hint.stage >= 1);
     acts.takeback.disabled = over || !!pendingConfirm || !canTakeback();
-    acts.draw.disabled = over || plies() < 2;
+    acts.draw.disabled = over || playedPlies() < 2;
     acts.resign.disabled = over;
     actionsEl.hidden = over;
     afterEl.hidden = !over;
@@ -1145,12 +1260,49 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     const myAc = new AbortController();
     openingAc = myAc;
     const fen = chess.fen();
+    const atPly = plies();
     api.get('/api/openings/lookup' + qs({ fen }), { signal: myAc.signal, timeout: 8000 }).then((m) => {
       if (openingAc === myAc) openingAc = null;
-      if (bag.disposed || !m || !m.opening || !m.opening.name) return;
+      if (bag.disposed) return;
+      // Practice: the first position the book does not know means "out of book".
+      if (!m && g.practice && !g.outOfBookPly && atPly === plies() && g.fens[atPly] === fen) {
+        g.outOfBookPly = atPly;
+        renderPracticeNote();
+      }
+      if (!m || !m.opening || !m.opening.name) return;
       g.openingName = m.opening.name;
       renderOpening();
     }).catch(() => { if (openingAc === myAc) openingAc = null; });
+  }
+
+  // ---- Opening practice --------------------------------------------------
+  /** First ply (1-based) where the game left the opening's main line, or 0. */
+  function bookDeviation() {
+    if (!g.practice) return 0;
+    const book = g.practice.book || [];
+    const n = Math.min(book.length, plies());
+    for (let i = g.prefill; i < n; i++) if (g.moves[i] !== book[i]) return i + 1;
+    return 0;
+  }
+
+  function renderPracticeNote() {
+    if (!practiceEl) return;
+    if (g.outOfBookPly > plies()) g.outOfBookPly = 0; // taken back
+    const dev = bookDeviation();
+    let text = '';
+    if (dev) {
+      if (plyColor(dev) === userC) {
+        let san = '';
+        try { const mv = new Chess(g.fens[dev - 1]).move(parseUci(g.practice.book[dev - 1])); san = mv ? mv.san : ''; } catch { san = ''; }
+        text = san ? t('practice.game.leftBookUser', { san }) : t('practice.game.leftBookUserPlain');
+      } else {
+        text = t('practice.game.leftBookBot', { name: bot.name });
+      }
+    } else if (g.outOfBookPly) {
+      text = t('practice.game.outOfBook');
+    }
+    practiceNote.textContent = text;
+    practiceNote.hidden = !text;
   }
 
   // ---- Moves -------------------------------------------------------------
@@ -1281,6 +1433,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   function afterMove(fenBefore, uci, ply, byUser) {
     lookupOpening();
+    renderPracticeNote();
     if (checkEnd()) return;
     if (byUser) {
       if (g.opts.coach) coachExplain(fenBefore, uci, ply);
@@ -1445,8 +1598,10 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   // ---- Takeback ----------------------------------------------------------
   function minPly() {
-    // The user cannot take back the bot's opening move when playing black.
-    return plyColor(1) === userC ? 0 : 1;
+    // The user cannot take back the bot's opening move when playing black,
+    // nor the moves that were already on the board in an opening practice.
+    const base = g.prefill || 0;
+    return plyColor(base + 1) === userC ? base : base + 1;
   }
   function takebackCount() {
     if (botPending) return 1;
@@ -1476,6 +1631,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     if (plies() === 0) g.openingName = null;
     viewPly = null;
     clearHint();
+    renderPracticeNote();
     if (clock && clock.running && !g.result) clock.start(colorName(chess.turn()));
     refreshAll(true);
     if (!coachBox.hidden) coachSay(t('play.takeback.coach'));
@@ -1527,7 +1683,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   async function onOfferDraw() {
-    if (g.result || plies() < 2) return;
+    if (g.result || playedPlies() < 2) return;
     if (plies() - g.drawOfferPly < DRAW_OFFER_COOLDOWN_PLIES) {
       toast(t('play.draw.cooldown', { name: bot.name }), 'info');
       return;
@@ -1557,7 +1713,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   async function onNewGame() {
-    if (!g.result && plies() >= 2) {
+    if (!g.result && playedPlies() >= 2) {
       const ok = await confirmDialog({ title: t('play.newGame.title'), message: t('play.newGame.resignMessage'), confirmLabel: t('play.newGame.resignAndStart'), danger: true });
       if (!ok || bag.disposed) return;
       if (!g.result) endGame(userC === 'w' ? '0-1' : '1-0', 'resignation', { silent: true });
@@ -1638,16 +1794,18 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   async function saveGame() {
     if (g.savedId) return g.savedId;
-    if (plies() < 2) return null; // aborted games are not saved (like chess.com)
+    if (playedPlies() < 2) return null; // aborted games are not saved (like chess.com)
     const userName = (ctx.profile && ctx.profile.name) || t('play.you');
     const tags = ['vs-bot'];
     if (g.hintsUsed || g.takebacksUsed) tags.push('assisted');
     if (g.opts.coach) tags.push('coach');
     if (customStart) tags.push('custom-position');
+    if (g.practice) tags.push('opening-practice');
     if (g.extras.blindfold) tags.push('blindfold');
     const notesParts = [];
     if (g.hintsUsed) notesParts.push(t('play.notes.hints', { count: g.hintsUsed }));
     if (g.takebacksUsed) notesParts.push(t('play.notes.takebacks', { count: g.takebacksUsed }));
+    if (g.practice) notesParts.push(t('practice.notes', { name: g.practice.name || t('practice.yourLine') }));
     const body = {
       white: userC === 'w' ? userName : bot.name,
       black: userC === 'b' ? userName : bot.name,
@@ -1719,9 +1877,9 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   async function goReview() {
     let id = await g.savePromise;
-    if (!id && plies() >= 2) { g.savePromise = saveGame(); id = await g.savePromise; }
+    if (!id && playedPlies() >= 2) { g.savePromise = saveGame(); id = await g.savePromise; }
     if (!id) {
-      if (plies() < 2) toast(t('play.save.tooShort'), 'info');
+      if (playedPlies() < 2) toast(t('play.save.tooShort'), 'info');
       return false;
     }
     location.hash = `#/review/${id}`;
@@ -1733,7 +1891,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     // The adaptive bot may have changed level: use the fresh profile next game.
     const nextBot = bot.id === ADAPTIVE_ID && g.ratingUpdate && g.ratingUpdate.estimate
       ? { ...bot, elo: g.ratingUpdate.estimate.bot_level } : bot;
-    onRematch({ bot: nextBot, userColor: nextColor, colorChoice: g.colorChoice, opts: { ...g.opts }, extras: { ...g.extras }, tcId: g.tc.id, startFen: g.startFen });
+    onRematch({ bot: nextBot, userColor: nextColor, colorChoice: g.colorChoice, opts: { ...g.opts }, extras: { ...g.extras }, tcId: g.tc.id, startFen: g.startFen, practice: g.practice });
   }
 
   function renderAfter() {
@@ -1769,14 +1927,14 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       h('div', { class: 'go-players' }, you, h('div', { class: 'go-score' }, scoreText), them),
       goRatingEl,
       chips,
-      h('p', { class: 'muted text-sm text-center go-tip' }, plies() >= 2
+      h('p', { class: 'muted text-sm text-center go-tip' }, playedPlies() >= 2
         ? (o === 'win' ? t('play.gameOver.tipWin') : t('play.gameOver.tipOther'))
         : t('play.gameOver.tooShort')));
     const actions = [
       { label: t('play.after.newBot'), kind: 'ghost', icon: 'robot', onClick: () => { onNewBot(bot.id); } },
       { label: t('play.after.rematch'), kind: 'secondary', icon: 'refresh', onClick: () => { rematch(); } },
     ];
-    if (plies() >= 2) actions.push({ label: t('play.after.review'), kind: 'primary', icon: 'sparkles', autofocus: true, onClick: () => goReview() });
+    if (playedPlies() >= 2) actions.push({ label: t('play.after.review'), kind: 'primary', icon: 'sparkles', autofocus: true, onClick: () => goReview() });
     gameOverModal = modal({ title: t('play.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; goRatingEl = null; } });
   }
 
@@ -1791,14 +1949,16 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
 
   // ---- Persistence (resume unfinished games) -----------------------------
   function persist() {
-    if (g.result || ended || discarded || !plies()) return;
+    if (g.result || ended || discarded || playedPlies() <= 0) return;
     // An unconfirmed move is not part of the game yet.
     const moves = pendingConfirm ? g.moves.slice(0, -1) : g.moves;
     if (!moves.length) return;
     saveJson(SAVE_KEY, {
       v: 1, bot, userColor: userC, colorChoice: g.colorChoice, startFen: g.startFen, moves, opts: g.opts, extras: g.extras, tcId: g.tc.id,
       clocks: clock ? clock.getTimes() : null, hintsUsed: g.hintsUsed, takebacksUsed: g.takebacksUsed,
-      cls: g.cls, openingName: g.openingName, drawOfferPly: g.drawOfferPly, updatedAt: new Date().toISOString(),
+      cls: g.cls, openingName: g.openingName, drawOfferPly: g.drawOfferPly,
+      practice: g.practice ? { id: g.practice.id, name: g.practice.name, moves: g.practice.moves, book: g.practice.book, color: g.practice.color } : null,
+      updatedAt: new Date().toISOString(),
     });
   }
   bag.on(window, 'pagehide', () => persist());
@@ -1811,21 +1971,22 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   if (resume && resume.cls) renderMoveList();
   refreshAll(false);
   renderOpening();
+  if (g.practice) { lookupOpening(); renderPracticeNote(); }
   if (resume) {
-    lookupOpening();
+    if (!g.practice) lookupOpening();
     toast(t('play.resume.restored', { name: bot.name }), 'info', { duration: 2500 });
   }
 
   if (!checkEnd()) {
     if (!userToMove()) {
       if (!resume) botSay(bot.greeting || t('play.botChat.greetingBotFirst', { name: bot.name }));
-      if (clock && plies() > 0) clock.start(colorName(botC));
+      if (clock && playedPlies() > 0) clock.start(colorName(botC));
       requestBotMove();
     } else {
       if (!resume) botSay(bot.greeting || t('play.botChat.greetingUserFirst', { name: bot.name }));
-      if (clock && plies() > 0) clock.start(colorName(userC));
+      if (clock && playedPlies() > 0) clock.start(colorName(userC));
       analyzeLive();
-      if (g.opts.coach && !plies()) coachSay(t('play.coach.intro', { name: bot.name }));
+      if (g.opts.coach && !playedPlies()) coachSay(t('play.coach.intro', { name: bot.name }));
     }
   }
 }
