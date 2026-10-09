@@ -370,6 +370,7 @@ export class EngineClient {           // one websocket, lazy-connect, auto-recon
 ```
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
 Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|chessnut; a stored `alpha` is migrated to `chessnut`), `sounds` (bool),
+`soundVolume` (0–100, default 100), `soundPicks` (`{ event: style }` overrides of the default sound per event, see Sound below),
 `showCoords`, `showLegal`, `animationMs` (number), `showEvalBar`, `autoQueen`, `theme` (dark|light), `moveNotation` (san|figurine).
 Accessibility keys (see "Accessibility" below): `highContrast` (bool), `cbPalette` (bool), `motion` (system|reduce|full),
 `announceMoves` (bool, default true), `squareNames` (bool), `uiScale` (100|115|130),
@@ -406,7 +407,18 @@ Also in code (backwards compatible): constructor options `autoQueen` (undefined 
 cleared when the position changes).
 Board validates legality with vendored chess.js (`/vendor/chess.js`), supports drag & click moves,
 legal-move dots, promotion picker (or autoQueen), check highlight, last-move highlight, right-click
-arrows/circles, smooth animations, sounds via `components/sound.js` (`playSound('move'|'capture'|'check'|'castle'|'promote'|'gameEnd'|'illegal'|'correct'|'wrong'|'notify')`, WebAudio synthesized and pre-rendered once into buffers, no files; `renderSound(name)` returns the rendered `AudioBuffer` for previews/tests). Move sounds play when the piece lands; a dragged piece lifts under the pointer on press, and captured pieces vanish when the attacker lands.
+arrows/circles, smooth animations, sounds via `components/sound.js` (`playSound(name, { force?, style? })`, WebAudio synthesized and pre-rendered once into buffers, no files; `renderSound(name, sampleRate?, style?)` returns the rendered `AudioBuffer` for previews/tests). Move sounds play when the piece lands; a dragged piece lifts under the pointer on press, and captured pieces vanish when the attacker lands.
+
+**Sound** (`web/js/sound-catalog.js`, pure data shared by settings, `sound.js` and the Settings page). Events:
+`move`, `capture`, `castle`, `check`, `promote` (piece family) and `gameStart`, `gameEnd`, `lowTime`, `illegal`, `correct`,
+`wrong`, `notify` (chime family). Piece styles: `wood` (default) | `marble` | `plastic` | `felt` | `glass` | `retro` | `pop` |
+`click` | `none`. Chime styles: `chime` (default) | `bell` | `marimba` | `retro` | `beep` | `none`. `none` mutes that event.
+Presets (`SOUND_PRESETS`, one piece style + one chime style): `classic` (the defaults), `marble`, `club`, `cozy`, `crystal`,
+`arcade`, `bubbly`, `minimal`; `presetPicks(id)` gives the `soundPicks` value, `matchPreset(picks)` the matching preset or null
+(shown as "Custom"). `playSound` uses `resolveStyle(soundPicks, name)` unless `opts.style` is given; `opts.force` ignores the
+`sounds` switch (previews). Master volume follows `soundVolume` live. Rendered voices are cached per `event:style` (max 40,
+the selected ones are never evicted). `gameStart` plays when a new bot or local game begins (not on resume); `lowTime` when
+your clock drops under the low-time threshold.
 If `onMove` returns `false` the board reverts the move.
 
 **`components/evalbar.js`**: `new EvalBar(el, {orientation})`, `.set(score, opts?)`, `.setOrientation(c)`, `.destroy()`.

@@ -223,6 +223,14 @@ a.card.hub-cta-main { background: linear-gradient(135deg, var(--primary-soft), t
 .hub-anim-ctl { align-items: flex-end; }
 .hub-anim-ctl .range { width: 180px; }
 .hub-range-val { min-width: 56px; text-align: right; }
+.hub-sound-select { width: auto; max-width: 100%; }
+.hub-sound-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-2) var(--sp-5); }
+.hub-sound-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 168px) 40px; align-items: center; gap: var(--sp-2); min-height: 44px; }
+.hub-sound-row .select { width: 100%; }
+.hub-sound-label { font-size: var(--fs-sm); color: var(--text); overflow-wrap: anywhere; }
+.hub-sound-play { width: 40px; height: 40px; }
+.hub-sounds-off { opacity: 0.6; }
+.hub-sound-block { border-top: 0; padding-top: var(--sp-2); }
 
 .hub-swatches { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
 .hub-swatch-btn, .hub-pieceset { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); padding: var(--sp-2);
@@ -277,6 +285,9 @@ a.card.hub-cta-main { background: linear-gradient(135deg, var(--primary-soft), t
   .hub-tip { flex-wrap: wrap; }
   .hub-setting-stack .hub-anim-ctl { align-items: stretch; width: 100%; }
   .hub-anim-ctl .range { flex: 1; width: auto; }
+  .hub-sound-grid { grid-template-columns: minmax(0, 1fr); }
+  .hub-setting-stack .hub-sound-theme-ctl { width: 100%; }
+  .hub-sound-theme-ctl .select { flex: 1; min-width: 0; }
 }
 
 /* ---------- Settings: Your data (backup & sync; web/js/components/backup.js) ---------- */

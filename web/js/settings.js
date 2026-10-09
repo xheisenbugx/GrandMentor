@@ -1,6 +1,7 @@
 // GrandMentor user settings — persisted in localStorage, applied to <html>.
 // Contract: docs/CONTRACT.md §5.
 
+import { isValidSoundPicks } from './sound-catalog.js';
 import { DEFAULT_LANGUAGE, isLanguage } from './languages.js';
 
 const STORAGE_KEY = 'grandmentor.settings.v1';
@@ -33,6 +34,8 @@ export const DEFAULTS = Object.freeze({
   boardTheme: 'green',
   pieceSet: 'cburnett',
   sounds: true,
+  soundVolume: 100,        // master volume in percent (0–100)
+  soundPicks: {},          // per-event sound style overrides, see sound-catalog.js
   showCoords: true,
   showLegal: true,
   animationMs: 200,
@@ -58,6 +61,8 @@ const VALIDATE = {
   boardTheme: (v) => Object.hasOwn(BOARD_THEMES, v),
   pieceSet: (v) => Object.hasOwn(PIECE_SETS, v),
   sounds: (v) => typeof v === 'boolean',
+  soundVolume: (v) => Number.isInteger(v) && v >= 0 && v <= 100,
+  soundPicks: (v) => isValidSoundPicks(v),
   showCoords: (v) => typeof v === 'boolean',
   showLegal: (v) => typeof v === 'boolean',
   animationMs: (v) => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1000,
@@ -117,7 +122,8 @@ export function getSetting(key) {
  * Invalid values are ignored (returns false).
  */
 export function setSetting(key, value) {
-  if (key === 'animationMs' || key === 'uiScale') value = Number(value);
+  if (key === 'animationMs' || key === 'uiScale' || key === 'soundVolume') value = Number(value);
+  if (key === 'soundPicks' && value && typeof value === 'object') value = Object.freeze({ ...value });
   const valid = VALIDATE[key] ? VALIDATE[key](value) : true;
   if (!valid) { console.warn(`[settings] invalid value for ${key}:`, value); return false; }
   if (Object.is(current[key], value)) return true;

@@ -14,6 +14,7 @@ import { createFirstWeekSection } from '../components/firstweek.js';
 import { createPhoneSection } from '../components/phone.js';
 import { speak, speechSupported, cancelSpeech, voiceAvailable, onVoicesChanged } from '../components/speech.js';
 import { describeMove } from '../components/announcer.js';
+import { SOUND_EVENTS, SOUND_PRESETS, stylesFor, defaultStyle, resolveStyle, presetPicks, matchPreset } from '../sound-catalog.js';
 
 export const title = () => t('nav.routes.settings');
 
@@ -60,6 +61,13 @@ export async function mount(root) {
     h('div', { class: 'setting-row-text' }, h('div', { class: 'setting-row-title' }, titleText), desc ? h('div', { class: 'setting-row-desc' }, desc) : null),
     control);
 
+  // Like row(), but on narrow screens the control drops below the text instead of squeezing it.
+  const stackRow = (titleText, desc, control) => {
+    const el = row(titleText, desc, control);
+    el.classList.add('hub-setting-stack');
+    return el;
+  };
+
   // Board themes: swatches with a tiny 4x4 checkerboard.
   const themePicker = h('div', { class: 'hub-swatches', role: 'radiogroup', 'aria-label': t('settings.boardTheme') },
     Object.entries(BOARD_THEMES).map(([k, bt]) => h('button', { type: 'button', class: 'hub-swatch-btn', role: 'radio', dataset: { v: k }, 'aria-label': t(bt.labelKey) },
@@ -98,13 +106,78 @@ export async function mount(root) {
   syncers.push((s) => { notationExample.textContent = ['Nf3', 'Bb5', 'O-O', 'Qxd8+'].map((m) => formatSan(m, s.moveNotation)).join('  '); });
 
   const testSoundBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('volume') + `<span>${t('settings.testSound')}</span>` });
-  bag.on(testSoundBtn, 'click', async () => {
-    try {
-      const m = await import('../components/sound.js');
-      m.playSound?.('move');
-      bag.timeout(() => { try { m.playSound?.('capture'); } catch { /* ignore */ } }, 260);
-    } catch { toast(t('settings.soundsUnavailable'), 'warning'); }
+
+  // ---- Sounds: volume, theme and one choice per event ---------------------------------
+  let soundMod = null;
+  const loadSound = () => (soundMod ? Promise.resolve(soundMod) : import('../components/sound.js').then((m) => (soundMod = m)));
+  /** Play one event (or a short sequence) regardless of the on/off switch: the user asked to hear it. */
+  const preview = (events, style) => {
+    loadSound().then((m) => {
+      if (bag.disposed) return;
+      events.forEach((ev, i) => {
+        const go = () => { try { m.playSound(ev, { force: true, style }); } catch { /* ignore */ } };
+        if (i === 0) go(); else bag.timeout(go, i * 320);
+      });
+    }).catch(() => toast(t('settings.soundsUnavailable'), 'warning'));
+  };
+
+  const volume = h('input', { type: 'range', class: 'range', min: '0', max: '100', step: '5', 'aria-label': t('settings.soundSection.volume.title') });
+  const volumeVal = h('span', { class: 'muted text-sm tabular hub-range-val' });
+  const setVolume = debounce((v) => setSetting('soundVolume', v), 120);
+  const previewVolume = debounce(() => preview(['move']), 160);
+  bag.add(setVolume.cancel);
+  bag.add(previewVolume.cancel);
+  bag.on(volume, 'input', () => {
+    volumeVal.textContent = t('settings.soundSection.volume.value', { percent: volume.value });
+    setVolume(Number(volume.value));
+    previewVolume();
   });
+  syncers.push((s) => { volume.value = String(s.soundVolume); volumeVal.textContent = t('settings.soundSection.volume.value', { percent: s.soundVolume }); });
+
+  bag.on(testSoundBtn, 'click', () => preview(['move', 'capture', 'check']));
+
+  const presetSelect = h('select', { class: 'select hub-sound-select', 'aria-label': t('settings.soundSection.theme.title') },
+    Object.keys(SOUND_PRESETS).map((id) => h('option', { value: id }, t(`settings.soundSection.presets.${id}`))),
+    h('option', { value: 'custom', disabled: true }, t('settings.soundSection.presets.custom')));
+  bag.on(presetSelect, 'change', () => {
+    const picks = presetPicks(presetSelect.value);
+    if (!picks) return;
+    setSetting('soundPicks', picks);
+    preview(['move', 'capture', 'check']);
+  });
+  syncers.push((s) => { presetSelect.value = matchPreset(s.soundPicks) || 'custom'; });
+
+  const styleLabel = (ev, st) => t(`settings.soundSection.styles.${SOUND_EVENTS.find((e) => e.id === ev).family}.${st}`);
+  const eventRows = SOUND_EVENTS.map(({ id }) => {
+    const label = t(`settings.soundSection.events.${id}`);
+    const sel = h('select', { class: 'select hub-sound-select', 'aria-label': label },
+      stylesFor(id).map((st) => h('option', { value: st }, styleLabel(id, st))));
+    bag.on(sel, 'change', () => {
+      const picks = { ...getSettings().soundPicks };
+      if (sel.value === defaultStyle(id)) delete picks[id]; else picks[id] = sel.value;
+      setSetting('soundPicks', picks);
+      preview([id]);
+    });
+    syncers.push((s) => { sel.value = resolveStyle(s.soundPicks, id); });
+    const play = h('button', {
+      type: 'button', class: 'btn btn-ghost btn-icon btn-sm hub-sound-play', html: icon('play-circle'),
+      'aria-label': t('settings.soundSection.previewOne', { sound: label }), 'data-tooltip': t('settings.soundSection.preview'),
+    });
+    bag.on(play, 'click', () => preview([id]));
+    return h('div', { class: 'hub-sound-row' }, h('span', { class: 'hub-sound-label' }, label), sel, play);
+  });
+  const soundBody = h('div', { class: 'stack-sm' },
+    stackRow(t('settings.soundSection.volume.title'), t('settings.soundSection.volume.desc'), h('div', { class: 'row-sm hub-anim-ctl' }, volume, volumeVal)),
+    stackRow(t('settings.soundSection.theme.title'), t('settings.soundSection.theme.desc'), h('div', { class: 'row-sm hub-sound-theme-ctl' }, presetSelect, testSoundBtn)),
+    h('div', { class: 'hub-setting-block hub-sound-block' },
+      h('div', { class: 'setting-row-title' }, t('settings.soundSection.each.title')),
+      h('div', { class: 'setting-row-desc' }, t('settings.soundSection.each.desc')),
+      h('div', { class: 'hub-sound-grid' }, eventRows)));
+  syncers.push((s) => { soundBody.classList.toggle('hub-sounds-off', !s.sounds); });
+  const soundSection = h('section', { class: 'card', id: 'sounds', 'aria-labelledby': 'settings-sounds-title' },
+    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-sounds-title', html: icon('volume') + `<span>${t('settings.soundSection.title')}</span>` })),
+    row(t('settings.sounds.title'), t('settings.sounds.desc'), toggle('sounds', t('settings.sounds.title'))),
+    soundBody);
 
   // ---- Preview board -----------------------------------------------------------
   const previewSlot = h('div', { class: 'hub-preview-board' });
@@ -292,8 +365,8 @@ export async function mount(root) {
           row(t('settings.notation.title'), h('span', null, t('settings.notation.desc'), ' ', notationExample), segmented('moveNotation', [['san', t('settings.notation.letters')], ['figurine', t('settings.notation.figurines')]], t('settings.notation.title')))),
         h('section', { class: 'card' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + `<span>${t('settings.sections.playing')}</span>` })),
-          row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria'))),
-          row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
+          row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria')))),
+        soundSection,
         a11ySection,
         firstWeekSection.el,
         dataSection.el,
