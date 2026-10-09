@@ -1,0 +1,118 @@
+/* GrandMentor — position editor (components/editor.js) and the #/editor page.
+   Injected once by the component. Uses design tokens from app.css only. */
+
+.pe {
+  --pe-side-w: 340px;
+  --pe-tool: 46px;
+  --pe-size: clamp(260px,
+      min(calc(100dvh - 2 * var(--pe-tool) - 120px),
+          calc(100vw - var(--sidebar-w) - var(--pe-side-w) - 3 * var(--sp-6))),
+      640px);
+  display: grid;
+  grid-template-columns: auto minmax(280px, var(--pe-side-w));
+  gap: var(--sp-6);
+  justify-content: center;
+  align-items: start;
+}
+.app.sidebar-collapsed .pe {
+  --pe-size: clamp(260px,
+      min(calc(100dvh - 2 * var(--pe-tool) - 120px),
+          calc(100vw - var(--sidebar-w-collapsed) - var(--pe-side-w) - 3 * var(--sp-6))),
+      640px);
+}
+.pe-main { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); min-width: 0; }
+.pe-board {
+  position: relative;
+  width: var(--pe-size); height: var(--pe-size);
+  flex: none;
+  border-radius: var(--r-xs);
+  box-shadow: var(--shadow-md);
+  touch-action: none;
+  container-type: size;
+}
+.pe-board .gm-board { cursor: pointer; }
+.pe.pe-dragging, .pe.pe-dragging * { cursor: grabbing !important; }
+
+.pe-palette {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px;
+  padding: 4px; max-width: var(--pe-size);
+  background: var(--surface-sunken); border-radius: var(--r-md);
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.pe-tool {
+  appearance: none; width: var(--pe-tool); height: var(--pe-tool); display: grid; place-items: center; padding: 3px;
+  border: 2px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--text-muted); cursor: grab;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.pe-tool[data-tool="move"], .pe-tool[data-tool="erase"] { cursor: pointer; }
+.pe-tool:hover { background: var(--surface-hover); }
+.pe-tool:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.pe-tool.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-text); }
+.pe-tool img { width: 100%; height: 100%; pointer-events: none; -webkit-user-drag: none; }
+.pe-tool svg { width: 22px; height: 22px; pointer-events: none; }
+.pe-hint { margin: 0; text-align: center; max-width: var(--pe-size); min-height: 1.4em; }
+.pe-ghost {
+  position: fixed; left: 0; top: 0; pointer-events: none; z-index: var(--z-tooltip);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); will-change: transform;
+}
+
+.pe-side { display: flex; flex-direction: column; gap: var(--sp-4); min-width: 0; }
+.pe-controls { display: flex; flex-direction: column; gap: var(--sp-4); }
+.pe-quick { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.pe-castling { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.pe-castle {
+  appearance: none; display: flex; align-items: center; gap: var(--sp-2); min-height: 40px; padding: 0 var(--sp-3);
+  border: 1px solid var(--divider); border-radius: var(--r-md); background: var(--surface-sunken);
+  color: var(--text-muted); font: inherit; font-size: var(--fs-sm); text-align: left; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.pe-castle svg { width: 16px; height: 16px; flex: none; opacity: 0; }
+.pe-castle:hover:not(:disabled) { background: var(--surface-hover); color: var(--text); }
+.pe-castle:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.pe-castle[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); color: var(--text); }
+.pe-castle[aria-pressed="true"] svg { opacity: 1; color: var(--primary-text); }
+.pe-castle:disabled { opacity: .5; cursor: not-allowed; }
+.pe-note { margin: 0; }
+.pe-fen { width: 100%; font-size: var(--fs-xs); }
+.pe-fen-msg:empty { display: none; }
+.pe-status { font-size: var(--fs-sm); }
+.pe-status:empty { display: none; }
+.pe-errors { margin: var(--sp-1) 0 0; padding-left: 1.2em; }
+.pe-errors li + li { margin-top: 2px; }
+
+/* #/editor page actions */
+.pe-actions:empty { display: none; }
+.ed-actions { display: flex; flex-direction: column; gap: var(--sp-3); }
+.ed-actions .btn { width: 100%; justify-content: flex-start; }
+.ed-actions .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+.ed-bot { display: flex; flex-direction: column; gap: var(--sp-2); }
+.ed-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.ed-row .btn { justify-content: center; }
+
+@media (max-width: 1100px) {
+  .pe { --pe-side-w: 300px; }
+}
+@media (max-width: 860px) {
+  .pe, .app.sidebar-collapsed .pe {
+    --pe-tool: min(44px, calc((100vw - 2 * var(--sp-3) - 40px) / 7));
+    --pe-size: min(calc(100vw - 2 * var(--sp-3)), 560px);
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--sp-3);
+  }
+  /* Phones: both palettes wrap under the board, thumbs stay near them. */
+  .pe-main .pe-board { order: 0; }
+  .pe-main .pe-palette-b { order: 2; }
+  .pe-main .pe-palette-w { order: 1; }
+  .pe-main .pe-hint { order: 3; }
+  .pe-side { width: 100%; max-width: var(--pe-size); }
+}
+
+/* #/editor page shell */
+.ed-page { padding: var(--sp-4) var(--sp-6); }
+.ed-title { margin: 0; font-size: var(--fs-2xl); font-weight: var(--fw-black); letter-spacing: -0.02em; }
+.ed-sub { margin: 0; }
+@media (max-width: 860px) {
+  .ed-page { padding: var(--sp-2) var(--sp-3); }
+  .ed-title { font-size: var(--fs-xl); }
+}

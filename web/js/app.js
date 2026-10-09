@@ -33,6 +33,7 @@ const ROUTES = [
   { pattern: '/play', page: 'play', nav: 'play', titleKey: 'nav.routes.play' },
   { pattern: '/play/:botId', page: 'play', nav: 'play', titleKey: 'nav.routes.play' },
   { pattern: '/analysis', page: 'analysis', nav: 'analysis', titleKey: 'nav.routes.analysis' },
+  { pattern: '/editor', page: 'editor', nav: 'analysis', titleKey: 'nav.routes.editor' },
   { pattern: '/review/:gameId', page: 'review', nav: 'analysis', titleKey: 'nav.routes.review' },
   { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzleRush', params: { mode: 'rush' } },
   { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.dailyPuzzle', params: { mode: 'daily' } },
