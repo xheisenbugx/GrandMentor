@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // GrandMentor UI sweep: visits every route × language × viewport in headless Chrome and checks for
-// console errors, failed API calls, horizontal scroll, raw i18n keys, English leaking into other
+// console errors, failed API calls, horizontal scroll, raw i18n keys, leaked "null"/"undefined" text, English leaking into other
 // languages, elements sticking out of the viewport and overlapping layers/buttons.
 // Plain Node 22, no dependencies; drives Chrome through tools/screenshots/cdp.mjs.
 //
@@ -296,6 +296,7 @@ function issuesFromChecks(r) {
   if (r.hscroll) out.push({ check: 'hscroll', detail: `page scrolls horizontally: scrollWidth ${r.scrollWidth}px > ${r.innerWidth}px` });
   for (const o of r.overflow) out.push({ check: 'overflow', detail: `${o.el} spans ${o.left}..${o.right}px (viewport ${r.innerWidth}px)` });
   for (const k of r.rawKeys) out.push({ check: 'raw-key', detail: `"${k.key}" in ${k.where}` });
+  for (const j of r.junk || []) out.push({ check: 'junk-text', detail: `"${j.text}" shown in ${j.where}` });
   for (const e of r.english) out.push({ check: 'english', detail: `"${e}"` });
   for (const o of r.layerOverlaps) out.push({ check: 'layer-over-board', detail: `${o.layer} covers ${o.board} (${o.overlap})` });
   for (const o of r.buttonOverlaps) out.push({ check: 'button-overlap', detail: `${o.a} overlaps ${o.b} (${o.overlap})` });

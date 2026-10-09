@@ -514,10 +514,12 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
       return;
     }
     estimateEl.hidden = false;
-    estimateEl.replaceChildren(
+    // Native replaceChildren() would print a null child as the text "null": drop it first.
+    estimateEl.replaceChildren(...[
       h('span', { html: icon('chart', { size: 14 }) }),
       h('span', null, t('play.estimate.label'), ' ', h('strong', null, `~${e.rating}`)),
-      e.provisional ? h('span', { class: 'badge', title: t('play.estimate.provisionalTitle', { count: Math.max(0, 5 - (e.games | 0)) }) }, t('play.estimate.provisional')) : null);
+      e.provisional ? h('span', { class: 'badge', title: t('play.estimate.provisionalTitle', { count: Math.max(0, 5 - (e.games | 0)) }) }, t('play.estimate.provisional')) : null,
+    ].filter(Boolean));
   }
 
   function renderHero() {
@@ -1700,13 +1702,15 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     goRatingEl.hidden = false;
     const d = r.delta | 0;
     const deltaCls = d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
-    goRatingEl.append(
+    // Native append() would print a null child as the text "null": drop it first.
+    goRatingEl.append(...[
       h('span', { class: 'go-rating-label' }, t('play.estimate.label')),
       h('strong', { class: 'go-rating-value' }, `~${r.rating}`),
       r.previous == null
         ? h('span', { class: 'go-delta new' }, t('play.estimate.first'))
         : h('span', { class: `go-delta ${deltaCls}` }, d > 0 ? `+${d}` : d < 0 ? `−${Math.abs(d)}` : '±0'),
-      r.provisional ? h('span', { class: 'badge' }, t('play.estimate.provisional')) : null);
+      r.provisional ? h('span', { class: 'badge' }, t('play.estimate.provisional')) : null,
+    ].filter(Boolean));
     if (bot.id === ADAPTIVE_ID && r.bot_level_delta) {
       goRatingEl.append(h('div', { class: 'go-level subtle text-xs' },
         t(r.bot_level_delta > 0 ? 'play.adaptive.levelUp' : 'play.adaptive.levelDown', { name: bot.name, level: r.bot_level })));

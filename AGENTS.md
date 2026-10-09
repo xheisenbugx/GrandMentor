@@ -84,7 +84,7 @@ node tools/qa/sweep.mjs          # every route × language × desktop/mobile in 
 ```
 
 The sweep fails on console errors, failed API calls, horizontal scroll, elements sticking out of the viewport,
-raw i18n keys, English text on non-English pages, bubbles/toasts covering the board and overlapping buttons.
+raw i18n keys, stray "null"/"undefined" text, English text on non-English pages, bubbles/toasts covering the board and overlapping buttons.
 Its report (`target/qa-sweep/report.md` + screenshots) shows what to fix. Intentional exceptions go in
 `tools/qa/allowlist.json`, each with a reason. New routes in `web/js/app.js` are swept automatically.
 

@@ -2,7 +2,7 @@
 // by Node); it must stay a single self-contained function expression.
 //
 // Input (window.__qaData, injected by the sweep): { keys: [...i18n keys], english: [...phrases] }.
-// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], english[], layerOverlaps[], buttonOverlaps[],
+// Returns { scrollWidth, innerWidth, hscroll, overflow[], rawKeys[], junk[], english[], layerOverlaps[], buttonOverlaps[],
 //           a11y: { names[], alt[], hiddenFocus[], dupIds[], contrast[], touch[] } }.
 (() => {
   const data = window.__qaData || { keys: [], english: [] };
@@ -112,6 +112,24 @@
     }
   }
   if (document.title) for (const m of document.title.matchAll(keyRe)) addKey(m[0], 'document.title');
+
+  // 3b. Leaked JS values: a missing value rendered as text, e.g. `el.append(x ? node : null)` prints "null".
+  const junkRe = /(?:^|[^\w.-])(null|undefined|NaN|\[object Object\])(?![\w-])/;
+  const junk = [];
+  const junkWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = junkWalker.nextNode(); n && junk.length < MAX; n = junkWalker.nextNode()) {
+    const p = n.parentElement;
+    if (!p || p.closest('pre, code, textarea, script, style') || !visible(p)) continue;
+    const m = n.nodeValue.match(junkRe);
+    if (m) junk.push({ text: m[1], where: describe(p) });
+  }
+  for (const el of document.querySelectorAll('[placeholder],[aria-label],[title],[alt]')) {
+    if (junk.length >= MAX) break;
+    for (const attr of ['placeholder', 'aria-label', 'title', 'alt']) {
+      const m = (el.getAttribute(attr) || '').match(junkRe);
+      if (m) { junk.push({ text: m[1], where: `${describe(el)} [${attr}]` }); break; }
+    }
+  }
 
   // 4. English UI phrases visible on a non-English page.
   const english = [];
@@ -272,5 +290,5 @@
     }
   }
 
-  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps, a11y };
+  return { innerWidth: vw, innerHeight: vh, scrollWidth, hscroll, overflow, rawKeys: rawKeys.slice(0, MAX), junk, english, layerOverlaps: layerOverlaps.slice(0, MAX), buttonOverlaps, a11y };
 })()
