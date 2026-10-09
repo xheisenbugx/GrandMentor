@@ -28,6 +28,7 @@ import practice from './practice.js';
 import why from './why.js';
 import firstweek from './firstweek.js';
 import weekly from './weekly.js';
+import phone from './phone.js';
 
 export default {
   common,
@@ -59,4 +60,5 @@ export default {
   why,
   firstweek,
   weekly,
+  phone,
 };

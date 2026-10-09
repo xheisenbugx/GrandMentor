@@ -36,7 +36,19 @@ tracing-subscriber.workspace = true
 parking_lot.workspace = true
 futures-util.workspace = true
 rand.workspace = true
+# Phone & home use (docs/PHONE.md): HTTPS on the LAN with a local CA, QR codes, LAN addresses.
+axum-server = { version = "0.7", features = ["tls-rustls-no-provider"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+rcgen = { version = "0.14", default-features = false, features = ["crypto", "pem", "ring", "x509-parser"] }
+ring = "0.17"
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+if-addrs = "0.13"
+gethostname = "0.5"
+time = { version = "0.3", default-features = false, features = ["std"] }
 
 [dev-dependencies]
 http-body-util = "0.1"
 tokio-tungstenite = "0.24"
+x509-parser = "0.17"
+rqrr = { version = "0.9", default-features = false }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "logging", "tls12"] }

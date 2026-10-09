@@ -60,6 +60,8 @@ async function request(method, path, body, opts = {}) {
   }
 
   if (!res.ok) {
+    // Another device whose sign-in was revoked (Settings → Use on your phone): back to the PIN page.
+    if (res.status === 401 && data && typeof data === 'object' && data.login === '/login') location.assign('/login');
     const msg = (data && typeof data === 'object' && data.error) ? String(data.error)
       : (typeof data === 'string' && data && data.length < 300) ? data
       : `Request failed (${res.status})`;

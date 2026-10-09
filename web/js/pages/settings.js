@@ -11,6 +11,7 @@ import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 import { createBackupSection } from '../components/backup.js';
 import { createFirstWeekSection } from '../components/firstweek.js';
+import { createPhoneSection } from '../components/phone.js';
 
 export const title = () => t('nav.routes.settings');
 
@@ -233,6 +234,8 @@ export async function mount(root) {
   bag.add(dataSection.destroy);
   const firstWeekSection = createFirstWeekSection();
   bag.add(firstWeekSection.destroy);
+  const phoneSection = createPhoneSection(); // "Use on your phone" — components/phone.js
+  bag.add(phoneSection.destroy);
 
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
@@ -266,6 +269,7 @@ export async function mount(root) {
         a11ySection,
         firstWeekSection.el,
         dataSection.el,
+        phoneSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),

@@ -801,9 +801,10 @@ Flow (device B, Settings → "Connect to another device"): B's browser fetches
 `/api/backup/export?mark=false` to `A/api/sync/merge` ("Send there"). "Both ways" pulls first.
 
 * GrandMentor binds to `127.0.0.1` by default, so nothing is reachable from the network. To be a
-  sync source, device A must be started with `GM_HOST=0.0.0.0` (or a LAN address). That also
-  exposes the rest of the (unauthenticated) API to the LAN, as before — only do it on a trusted
-  network, and stop the server or restart it without `GM_HOST` afterwards.
+  sync source, device A must be started with `GM_HOST=0.0.0.0` (or a LAN address), or have phone
+  mode on (`GM_LAN=1` / Settings → Use on your phone), which also opens the plain HTTP port to the
+  network. Everything else on A is then behind the access PIN (see "Phone & home use"); the two sync
+  endpoints below are exempt from the PIN because they carry their own pairing code.
 * Pairing codes (6 characters from a 32-letter alphabet, shown as `ABC-234`) live only in memory,
   one at a time, for 10 minutes; 20 wrong attempts revoke the code. They can only be created, read
   or revoked by requests from this machine (loopback peer address and, when present, a localhost
@@ -1277,3 +1278,93 @@ plain-words reason), the solver (shared `PuzzleRunner`; hints / solution / wrong
 and a finish summary per theme. `components/weekly-card.js` provides `weeklyHubEntry()` (Puzzles hub banner) and
 `weeklyInsightsCard()` (Insights card: this week's progress and solve rate per theme over the last 4 weeks), both
 `{ el, destroy }`. Styles: `web/css/weekly.css` (`wk-*`, injected on demand). Strings: `weekly` locale namespace.
+
+## Phone & home use
+
+Use GrandMentor from phones and tablets on the same Wi-Fi: HTTPS with a local CA, an access PIN for
+every non-loopback client, and the "Use on your phone" card in Settings. Code:
+`crates/gm-server/src/phone/` (`tls.rs` certificates, `access.rs` PIN/sessions/limiter, `gate.rs`
+middleware, `routes.rs` endpoints, `login.rs` sign-in page, `net.rs` LAN addresses); UI:
+`web/js/components/phone.js` (`createPhoneSection() -> { el, destroy }`, styles `web/css/phone.css`,
+strings in the `phone` locale namespace). User guide: [`docs/PHONE.md`](PHONE.md).
+
+### Environment
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `GM_LAN` | unset | `1/true/on/yes` forces phone mode on, `0/false/off/no` off; unset → the saved switch (`phone.json`). |
+| `GM_LAN_PORT` | `8443` | HTTPS listener (`0.0.0.0`) in phone mode. |
+| `GM_PHONE_DIR` | `<dir of GM_DB>/grandmentor-phone` | `phone.json`, `access.json` (0600), `ca.key.pem` (0600), `ca.crt.pem`, `ca.json`, `server.key.pem` (0600), `server.crt.pem`, `server.json`. |
+| `GM_ACCESS_PIN` | on | `off` disables the PIN gate for non-loopback clients. |
+
+In phone mode the plain HTTP listener binds `0.0.0.0:GM_PORT` unless `GM_HOST` is set explicitly.
+Nothing is written to `GM_PHONE_DIR` while phone mode is off and the server is loopback-only (except
+`phone.json` when the user flips the switch).
+
+### Listeners and the access gate (`phone::gate::gate`, wraps the whole router)
+
+`gm_server::app_with_phone(state, web_dir, Arc<PhoneState>, Transport::Http | Transport::Https)`
+builds the router for one listener (`gm_server::app` = in-memory phone state, HTTP). Per request:
+
+1. Loopback peer (`127.0.0.0/8`, `::1`, `::ffff:127.*`) → always allowed.
+2. `/phone/ca.crt`, `/favicon.ico` → public.
+3. Plain HTTP from another device while phone mode runs → `/api/sync/snapshot` and
+   `/api/sync/merge` pass; `GET`/`HEAD` get `307` to `https://<host>:GM_LAN_PORT<path>`; other
+   methods `403 {error}`.
+4. PIN off, the two sync endpoints, `/login`, `POST /api/access/login`, `/manifest.webmanifest` and
+   `/img/icons/*` → allowed (browsers fetch the manifest without cookies).
+5. Valid `gm_access` cookie → allowed.
+6. Otherwise: `/api/*` (including the websocket) → `401 {"error": "<localized>", "login": "/login"}`;
+   page loads (`/`, `*.html`, `Accept: text/html`) → `303` to `/login[?next=<path>]`; anything else
+   `401`. The frontend (`api.js`) sends the browser to `/login` on a `401` whose body has
+   `"login": "/login"`.
+
+Cookie: `gm_access=<64 hex>; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict[; Secure on HTTPS]`.
+At most 32 signed-in devices are kept (oldest dropped). Wrong PINs: 5 per IP per 15 min, 30 in total
+per hour → `429` + `Retry-After`. PIN = 6 digits (spaces/dashes ignored when typed).
+
+### Endpoints
+
+| Method & path | Who | Body | Response |
+|---|---|---|---|
+| `GET /api/phone/status` | this computer | — | `PhoneStatus` (below) |
+| `PUT /api/phone/lan` | this computer | `{ "enabled": bool }` | `PhoneStatus`; saves `phone.json`, takes effect after a restart. `409` when `GM_LAN` is set. |
+| `POST /api/phone/pin` | this computer | — | `{ "pin": "123456" }` (new PIN; signed-in devices stay signed in) |
+| `DELETE /api/phone/devices` | this computer | — | `{ "signed_out": n, "devices": 0 }` |
+| `GET /api/phone/qr?url=<url>` | this computer | — | `image/svg+xml` QR code; `url` must be one of `app_urls`, `ca_urls` or `local_name_url`, else `400` |
+| `GET /api/access/status` | any (behind the gate) | — | `{ "local": bool, "signed_in": bool, "pin_required": bool }` |
+| `POST /api/access/login` | any | form `pin=…&next=/…` or JSON `{ "pin", "next"? }` (≤ 4 KB) | form: `303` to `next` (same-site path only) + cookie, or the login page with an error (`401` wrong, `429` locked); JSON: `{ "ok": true, "next" }` + cookie, or `401/429 {error}`. A cross-origin `Origin` → `403`. |
+| `POST /api/access/logout` | any | — | `{ "ok": true }`, forgets this device's session, clears the cookie |
+| `GET /login[?next=/…]` | any | — | self-contained localized HTML sign-in page (no scripts); redirects to `next` when the caller is local or already signed in |
+| `GET /phone/ca.crt` | any | — | the local CA (DER, `application/x-x509-ca-cert`, `attachment; filename="grandmentor-ca.crt"`); `404` when phone mode is off |
+
+"This computer" = loopback peer and, when an `Origin` header is sent, a localhost origin; otherwise
+`403 {error}` (localized).
+
+```json
+PhoneStatus = {
+  "lan": { "enabled": true, "running": true, "env": null, "restart_required": false, "can_save": true },
+  "http_port": 8080, "https_port": 8443, "network_visible": true,
+  "hostname": "chessbox", "addresses": ["192.168.1.20"],
+  "app_urls": ["https://192.168.1.20:8443/"],
+  "ca_urls": ["http://192.168.1.20:8080/phone/ca.crt"],
+  "local_name_url": "https://chessbox.local:8443/",
+  "ca": { "fingerprint": "D9:DB:…", "download": "/phone/ca.crt", "names": ["127.0.0.1", "192.168.1.20", "chessbox", "chessbox.local", "localhost"] },
+  "pin_required": true, "pin": "123456", "devices": 1
+}
+```
+
+`app_urls` are `https://` in phone mode, `http://` when only `GM_HOST` opens the network, empty when
+the server is loopback-only. `ca` is `null` unless phone mode runs. `addresses`: non-loopback,
+non-link-local IPv4, `192.168/16` first, then `10/8`, `172.16/12`, `100.64/10`, others (max 8).
+
+### Certificates (`phone::tls::ensure(dir, &ServerNames) -> CertBundle`)
+
+* CA: ECDSA P-256, 10 years, `CA:TRUE, pathlen:0`, key usage certSign/cRLSign, **name constraints**
+  permitting only DNS `local`, `localhost`, the host name at creation, and IPs `10/8`, `172.16/12`,
+  `192.168/16`, `100.64/10`, `169.254/16`, `127/8`, `::1`.
+* Server: ECDSA P-256, 397 days, `serverAuth`, SANs `localhost`, `127.0.0.1`, `<host>.local`,
+  `<host>` (when it matches the CA's) and every permitted LAN IPv4 (max 16). Re-issued when a name
+  is missing, the CA changed, or < 30 days remain; checked at startup and every 2 minutes, hot-swapped
+  into the TLS listener (rustls, ring provider, ALPN `http/1.1`).
+

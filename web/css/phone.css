@@ -1,0 +1,59 @@
+/* "Use on your phone" section in Settings (web/js/components/phone.js). Tokens only. */
+.ph-section .card-header { gap: var(--sp-2); flex-wrap: wrap; }
+.ph-intro { margin-bottom: var(--sp-3); }
+.ph-body { display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; }
+.ph-ci { display: inline-flex; flex: none; }
+.ph-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+.ph-addr { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.ph-addr-seg { flex-wrap: wrap; }
+
+.ph-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); counter-reset: ph-step; }
+.ph-step {
+  counter-increment: ph-step;
+  display: flex; gap: var(--sp-4); align-items: flex-start; justify-content: space-between;
+  padding: var(--sp-4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--border);
+  min-width: 0;
+}
+.ph-step-text { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; flex: 1; }
+.ph-step-title { margin: 0; font-size: var(--fs-md, 1rem); font-weight: 700; display: flex; align-items: center; gap: var(--sp-2); }
+.ph-step-title::before {
+  content: counter(ph-step);
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--primary-fill); color: var(--primary-contrast); font-size: var(--fs-sm); font-weight: 800;
+}
+.ph-step p { margin: 0; }
+
+/* QR codes need a light quiet zone in both themes so phone cameras can read them. */
+.ph-qr { flex: none; padding: 8px; border-radius: var(--r-md); background: #fff; line-height: 0; }
+.ph-qr img { display: block; width: 176px; height: 176px; image-rendering: pixelated; }
+
+.ph-url { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); min-width: 0; }
+.ph-url code {
+  font-family: var(--font-mono); font-size: var(--fs-sm); padding: 4px 8px; border-radius: var(--r-sm);
+  background: var(--surface-sunken); color: var(--text); overflow-wrap: anywhere; min-width: 0;
+}
+
+.ph-details { border-top: 1px solid var(--divider); padding-top: var(--sp-2); }
+.ph-details summary { cursor: pointer; font-weight: 600; color: var(--text); padding: 6px 0; }
+.ph-details summary:focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--r-sm); }
+.ph-steps-list { margin: var(--sp-2) 0 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 4px; color: var(--text-muted); font-size: var(--fs-sm); }
+.ph-fp { overflow-wrap: anywhere; font-family: var(--font-mono); }
+
+.ph-pin-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
+.ph-pin {
+  font-family: var(--font-mono); font-size: 2rem; font-weight: 800; letter-spacing: 0.12em;
+  padding: 6px 14px; border-radius: var(--r-md); background: var(--surface-sunken); color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.ph-safety { display: flex; gap: var(--sp-2); align-items: flex-start; margin: 0; }
+.ph-safety svg { flex: none; margin-top: 2px; }
+
+@media (max-width: 640px) {
+  .ph-step { flex-direction: column; padding: var(--sp-3); }
+  .ph-qr { align-self: center; }
+  .ph-pin { font-size: 1.6rem; }
+  .ph-devices { flex-direction: column; align-items: stretch; gap: var(--sp-2); }
+}

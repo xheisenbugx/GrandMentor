@@ -11,7 +11,8 @@
 //!   carries a valid code (preflights: when they announce the `x-gm-pair` header). Setting
 //!   `GM_SYNC_ALLOW_ORIGINS=http://a:8080,http://b:8080` restricts that to the listed origins.
 //! * The server still binds to 127.0.0.1 by default; another device can only reach it after the
-//!   user starts it with `GM_HOST=0.0.0.0` (or a LAN address).
+//!   user starts it with `GM_HOST=0.0.0.0` (or a LAN address) or turns on phone mode. The access
+//!   PIN gate (`crate::phone::gate`) lets `snapshot` / `merge` through: they have their own code.
 
 use std::net::SocketAddr;
 use std::sync::OnceLock;
@@ -316,6 +317,7 @@ fn network_visible() -> bool {
         .ok()
         .and_then(|h| h.trim().parse::<std::net::IpAddr>().ok())
         .is_some_and(|ip| !ip.is_loopback())
+        || crate::phone::network_visible()
 }
 
 fn pair_json(p: Option<&Pairing>) -> Value {
