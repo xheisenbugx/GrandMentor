@@ -101,6 +101,14 @@ export default {
     failed: 'Não foi possível excluir as partidas',
     partial: { zero: '{message} ({count} excluídas)', one: '{message} ({count} excluída)', other: '{message} ({count} excluídas)' },
   },
+  resetPuzzles: {
+    button: 'Reiniciar rating de problemas',
+    desc: 'Recomece do zero o seu rating e as estatísticas de problemas.',
+    confirmTitle: 'Reiniciar o seu rating de problemas?',
+    confirmMessage: 'O seu rating de problemas volta a 1200 e os problemas resolvidos, as tentativas e o gráfico de rating são apagados. As pontuações do Puzzle Rush, as partidas e as lições são mantidas. Não é possível desfazer.',
+    done: 'Rating de problemas reiniciado — um novo começo!',
+    failed: 'Não foi possível reiniciar o seu rating de problemas',
+  },
   clearData: {
     button: 'Limpar dados do navegador',
     desc: 'Esquece as preferências salvas neste navegador e recarrega.',

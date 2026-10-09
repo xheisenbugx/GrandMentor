@@ -101,6 +101,14 @@ export default {
     failed: 'Could not delete games',
     partial: { one: '{message} ({count} deleted)', other: '{message} ({count} deleted)' },
   },
+  resetPuzzles: {
+    button: 'Reset puzzle rating',
+    desc: 'Start your puzzle rating and puzzle stats over from scratch.',
+    confirmTitle: 'Reset your puzzle rating?',
+    confirmMessage: 'Your puzzle rating goes back to 1200 and your solved count, attempts and rating chart are cleared. Puzzle Rush scores, games and lessons are kept. This can’t be undone.',
+    done: 'Puzzle rating reset — a fresh start!',
+    failed: 'Could not reset your puzzle rating',
+  },
   clearData: {
     button: 'Clear browser data',
     desc: 'Forget preferences saved in this browser and reload.',

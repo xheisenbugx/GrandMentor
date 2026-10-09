@@ -145,6 +145,37 @@ async fn dropping_review_does_not_hang_pool() {
     }
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn cancelled_review_returns_quickly_and_frees_pool() {
+    let content = Arc::new(gm_content::Content::default());
+    let p = pool();
+    let moves = ucis("e2e4 e7e5 g1f3 b8c6 f1b5 a7a6 b5a4 g8f6 e1g1 f8e7 f1e1 b7b5 a4b3 d7d6 c2c3 e8g8");
+    let stop = Arc::new(AtomicBool::new(false));
+    let flag = Arc::clone(&stop);
+    let canceller = tokio::spawn(async move {
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+        flag.store(true, Ordering::Relaxed);
+        std::time::Instant::now()
+    });
+    // Depth 30 would take minutes; the flag must end it right after it is raised.
+    let res = review_game_cancellable(&p, content.clone(), "start", &moves, 30, None, Lang::En, stop).await;
+    let returned = std::time::Instant::now();
+    let raised = canceller.await.expect("canceller");
+    assert_eq!(res.err().as_deref(), Some(REVIEW_CANCELLED));
+    assert!(returned.duration_since(raised) < std::time::Duration::from_secs(2), "cancel too slow");
+    // No orphaned searches: every engine is back in the pool quickly.
+    let t0 = std::time::Instant::now();
+    while p.available() < p.size() {
+        assert!(t0.elapsed() < std::time::Duration::from_secs(2), "pool still busy");
+        tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+    }
+    // A pre-cancelled review never touches the engine.
+    let pre = Arc::new(AtomicBool::new(true));
+    let res = review_game_cancellable(&p, content, "start", &moves, 30, None, Lang::En, pre).await;
+    assert_eq!(res.err().as_deref(), Some(REVIEW_CANCELLED));
+    assert_eq!(p.available(), p.size());
+}
+
 #[test]
 fn sacrifice_is_brilliant() {
     // White plays Bc4 into a pawn capture (dxc4 wins a bishop by SEE), engine says it's best.
