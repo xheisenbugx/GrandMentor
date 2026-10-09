@@ -18,6 +18,7 @@ pub mod adaptive;
 pub mod backup;
 pub mod classics;
 pub mod drills;
+pub mod first_week;
 pub mod game_fen;
 pub mod pgn;
 pub mod puzzle_profile;
@@ -375,9 +376,9 @@ fn migrate_v2(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
 /// v3: coaching, practice and home-use features. Each feature module owns its own tables;
 /// add one `<module>::schema(tx)?;` line per module (keep them sorted).
 fn migrate_v3(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
+    first_week::schema(tx)?;
     game_fen::schema(tx)?;
     puzzle_profile::schema(tx)?;
-    let _ = tx;
     Ok(())
 }
 

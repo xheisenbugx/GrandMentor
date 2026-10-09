@@ -26,6 +26,7 @@ import daily from './daily.js';
 import a11y from './a11y.js';
 import practice from './practice.js';
 import why from './why.js';
+import firstweek from './firstweek.js';
 
 export default {
   common,
@@ -55,4 +56,5 @@ export default {
   a11y,
   practice,
   why,
+  firstweek,
 };

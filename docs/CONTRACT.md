@@ -1183,3 +1183,48 @@ differs from `explanation`), **Show me** (steps through the refutation from `fen
 move, key move outlined) and **Better: <move>** (the better line from `fen_before`, green). While a line is
 shown the board is read-only; ←/→/Home/End step, Space plays/pauses, Esc or **Back to game** returns to the
 game position. `review.js` stops the panel whenever it navigates (`stopLine`).
+
+## Guided first week
+
+A 7-day path for new players (`#/start`). The plan is static (`gm_store::first_week::PLAN`, 7 days × 2–4 steps);
+every step deep-links into an existing feature and has a completion `Rule` checked against real activity:
+
+| Rule (`kind`) | Done when |
+|---|---|
+| `lesson` | `lesson_progress` row completed (any time) |
+| `drill` | the quick drill has at least one run (`drill_bests.plays > 0`) |
+| `endgame` | the endgame drill has a success (`endgame_training.successes > 0`) |
+| `game` | a game vs one of the listed bots created on/after the day unlocked (coach: `coach`, `coach-leo`; beginner: `pawnny`, `lulu`, `benny`, `rosa`) |
+| `review` | a game with `review_json` updated since the path started |
+| `puzzles` | N solved `puzzle_attempts` on/after the day unlocked with one of the themes (day 6: 3 × `fork`/`pin`) |
+| `goal` | a daily goal has been saved (`daily_goal` row) |
+
+Any step on an unlocked day can also be marked done by hand. Day *n* unlocks on `started_on + (n−1)` (UTC days,
+same clock as the activity log); unlocked days stay open (catch-up). The first time a step is seen done on an unlocked
+day it is persisted (`first_week_steps`), so progress never goes backwards and `newly_*` fields fire exactly once.
+Offered on Home (`eligible`) while not dismissed and either in progress, or not started with < 3 games and < 3
+completed lessons. Tables (migration v3): `first_week(id=1, started_on, dismissed, completed_on, updated_at)`,
+`first_week_steps(step_id PK, manual, updated_at)`.
+
+| Method & path | Body | Response |
+|---|---|---|
+| GET `/api/first-week` | – | `FirstWeekState` (persists newly detected steps) |
+| POST `/api/first-week/start` | – | `FirstWeekState`; starts today if not started (idempotent), clears `dismissed` |
+| POST `/api/first-week/restart` | – | `FirstWeekState`; Day 1 = today, forgets all steps |
+| POST `/api/first-week/dismiss` | `{dismissed?: bool = true}` | `FirstWeekState` |
+| POST `/api/first-week/step` | `{step_id, done?: bool = true}` | `FirstWeekState`; 400 for unknown step, locked day or not started. `done:false` only removes manual marks |
+
+```
+FirstWeekState { started, started_on: "YYYY-MM-DD"|null, today, dismissed, eligible,
+  unlocked_days, completed_days, week_complete, current_day: 1..7|null /* first open, unfinished day */,
+  days: [{ day: 1..7, id, emoji, unlock_on /* "" when not started */, unlocked, done,
+           steps: [{ id, kind, href /* hash route; review → #/review/<latest game> */, done, manual,
+                     progress: {have, need}|null }] }],
+  newly_done: [step_id], newly_completed_days: [n], week_just_completed }
+```
+
+**Frontend** — `web/js/pages/start.js` (`#/start`; opening it starts the path), `web/js/components/firstweek.js`:
+`ensureFirstWeekCss()` (`web/css/firstweek.css`), `dotPath(state, {compact})`, `celebrate(state, {bag})` (toast +
+confetti, confetti skipped under reduced motion), `new FirstWeekCard(container)` (Home card: `.load()`, `.destroy()`;
+hides itself when not `eligible`; "I already know how to play" dismisses), `createFirstWeekSection()` (Settings card
+with "Start over" / "Show on Home": `{el, destroy}`). Strings: `firstweek` locale namespace (step/day copy keyed by id).

@@ -9,6 +9,7 @@ import {
   gameTitle, fullMoves,
 } from './library.js';
 import { DailyPanel, ensureDailyCss } from '../components/daily.js';
+import { FirstWeekCard } from '../components/firstweek.js';
 
 export const title = () => t('nav.routes.home');
 
@@ -84,9 +85,11 @@ export async function mount(root) {
   const ratingEl = h('div', { class: 'card hub-rating-card' }, skeleton('text', 3));
   const tipEl = h('div', { class: 'card hub-tip' });
   const dailyEl = h('div', { class: 'hub-daily-plan' });
+  const firstWeekEl = h('div', { class: 'hub-first-week' });
 
   const page = h('div', { class: 'page hub-page hub-home' },
     heroEl,
+    firstWeekEl,
     dailyEl,
     ctaEl,
     h('section', { class: 'hub-section' },
@@ -104,6 +107,9 @@ export async function mount(root) {
   root.appendChild(page);
   const dailyPanel = new DailyPanel(dailyEl);
   bag.add(() => dailyPanel.destroy());
+  const firstWeek = new FirstWeekCard(firstWeekEl);
+  bag.add(() => firstWeek.destroy());
+  firstWeek.load().catch((e) => { if (!isAbort(e)) console.error('[home] first week', e); });
 
   // ---- Tip of the day (local, instant) -------------------------------------
   let tipIndex = dayOfYear() % TIP_IDS.length;

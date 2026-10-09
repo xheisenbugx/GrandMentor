@@ -10,6 +10,7 @@ import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES,
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 import { createBackupSection } from '../components/backup.js';
+import { createFirstWeekSection } from '../components/firstweek.js';
 
 export const title = () => t('nav.routes.settings');
 
@@ -230,6 +231,8 @@ export async function mount(root) {
   // ---- Your data (backup, restore, device sync) — self-contained component -----------
   const dataSection = createBackupSection();
   bag.add(dataSection.destroy);
+  const firstWeekSection = createFirstWeekSection();
+  bag.add(firstWeekSection.destroy);
 
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
@@ -261,6 +264,7 @@ export async function mount(root) {
           row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria'))),
           row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
         a11ySection,
+        firstWeekSection.el,
         dataSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
