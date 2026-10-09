@@ -18,6 +18,7 @@ import { MoveList } from '../components/movelist.js';
 import { EvalGraph, ensureAnalysisCss } from '../components/evalgraph.js';
 import { MentorPanel } from '../components/mentor.js';
 import { playSound } from '../components/sound.js';
+import { WhyPanel, hasReason } from '../components/whyline.js';
 import { START_FEN, uciSquares, fenPly, numberedLine } from './analysis.js';
 import { t, formatNumber } from '../i18n.js';
 
@@ -460,7 +461,12 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     }
 
     // ---- walk-through card ----
+    let why = null; // WhyPanel for the current move ("Why was that a mistake?")
+    bag.add(() => { why?.destroy(); why = null; });
+
     function renderWalk() {
+      why?.destroy();
+      why = null;
       const p = st.ply;
       if (p === 0) {
         const opening = rv.opening?.name || game.opening_name;
@@ -502,6 +508,16 @@ export async function mount(root, { params = {}, query = {} } = {}) {
             h('div', { class: 'rv-try-tip subtle text-xs', html: icon('hint') + spanHtml(t('review.walk.tryTip')) }))));
       const bk = walkCard.querySelector('.rv-book span');
       if (bk) bk.textContent = m.opening_name;
+      const expl = walkCard.querySelector('.rv-expl');
+      if (expl && RETRY_CLASSES.has(m.classification) && hasReason(m)) {
+        const whyHost = h('div', { class: 'rv-why' });
+        expl.after(whyHost);
+        why = new WhyPanel(whyHost, {
+          move: m, ply0, board,
+          onStart: () => { stopLine(); endRetry(); },
+          onExit: () => showPly(st.ply, false),
+        });
+      }
     }
     bag.on(walkCard, 'click', (e) => {
       const b = e.target.closest('[data-act]');
@@ -521,6 +537,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
 
     // ---- show line ----
     function stopLine() {
+      why?.stop(false);
       if (st.lineTimer) { clearTimeout(st.lineTimer); st.lineTimer = 0; }
       if (st.lineActive) { st.lineActive = false; lineBanner.hidden = true; }
     }

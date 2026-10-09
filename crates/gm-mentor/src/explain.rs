@@ -560,7 +560,10 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
         );
         return out;
     }
-    if let Some((h, cap, was)) = f.hangs.first() {
+    // A capture that loses more than any other hanging piece is the real problem (e.g. Qxf7+?? Kxf7
+    // is about the queen, not about some pawn left hanging elsewhere).
+    let capture_loss = if f.captured.is_some() { -f.capture_net } else { 0 };
+    if let Some((h, cap, was)) = f.hangs.first().filter(|(h, _, _)| capture_loss <= h.gain) {
         if h.gain >= 90 {
             let v = pv("p", h.role, h.square, lang);
             let tpl = if *was {
@@ -1214,6 +1217,15 @@ mod tests {
         assert!(text.contains("bishop on a6"), "{text}");
         assert!(text.contains("bxa6"), "{text}");
         assert!(text.contains("O-O"), "{text}");
+    }
+
+    #[test]
+    fn losing_capture_beats_unrelated_hanging_pawn() {
+        // 1.e4 e5 2.Qh5 Nc6 3.Qxf7+?? Kxf7: about the lost queen, not the e4 pawn.
+        let fen = "r1bqkbnr/pppp1ppp/2n5/4p2Q/4P3/8/PPPP1PPP/RNB1KBNR w KQkq - 2 3";
+        let text = explain_move(&ctx(fen, "h5f7", "f1c4", "blunder", Score::Cp(-20), Score::Cp(-850)), Lang::En);
+        assert!(!text.contains("e4"), "{text}");
+        assert!(text.contains("recapture"), "{text}");
     }
 
     #[test]

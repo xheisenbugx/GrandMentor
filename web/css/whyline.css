@@ -1,0 +1,46 @@
+/* GrandMentor — "Why was that a mistake?" box (web/js/components/whyline.js). Tokens: docs/STYLEGUIDE.md */
+.why-box {
+  --why-accent: var(--cls-mistake);
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  margin-top: var(--sp-2); padding: var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid color-mix(in srgb, var(--why-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--why-accent) 9%, transparent);
+  min-width: 0;
+}
+.why-box[data-kind="allows_mate"], .why-box[data-kind="hangs_piece"], .why-box[data-kind="loses_material"],
+.why-box[data-kind="allows_fork"], .why-box[data-kind="allows_pin"], .why-box[data-kind="allows_skewer"] { --why-accent: var(--cls-blunder); }
+.why-box[data-kind^="missed"] { --why-accent: var(--cls-miss); }
+.why-box[data-kind="positional"] { --why-accent: var(--cls-inaccuracy); }
+.why-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: var(--fs-sm); }
+.why-icon { display: inline-flex; color: var(--why-accent); }
+.why-icon svg { width: 16px; height: 16px; }
+.why-tag {
+  margin-left: auto; padding: 1px 8px; border-radius: 999px; font-size: var(--fs-xs); font-weight: var(--fw-semibold);
+  color: var(--why-accent); background: color-mix(in srgb, var(--why-accent) 16%, transparent);
+}
+.why-text { margin: 0; font-size: var(--fs-sm); line-height: 1.45; overflow-wrap: anywhere; }
+.why-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.why-actions .btn svg { width: 15px; height: 15px; }
+.why-actions .btn { max-width: 100%; }
+.why-actions .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.why-actions .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--why-accent); }
+.why-player { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+.why-player[hidden] { display: none; }
+.why-line-label { font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: .04em; }
+.why-line-label.refutation { color: var(--cls-blunder); }
+.why-line-label.better { color: var(--cls-best); }
+.why-moves { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 4px; min-width: 0; }
+.why-num { color: var(--text-subtle); font-size: var(--fs-xs); }
+.why-move {
+  font: inherit; font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
+  padding: 1px 5px; border-radius: var(--r-xs); border: 1px solid transparent; background: transparent; cursor: pointer;
+  min-height: 28px;
+}
+.why-move:hover { background: var(--surface-2); }
+.why-move.key { border-color: color-mix(in srgb, var(--why-accent) 60%, transparent); }
+.why-move.on { background: var(--why-accent); color: var(--primary-contrast); }
+.why-move:focus-visible { outline: 2px solid var(--focus, var(--primary)); outline-offset: 1px; }
+.why-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.why-controls .spacer { flex: 1; }
+.why-controls .btn svg { width: 15px; height: 15px; }
