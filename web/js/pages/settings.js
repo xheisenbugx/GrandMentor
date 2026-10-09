@@ -10,6 +10,7 @@ import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES,
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
 import { createBackupSection } from '../components/backup.js';
+import { createPhoneSection } from '../components/phone.js';
 
 export const title = () => t('nav.routes.settings');
 
@@ -215,6 +216,8 @@ export async function mount(root) {
   // ---- Your data (backup, restore, device sync) — self-contained component -----------
   const dataSection = createBackupSection();
   bag.add(dataSection.destroy);
+  const phoneSection = createPhoneSection(); // "Use on your phone" — components/phone.js
+  bag.add(phoneSection.destroy);
 
   // ---- Layout ---------------------------------------------------------------------
   const page = h('div', { class: 'page hub-page hub-settings' },
@@ -247,6 +250,7 @@ export async function mount(root) {
           row(t('settings.sounds.title'), t('settings.sounds.desc'), h('div', { class: 'row-sm' }, testSoundBtn, toggle('sounds', t('settings.sounds.title'))))),
         a11ySection,
         dataSection.el,
+        phoneSection.el,
         h('section', { class: 'card hub-danger' },
           h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),

@@ -4,6 +4,7 @@ pub mod api;
 pub mod cache;
 pub mod error;
 pub mod lang;
+pub mod phone;
 pub mod puzzles;
 pub mod routes;
 pub mod state;
@@ -11,6 +12,7 @@ pub mod web;
 pub mod ws;
 
 use std::path::Path;
+use std::sync::Arc;
 use std::time::Duration;
 
 use axum::extract::DefaultBodyLimit;
@@ -55,9 +57,16 @@ fn panic_response(_err: Box<dyn std::any::Any + Send + 'static>) -> Response {
     ApiError::internal("internal error").into_response()
 }
 
-/// Build the full application router.
+/// Build the full application router (in-memory phone/access state, plain HTTP).
 pub fn app(state: AppState, web_dir: &Path) -> Router {
+    app_with_phone(state, web_dir, phone::PhoneState::in_memory(), phone::Transport::Http)
+}
+
+/// Build the application router for one listener. Every request passes the access gate
+/// (`phone::gate`): this computer always gets in, other devices need the access PIN.
+pub fn app_with_phone(state: AppState, web_dir: &Path, phone: Arc<phone::PhoneState>, transport: phone::Transport) -> Router {
     let api = api::router()
+        .merge(phone::routes::api_router().with_state(Arc::clone(&phone)))
         .layer(axum::middleware::from_fn(lang::localize_errors))
         .layer(DefaultBodyLimit::max(MAX_BODY_BYTES))
         .layer(SetResponseHeaderLayer::if_not_present(
@@ -97,10 +106,13 @@ pub fn app(state: AppState, web_dir: &Path) -> Router {
         ])
         .max_age(Duration::from_secs(3600));
 
+    let gate = phone::gate::GateCtx { phone: Arc::clone(&phone), transport };
     Router::new()
         .nest("/api", api)
+        .merge(phone::routes::page_router().with_state(phone))
         .with_state(state)
         .fallback_service(web::router(web_dir))
+        .layer(axum::middleware::from_fn_with_state(gate, phone::gate::gate))
         .layer(CompressionLayer::new())
         .layer(cors)
         .layer(CatchPanicLayer::custom(panic_response))
