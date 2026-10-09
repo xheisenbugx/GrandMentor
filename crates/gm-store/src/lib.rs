@@ -263,7 +263,7 @@ const NOW: &str = "strftime('%Y-%m-%dT%H:%M:%SZ','now')";
 type Migration = fn(&rusqlite::Transaction<'_>) -> rusqlite::Result<()>;
 
 /// Index i migrates user_version i -> i+1. Append only; never edit a shipped migration.
-const MIGRATIONS: &[Migration] = &[migrate_v1, migrate_v2];
+const MIGRATIONS: &[Migration] = &[migrate_v1, migrate_v2, migrate_v3];
 
 fn has_column(tx: &rusqlite::Transaction<'_>, table: &str, col: &str) -> rusqlite::Result<bool> {
     let mut stmt = tx.prepare("SELECT 1 FROM pragma_table_info(?1) WHERE name = ?2")?;
@@ -363,6 +363,13 @@ fn migrate_v2(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
     repertoire::schema(tx)?;
     srs::schema(tx)?;
     training::schema(tx)?;
+    Ok(())
+}
+
+/// v3: coaching, practice and home-use features. Each feature module owns its own tables;
+/// add one `<module>::schema(tx)?;` line per module (keep them sorted).
+fn migrate_v3(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
+    let _ = tx;
     Ok(())
 }
 
