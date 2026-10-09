@@ -1,7 +1,8 @@
 // GrandMentor — Puzzles page.
 // Routes (see app.js): #/puzzles (hub), #/puzzles?play=1[&theme=fork] (rated solver),
 // #/puzzles/rush (params.mode = 'rush'), #/puzzles/daily (params.mode = 'daily'),
-// #/puzzles/mistakes (params.mode = 'mistakes': spaced-repetition cards from the user's own games).
+// #/puzzles/mistakes (params.mode = 'mistakes': spaced-repetition cards from the user's own games),
+// #/puzzles/weekly (params.mode = 'weekly': your weekly set, see puzzles-weekly.js).
 // Contract: docs/CONTRACT.md §4 (puzzle API) and §5 (Board, sound); UX: docs/FEATURES.md §3.5–3.6.
 //
 // Memory hygiene: every view owns a `disposables()` bag; every puzzle runner owns a timer set that is
@@ -15,8 +16,9 @@ import { createMoveInput } from '../components/moveinput.js';
 import { playSound } from '../components/sound.js';
 import { Chess } from '../../vendor/chess.js';
 import { t, hasKey, formatDateIntl, formatNumber, getLocale } from '../i18n.js';
+import { weeklyHubEntry } from '../components/weekly-card.js';
 
-const TITLE_KEYS = { rush: 'puzzles.rushTitle', daily: 'puzzles.dailyTitle', mistakes: 'puzzles.mistakes.title' };
+const TITLE_KEYS = { rush: 'puzzles.rushTitle', daily: 'puzzles.dailyTitle', mistakes: 'puzzles.mistakes.title', weekly: 'weekly.title' };
 export const title = (params) => t(TITLE_KEYS[params?.mode] || 'puzzles.title');
 
 // ---------------------------------------------------------------------------
@@ -400,6 +402,10 @@ export async function mount(root, { params = {}, query = {} } = {}) {
 
   if (params.mode === 'rush') mountRush(root, ctx);
   else if (params.mode === 'mistakes') mountMistakes(root, ctx);
+  else if (params.mode === 'weekly') {
+    const weekly = await import('./puzzles-weekly.js');
+    if (!bag.disposed) weekly.mountWeekly(root, ctx);
+  }
   else if (params.mode === 'daily') mountSolver(root, ctx, { mode: 'daily' });
   else if (query.play || query.theme) mountSolver(root, ctx, { mode: 'rated', theme: query.theme || '' });
   else await mountHub(root, ctx);
@@ -473,6 +479,9 @@ async function mountHub(root, { bag, signal }) {
     const entry = mistakesEntry(mistakes);
     if ((mistakes.due | 0) > 0) content.unshift(entry); else content.push(entry);
   }
+  const weekly = weeklyHubEntry();
+  bag.add(() => weekly.destroy());
+  content.push(weekly.el);
 
   const list = Array.isArray(themes) ? themes.filter((x) => x && x.theme && !HIDDEN_FILTER_THEMES.has(x.theme)) : [];
   list.sort((a, b) => (b.count || 0) - (a.count || 0));
@@ -1661,3 +1670,9 @@ function mountRush(root, { bag, signal }) {
 
   showSelect();
 }
+
+// Shared solver helpers for sibling views (puzzles-weekly.js).
+export const solverKit = {
+  createBoard, btn, Stopwatch, sound, sideLabel, themeLabel,
+  themeEmoji: (id) => THEME_EMOJI[id] || '♟',
+};

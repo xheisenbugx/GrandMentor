@@ -26,6 +26,7 @@ pub mod rating;
 pub mod repertoire;
 pub mod srs;
 pub mod training;
+pub mod weekly;
 
 pub use pgn::ParsedGame;
 
@@ -379,6 +380,7 @@ fn migrate_v3(tx: &rusqlite::Transaction<'_>) -> rusqlite::Result<()> {
     first_week::schema(tx)?;
     game_fen::schema(tx)?;
     puzzle_profile::schema(tx)?;
+    weekly::schema(tx)?;
     Ok(())
 }
 
