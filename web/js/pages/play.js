@@ -850,14 +850,17 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       initialMs: initial, incrementMs: g.tc.inc,
       slots: { [colorName(userC)]: bars[userC].clockSlot, [colorName(botC)]: bars[botC].clockSlot },
       onFlag: (c) => onFlag(c),
-      onLowTime: (c) => { if (c === colorName(userC)) playSoundSafe('notify'); },
+      onLowTime: (c) => { if (c === colorName(userC)) playSoundSafe('lowTime'); },
     });
     bag.add(() => clock.destroy());
   }
 
   // Lazy sound module (optional; board plays move sounds itself).
   let playSoundFn = null;
-  import('../components/sound.js').then((m) => { playSoundFn = typeof m.playSound === 'function' ? m.playSound : null; }).catch(() => {});
+  import('../components/sound.js').then((m) => {
+    playSoundFn = typeof m.playSound === 'function' ? m.playSound : null;
+    if (!resume && !bag.disposed) playSoundSafe('gameStart'); // a fresh game, not a resumed one
+  }).catch(() => {});
   function playSoundSafe(name) {
     if (!playSoundFn || getSettings().sounds === false) return;
     try { playSoundFn(name); } catch { /* ignore */ }

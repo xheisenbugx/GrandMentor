@@ -582,10 +582,11 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
       initialMs: initial, incrementMs: g.tc.inc,
       slots: { white: bars.w.clockSlot, black: bars.b.clockSlot },
       onFlag: (c) => onFlag(c),
-      onLowTime: () => playSoundSafe('notify'),
+      onLowTime: () => playSoundSafe('lowTime'),
     });
     bag.add(() => clock.destroy());
   }
+  if (!resume) playSoundSafe('gameStart'); // a fresh game, not a resumed one
 
   bag.add(() => {
     if (flipTimer) { clearTimeout(flipTimer); flipTimer = null; }
