@@ -25,6 +25,7 @@ import pwa from './pwa.js';
 import daily from './daily.js';
 import a11y from './a11y.js';
 import practice from './practice.js';
+import why from './why.js';
 
 export default {
   common,
@@ -53,4 +54,5 @@ export default {
   daily,
   a11y,
   practice,
+  why,
 };

@@ -16,6 +16,7 @@
 
 mod accuracy;
 pub mod insights;
+pub mod reason;
 mod see;
 
 use std::collections::{BTreeMap, HashMap};
@@ -130,6 +131,10 @@ pub struct MoveReview {
     pub win_chance_loss: f32,
     pub explanation: String,
     pub opening_name: Option<String>,
+    /// Engine-grounded "why" for inaccuracies, mistakes, misses and blunders (see
+    /// [`reason`]); absent for other moves and in reviews stored before it existed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<reason::MoveReason>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -828,7 +833,20 @@ pub async fn review_game_cancellable(
         let best = before.lines.first();
         let best_move_san = best.and_then(|l| l.san.first()).cloned().unwrap_or_default();
         let best_line_san: Vec<String> = best.map(|l| l.san.iter().take(10).cloned().collect()).unwrap_or_default();
-        let explanation = gm_mentor::explain_move(
+        let reason = reason::derive(&reason::ReasonInput {
+            before: &before.pos,
+            played: m,
+            refutation: after.lines.first().map(|l| l.moves.as_slice()).unwrap_or(&[]),
+            best: before.lines.first().map(|l| l.moves.as_slice()).unwrap_or(&[]),
+            eval_before: before.score,
+            eval_after: after.score,
+            classification,
+        })
+        .map(|mut r| {
+            r.text = reason::render(&r, lang);
+            r
+        });
+        let rule_based = gm_mentor::explain_move(
             &gm_mentor::MoveContext {
                 fen_before: before.fen.clone(),
                 played_uci: uci.to_string(),
@@ -842,6 +860,7 @@ pub async fn review_game_cancellable(
             },
             lang,
         );
+        let explanation = grounded_explanation(rule_based, reason.as_ref());
         reviews.push(MoveReview {
             ply: i + 1,
             san,
@@ -858,6 +877,7 @@ pub async fn review_game_cancellable(
             win_chance_loss: (loss * 100.0).round() / 100.0,
             explanation,
             opening_name,
+            reason,
         });
     }
 
@@ -896,6 +916,15 @@ pub async fn review_game_cancellable(
     Ok(review)
 }
 
+/// A concrete engine-grounded reason (material, mate, tactic) replaces the rule-based
+/// explanation, which can only look one move ahead; a positional one keeps it.
+fn grounded_explanation(rule_based: String, reason: Option<&reason::MoveReason>) -> String {
+    match reason {
+        Some(r) if r.kind.is_concrete() && !r.text.is_empty() => r.text.clone(),
+        _ => rule_based,
+    }
+}
+
 /// The explanation context for a reviewed move, rebuilt from its stored fields.
 fn move_context(m: &MoveReview) -> gm_mentor::MoveContext {
     gm_mentor::MoveContext {
@@ -919,7 +948,10 @@ pub fn relocalize(review: &GameReview, content: &gm_content::Content, lang: Lang
     let content = content.localized(lang);
     let mut out = review.clone();
     for m in &mut out.moves {
-        m.explanation = gm_mentor::explain_move(&move_context(m), lang);
+        if let Some(r) = &mut m.reason {
+            r.text = reason::render(r, lang);
+        }
+        m.explanation = grounded_explanation(gm_mentor::explain_move(&move_context(m), lang), m.reason.as_ref());
         if m.opening_name.is_some() {
             if let Some(om) = content.lookup_opening(&m.fen_after) {
                 m.opening_name = Some(om.opening.name);

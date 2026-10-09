@@ -186,7 +186,8 @@ pub struct MoveReview { pub ply: usize /*1-based*/, pub san: String, pub uci: St
   pub fen_before: String, pub fen_after: String, pub eval_before: Score, pub eval_after: Score,
   pub best_move_uci: String, pub best_move_san: String, pub best_line_san: Vec<String>,
   pub classification: Classification, pub win_chance_loss: f32, pub explanation: String,
-  pub opening_name: Option<String> }
+  pub opening_name: Option<String>,
+  pub reason: Option<reason::MoveReason> /* errors only; see "Why was that a mistake?" */ }
 pub struct SideStats { pub accuracy: f32, pub estimated_elo: u16,
   pub counts: std::collections::BTreeMap<String, u32> /* classification -> count */ }
 pub struct GameReview { pub start_fen: String, pub moves: Vec<MoveReview>,
@@ -1135,3 +1136,50 @@ practice; the unfinished-game save (`grandmentor.play.current.v1`) gains `practi
 the main line) and the Train-complete card "Now play it against a bot"; repertoire move details "Practice this line vs
 a bot" (`?line=…&color=` for the path to the selected move). Helpers: `web/js/components/practice.js`
 (`parseLine`, `numberedSans`, `practiceHref`, `MAX_LINE_PLIES`). Strings: `practice` locale namespace.
+
+## Why was that a mistake? (grounded review reasons)
+
+Every inaccuracy, mistake, miss and blunder in a review carries an engine-grounded `reason`
+(`gm_analysis::reason`). It is derived from two lines the review already searched (bounded, stoppable,
+no extra engine time): the best line from `fen_before` and the opponent's best line from `fen_after`
+(the refutation). Both are replayed on a board to find the concrete cause. Other moves have no
+`reason` key (also absent in reviews stored before this existed; `force: true` recomputes).
+
+```rust
+pub enum ReasonKind { AllowsMate, HangsPiece, AllowsFork, AllowsPin, AllowsSkewer, LosesMaterial,
+  MissedMate, MissedFork, MissedMaterial, Positional }            // snake_case on the wire
+pub struct MoveReason { pub kind: ReasonKind, pub text: String,
+  pub refutation_uci: Vec<String>, pub refutation_san: Vec<String>, pub refutation_key: Option<usize>,
+  pub better_uci: Vec<String>, pub better_san: Vec<String>, pub better_key: Option<usize>,
+  pub mate_in: Option<u32>, pub lost: Vec<String>, pub won: Vec<String>, pub targets: Vec<String>,
+  pub material: i32 }
+pub fn derive(input: &ReasonInput) -> Option<MoveReason>;   // pure; None for non-errors
+pub fn render(reason: &MoveReason, lang: Lang) -> String;    // the friendly text
+```
+
+```json
+"reason": { "kind": "loses_material", "text": "After Kxf7, you lose your queen for a pawn. Bc4 was better.",
+  "refutation_uci": ["e8f7","f1c4","f7e8","g1f3"], "refutation_san": ["Kxf7","Bc4+","Ke8","Nf3"], "refutation_key": 0,
+  "better_uci": ["f1c4","g7g6","h5d1","g8f6","b1c3","a7a6"], "better_san": ["Bc4","g6","Qd1","Nf6","Nc3","a6"], "better_key": null,
+  "mate_in": null, "lost": ["queen"], "won": ["pawn"], "targets": [], "material": -8 }
+```
+
+- `refutation_*` start from `fen_after` (opponent to move); `better_*` start from `fen_before` and begin with
+  `best_move_uci`. Lines are ≤ 12 plies; `*_key` is the index of the move that matters (the capture of the
+  lost piece, the mating move, the fork). `lost`/`won`/`targets` are role names (`pawn`…`king`), most valuable
+  first, after cancelling equal trades in the inspected window; `material` is the mover's net change in
+  1/3/3/5/9 points over the refutation (or the gain of the better line for `missed_*`).
+- Precedence: allows mate → missed mate → loses material (hangs a piece when the very next reply takes it for
+  nothing; fork / pin / skewer when that reply is one) → missed material (fork) → positional (the opponent's
+  best answer, with `targets` = a piece that answer attacks).
+- `text` is in the request `Lang`; `relocalize` re-renders it from the structured fields. For every kind except
+  `positional`, `explanation` is the same text (it replaces the one-ply rule-based explanation, so e.g.
+  `Qxf7+??` is explained as losing the queen); for `positional` the rule-based `explanation` is kept.
+
+**Frontend** (`web/js/components/whyline.js`, styles `web/css/whyline.css`, strings in the `why` locale
+namespace): `new WhyPanel(host, { move, ply0, board, onStart, onExit })`, `.stop(restore = true)`,
+`.destroy()`; `hasReason(move)`. In the review walkthrough the box shows a kind tag, the reason text (when it
+differs from `explanation`), **Show me** (steps through the refutation from `fen_after`, red arrow on the next
+move, key move outlined) and **Better: <move>** (the better line from `fen_before`, green). While a line is
+shown the board is read-only; ←/→/Home/End step, Space plays/pauses, Esc or **Back to game** returns to the
+game position. `review.js` stops the panel whenever it navigates (`stopLine`).
