@@ -104,4 +104,16 @@ export default {
       text: 'Tab to the board, move with the arrow keys, press Enter or Space to pick up a piece and again to drop it. Esc cancels. You can also type moves like Nf3.',
     },
   },
+  speech: {
+    title: "Read moves aloud",
+    desc: "Your computer says your opponent’s moves out loud, like “Black knight to f6”. Great with blindfold mode.",
+    own: {
+      title: "Read my moves too",
+      desc: "Also say the moves you play.",
+    },
+    test: "Try it",
+    testLabel: "Hear an example",
+    unsupported: "This browser can’t read aloud.",
+    noVoice: "No voice for this language is installed, so another voice may be used.",
+  },
 };

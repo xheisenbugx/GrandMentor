@@ -13,3 +13,9 @@ rating buckets (~175 each) and balanced across tactical themes. The lichess `Puz
 is kept after the `lc_` prefix, so `https://lichess.org/training/<PuzzleId>` links back
 to the original puzzle. Fields mapped: FEN, Moves (split, UCI; moves[0] is the
 opponent's setup move), Rating, Themes (split), Popularity.
+
+## Piece images (`web/img/pieces/`)
+
+The board pieces are the *cburnett* and *merida* sets (GPLv2+) and the *chessnut* set by
+Alexis Luengas (Apache 2.0), taken unmodified from the lichess.org repository. Details and
+links: [`web/img/pieces/LICENSE.md`](../web/img/pieces/LICENSE.md).

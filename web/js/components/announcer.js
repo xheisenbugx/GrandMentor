@@ -12,6 +12,7 @@
 
 import { t } from '../i18n.js';
 import { getSetting } from '../settings.js';
+import { cancelSpeech } from './speech.js';
 
 const DEBOUNCE_MS = 150;
 const DEDUPE_MS = 1200;
@@ -83,8 +84,9 @@ export function announce(message, { assertive = false, dedupe = true } = {}) {
   timers[kind] = setTimeout(() => flush(kind), DEBOUNCE_MS);
 }
 
-/** Drop pending (not yet spoken) messages, e.g. when leaving a page. */
+/** Drop pending (not yet spoken) messages, e.g. when leaving a page. Also stops moves read aloud. */
 export function clearAnnouncements() {
+  cancelSpeech();
   for (const kind of ['polite', 'assertive']) {
     if (timers[kind]) clearTimeout(timers[kind]);
     timers[kind] = 0;

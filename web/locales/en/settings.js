@@ -34,7 +34,7 @@ export default {
   pieceSets: {
     cburnett: 'Classic',
     merida: 'Merida',
-    alpha: 'Alpha',
+    chessnut: 'Chessnut',
   },
   coords: {
     title: 'Show coordinates',

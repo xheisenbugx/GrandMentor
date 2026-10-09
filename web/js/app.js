@@ -34,6 +34,8 @@ const ROUTES = [
   { pattern: '/play/:botId', page: 'play', nav: 'play', titleKey: 'nav.routes.play' },
   { pattern: '/analysis', page: 'analysis', nav: 'analysis', titleKey: 'nav.routes.analysis' },
   { pattern: '/editor', page: 'editor', nav: 'analysis', titleKey: 'nav.routes.editor' },
+  // Game Review is engine analysis of a finished game, so it lights up "Analysis" on purpose, whether it was
+  // opened from Play, Home or the Library: one stable highlight instead of one that depends on history.
   { pattern: '/review/:gameId', page: 'review', nav: 'analysis', titleKey: 'nav.routes.review' },
   { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzleRush', params: { mode: 'rush' } },
   { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.dailyPuzzle', params: { mode: 'daily' } },
@@ -416,6 +418,8 @@ async function boot() {
   });
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('online', checkHealth);
+  // pwa.js found the server down / back up: refresh the engine status dot right away.
+  window.addEventListener('gm:connection', checkHealth);
   if (!location.hash || location.hash === '#') history.replaceState(null, '', '#/');
   handleRoute();
   checkHealth();

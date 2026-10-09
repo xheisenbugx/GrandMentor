@@ -271,18 +271,18 @@
 :root[data-piece-set="merida"] .gm-board .bB, :root[data-piece-set="merida"] .gm-piece-img.bB { background-image: url("../img/pieces/merida/bB.svg"); }
 :root[data-piece-set="merida"] .gm-board .bN, :root[data-piece-set="merida"] .gm-piece-img.bN { background-image: url("../img/pieces/merida/bN.svg"); }
 :root[data-piece-set="merida"] .gm-board .bP, :root[data-piece-set="merida"] .gm-piece-img.bP { background-image: url("../img/pieces/merida/bP.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wK, :root[data-piece-set="alpha"] .gm-piece-img.wK { background-image: url("../img/pieces/alpha/wK.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wQ, :root[data-piece-set="alpha"] .gm-piece-img.wQ { background-image: url("../img/pieces/alpha/wQ.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wR, :root[data-piece-set="alpha"] .gm-piece-img.wR { background-image: url("../img/pieces/alpha/wR.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wB, :root[data-piece-set="alpha"] .gm-piece-img.wB { background-image: url("../img/pieces/alpha/wB.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wN, :root[data-piece-set="alpha"] .gm-piece-img.wN { background-image: url("../img/pieces/alpha/wN.svg"); }
-:root[data-piece-set="alpha"] .gm-board .wP, :root[data-piece-set="alpha"] .gm-piece-img.wP { background-image: url("../img/pieces/alpha/wP.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bK, :root[data-piece-set="alpha"] .gm-piece-img.bK { background-image: url("../img/pieces/alpha/bK.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bQ, :root[data-piece-set="alpha"] .gm-piece-img.bQ { background-image: url("../img/pieces/alpha/bQ.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bR, :root[data-piece-set="alpha"] .gm-piece-img.bR { background-image: url("../img/pieces/alpha/bR.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bB, :root[data-piece-set="alpha"] .gm-piece-img.bB { background-image: url("../img/pieces/alpha/bB.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bN, :root[data-piece-set="alpha"] .gm-piece-img.bN { background-image: url("../img/pieces/alpha/bN.svg"); }
-:root[data-piece-set="alpha"] .gm-board .bP, :root[data-piece-set="alpha"] .gm-piece-img.bP { background-image: url("../img/pieces/alpha/bP.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wK, :root[data-piece-set="chessnut"] .gm-piece-img.wK { background-image: url("../img/pieces/chessnut/wK.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wQ, :root[data-piece-set="chessnut"] .gm-piece-img.wQ { background-image: url("../img/pieces/chessnut/wQ.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wR, :root[data-piece-set="chessnut"] .gm-piece-img.wR { background-image: url("../img/pieces/chessnut/wR.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wB, :root[data-piece-set="chessnut"] .gm-piece-img.wB { background-image: url("../img/pieces/chessnut/wB.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wN, :root[data-piece-set="chessnut"] .gm-piece-img.wN { background-image: url("../img/pieces/chessnut/wN.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .wP, :root[data-piece-set="chessnut"] .gm-piece-img.wP { background-image: url("../img/pieces/chessnut/wP.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bK, :root[data-piece-set="chessnut"] .gm-piece-img.bK { background-image: url("../img/pieces/chessnut/bK.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bQ, :root[data-piece-set="chessnut"] .gm-piece-img.bQ { background-image: url("../img/pieces/chessnut/bQ.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bR, :root[data-piece-set="chessnut"] .gm-piece-img.bR { background-image: url("../img/pieces/chessnut/bR.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bB, :root[data-piece-set="chessnut"] .gm-piece-img.bB { background-image: url("../img/pieces/chessnut/bB.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bN, :root[data-piece-set="chessnut"] .gm-piece-img.bN { background-image: url("../img/pieces/chessnut/bN.svg"); }
+:root[data-piece-set="chessnut"] .gm-board .bP, :root[data-piece-set="chessnut"] .gm-piece-img.bP { background-image: url("../img/pieces/chessnut/bP.svg"); }
 
 /* ============================================================ EvalBar */
 .gm-evalbar {

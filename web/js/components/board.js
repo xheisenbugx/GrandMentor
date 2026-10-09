@@ -26,6 +26,7 @@ import { classificationMeta } from '../ui.js';
 import { t } from '../i18n.js';
 import { playSound } from './sound.js';
 import { announceMove, announce, squareLabel, coloredPiece, describeMove } from './announcer.js';
+import { speakMove } from './speech.js';
 
 const FILES = 'abcdefgh';
 const PROMO_PIECES = ['q', 'n', 'r', 'b'];
@@ -117,6 +118,7 @@ export class Board {
       blindfold: false,   // hide the pieces (squares, coordinates and moves still work)
       keyboard: true,     // arrow keys / Enter / Esc on the focused board
       announce: true,     // announce moves to screen readers (also needs the announceMoves setting)
+      speak: true,        // read game moves aloud (also needs the speakMoves setting; see _announceMove)
       label: null,        // accessible name of the board (default: "Chess board")
       ...opts,
     };
@@ -124,6 +126,8 @@ export class Board {
     this._orientation = this.opts.orientation === 'black' ? 'black' : 'white';
     this._interactive = !!this.opts.interactive;
     this._movable = this.opts.movableColor ?? null;
+    this._speakSide = null; // the user's colour on a one-side board (kept while the opponent moves)
+    this._noteSpeakSide();
     this._chess = makeChess(DEFAULT_POSITION);
     /** @type {Map<string,{el:HTMLElement, code:string}>} */
     this._pieces = new Map();
@@ -512,6 +516,7 @@ export class Board {
     if (!!interactive === this._interactive && (movableColor === undefined || movableColor === this._movable)) return;
     this._interactive = !!interactive;
     if (movableColor !== undefined) this._movable = movableColor;
+    this._noteSpeakSide();
     const keep = this._takeInteraction();
     this._cancelInteraction();
     this._applyConfig();
@@ -1069,9 +1074,19 @@ export class Board {
     else if (code) announce(t('a11y.board.notYourPiece', { piece: coloredPiece(code), square: sq }));
   }
 
+  /** Remember which side the user plays (for "read moves aloud"); 'both' boards have none. */
+  _noteSpeakSide() {
+    if (this._movable === 'white' || this._movable === 'black') this._speakSide = this._movable;
+    else if (this._movable === 'both') this._speakSide = null;
+  }
+
   /** Announce a move (user or programmatic) when enabled. */
   _announceMove(mv, { mine = false } = {}) {
-    if (this.opts.announce === false || !mv) return;
+    if (!mv) return;
+    // Read aloud only on a board where the user plays one side against an opponent (games,
+    // puzzles, drills), not while stepping through a review or moving both sides freely.
+    if (this.opts.speak !== false && this.opts.announce !== false && this._speakSide) speakMove(mv, { mine: mine || mv.color === this._speakSide[0] });
+    if (this.opts.announce === false) return;
     announceMove(mv);
     // After the opponent's move, tell the user it's their turn.
     if (!mine && this._interactive && this._movable && this._movable !== 'both') {

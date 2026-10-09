@@ -11,6 +11,7 @@ import { api, isAbort, EngineClient } from '../api.js';
 import {
   h, icon, formatScore, disposables, classificationMeta, classificationBadge, mdLite, emptyState, formatSan,
 } from '../ui.js';
+import { userAvatar } from '../ui.js';
 import { getSettings, onSettingsChange } from '../settings.js';
 import { Board } from '../components/board.js';
 import { EvalBar } from '../components/evalbar.js';
@@ -92,6 +93,13 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     })));
     return bag.dispose;
   }
+
+  // The player's own avatar (same as on Play and Profile) — best effort, non-blocking.
+  let myAvatar = userAvatar(null);
+  api.get('/api/profile', { signal: ctrl.signal }).then((p) => {
+    myAvatar = userAvatar(p);
+    page.querySelectorAll('[data-user-avatar]').forEach((el) => { el.textContent = myAvatar; });
+  }).catch(() => {});
 
   // Bot avatar (best effort, non-blocking)
   let botAvatar = '🤖';
@@ -206,7 +214,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     const userIsBlack = game.user_color === 'black';
     const avatarFor = (color) => {
       const isUser = color === 'white' ? userIsWhite : userIsBlack;
-      if (isUser) return h('div', { class: 'avatar' }, '🙂');
+      if (isUser) return h('div', { class: 'avatar', dataset: { userAvatar: '1' }, 'aria-hidden': 'true' }, myAvatar);
       if (game.bot_id) return h('div', { class: 'avatar', dataset: { botAvatar: '1' } }, botAvatar);
       return h('div', { class: 'avatar' }, color === 'white' ? '♔' : '♚');
     };

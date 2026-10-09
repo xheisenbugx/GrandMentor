@@ -104,4 +104,16 @@ export default {
       text: "Use Tab para chegar ao tabuleiro, mova-se com as setas e pressione Enter ou Espaço para pegar uma peça e de novo para soltá-la. Esc cancela. Você também pode digitar lances como Nf3.",
     },
   },
+  speech: {
+    title: "Ler os lances em voz alta",
+    desc: "Seu computador fala os lances do adversário, como “Pretas: cavalo para f6”. Ótimo para jogar às cegas.",
+    own: {
+      title: "Ler os meus lances também",
+      desc: "Fala também os lances que você joga.",
+    },
+    test: "Testar",
+    testLabel: "Ouvir um exemplo",
+    unsupported: "Este navegador não consegue ler em voz alta.",
+    noVoice: "Não há voz instalada para este idioma, então outra voz pode ser usada.",
+  },
 };

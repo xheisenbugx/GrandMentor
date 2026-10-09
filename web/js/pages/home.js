@@ -2,7 +2,7 @@
 // recent games, tip of the day and a mini daily-puzzle preview.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName } from '../ui.js';
+import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName, userAvatar } from '../ui.js';
 import { t, hasKey, formatDateIntl } from '../i18n.js';
 import {
   ensureHubCss, fenBoardSvg, playUci, resultMarker, outcomeLabel, userAccuracy, accuracyPill,
@@ -169,7 +169,7 @@ export async function mount(root) {
     const played = games.length;
     heroEl.replaceChildren(
       h('div', { class: 'hub-hero-main' },
-        h('div', { class: 'avatar avatar-lg avatar-round hub-hero-avatar', 'aria-hidden': 'true' }, profile?.avatar || '♟️'),
+        h('div', { class: 'avatar avatar-lg avatar-round hub-hero-avatar', 'aria-hidden': 'true' }, userAvatar(profile)),
         h('div', { class: 'stack-sm', style: 'min-width:0' },
           h('div', { class: 'hub-eyebrow' }, formatDateIntl(new Date(), { weekday: 'long', month: 'long', day: 'numeric' })),
           h('h1', { class: 'hub-hero-title' }, greetingNodes(greetingKey(), name)),

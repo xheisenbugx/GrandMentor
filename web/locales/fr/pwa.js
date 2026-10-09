@@ -12,8 +12,6 @@ export default {
     gotIt: 'Compris',
   },
   offline: {
-    banner: 'Hors ligne — les problèmes et les leçons marchent toujours',
-    bannerShort: 'Hors ligne',
     backOnline: 'De nouveau en ligne',
     retry: 'Réessayer',
     retryLabel: 'Vérifier à nouveau la connexion',
@@ -29,6 +27,16 @@ export default {
       one: '{count} résultat obtenu hors ligne synchronisé.',
       many: '{count} résultats obtenus hors ligne synchronisés.',
       other: '{count} résultats obtenus hors ligne synchronisés.',
+    },
+  },
+  connection: {
+    server: {
+      title: "Le moteur de GrandMentor n’est pas lancé",
+      text: "Les problèmes et les leçons déjà ouverts marchent toujours ; jouer contre les bots, analyser et revoir une partie ont besoin du moteur. Lance-le sur ton ordinateur et cette page se reconnectera toute seule.",
+    },
+    device: {
+      title: "Tu es hors ligne",
+      text: "Cet appareil n’a pas de connexion et ne joint pas GrandMentor. Les problèmes et les leçons déjà ouverts marchent toujours.",
     },
   },
 };

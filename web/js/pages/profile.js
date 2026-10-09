@@ -3,7 +3,7 @@
 // per-bot record table and client-side achievements.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml, displayName } from '../ui.js';
+import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml, displayName, DEFAULT_AVATAR, userAvatar } from '../ui.js';
 import { ensureHubCss, gameOutcome, userAccuracy, formatGameDate, formatRelativeIntl } from './library.js';
 import { t, getLocale, formatNumber, formatDateIntl } from '../i18n.js';
 import { topWeaknessesCard } from './insights.js';
@@ -50,7 +50,7 @@ export async function mount(root) {
       content.replaceChildren(h('div', { class: 'card' }, emptyState({ icon: 'wifi-off', title: t('profile.errors.loadTitle'), text: pR.e?.message || t('profile.errors.server'), action: { label: t('profile.errors.retry'), icon: 'refresh', onClick: load } })));
       return;
     }
-    const profile = pR.ok && pR.v ? pR.v : { name: '', avatar: '♟️', puzzle_rating: 0, puzzles_solved: 0, puzzles_failed: 0, rush_best: 0, streak_days: 0 };
+    const profile = pR.ok && pR.v ? pR.v : { name: '', avatar: DEFAULT_AVATAR, puzzle_rating: 0, puzzles_solved: 0, puzzles_failed: 0, rush_best: 0, streak_days: 0 };
     const stats = sR.ok && sR.v ? sR.v : {};
     const bots = bR.ok && Array.isArray(bR.v) ? bR.v : [];
     const progress = prR.ok && Array.isArray(prR.v) ? prR.v : [];
@@ -130,17 +130,17 @@ export async function mount(root) {
   function renderIdentity(profile, ctx) {
     const card = h('section', { class: 'card hub-identity' });
     let editing = false;
-    let draftAvatar = profile.avatar || '♟️';
+    let draftAvatar = userAvatar(profile);
     const show = () => {
       card.replaceChildren(
-        h('div', { class: 'avatar avatar-xl avatar-round hub-identity-avatar', 'aria-hidden': 'true' }, profile.avatar || '♟️'),
+        h('div', { class: 'avatar avatar-xl avatar-round hub-identity-avatar', 'aria-hidden': 'true' }, userAvatar(profile)),
         h('div', { class: 'stack-sm hub-identity-main' },
           h('h2', { class: 'hub-identity-name' }, displayName(profile.name) || t('profile.identity.defaultName')),
           h('div', { class: 'row-sm row-wrap muted text-sm' },
             h('span', { class: 'badge badge-gold', html: icon('trophy', { size: 14 }) + span('profile.identity.puzzleRating', { rating: Math.round(ctx.rating) }) }),
             ctx.streak ? h('span', { class: 'badge badge-warning', html: icon('fire', { size: 14 }) + span('profile.identity.streak', { count: ctx.streak }) }) : null,
             profile.last_active ? h('span', null, t('profile.identity.lastActive', { when: formatActiveDay(profile.last_active) })) : null)),
-        h('button', { type: 'button', class: 'btn btn-secondary', html: icon('edit') + span('profile.identity.edit'), onClick: () => { editing = true; draftAvatar = profile.avatar || '♟️'; edit(); } }));
+        h('button', { type: 'button', class: 'btn btn-secondary', html: icon('edit') + span('profile.identity.edit'), onClick: () => { editing = true; draftAvatar = userAvatar(profile); edit(); } }));
     };
     const edit = () => {
       const nameInput = h('input', { class: 'input', value: displayName(profile.name), maxlength: String(NAME_MAX), placeholder: t('profile.edit.namePlaceholder'), 'aria-label': t('profile.edit.name') });
