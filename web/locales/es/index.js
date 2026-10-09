@@ -23,6 +23,7 @@ import classics from './classics.js';
 import pwa from './pwa.js';
 import daily from './daily.js';
 import a11y from './a11y.js';
+import weekly from './weekly.js';
 
 export default {
   common,
@@ -49,4 +50,5 @@ export default {
   pwa,
   daily,
   a11y,
+  weekly,
 };

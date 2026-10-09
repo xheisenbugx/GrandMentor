@@ -1,0 +1,82 @@
+/* GrandMentor — "Your weekly set": puzzles hub entry, overview, solver extras, summary, Insights card.
+ * Uses the design tokens from app.css (docs/STYLEGUIDE.md). Prefix: wk-. */
+
+/* ---------- Hub entry --------------------------------------------------- */
+.card.wk-entry {
+  display: flex; align-items: center; gap: var(--sp-4);
+  color: inherit; text-decoration: none;
+  background: linear-gradient(100deg, var(--info-soft), transparent 55%), var(--surface);
+}
+.wk-entry-icon { flex: none; background: var(--info-soft); color: var(--info); }
+.wk-entry-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+.wk-entry-main p { margin: 0; line-height: var(--lh); }
+.wk-entry-stats { flex-wrap: wrap; }
+.wk-entry-cta { flex: none; }
+
+/* ---------- Overview ---------------------------------------------------- */
+.wk-hero { gap: var(--sp-4); }
+.wk-hero-actions { gap: var(--sp-2); }
+.wk-progress-head { flex-wrap: wrap; }
+.wk-dots { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.wk-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--surface-3); border: 2px solid transparent;
+}
+.wk-dot.is-own { border-radius: 4px; }
+.wk-dot.is-solved { background: var(--cls-best); }
+.wk-dot.is-failed { background: var(--cls-mistake); }
+.wk-dot.is-current { border-color: var(--text); background: var(--surface-2); }
+
+.wk-focus-grid { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.card.wk-focus { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.card.wk-focus.is-games { border-color: color-mix(in srgb, var(--cls-mistake) 45%, var(--border)); }
+.card.wk-focus.is-puzzles { border-color: color-mix(in srgb, var(--info) 45%, var(--border)); }
+.wk-focus-emoji { flex: none; font-size: 1.6rem; line-height: 1; }
+.wk-focus-main { min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+.wk-focus-main p { margin: 0; line-height: var(--lh); }
+
+/* ---------- Solver extras ----------------------------------------------- */
+.wk-item-head { flex-wrap: wrap; }
+.wk-own { display: flex; align-items: center; gap: var(--sp-2); }
+.wk-own svg, .wk-best svg { width: 16px; height: 16px; flex: none; }
+.wk-best { display: flex; align-items: center; gap: var(--sp-2); font-weight: var(--fw-semibold); }
+.wk-best svg { color: var(--gold); }
+
+/* ---------- Summary ----------------------------------------------------- */
+.wk-summary { align-items: center; text-align: center; padding: var(--sp-8) var(--sp-6); }
+.wk-summary-art { font-size: 3rem; line-height: 1; }
+.wk-summary-title { margin: 0; font-size: var(--fs-xl); }
+.wk-summary p { margin: 0; }
+.wk-sum-list { width: 100%; max-width: 520px; text-align: left; }
+.wk-sum-row { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) minmax(60px, 120px) 3.2rem; align-items: center; gap: var(--sp-2); }
+.wk-sum-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wk-sum-num { text-align: right; }
+.wk-summary .wk-hero-actions { justify-content: center; }
+
+/* ---------- Insights card ----------------------------------------------- */
+.wk-tbl { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.wk-tbl-row {
+  display: grid; align-items: center; gap: 4px;
+  grid-template-columns: minmax(0, 1fr) repeat(var(--weeks, 4), minmax(2.6rem, 3.4rem)) 1.2rem;
+}
+.wk-tbl-head { font-size: var(--fs-xs); color: var(--text-subtle); font-weight: var(--fw-semibold); }
+.wk-tbl-theme { min-width: 0; font-size: var(--fs-sm); }
+.wk-tbl-cell {
+  text-align: center; font-size: var(--fs-xs); padding: 4px 0; border-radius: var(--r-sm, 6px);
+  background: color-mix(in srgb, var(--cls-best) var(--rate, 0%), var(--surface-2));
+}
+.wk-tbl-head .wk-tbl-cell { background: none; padding: 0; }
+.wk-tbl-cell.is-empty { background: none; color: var(--text-subtle); }
+.wk-tbl-trend { text-align: center; font-size: var(--fs-xs); color: var(--text-subtle); }
+.wk-tbl-trend.is-up { color: var(--success-text); }
+.wk-tbl-trend.is-down { color: var(--danger-text); }
+
+@media (max-width: 640px) {
+  .card.wk-entry { flex-wrap: wrap; }
+  .wk-entry-main { flex-basis: calc(100% - 52px - var(--sp-4)); }
+  .wk-entry-cta { width: 100%; justify-content: center; }
+  .wk-summary { padding: var(--sp-6) var(--sp-4); }
+  .wk-hero-actions .btn { flex: 1 1 auto; justify-content: center; }
+  .wk-tbl-row { grid-template-columns: minmax(0, 1fr) repeat(var(--weeks, 4), minmax(2.3rem, 1fr)) 1rem; }
+  .wk-sum-row { grid-template-columns: 1.5rem minmax(0, 1fr) 56px 2.6rem; }
+}

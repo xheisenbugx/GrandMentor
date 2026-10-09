@@ -14,6 +14,7 @@ pub mod insights;
 pub mod mistakes;
 pub mod repertoire;
 pub mod training;
+pub mod weekly;
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -26,4 +27,5 @@ pub fn router() -> Router<AppState> {
         .merge(mistakes::router())
         .merge(repertoire::router())
         .merge(training::router())
+        .merge(weekly::router())
 }

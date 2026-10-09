@@ -37,6 +37,7 @@ const ROUTES = [
   { pattern: '/puzzles/rush', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzleRush', params: { mode: 'rush' } },
   { pattern: '/puzzles/daily', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.dailyPuzzle', params: { mode: 'daily' } },
   { pattern: '/puzzles/mistakes', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.mistakes', params: { mode: 'mistakes' } },
+  { pattern: '/puzzles/weekly', page: 'puzzles', nav: 'puzzles', titleKey: 'weekly.title', params: { mode: 'weekly' } },
   { pattern: '/puzzles', page: 'puzzles', nav: 'puzzles', titleKey: 'nav.routes.puzzles' },
   { pattern: '/local', page: 'local', nav: 'play', titleKey: 'nav.routes.local' },
   { pattern: '/drills', page: 'drills', nav: 'learn', titleKey: 'nav.routes.drills' },

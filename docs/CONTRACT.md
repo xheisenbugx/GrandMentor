@@ -1024,3 +1024,52 @@ kind `endgame`. Storage: `gm_store::training` (`Store::training_progress`, `Stor
   or a forced mate) or drawn (|cp| ≤ 25 for two replies in a win drill). Results are posted to
   `/api/training/:id/attempt`; attempts that used help (the best-move hint or a takeback) are not recorded.
   Results link to `#/play?fen=<FEN>&color=w|b` ("Play this position vs a bot") and `#/analysis?fen=`.
+
+## Weekly personal set
+
+"Your weekly set": ~12 puzzles per ISO week (UTC) built from the user's weakest tactic themes. Storage:
+`crates/gm-store/src/weekly.rs` (tables `weekly_sets`, `weekly_items`, created in schema migration v3); routes and
+pure logic: `crates/gm-server/src/routes/weekly.rs` + `routes/weekly/plan.rs`.
+
+**Ranking.** Every theme in `plan::TRACKED` (fork, pin, skewer, hangingPiece, discoveredAttack, backRankMate,
+mateIn1/2/3, ... — only themes with ≥ 6 pack puzzles) gets a weakness score from the last 60 days, each observation
+weighted by recency (half-life 21 days):
+- rated puzzle attempts (`puzzle_attempts` joined with the pack's themes): fail rate per theme, smoothed towards the
+  user's overall fail rate (4 pseudo-attempts), minus that overall rate, × 2;
+- mistakes from reviewed games: every live mistake card (`mistake_cards`) is classified by the tactic its best move
+  would have executed (`gm_analysis::insights::tactic_theme`, mate length from the solution line), else
+  `hangingPiece` when the played move left a piece en prise; each one adds 0.35 (capped at 1.4).
+Ties and "no data" fall back to a beginner order (hangingPiece, fork, mateIn1, pin, ...). The set focuses on the
+3 weakest themes (2 when exactly two of the top three have evidence).
+
+**Building.** Up to 4 own-game positions (focus-theme cards first, then still-learning, recent and costly ones)
+sit at slots 3, 6, 9, 12; the rest are pack puzzles shared round-robin over the focus themes, rating from
+`puzzle_rating − 100` to `+ 150` (sampled among the 6 nearest), avoiding puzzles attempted in the last 30 days,
+topped up from any theme when a focus theme runs dry, ordered by rating. Deterministic for a seed
+(FNV of the week key + generation). Items are snapshotted (FEN + solution), so a set never changes; "New set" adds
+a newer set for the same week (older results stay in the history). The newest 120 sets are kept.
+
+```
+FocusTheme { theme, reason: "games"|"puzzles"|"starter", game_misses /* last 30 days */,
+             puzzle_attempts, puzzle_fails /* last 30 days */, score }
+WeeklyItem { index, kind: "puzzle"|"mistake", theme /* focus theme, "" if none */,
+             puzzle: { id /* pack id or "mistake-<card id>" */, fen, moves: [uci], rating, themes, userFirst? },
+             game?: { card_id, game_id?, opponent, move_number, played_san, best_san, classification } /* mistake items */,
+             result: null|"solved"|"failed", time_ms? }
+WeeklySet { week /* "2026-W41" */, week_start, week_end /* YYYY-MM-DD */, set_id, generation, created_at, rating,
+            focus: [FocusTheme], items: [WeeklyItem], progress: { total, done, solved }, finished }
+```
+
+| Method & path | Body / query | Response |
+|---|---|---|
+| `GET /api/weekly` | | `WeeklySet` — this week's set; built and stored on the first request of the week |
+| `POST /api/weekly/regenerate` | | `WeeklySet` — "New set": a fresh set for this week (`generation + 1`) |
+| `POST /api/weekly/attempt` | `{ set_id, index, solved, time_ms? }` | `{ item, counted, progress, finished, rating? }` — only the first attempt of an item counts (`counted: false` afterwards). A counted pack puzzle is also a rated attempt (`rating` = `PuzzleResult`, activity `puzzle`); a counted own-game item also answers its mistake card (activity `mistake_review`). Unknown set/item → 404, `index ≥ 30` or a malformed body → 400 |
+| `GET /api/weekly/history` | `?weeks=1..12` (6) | `{ weeks: [{ week, week_start, progress: {total, done, solved} \| null, themes: [{ theme, attempted, solved }] }] }` — oldest first, the last entry is this week; theme counts cover all sets of the week. Never builds a set |
+
+**Frontend.** `#/puzzles/weekly` (`params.mode === 'weekly'`; `pages/puzzles-weekly.js`, loaded on demand by
+`pages/puzzles.js`, which exports `solverKit` for it) shows the overview (progress, item dots, focus themes with a
+plain-words reason), the solver (shared `PuzzleRunner`; hints / solution / wrong move = failed; retries never count)
+and a finish summary per theme. `components/weekly-card.js` provides `weeklyHubEntry()` (Puzzles hub banner) and
+`weeklyInsightsCard()` (Insights card: this week's progress and solve rate per theme over the last 4 weeks), both
+`{ el, destroy }`. Styles: `web/css/weekly.css` (`wk-*`, injected on demand). Strings: `weekly` locale namespace.
