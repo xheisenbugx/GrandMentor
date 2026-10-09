@@ -239,9 +239,9 @@ Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every 
 </tr>
 </table>
 
-### 🎨 Light mode, board themes & mobile
+### 🎨 Light mode, board themes, sounds & mobile
 
-Dark or light, five board colours, three piece sets, and a layout that works just as well on your phone.
+Dark or light, five board colours, three piece sets, and a layout that works just as well on your phone. Pick how the game sounds too: eight sound themes (classic wood, marble, a plastic club set, glass, 8-bit and more), or choose your own sound for every move, capture, check, game start and low-time warning, with a volume slider.
 
 <table>
 <tr>
