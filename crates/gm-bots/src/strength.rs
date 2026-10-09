@@ -81,9 +81,70 @@ impl Strength {
     }
 }
 
+/// Calibrated playing strength per bot: the Elo fed to [`Strength::for_elo`] so that the bot
+/// actually plays at its label. Measured with `gm-calibrate` (docs/BOT_CALIBRATION.md); playing
+/// style changes strength a little, so bots of the same label can need different settings.
+/// Bots not listed play at their label.
+const PLAY_ELO: &[(&str, u16)] = &[
+    ("pawnny", 310),
+    ("lulu", 570),
+    ("benny", 800),
+    ("rosa", 915),
+    ("coach", 1055),
+    ("tito", 1050),
+    ("max", 1225),
+    ("zara", 1400),
+    ("oliver", 1595),
+    ("coach-leo", 1695),
+    ("nina", 1770),
+    ("viktor", 2005),
+    ("sofia", 2150),
+    ("kai", 2395),
+    ("athena", 2540),
+    ("titan", 2680),
+];
+
+/// The strength setting a persona plays with (its label unless calibration says otherwise).
+pub(crate) fn play_elo(bot_id: &str, label: u16) -> u16 {
+    PLAY_ELO.iter().find(|(id, _)| *id == bot_id).map_or(label, |(_, e)| *e)
+}
+
+/// Adaptive bot: level (what the user sees) -> strength setting, piecewise linear between
+/// measured points. Must be strictly increasing in both columns.
+const ADAPTIVE_CURVE: &[(f64, f64)] = &[(250.0, 250.0), (1000.0, 1060.0), (1800.0, 1776.0), (2400.0, 2315.0), (2800.0, 2600.0)];
+
+/// The strength setting the adaptive bot uses at `level`.
+pub(crate) fn adaptive_play_elo(level: u16) -> u16 {
+    let x = f64::from(level);
+    let first = ADAPTIVE_CURVE[0];
+    let last = ADAPTIVE_CURVE[ADAPTIVE_CURVE.len() - 1];
+    if x <= first.0 {
+        return first.1.round() as u16;
+    }
+    for w in ADAPTIVE_CURVE.windows(2) {
+        if x <= w[1].0 {
+            let t = (x - w[0].0) / (w[1].0 - w[0].0);
+            return lerp(w[0].1, w[1].1, t).round() as u16;
+        }
+    }
+    last.1.round() as u16
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn adaptive_curve_is_monotonic_and_spans_the_ladder() {
+        assert!(ADAPTIVE_CURVE.windows(2).all(|w| w[1].0 > w[0].0 && w[1].1 > w[0].1));
+        let mut prev = adaptive_play_elo(0);
+        for level in (crate::ADAPTIVE_MIN_ELO..=crate::ADAPTIVE_MAX_ELO).step_by(10) {
+            let e = adaptive_play_elo(level);
+            assert!(e >= prev, "adaptive strength must not drop at level {level}");
+            prev = e;
+        }
+        assert!(adaptive_play_elo(crate::ADAPTIVE_MAX_ELO) > adaptive_play_elo(crate::ADAPTIVE_MIN_ELO) + 2_000);
+    }
 
     #[test]
     fn monotonic_strength() {

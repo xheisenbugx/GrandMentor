@@ -336,7 +336,7 @@ fn adaptive_bot_plays_at_requested_level() {
     // At a strong level it finds the mate in one every time; out-of-range levels are clamped.
     let mut rng = StdRng::seed_from_u64(3);
     for elo in [2800u16, u16::MAX] {
-        let r = choose_move_inner(&mut engine, &content, ADAPTIVE_ID, fen, &[], &mut rng, Some(200), Some(elo), Lang::En)
+        let r = choose_move_inner(&mut engine, &content, ADAPTIVE_ID, fen, &[], &mut rng, Clock::Wall { cap_ms: Some(200) }, Some(elo), Lang::En)
             .expect("move");
         assert_eq!(r.uci, "h5f7");
     }
@@ -433,4 +433,40 @@ fn every_persona_line_in_every_language() {
             assert!(!s.trim().is_empty(), "{lang}");
         }
     }
+}
+
+/// The committed calibration (crates/gm-bots/calibration.json, written by `gm-calibrate`) must
+/// describe the current ladder: same labels, labels strictly increasing, measured ratings in
+/// ladder order, and every label inside the measured 95% interval (plus a small slack for the
+/// anchoring). Re-run the calibration when this fails (docs/BOT_CALIBRATION.md).
+#[test]
+fn labels_match_the_committed_calibration() {
+    const SLACK: f64 = 25.0;
+    let cal: serde_json::Value = serde_json::from_str(include_str!("../calibration.json")).expect("calibration.json parses");
+    let players = cal["players"].as_array().expect("players");
+    let find = |id: &str| players.iter().find(|p| p["id"] == id);
+    let ladder: Vec<_> = personas::PERSONAS.iter().filter(|p| !p.coach && p.id != ADAPTIVE_ID).collect();
+    assert!(ladder.windows(2).all(|w| w[1].elo > w[0].elo), "ladder labels must be strictly increasing");
+    let mut prev_rating = f64::NEG_INFINITY;
+    for p in personas::PERSONAS.iter().filter(|p| p.id != ADAPTIVE_ID) {
+        let row = find(p.id).unwrap_or_else(|| panic!("{} missing from calibration.json", p.id));
+        assert_eq!(row["label"].as_u64(), Some(u64::from(p.elo)), "{}: label changed since the calibration", p.id);
+        let rating = row["rating"].as_f64().expect("rating");
+        let lo = row["ci95"][0].as_f64().expect("ci lo");
+        let hi = row["ci95"][1].as_f64().expect("ci hi");
+        let label = f64::from(p.elo);
+        assert!(lo - SLACK <= label && label <= hi + SLACK, "{}: label {label} outside measured {lo}..{hi}", p.id);
+        if !p.coach {
+            assert!(rating > prev_rating, "{}: measured {rating} not above the bot below it", p.id);
+            prev_rating = rating;
+        }
+    }
+    // The adaptive bot's measured levels rise with the level.
+    let mut sparky: Vec<(u64, f64)> = players
+        .iter()
+        .filter_map(|p| Some((p["id"].as_str()?.strip_prefix("sparky@")?.parse().ok()?, p["rating"].as_f64()?)))
+        .collect();
+    sparky.sort_by_key(|(l, _)| *l);
+    assert!(sparky.len() >= 2, "calibration should include adaptive levels");
+    assert!(sparky.windows(2).all(|w| w[1].1 > w[0].1), "adaptive levels not monotonic: {sparky:?}");
 }
