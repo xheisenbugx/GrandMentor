@@ -26,6 +26,7 @@ export default {
     home: 'Início',
     play: 'Jogar',
     analysis: 'Análise',
+    editor: 'Editor de tabuleiro',
     review: 'Revisão da partida',
     puzzleRush: 'Puzzle Rush',
     dailyPuzzle: 'Problema do dia',

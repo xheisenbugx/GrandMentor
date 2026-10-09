@@ -5,6 +5,7 @@ import ui from './ui.js';
 import home from './home.js';
 import play from './play.js';
 import analysis from './analysis.js';
+import editor from './editor.js';
 import review from './review.js';
 import puzzles from './puzzles.js';
 import themes from './themes.js';
@@ -31,6 +32,7 @@ export default {
   home,
   play,
   analysis,
+  editor,
   review,
   puzzles,
   themes,

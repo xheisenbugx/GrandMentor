@@ -123,48 +123,6 @@
 .an-copy-pgn { margin: 0; max-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word; padding: var(--sp-2) var(--sp-3); background: var(--surface-sunken); border-radius: var(--r-sm); font-size: var(--fs-xs); }
 
 /* ======================================================================
-   Setup position editor
-   ====================================================================== */
-.setup-editor { display: grid; grid-template-columns: minmax(0, auto) minmax(220px, 1fr); gap: var(--sp-5); align-items: start; }
-.se-left { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
-.se-board {
-  --se-size: min(400px, 70vw, 52vh);
-  width: var(--se-size); height: var(--se-size);
-  display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr);
-  border-radius: var(--r-xs); overflow: hidden; box-shadow: var(--shadow-md);
-  touch-action: none; user-select: none;
-}
-.se-sq { position: relative; display: grid; place-items: center; cursor: pointer; }
-.se-sq.light { background: var(--board-light); }
-.se-sq.dark { background: var(--board-dark); }
-.se-sq:hover { box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--primary) 70%, transparent); }
-.se-sq img { width: 92%; height: 92%; pointer-events: none; -webkit-user-drag: none; }
-.se-coord { position: absolute; font-size: 10px; font-weight: var(--fw-bold); pointer-events: none; }
-.se-coord.rank { top: 2px; left: 3px; }
-.se-coord.file { bottom: 1px; right: 3px; }
-.se-sq.light .se-coord { color: var(--board-coord-light); }
-.se-sq.dark .se-coord { color: var(--board-coord-dark); }
-.se-palette { display: flex; gap: 4px; padding: 4px; background: var(--surface-sunken); border-radius: var(--r-md); touch-action: none; user-select: none; }
-.se-tool {
-  appearance: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 2px;
-  border: 2px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--text-muted); cursor: grab;
-  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
-}
-.se-tool:hover { background: var(--surface-hover); }
-.se-tool.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-text); }
-.se-tool img { width: 100%; height: 100%; pointer-events: none; -webkit-user-drag: none; }
-.se-tool svg { width: 20px; height: 20px; }
-.se-ghost { position: fixed; left: 0; top: 0; pointer-events: none; z-index: var(--z-tooltip); filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); will-change: transform; }
-.se-castling { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1) var(--sp-3); font-size: var(--fs-sm); }
-.se-quick { gap: var(--sp-1); }
-.se-error { font-size: var(--fs-sm); }
-@media (max-width: 860px) {
-  .setup-editor { grid-template-columns: 1fr; }
-  .se-board { --se-size: min(88vw, 400px); }
-  .se-tool { width: min(40px, 10.5vw); height: min(40px, 10.5vw); }
-}
-
-/* ======================================================================
    MentorPanel
    ====================================================================== */
 .mentor-panel { display: flex; flex-direction: column; gap: var(--sp-2); flex: 1; min-height: 0; }

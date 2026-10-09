@@ -320,7 +320,7 @@ unknown non-/api paths → `index.html`.
 ## 5. Frontend contract
 
 No build step. Plain ES modules, modern browser. Dark theme by default (light theme toggle).
-Hash routing: `#/`, `#/play`, `#/play/:botId`, `#/analysis?fen=..|?game=:id|?pgn=..`,
+Hash routing: `#/`, `#/play`, `#/play/:botId`, `#/analysis?fen=..|?game=:id|?pgn=..`, `#/editor?fen=..`,
 `#/review/:gameId`, `#/puzzles`, `#/puzzles/rush`, `#/puzzles/daily`, `#/learn`,
 `#/learn/:courseId`, `#/learn/:courseId/:lessonId`, `#/openings`, `#/openings/:id`,
 `#/endgames`, `#/endgames/:id`, `#/library`, `#/profile`, `#/settings`.
@@ -463,6 +463,51 @@ The server logs the `local_game` activity for `bot_id: null`. The game-over moda
 **Resume:** an unfinished game is kept in `localStorage["grandmentor.local.current.v1"]` =
 `{v: 1, white, black, startFen, moves /* UCI */, tcId, opts, orientation, clocks: {white, black} | null, takebacks, updatedAt}`
 (written after every move and on `pagehide` / hidden / unmount; removed when the game ends or is discarded). The setup screen shows a resume card for it.
+
+## Position editor (board editor)
+
+Frontend only; no new endpoints.
+
+**Route:** `#/editor[?fen=<encodeURIComponent(FEN)>][&orientation=black]` (page `web/js/pages/editor.js`, nav item
+`analysis`, strings in the `editor` locale namespace, styles `web/css/editor.css` injected by the component).
+`fen` may have 1-6 fields; a readable but illegal position is loaded so it can be fixed, an unreadable one shows a
+warning toast and the start position. While editing, the page keeps the URL in sync (`history.replaceState`, 400 ms
+debounce) so a reload or a shared link reopens the same position.
+Actions: **Analyse** → `#/analysis?fen=..[&orientation=black]`; **Play vs a bot** → `#/play?fen=..&color=w|b` (colour
+picker, default = side to move); **Play with a friend** → `#/local?fen=..`; **Copy FEN**; **Share link** (copies
+`<origin>/#/editor?fen=..`). Analyse/Play are `aria-disabled` while the position is invalid; the two Play actions also
+while it is already checkmate, stalemate or insufficient material.
+Entry point: the Analysis page's "Set up" action opens `#/editor?fen=<current position>` (it replaced the old setup
+modal).
+
+**Component** `web/js/components/editor.js`:
+```js
+const ed = new PositionEditor(el, { fen /* default start */, orientation /* 'white'|'black' */,
+  onChange /* (fen, { valid, errors: string[] }) => void, called after every edit (and once on create) */ });
+ed.getFen();            // full 6-field FEN; castling and en passant are sanitised against the placement
+ed.setFen(fen) → bool;  // false (position unchanged) when unreadable
+ed.valid; ed.errors;    // translated reasons; [] = playable
+ed.gameOver;            // null | 'checkmate' | 'stalemate' | 'insufficient' (valid positions only)
+ed.setTool('move' | 'erase' | 'wK' … 'bP'); ed.flip(); ed.setOrientation(color); ed.orientation;
+ed.root; ed.sideEl;     // the editor's DOM; `sideEl` is an empty slot in the side column for page actions
+ed.destroy();           // removes every listener, timer, ghost element and the Board
+```
+Also exported (pure helpers): `parseFen(raw) → {arr, turn, castling:Set, ep, half, full} | null`, `parsePlacement`,
+`placementOf(arr)`, `possibleCastling(arr) → {K,Q,k,q}`, `epCandidates(arr, turn) → ['c6', …]`,
+`positionErrors(state, fen) → string[]`, `START_FEN`.
+- Built on `Board` (view-only: `interactive:false, sounds:false, announce:false`): the editor intercepts pointer and
+  Enter/Space/Delete/Backspace/Escape keys in the capture phase on the board slot; Board still renders pieces, coordinates,
+  check highlight and the ARIA grid with arrow-key navigation.
+- Palette (white and black pieces, a move tool and an eraser; `role="toolbar"`, buttons with `aria-pressed`): click or
+  Enter selects a tool, drag a piece straight onto the board. Board: click/tap applies the tool (same piece again removes
+  it); pieces drag anywhere; dropping off the board, right-click and a 500 ms long-press remove a piece. Placing a king
+  moves that side's existing king. Keyboard with the move tool: Enter picks a piece up, Enter on another square drops it.
+  Every edit is announced (`editor.announce.*`).
+- Controls: starting position, clear, flip, side to move, castling checkboxes (disabled unless king and rook stand on
+  their home squares), en-passant select (only squares a pawn could really capture on), and a live FEN field (typing a
+  readable FEN updates the board immediately; blur/Escape restores the canonical FEN).
+- Validation (`editor.errors.*`): exactly one king per side, no pawns on the 1st/8th rank (squares listed), at most 8
+  pawns and 16 pieces per side, the side not to move must not be in check, then chess.js `validateFen` + load.
 
 ## Installable app (PWA)
 
