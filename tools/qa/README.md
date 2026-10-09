@@ -62,6 +62,7 @@ Each page is checked for:
 | `i18n-key`, `i18n-missing` | `[i18n] unknown key` / `[i18n] missing … using English` messages from `i18n.js` |
 | `raw-key` | visible text, `placeholder`/`aria-label`/`title`/`alt` or the tab title contains a real i18n key such as `play.hint` |
 | `junk-text` | visible text or an accessible attribute shows a leaked JS value: `null`, `undefined`, `NaN` or `[object Object]` (usually an optional child passed to native `append()`/`replaceChildren()`) |
+| `big-icon` | an `icon()` SVG renders larger than 64 px because no CSS rule sizes it, so it stretches to fill its container |
 | `english` | non-English pages showing an English catalog phrase (≥ 14 characters, not shared with the target catalog) |
 | `hscroll` | the page scrolls horizontally |
 | `overflow` | a visible element sticks out of the viewport. Page-level `overflow-x: hidden/clip` does not hide it, but real scroll containers do |

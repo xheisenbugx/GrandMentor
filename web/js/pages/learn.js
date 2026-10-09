@@ -564,7 +564,7 @@ async function renderCourse(page, courseId, signal) {
           l.summary ? h('div', { class: 'lrn-lesson-sub' }, l.summary) : null),
         isNext ? h('span', { class: 'btn btn-primary btn-sm' }, st.completed ? t('learn.course.continue') : t('learn.course.start'))
           : isDone ? h('span', { class: 'btn btn-ghost btn-sm' }, t('learn.course.review')) : null,
-        h('span', { html: icon('chevron-right'), style: 'display:contents' }));
+        h('span', { class: 'lrn-lesson-arrow', html: icon('chevron-right') }));
     }))
     : emptyState({ emoji: '🛠️', title: t('learn.course.noLessons'), text: t('learn.course.noLessonsText') });
 
