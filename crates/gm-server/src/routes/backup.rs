@@ -28,7 +28,7 @@ use axum::{Extension, Json, Router};
 use gm_content::Lang;
 use gm_store::backup::{self, BackupError, BackupFile, ImportMode, ImportSource};
 use parking_lot::Mutex;
-use rand::Rng;
+use rand::RngExt;
 use serde::Deserialize;
 use serde_json::{json, Value};
 
@@ -370,8 +370,8 @@ async fn pair_create(
         return Err(forbid_remote(lang));
     }
     let code: String = {
-        let mut rng = rand::thread_rng();
-        (0..CODE_LEN).map(|_| CODE_ALPHABET[rng.gen_range(0..CODE_ALPHABET.len())] as char).collect()
+        let mut rng = rand::rng();
+        (0..CODE_LEN).map(|_| CODE_ALPHABET[rng.random_range(0..CODE_ALPHABET.len())] as char).collect()
     };
     let mut guard = pairing().lock();
     *guard = Some(Pairing { code, expires: Instant::now() + PAIR_TTL, failures: 0 });

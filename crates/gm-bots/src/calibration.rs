@@ -9,7 +9,7 @@
 //! twice with colours reversed, so the two games of a pair are not independent).
 
 use rand::rngs::StdRng;
-use rand::{Rng, SeedableRng};
+use rand::{RngExt, SeedableRng};
 
 /// One finished game: `white`/`black` index into the player list, `score` is White's score.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -173,7 +173,7 @@ pub fn fit_with_ci(
         for _ in 0..resamples {
             let mut sample = Vec::with_capacity(games.len());
             for _ in 0..groups.len() {
-                sample.extend_from_slice(&groups[rng.gen_range(0..groups.len())]);
+                sample.extend_from_slice(&groups[rng.random_range(0..groups.len())]);
             }
             let mut r = fit(n, &sample);
             anchor_to_mean(&mut r, anchors);
@@ -219,7 +219,7 @@ mod tests {
             for j in i + 1..truth.len() {
                 for _ in 0..400 {
                     let p = expected(truth[i], truth[j]);
-                    let s = if rng.gen::<f64>() < p { 1.0 } else { 0.0 };
+                    let s = if rng.random::<f64>() < p { 1.0 } else { 0.0 };
                     games.push(GameResult { white: i, black: j, score: s, pair });
                     pair += 1;
                 }

@@ -123,6 +123,8 @@ impl Mentor {
             .map(|m| m.trim().to_string())
             .filter(|m| !m.is_empty() && m.len() <= 100)
             .unwrap_or_else(|| DEFAULT_MODEL.to_string());
+        // reqwest has no TLS provider of its own; installing one twice is a no-op error.
+        let _ = rustls::crypto::ring::default_provider().install_default();
         let client = reqwest::Client::builder()
             .timeout(llm::REQUEST_TIMEOUT + Duration::from_secs(5))
             .connect_timeout(Duration::from_secs(10))

@@ -68,7 +68,7 @@ async fn batch(
     let content = st.content.clone();
     let id_owned = id.clone();
     let items = blocking(move || -> ApiResult<Value> {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let puzzles = &content.puzzles;
         let v = match id_owned.as_str() {
             "hanging" => serde_json::to_value(generate::hanging_batch(puzzles, n, &mut rng)),
