@@ -24,11 +24,11 @@ use axum::http::request::Parts;
 use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
-use axum::{Json, Router};
+use axum::{Extension, Json, Router};
 use gm_content::Lang;
 use gm_store::backup::{self, BackupError, BackupFile, ImportMode, ImportSource};
 use parking_lot::Mutex;
-use rand::Rng;
+use rand::RngExt;
 use serde::Deserialize;
 use serde_json::{json, Value};
 
@@ -350,11 +350,11 @@ fn forbid_remote(lang: Lang) -> ApiError {
 }
 
 async fn pair_status(
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
-    if !is_local_request(peer.map(|c| c.0), &headers) {
+    if !is_local_request(peer.map(|Extension(c)| c.0), &headers) {
         return Err(forbid_remote(lang));
     }
     let guard = pairing().lock();
@@ -362,16 +362,16 @@ async fn pair_status(
 }
 
 async fn pair_create(
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
-    if !is_local_request(peer.map(|c| c.0), &headers) {
+    if !is_local_request(peer.map(|Extension(c)| c.0), &headers) {
         return Err(forbid_remote(lang));
     }
     let code: String = {
-        let mut rng = rand::thread_rng();
-        (0..CODE_LEN).map(|_| CODE_ALPHABET[rng.gen_range(0..CODE_ALPHABET.len())] as char).collect()
+        let mut rng = rand::rng();
+        (0..CODE_LEN).map(|_| CODE_ALPHABET[rng.random_range(0..CODE_ALPHABET.len())] as char).collect()
     };
     let mut guard = pairing().lock();
     *guard = Some(Pairing { code, expires: Instant::now() + PAIR_TTL, failures: 0 });
@@ -379,11 +379,11 @@ async fn pair_create(
 }
 
 async fn pair_revoke(
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
-    if !is_local_request(peer.map(|c| c.0), &headers) {
+    if !is_local_request(peer.map(|Extension(c)| c.0), &headers) {
         return Err(forbid_remote(lang));
     }
     let mut guard = pairing().lock();

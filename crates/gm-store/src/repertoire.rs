@@ -305,7 +305,7 @@ fn fen_key(fen: &str) -> String {
 }
 
 fn fen_of(pos: &Chess) -> String {
-    Fen::from_position(pos.clone(), EnPassantMode::Legal).to_string()
+    Fen::from_position(pos, EnPassantMode::Legal).to_string()
 }
 
 fn load_side(conn: &rusqlite::Connection, side: Side, now: i64) -> rusqlite::Result<Vec<RepNode>> {
@@ -524,7 +524,7 @@ impl Store {
                 Err(_) => return Ok(Err(RepError::Illegal(i + 1, raw.chars().take(8).collect()))),
             };
             let uci = pgn::move_to_uci(&mv);
-            let san = SanPlus::from_move_and_play_unchecked(&mut pos, &mv).to_string();
+            let san = SanPlus::from_move_and_play_unchecked(&mut pos, mv).to_string();
             let fen = fen_of(&pos);
             let ply = base_ply + i as u32 + 1;
 
@@ -728,7 +728,7 @@ impl Store {
                 };
                 if let Some(mut pos) = before {
                     if let Ok(m) = pgn::uci_to_move(&pos, &answer) {
-                        pos.play_unchecked(&m);
+                        pos.play_unchecked(m);
                         correct = fen_key(&fen_of(&pos)) == fen_key(&card.fen);
                     }
                 }
@@ -816,13 +816,13 @@ impl Store {
                     break;
                 };
                 if expected.iter().any(|e| e.uci == uci) {
-                    pos.play_unchecked(&m);
+                    pos.play_unchecked(m);
                     d.book_plies = ply;
                     d.ply = ply;
                     continue;
                 }
                 let mut p2 = pos.clone();
-                let san = SanPlus::from_move_and_play_unchecked(&mut p2, &m).to_string();
+                let san = SanPlus::from_move_and_play_unchecked(&mut p2, m).to_string();
                 status = if side.owns_ply(ply) { "deviated" } else { "unprepared" };
                 d.ply = ply;
                 d.played_uci = uci;

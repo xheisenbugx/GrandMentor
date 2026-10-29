@@ -50,7 +50,7 @@ pub fn color_name(c: Color) -> &'static str {
 
 /// SAN with check/mate suffix.
 pub fn san(pos: &Chess, m: &Move) -> String {
-    SanPlus::from_move(pos.clone(), m).to_string()
+    SanPlus::from_move(pos.clone(), *m).to_string()
 }
 
 /// Parse a SAN move (tolerant of `+`, `#`, `!`, `?` suffixes and `0-0` castling).
@@ -187,7 +187,7 @@ pub fn mate_in_one(pos: &Chess) -> Option<Move> {
     // Checks first is just an ordering nicety; every mate is a check anyway.
     moves.into_iter().find(|m| {
         let mut p = pos.clone();
-        p.play_unchecked(m);
+        p.play_unchecked(*m);
         p.is_checkmate()
     })
 }
@@ -362,7 +362,7 @@ pub fn move_facts(pos: &Chess, m: &Move) -> MoveFacts {
     let mover = pos.turn();
     let board_before = pos.board();
     let mut after = pos.clone();
-    after.play_unchecked(m);
+    after.play_unchecked(*m);
     let board = after.board();
     let to = m.to();
     let from = m.from();

@@ -1,6 +1,6 @@
 //! Move helpers for the search: compact encoding, incremental Zobrist hashing, SEE, MVV-LVA.
 
-use shakmaty::zobrist::{Zobrist64, ZobristHash, ZobristValue};
+use shakmaty::zobrist::{Zobrist64, ZobristValue};
 use shakmaty::{
     Board, CastlingSide, Chess, Color, EnPassantMode, Move, Piece, Position, Role, Square,
 };
@@ -210,12 +210,12 @@ mod tests {
             let h = full_hash(&p);
             for m in p.legal_moves() {
                 let mut c = p.clone();
-                c.play_unchecked(&m);
+                c.play_unchecked(m);
                 let hc = full_hash(&c);
                 assert_eq!(hash_after(h, &p, &m, &c), hc, "{f} {m:?}");
                 for m2 in c.legal_moves() {
                     let mut c2 = c.clone();
-                    c2.play_unchecked(&m2);
+                    c2.play_unchecked(m2);
                     assert_eq!(
                         hash_after(hc, &c, &m2, &c2),
                         full_hash(&c2),

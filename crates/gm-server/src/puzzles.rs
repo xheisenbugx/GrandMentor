@@ -4,8 +4,8 @@
 use std::collections::{BTreeMap, HashSet};
 
 use gm_content::{Content, Puzzle};
-use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::seq::IndexedRandom;
+use rand::RngExt;
 use serde::Serialize;
 
 #[derive(Serialize, Clone, Debug, PartialEq, Eq)]
@@ -105,7 +105,7 @@ impl PuzzleIndex {
         let theme = theme.map(str::trim).unwrap_or("");
         let matches = |i: &usize| any || has_theme(&content.puzzles[*i], theme);
         let (min, max) = if min <= max { (min, max) } else { (max, min) };
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
 
         // Widen the window progressively: requested, ±300, ±700, everything.
         let windows = [
@@ -128,7 +128,7 @@ impl PuzzleIndex {
                     (i32::from(content.puzzles[i].rating) - i32::from(target)).unsigned_abs()
                 });
                 let keep = (fresh.len() / 2).max(8).min(fresh.len());
-                let pick = fresh[rng.gen_range(0..keep)];
+                let pick = fresh[rng.random_range(0..keep)];
                 return content.puzzles.get(pick);
             }
         }
@@ -172,12 +172,12 @@ impl PuzzleIndex {
             return Vec::new();
         }
         let count = count.min(n);
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let mut out = Vec::with_capacity(count);
         for b in 0..count {
             let lo = b * n / count;
             let hi = ((b + 1) * n / count).max(lo + 1).min(n);
-            let pick = self.by_rating[rng.gen_range(lo..hi)];
+            let pick = self.by_rating[rng.random_range(lo..hi)];
             if let Some(p) = content.puzzles.get(pick) {
                 out.push(p);
             }

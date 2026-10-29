@@ -1,8 +1,8 @@
 //! Annotated classic games library (`/api/classics*`).
 //!
 //! * `GET  /api/classics`              — localized list (summaries + the user's progress)
-//! * `GET  /api/classics/:id`          — one localized game with moves, annotations, questions, progress
-//! * `POST /api/classics/:id/progress` — record position / completion / a question answer
+//! * `GET  /api/classics/{id}`          — one localized game with moves, annotations, questions, progress
+//! * `POST /api/classics/{id}/progress` — record position / completion / a question answer
 
 use axum::extract::State;
 use axum::routing::{get, post};
@@ -20,8 +20,8 @@ use crate::state::AppState;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/classics", get(list))
-        .route("/classics/:id", get(detail))
-        .route("/classics/:id/progress", post(progress))
+        .route("/classics/{id}", get(detail))
+        .route("/classics/{id}/progress", post(progress))
 }
 
 #[derive(Serialize)]

@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 use gm_content::Content;
 use gm_engine::{to_fen, START_FEN};
+use rand::SeedableRng;
 
 fn content() -> Content {
     let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data");
@@ -15,7 +16,7 @@ fn random_positions(n: usize, seed: u64) -> Vec<(String, Vec<String>)> {
     let mut rng = StdRng::seed_from_u64(seed);
     let mut out = Vec::new();
     while out.len() < n {
-        let target = rng.gen_range(0..60);
+        let target = rng.random_range(0..60);
         let mut pos = Chess::default();
         let mut moves = Vec::new();
         for _ in 0..target {
@@ -23,9 +24,9 @@ fn random_positions(n: usize, seed: u64) -> Vec<(String, Vec<String>)> {
             if legal.is_empty() {
                 break;
             }
-            let m = legal[rng.gen_range(0..legal.len())].clone();
+            let m = legal[rng.random_range(0..legal.len())];
             moves.push(move_to_uci(&m));
-            pos.play_unchecked(&m);
+            pos.play_unchecked(m);
         }
         if pos.is_game_over() {
             continue;
@@ -207,7 +208,7 @@ fn play_game(engine: &mut Engine, content: &Content, a: &str, b: &str, a_white: 
         let id = if white_to_move == a_white { a } else { b };
         let r = choose_move_with(engine, content, id, START_FEN, &moves, &mut rng, Some(cap_ms), Lang::En).expect("bot move");
         let m = uci_to_move(&pos, &r.uci).expect("legal");
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(r.uci);
     }
     let a_color = if a_white { Color::White } else { Color::Black };

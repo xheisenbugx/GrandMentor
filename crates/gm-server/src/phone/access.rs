@@ -11,7 +11,7 @@ use std::net::IpAddr;
 use std::path::PathBuf;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-use rand::Rng as _;
+use rand::RngExt as _;
 use serde::{Deserialize, Serialize};
 
 use super::tls::write_private;
@@ -37,13 +37,13 @@ pub fn normalize_pin(s: &str) -> String {
 }
 
 fn new_pin() -> String {
-    let mut rng = rand::thread_rng();
-    (0..PIN_LEN).map(|_| char::from(b'0' + rng.gen_range(0..10u8))).collect()
+    let mut rng = rand::rng();
+    (0..PIN_LEN).map(|_| char::from(b'0' + rng.random_range(0..10u8))).collect()
 }
 
 fn new_token() -> String {
     let mut b = [0u8; TOKEN_BYTES];
-    rand::thread_rng().fill(&mut b[..]);
+    rand::rng().fill(&mut b[..]);
     b.iter().map(|x| format!("{x:02x}")).collect()
 }
 

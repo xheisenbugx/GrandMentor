@@ -39,8 +39,8 @@ pub fn router() -> Router<AppState> {
         .route("/mistakes/summary", get(summary))
         .route("/mistakes/next", get(next))
         .route("/mistakes/sync", post(sync))
-        .route("/mistakes/:id", delete(remove))
-        .route("/mistakes/:id/attempt", post(attempt))
+        .route("/mistakes/{id}", delete(remove))
+        .route("/mistakes/{id}/attempt", post(attempt))
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ fn solution_line(m: &MoveReview, user: shakmaty::Color) -> Vec<String> {
     for san in m.best_line_san.iter().take(gm_store::srs::MAX_SOLUTION_PLIES) {
         let Ok(mv) = gm_engine::san_to_move(&pos, san) else { break };
         ucis.push(gm_engine::move_to_uci(&mv));
-        pos.play_unchecked(&mv);
+        pos.play_unchecked(mv);
     }
     if ucis.first() != Some(&m.best_move_uci) {
         return out;
@@ -108,12 +108,12 @@ fn solution_line(m: &MoveReview, user: shakmaty::Color) -> Vec<String> {
     let mut i = 0;
     while i + 2 < ucis.len() {
         let Ok(mv) = gm_engine::uci_to_move(&pos, &ucis[i]) else { break };
-        pos.play_unchecked(&mv);
+        pos.play_unchecked(mv);
         if pos.legal_moves().len() != 1 {
             break;
         }
         let Ok(reply) = gm_engine::uci_to_move(&pos, &ucis[i + 1]) else { break };
-        pos.play_unchecked(&reply);
+        pos.play_unchecked(reply);
         if gm_engine::uci_to_move(&pos, &ucis[i + 2]).is_err() {
             break;
         }
@@ -375,7 +375,7 @@ mod tests {
     fn mv(ply: usize, color: &str, fen_before: &str, uci: &str, best: &str, cls: Classification, loss: f32) -> MoveReview {
         let pos = gm_engine::parse_fen(fen_before).unwrap();
         let mut after = pos.clone();
-        after.play_unchecked(&gm_engine::uci_to_move(&pos, uci).unwrap());
+        after.play_unchecked(gm_engine::uci_to_move(&pos, uci).unwrap());
         MoveReview {
             ply,
             san: gm_engine::move_to_san(&pos, &gm_engine::uci_to_move(&pos, uci).unwrap()),

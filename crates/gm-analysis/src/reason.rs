@@ -137,7 +137,7 @@ fn replay(start: &Chess, line: &[String]) -> Vec<Move> {
     let mut out = Vec::new();
     for u in line.iter().take(MAX_LINE) {
         let Ok(m) = uci_to_move(&pos, u.trim()) else { break };
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         out.push(m);
         if pos.is_game_over() {
             break;
@@ -188,7 +188,7 @@ fn outcome(start: &Chess, moves: &[Move], mover: Color) -> Outcome {
                 lost.push((i, r));
             }
         }
-        pos.play_unchecked(m);
+        pos.play_unchecked(*m);
     }
     // Cancel equal trades (knight for bishop counts as equal) so "you lose your queen" isn't
     // drowned out by the pieces that were simply exchanged on the way.
@@ -220,7 +220,7 @@ pub fn derive(inp: &ReasonInput<'_>) -> Option<MoveReason> {
     }
     let mover = inp.before.turn();
     let mut after = inp.before.clone();
-    after.play_unchecked(inp.played);
+    after.play_unchecked(*inp.played);
 
     let refutation_moves = if after.is_game_over() { Vec::new() } else { replay(&after, inp.refutation) };
     let best_moves = replay(inp.before, inp.best);
@@ -296,7 +296,7 @@ pub fn derive(inp: &ReasonInput<'_>) -> Option<MoveReason> {
 
     // 3. Material: compare what the played line and the best line do to the balance.
     let mut played_line = Vec::with_capacity(refutation_moves.len() + 1);
-    played_line.push(inp.played.clone());
+    played_line.push(*inp.played);
     played_line.extend(refutation_moves.iter().cloned());
     let played_out = outcome(inp.before, &played_line, mover);
     let best_out = if best_differs { outcome(inp.before, &best_moves, mover) } else { Outcome::default() };
@@ -365,7 +365,7 @@ pub fn derive(inp: &ReasonInput<'_>) -> Option<MoveReason> {
     set_best(&mut r, 6);
     if let Some(reply) = refutation_moves.first() {
         let mut p = after.clone();
-        p.play_unchecked(reply);
+        p.play_unchecked(*reply);
         let landed = reply.to();
         if reply.castling_side().is_none() {
             let attacked: Vec<Role> = tactics::fork_targets(p.board(), landed)

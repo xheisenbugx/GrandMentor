@@ -47,8 +47,8 @@ pub fn page_router() -> Router<Phone> {
     Router::new().route(LOGIN_PATH, get(login_page)).route(CA_PATH, get(ca_cert))
 }
 
-fn peer_ip(peer: Option<&ConnectInfo<SocketAddr>>) -> Option<IpAddr> {
-    peer.map(|c| c.0.ip())
+fn peer_ip(peer: Option<&Extension<ConnectInfo<SocketAddr>>>) -> Option<IpAddr> {
+    peer.map(|Extension(c)| c.0.ip())
 }
 
 /// Loopback peer (or none, in-process) and a local or absent `Origin`.
@@ -143,7 +143,7 @@ fn status_json(p: &PhoneState) -> Value {
 
 async fn status(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
@@ -160,7 +160,7 @@ struct LanBody {
 
 async fn set_lan(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
     body: Bytes,
@@ -196,7 +196,7 @@ async fn set_lan(
 
 async fn new_pin(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
@@ -208,7 +208,7 @@ async fn new_pin(
 
 async fn sign_out_all(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
 ) -> ApiResult<Json<Value>> {
@@ -226,7 +226,7 @@ struct QrQuery {
 /// QR code (SVG) for one of the addresses listed by `/api/phone/status`.
 async fn qr(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
     Query(q): Query<QrQuery>,
@@ -264,7 +264,7 @@ pub fn qr_svg(text: &str) -> Option<String> {
 
 async fn access_status(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     headers: HeaderMap,
 ) -> Json<Value> {
     let local = peer_ip(peer.as_ref()).is_none_or(is_loopback);
@@ -295,7 +295,7 @@ struct LoginJson {
 
 async fn login_post(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     transport: Option<Extension<Transport>>,
     headers: HeaderMap,
     uri: axum::http::Uri,
@@ -397,7 +397,7 @@ struct LoginQuery {
 
 async fn login_page(
     State(p): State<Phone>,
-    peer: Option<ConnectInfo<SocketAddr>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     headers: HeaderMap,
     uri: axum::http::Uri,
     Query(q): Query<LoginQuery>,

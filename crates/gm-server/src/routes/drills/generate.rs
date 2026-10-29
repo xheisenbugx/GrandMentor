@@ -8,8 +8,8 @@ use std::collections::{HashSet, VecDeque};
 
 use gm_content::Puzzle;
 use gm_engine::{move_to_san, move_to_uci, parse_fen, to_fen};
-use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::seq::{IndexedRandom, SliceRandom};
+use rand::{Rng, RngExt};
 use serde::Serialize;
 use shakmaty::{attacks, Bitboard, Board, Chess, Color, Move, Position, Role, Square};
 
@@ -187,7 +187,7 @@ pub fn target_moves(pos: &Chess, captures: bool) -> Vec<MoveAnswer> {
             if captures {
                 m.is_capture()
             } else {
-                pos.clone().play(m).map(|p| p.is_check()).unwrap_or(false)
+                pos.clone().play(**m).map(|p| p.is_check()).unwrap_or(false)
             }
         })
         .map(|m| MoveAnswer { uci: move_to_uci(m), san: move_to_san(pos, m) })
@@ -204,10 +204,10 @@ pub fn target_moves(pos: &Chess, captures: bool) -> Vec<MoveAnswer> {
 fn puzzle_position<R: Rng>(puzzles: &[Puzzle], rng: &mut R) -> Option<Chess> {
     let p = puzzles.choose(rng)?;
     let mut pos = parse_fen(&p.fen).ok()?;
-    let plies = rng.gen_range(0..=p.moves.len().min(12));
+    let plies = rng.random_range(0..=p.moves.len().min(12));
     for uci in p.moves.iter().take(plies) {
         let m = gm_engine::uci_to_move(&pos, uci).ok()?;
-        pos = pos.play(&m).ok()?;
+        pos = pos.play(m).ok()?;
     }
     Some(pos)
 }
@@ -219,9 +219,9 @@ fn random_position<R: Rng>(rng: &mut R) -> Option<Chess> {
     let mut free: Vec<usize> = (0..64).collect();
     free.shuffle(rng);
     let mut pieces = vec!['K', 'k'];
-    for _ in 0..rng.gen_range(5..=12) {
+    for _ in 0..rng.random_range(5..=12) {
         let c = *POOL.choose(rng)?;
-        pieces.push(if rng.gen_bool(0.5) { c.to_ascii_lowercase() } else { c });
+        pieces.push(if rng.random_bool(0.5) { c.to_ascii_lowercase() } else { c });
     }
     for c in pieces {
         let pawn = c.eq_ignore_ascii_case(&'p');
@@ -229,7 +229,7 @@ fn random_position<R: Rng>(rng: &mut R) -> Option<Chess> {
             grid[free.swap_remove(k)] = Some(c);
         }
     }
-    let turn = if rng.gen_bool(0.5) { 'w' } else { 'b' };
+    let turn = if rng.random_bool(0.5) { 'w' } else { 'b' };
     parse_fen(&format!("{} {turn} - - 0 1", placement(&grid))).ok()
 }
 
@@ -319,7 +319,7 @@ pub fn material_batch<R: Rng>(puzzles: &[Puzzle], n: usize, rng: &mut R) -> Vec<
         let board = pos.board();
         let (white, black) = (material(board, Color::White), material(board, Color::Black));
         let diff = white - black;
-        if diff.abs() > 12 || (diff == 0 && !rng.gen_bool(0.2)) {
+        if diff.abs() > 12 || (diff == 0 && !rng.random_bool(0.2)) {
             return None;
         }
         Some(MaterialItem { fen: to_fen(pos), white, black, diff, options: material_options(diff, rng) })
@@ -410,9 +410,9 @@ fn knight_item<R: Rng>(advanced: bool, rng: &mut R) -> Option<KnightItem> {
     if advanced {
         let mut occupied = Bitboard::EMPTY;
         let mut pieces: Vec<(Square, Role)> = Vec::new();
-        for _ in 0..rng.gen_range(2..=4) {
+        for _ in 0..rng.random_range(2..=4) {
             let role = *[Role::Pawn, Role::Pawn, Role::Knight, Role::Bishop, Role::Rook].choose(rng)?;
-            let idx = if role == Role::Pawn { rng.gen_range(8..56) } else { rng.gen_range(0..64) };
+            let idx = if role == Role::Pawn { rng.random_range(8..56) } else { rng.random_range(0..64) };
             let sq = Square::new(idx);
             if occupied.contains(sq) {
                 continue;
@@ -434,8 +434,8 @@ fn knight_item<R: Rng>(advanced: bool, rng: &mut R) -> Option<KnightItem> {
             return None;
         }
     }
-    let start = Square::new(rng.gen_range(0..64));
-    let target = Square::new(rng.gen_range(0..64));
+    let start = Square::new(rng.random_range(0..64));
+    let target = Square::new(rng.random_range(0..64));
     if start == target || blocked.contains(start) || blocked.contains(target) {
         return None;
     }
@@ -529,7 +529,7 @@ mod tests {
                         if captures {
                             m.capture().is_some()
                         } else {
-                            let after = pos.clone().play(m).unwrap();
+                            let after = pos.clone().play(**m).unwrap();
                             after.is_check()
                         }
                     })

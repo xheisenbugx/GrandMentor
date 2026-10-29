@@ -736,7 +736,7 @@ pub async fn review_game_cancellable(
     let mut pos = start.clone();
     for (i, u) in moves.iter().enumerate() {
         let m = uci_to_move(&pos, u.trim()).map_err(|e| format!("illegal move at ply {}: {e}", i + 1))?;
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         played.push(m);
         positions.push(pos.clone());
     }

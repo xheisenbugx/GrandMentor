@@ -134,7 +134,7 @@ impl OpeningBook {
                     break;
                 };
                 let san = move_to_san(&pos, &m);
-                pos.play_unchecked(&m);
+                pos.play_unchecked(m);
                 let child = book.node_for(fen_key(&to_fen(&pos)));
                 let conts = &mut book.nodes[cur as usize].conts;
                 match conts.iter_mut().find(|c| c.uci == *u) {

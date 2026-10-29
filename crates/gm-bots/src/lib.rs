@@ -28,9 +28,9 @@ use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 
 use rand::rngs::StdRng;
-use rand::{Rng, SeedableRng};
+use rand::{Rng, RngExt};
 use serde::{Deserialize, Serialize};
-use shakmaty::zobrist::{Zobrist64, ZobristHash};
+use shakmaty::zobrist::Zobrist64;
 use shakmaty::{Chess, Color, EnPassantMode, Move, Position, Role, Square};
 
 use gm_content::words::{fill, kv, PieceRef};
@@ -120,7 +120,7 @@ pub fn choose_move(
     moves: &[String],
     lang: Lang,
 ) -> Result<BotMove, String> {
-    let mut rng = StdRng::from_entropy();
+    let mut rng = rand::make_rng::<StdRng>();
     choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None, lang)
 }
 
@@ -136,7 +136,7 @@ pub fn choose_move_at(
     elo: Option<u16>,
     lang: Lang,
 ) -> Result<BotMove, String> {
-    let mut rng = StdRng::from_entropy();
+    let mut rng = rand::make_rng::<StdRng>();
     choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, Clock::Wall { cap_ms: None }, elo, lang)
 }
 
@@ -170,7 +170,7 @@ fn replay(start_fen: &str, moves: &[String]) -> Result<Game, String> {
         }
         let m = uci_to_move(&pos, u).map_err(|e| format!("ply {}: {e}", i + 1))?;
         let before = pos.clone();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         history.push(zobrist(&pos));
         if i + 1 == moves.len() {
             last = Some((before, m));
@@ -209,7 +209,7 @@ fn value(role: Role) -> i32 {
 
 fn after(pos: &Chess, m: &Move) -> Chess {
     let mut p = pos.clone();
-    p.play_unchecked(m);
+    p.play_unchecked(*m);
     p
 }
 
@@ -219,7 +219,7 @@ fn weighted_pick<R: Rng>(rng: &mut R, weights: &[f64]) -> usize {
     if total.is_nan() || total <= 0.0 {
         return 0;
     }
-    let mut r = rng.gen::<f64>() * total;
+    let mut r = rng.random::<f64>() * total;
     for (i, w) in weights.iter().enumerate() {
         if w.is_finite() && *w > 0.0 {
             if r < *w {
@@ -423,7 +423,7 @@ fn naive_score<R: Rng>(rng: &mut R, pos: &Chess, m: &Move, ply: usize) -> f64 {
     if m.role() == Role::King && !m.is_castle() && ply < 40 {
         s -= 30.0;
     }
-    s + rng.gen_range(-45.0..45.0)
+    s + rng.random_range(-45.0..45.0)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -508,13 +508,13 @@ pub(crate) fn choose_move_inner<R: Rng>(
 
     // Forced move: no need to think.
     if legal.len() == 1 {
-        let m = legal[0].clone();
+        let m = legal[0];
         let chat = make_chat(rng, persona, &game, &m, None, None, lang);
-        return Ok(finish(pos, &m, chat, rng.gen_range(300..=550)));
+        return Ok(finish(pos, &m, chat, rng.random_range(300..=550)));
     }
 
     // ---- 1. Opening book ----------------------------------------------------------------------
-    if ply < st.book_plies && rng.gen::<f64>() >= st.book_exit {
+    if ply < st.book_plies && rng.random::<f64>() >= st.book_exit {
         let cands = book::candidates(content, pos, persona.style);
         if !cands.is_empty() {
             // Strong players follow the main lines; weak ones pick flatter.
@@ -527,12 +527,12 @@ pub(crate) fn choose_move_inner<R: Rng>(
                 let lines = persona.lines(lang);
                 let name = id.and_then(|id| content.localized(lang).opening(&id).map(|o| o.name.clone()));
                 let chat = match name {
-                    Some(n) if rng.gen::<f64>() < 0.55 && !lines.opening.is_empty() => {
+                    Some(n) if rng.random::<f64>() < 0.55 && !lines.opening.is_empty() => {
                         Some(pick_line(rng, lines.opening).replace("{opening}", &n))
                     }
                     _ => make_chat(rng, persona, &game, &m, None, None, lang),
                 };
-                return Ok(finish(pos, &m, chat, rng.gen_range(300..=750)));
+                return Ok(finish(pos, &m, chat, rng.random_range(300..=750)));
             }
         }
     }
@@ -562,12 +562,12 @@ pub(crate) fn choose_move_inner<R: Rng>(
     cands.sort_by_key(|c| std::cmp::Reverse(c.score));
 
     // ---- 3. Selection -------------------------------------------------------------------------
-    let oversight = cands.is_empty() || rng.gen::<f64>() < st.oversight;
+    let oversight = cands.is_empty() || rng.random::<f64>() < st.oversight;
     let (chosen, chosen_score) = if oversight {
         // Naive one-ply choice over all legal moves (may hang pieces / miss threats).
         let naive: Vec<f64> = legal.iter().map(|m| naive_score(rng, pos, m, ply)).collect();
         let i = softmax_pick(rng, &naive, 40.0);
-        let m = legal[i].clone();
+        let m = legal[i];
         let sc = cands.iter().find(|c| c.mv == m).map(|c| c.score);
         (m, sc)
     } else {
@@ -575,7 +575,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
         let mut pool: Vec<&Candidate> =
             cands.iter().filter(|c| c.score >= best.saturating_sub(st.max_loss_cp)).collect();
         // "Didn't notice that capture."
-        if rng.gen::<f64>() < st.miss_capture && pool.iter().any(|c| !c.mv.is_capture()) {
+        if rng.random::<f64>() < st.miss_capture && pool.iter().any(|c| !c.mv.is_capture()) {
             pool.retain(|c| !c.mv.is_capture());
         }
         let current_hash = game.history.last().copied();
@@ -598,7 +598,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
             })
             .collect();
         let i = softmax_pick(rng, &adjusted, st.temperature_cp);
-        (pool[i].mv.clone(), Some(pool[i].score))
+        (pool[i].mv, Some(pool[i].score))
     };
 
     // ---- 4. Chat + think time -----------------------------------------------------------------
@@ -627,7 +627,7 @@ fn think_time<R: Rng>(rng: &mut R, elo: u16, n_legal: usize, cands: &[Candidate]
     if in_check {
         t *= 0.75;
     }
-    t *= rng.gen_range(0.75..1.25);
+    t *= rng.random_range(0.75..1.25);
     let spent = started.elapsed().as_millis() as f64;
     // Never suggest less than what we already spent (the UI subtracts elapsed time).
     t.max(spent).clamp(300.0, 2500.0) as u64
@@ -637,11 +637,11 @@ fn pick_line<R: Rng>(rng: &mut R, lines: &[&'static str]) -> String {
     if lines.is_empty() {
         return String::new();
     }
-    lines[rng.gen_range(0..lines.len())].to_string()
+    lines[rng.random_range(0..lines.len())].to_string()
 }
 
 fn chance<R: Rng>(rng: &mut R, p: f64) -> bool {
-    rng.gen::<f64>() < p
+    rng.random::<f64>() < p
 }
 
 /// Personality chat for the move the bot is about to play. `score` is the bot's (approximate)
@@ -854,7 +854,7 @@ fn coach_tip<R: Rng>(rng: &mut R, persona: &Persona, game: &Game, m: &Move, a: &
             return fill(tt.undeveloped, &kv(&[("n", &undeveloped.to_string())]));
         }
     }
-    tt.general[rng.gen_range(0..tt.general.len())].to_string()
+    tt.general[rng.random_range(0..tt.general.len())].to_string()
 }
 
 fn user_king_uncastled(pos: &Chess, user: Color) -> bool {

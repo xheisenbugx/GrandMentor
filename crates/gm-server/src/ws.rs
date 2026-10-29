@@ -9,7 +9,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use axum::extract::ws::{CloseFrame, Message, WebSocket, WebSocketUpgrade};
+use axum::extract::ws::{CloseFrame, Message, Utf8Bytes, WebSocket, WebSocketUpgrade};
 use axum::extract::State;
 use axum::response::Response;
 use futures_util::{SinkExt, StreamExt};
@@ -56,17 +56,17 @@ pub async fn engine_ws(State(st): State<AppState>, ws: WebSocketUpgrade) -> Resp
 }
 
 /// `{"type": kind, "id": id, ...SearchInfo}`
-fn info_message(kind: &str, id: &Value, info: &SearchInfo) -> String {
+fn info_message(kind: &str, id: &Value, info: &SearchInfo) -> Utf8Bytes {
     let mut v = serde_json::to_value(info).unwrap_or_else(|_| json!({}));
     if let Value::Object(map) = &mut v {
         map.insert("type".into(), Value::String(kind.into()));
         map.insert("id".into(), id.clone());
     }
-    v.to_string()
+    v.to_string().into()
 }
 
-fn error_message(id: &Value, error: &str) -> String {
-    json!({ "type": "error", "id": id, "error": error }).to_string()
+fn error_message(id: &Value, error: &str) -> Utf8Bytes {
+    json!({ "type": "error", "id": id, "error": error }).to_string().into()
 }
 
 /// The search currently running on this socket.
@@ -184,7 +184,7 @@ async fn handle_socket(st: AppState, socket: WebSocket) {
             }
             "ping" => {
                 let _ = out_tx.try_send(Message::Text(
-                    json!({ "type": "pong", "id": cmd.id }).to_string(),
+                    json!({ "type": "pong", "id": cmd.id }).to_string().into(),
                 ));
             }
             other => {

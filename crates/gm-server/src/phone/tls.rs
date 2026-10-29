@@ -210,7 +210,7 @@ fn leaf_params(names: &[String], hostname: Option<&str>, now: u64) -> anyhow::Re
     p.not_before = to_time(now.saturating_sub(DAY))?;
     p.not_after = to_time(now + LEAF_DAYS * DAY)?;
     let mut serial = [0u8; 16];
-    rand::Rng::fill(&mut rand::thread_rng(), &mut serial[..]);
+    rand::RngExt::fill(&mut rand::rng(), &mut serial[..]);
     serial[0] &= 0x7f;
     p.serial_number = Some(serial.to_vec().into());
     Ok(p)

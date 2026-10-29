@@ -546,7 +546,7 @@ impl Store {
             buf.extend_from_slice(b":[");
             let mut stmt = conn.prepare(&format!("SELECT * FROM {} ORDER BY rowid", q(table)))
                 .or_else(|_| conn.prepare(&format!("SELECT * FROM {}", q(table))))?;
-            let names: Vec<String> = stmt.column_names().into_iter().map(str::to_string).collect();
+            let names: Vec<String> = stmt.column_names().map(str::to_string).collect();
             let mut rows = stmt.query([])?;
             let mut first = true;
             while let Some(row) = rows.next()? {
@@ -894,7 +894,7 @@ fn merge_by_content(
             let id: i64 = r.get(0)?;
             let mut key = String::new();
             for i in 0..key_cols.len() {
-                key_part(&SqlValue::from(r.get_ref(i + 1)?), &mut key);
+                key_part(&r.get::<_, SqlValue>(i + 1)?, &mut key);
             }
             existing.entry(key).or_insert(id);
         }

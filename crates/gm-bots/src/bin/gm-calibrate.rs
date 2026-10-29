@@ -32,10 +32,10 @@ use std::sync::Mutex;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use rand::rngs::StdRng;
-use rand::{Rng, SeedableRng};
+use rand::{RngExt, SeedableRng};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use shakmaty::zobrist::{Zobrist64, ZobristHash};
+use shakmaty::zobrist::Zobrist64;
 use shakmaty::{Chess, Color, EnPassantMode, Position};
 
 use gm_bots::calibration::{fit_with_ci, GameResult};
@@ -296,7 +296,7 @@ fn schedule(players: &[Player], o: &Opts, n_openings: usize) -> Vec<Job> {
             let mut rng = StdRng::seed_from_u64(mix(o.seed, (a * 1_000 + b) as u64));
             let cost = move_cost(&players[a], o.ref_nps) + move_cost(&players[b], o.ref_nps) + 20_000.0;
             for _ in 0..o.games / 2 {
-                let opening = rng.gen_range(0..n_openings.max(1));
+                let opening = rng.random_range(0..n_openings.max(1));
                 for (w, bl) in [(a, b), (b, a)] {
                     let seed = mix(o.seed ^ 0xC0FFEE, (jobs.len() as u64) << 1 | 1);
                     jobs.push(Job { white: w, black: bl, opening, pair, seed, cost });
@@ -351,7 +351,7 @@ fn pick_move(
             if legal.is_empty() {
                 return Err("no legal moves".into());
             }
-            Ok(gm_engine::move_to_uci(&legal[rng.gen_range(0..legal.len())]))
+            Ok(gm_engine::move_to_uci(&legal[rng.random_range(0..legal.len())]))
         }
     }
 }
@@ -378,7 +378,7 @@ fn play(job: &Job, players: &[Player], content: &Content, opening: &[String], en
     for u in opening {
         let Ok(m) = uci_to_move(&pos, u) else { break };
         history.push(pos.clone());
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(u.clone());
         reps.push(zobrist(&pos));
     }
@@ -433,7 +433,7 @@ fn play(job: &Job, players: &[Player], content: &Content, opening: &[String], en
         };
         history.push(pos.clone());
         let irreversible = m.is_zeroing();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(uci);
         if irreversible {
             reps.clear();

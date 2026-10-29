@@ -17,7 +17,7 @@ use crate::state::AppState;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/training", get(progress))
-        .route("/training/:drill_id/attempt", post(attempt))
+        .route("/training/{drill_id}/attempt", post(attempt))
 }
 
 #[derive(Serialize)]

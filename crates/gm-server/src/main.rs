@@ -195,7 +195,7 @@ async fn run() -> anyhow::Result<()> {
         let rustls_cfg = axum_server::tls_rustls::RustlsConfig::from_config(cfg);
         let svc = app_with_phone(state.clone(), &web_dir, Arc::clone(&phone), Transport::Https)
             .into_make_service_with_connect_info::<SocketAddr>();
-        let server = axum_server::from_tcp_rustls(l, rustls_cfg.clone()).handle(https_handle.clone()).serve(svc);
+        let server = axum_server::from_tcp_rustls(l, rustls_cfg.clone())?.handle(https_handle.clone()).serve(svc);
         https_task = Some(tokio::spawn(server));
         tokio::spawn(refresh_certs(Arc::clone(&phone), phone_dir.clone(), rustls_cfg, state.shutdown.subscribe()));
         for ip in phone::net::lan_ipv4s() {

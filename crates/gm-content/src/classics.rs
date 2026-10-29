@@ -195,7 +195,7 @@ pub(crate) fn validate_classic(g: &mut Classic) -> Result<(), String> {
         let m = san_to_move(&pos, tok).map_err(|e| format!("ply {}: {e}", uci.len() + 1))?;
         san.push(move_to_san(&pos, &m));
         uci.push(move_to_uci(&m));
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         positions.push(pos.clone());
     }
     let plies = uci.len();

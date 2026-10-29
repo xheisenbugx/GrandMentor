@@ -53,7 +53,7 @@ async fn analyze_supersede_stop_and_close() {
 
     // bad fen -> error
     ws.send(Message::Text(
-        json!({"type":"analyze","id":1,"fen":"nope"}).to_string(),
+        json!({"type":"analyze","id":1,"fen":"nope"}).to_string().into(),
     ))
     .await
     .unwrap();
@@ -64,14 +64,14 @@ async fn analyze_supersede_stop_and_close() {
     // long analysis, then supersede it immediately with a short one
     ws.send(Message::Text(
         json!({"type":"analyze","id":2,"fen":"startpos","movetime_ms":20000,"multipv":2})
-            .to_string(),
+            .to_string().into(),
     ))
     .await
     .unwrap();
     tokio::time::sleep(Duration::from_millis(300)).await;
     let t0 = Instant::now();
     ws.send(Message::Text(
-        json!({"type":"analyze","id":3,"fen":"startpos","movetime_ms":500}).to_string(),
+        json!({"type":"analyze","id":3,"fen":"startpos","movetime_ms":500}).to_string().into(),
     ))
     .await
     .unwrap();
@@ -96,13 +96,13 @@ async fn analyze_supersede_stop_and_close() {
 
     // stop -> done arrives quickly
     ws.send(Message::Text(
-        json!({"type":"analyze","id":4,"fen":"startpos","movetime_ms":20000}).to_string(),
+        json!({"type":"analyze","id":4,"fen":"startpos","movetime_ms":20000}).to_string().into(),
     ))
     .await
     .unwrap();
     tokio::time::sleep(Duration::from_millis(200)).await;
     let t0 = Instant::now();
-    ws.send(Message::Text(json!({"type":"stop"}).to_string()))
+    ws.send(Message::Text(json!({"type":"stop"}).to_string().into()))
         .await
         .unwrap();
     loop {
@@ -115,7 +115,7 @@ async fn analyze_supersede_stop_and_close() {
 
     // close mid-search -> engines return to the pool
     ws.send(Message::Text(
-        json!({"type":"analyze","id":5,"fen":"startpos","movetime_ms":20000}).to_string(),
+        json!({"type":"analyze","id":5,"fen":"startpos","movetime_ms":20000}).to_string().into(),
     ))
     .await
     .unwrap();

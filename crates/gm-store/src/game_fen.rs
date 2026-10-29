@@ -33,7 +33,7 @@ pub fn final_fen_of<S: AsRef<str>>(start_fen: &str, moves: &[S]) -> String {
     let mut pos: Chess = pgn::parse_position(start_fen).unwrap_or_default();
     for m in moves.iter().take(pgn::MAX_PLIES) {
         match pgn::uci_to_move(&pos, m.as_ref()) {
-            Ok(mv) => pos.play_unchecked(&mv),
+            Ok(mv) => pos.play_unchecked(mv),
             Err(_) => break,
         }
     }

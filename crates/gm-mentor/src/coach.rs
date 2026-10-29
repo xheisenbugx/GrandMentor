@@ -155,8 +155,8 @@ fn previous_position(req: &ChatRequest, current: &Chess) -> Option<(Chess, shakm
     let mut prev = None;
     for s in &req.moves_san {
         let m = tactics::parse_san(&pos, s)?;
-        prev = Some((pos.clone(), m.clone()));
-        pos.play_unchecked(&m);
+        prev = Some((pos.clone(), m));
+        pos.play_unchecked(m);
     }
     if pos.board() == current.board() && pos.turn() == current.turn() {
         prev

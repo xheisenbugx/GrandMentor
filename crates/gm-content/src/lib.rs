@@ -281,7 +281,7 @@ pub fn replay_san(start: &Chess, moves: &str) -> Result<(Chess, Vec<String>), St
         }
         let m = san_to_move(&pos, tok).map_err(|e| format!("move {}: {e}", ucis.len() + 1))?;
         ucis.push(move_to_uci(&m));
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     Ok((pos, ucis))
 }
@@ -291,7 +291,7 @@ pub fn replay_uci(start: &Chess, moves: &[String]) -> Result<Chess, String> {
     let mut pos = start.clone();
     for (i, u) in moves.iter().enumerate() {
         let m = uci_to_move(&pos, u).map_err(|e| format!("ply {}: {e}", i + 1))?;
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     Ok(pos)
 }

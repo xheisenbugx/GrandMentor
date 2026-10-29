@@ -90,7 +90,7 @@ fn avoids_stalemate_and_mates_kqk() {
     let pos = parse_fen(fen).unwrap();
     let m = uci_to_move(&pos, info.best_move().unwrap()).unwrap();
     let mut after = pos.clone();
-    after.play_unchecked(&m);
+    after.play_unchecked(m);
     assert!(
         !after.is_stalemate(),
         "engine stalemated with {:?}",
@@ -113,7 +113,7 @@ fn avoids_stalemate_and_mates_kqk() {
         }
         let info = e.search(&pos, &movetime(150), &stop, &mut |_| {});
         let m = uci_to_move(&pos, info.best_move().unwrap()).unwrap();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     if pos.is_game_over() {
         mated = pos.is_checkmate();
@@ -335,7 +335,7 @@ fn repetition_with_game_history() {
     for u in moves {
         hist.push(pos.clone());
         let m = uci_to_move(&pos, u).unwrap();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     let info = e.search_with_history(&pos, &hist, &depth(6), &stop, &mut |_| {});
     assert!(info.best_move().is_some());
