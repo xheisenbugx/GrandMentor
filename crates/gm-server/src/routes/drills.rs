@@ -2,8 +2,8 @@
 //! (`/api/drills*`). See docs/CONTRACT.md "Quick drills".
 //!
 //! * `GET  /api/drills`                 — every drill with its variants, bests and recent scores
-//! * `GET  /api/drills/:id/batch?n=&variant=` — server-generated questions with answers
-//! * `POST /api/drills/:id/score`       — record a finished run, returns the personal best
+//! * `GET  /api/drills/{id}/batch?n=&variant=` — server-generated questions with answers
+//! * `POST /api/drills/{id}/score`       — record a finished run, returns the personal best
 
 pub mod generate;
 
@@ -24,8 +24,8 @@ const DEFAULT_BATCH: usize = 20;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/drills", get(list))
-        .route("/drills/:id/batch", get(batch))
-        .route("/drills/:id/score", post(score))
+        .route("/drills/{id}/batch", get(batch))
+        .route("/drills/{id}/score", post(score))
 }
 
 #[derive(Serialize)]

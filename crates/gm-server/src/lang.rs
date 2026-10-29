@@ -37,7 +37,6 @@ pub fn lang_of(uri: &Uri, headers: &HeaderMap) -> Lang {
     Lang::negotiate(query_lang(uri), accept)
 }
 
-#[axum::async_trait]
 impl<S: Send + Sync> FromRequestParts<S> for ReqLang {
     type Rejection = Infallible;
 

@@ -24,7 +24,7 @@ pub fn router() -> Router<AppState> {
         .route("/repertoire/summary", get(summary))
         .route("/repertoire/nodes", post(add_node))
         .route(
-            "/repertoire/nodes/:id",
+            "/repertoire/nodes/{id}",
             put(update_node).patch(update_node).delete(delete_node),
         )
         .route("/repertoire/lines", post(add_line))
@@ -32,7 +32,7 @@ pub fn router() -> Router<AppState> {
         .route("/repertoire/drill/attempt", post(drill_attempt))
         .route("/repertoire/deviations", get(deviations))
         .route("/repertoire/starters", get(starters))
-        .route("/repertoire/starters/:id", post(apply_starter))
+        .route("/repertoire/starters/{id}", post(apply_starter))
 }
 
 // ---------------------------------------------------------------------------------------------

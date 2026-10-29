@@ -39,8 +39,8 @@ pub fn router() -> Router<AppState> {
         .route("/mistakes/summary", get(summary))
         .route("/mistakes/next", get(next))
         .route("/mistakes/sync", post(sync))
-        .route("/mistakes/:id", delete(remove))
-        .route("/mistakes/:id/attempt", post(attempt))
+        .route("/mistakes/{id}", delete(remove))
+        .route("/mistakes/{id}/attempt", post(attempt))
 }
 
 // ---------------------------------------------------------------------------------------------
