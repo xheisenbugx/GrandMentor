@@ -80,7 +80,7 @@ pub fn parse_position(fen: &str) -> Result<Chess, String> {
 
 /// Full 6-field FEN of a position.
 pub fn position_fen(pos: &Chess) -> String {
-    Fen::from_position(pos.clone(), EnPassantMode::Legal).to_string()
+    Fen::from_position(pos, EnPassantMode::Legal).to_string()
 }
 
 /// Canonical FEN for a start position string (empty / "start" -> standard FEN).
@@ -109,7 +109,7 @@ pub fn uci_to_move(pos: &Chess, uci: &str) -> Result<shakmaty::Move, String> {
 
 /// Standard UCI notation for a move (castling as king-to-destination).
 pub fn move_to_uci(m: &shakmaty::Move) -> String {
-    UciMove::from_move(m, CastlingMode::Standard).to_string()
+    UciMove::from_move(*m, CastlingMode::Standard).to_string()
 }
 
 /// Replay UCI moves from `start_fen`; returns the SAN of every move.
@@ -119,7 +119,7 @@ pub fn uci_to_sans(start_fen: &str, moves: &[String]) -> Result<Vec<String>, Str
     let mut out = Vec::with_capacity(moves.len());
     for (i, u) in moves.iter().enumerate() {
         let m = uci_to_move(&pos, u).map_err(|e| format!("ply {}: {e}", i + 1))?;
-        out.push(SanPlus::from_move_and_play_unchecked(&mut pos, &m).to_string());
+        out.push(SanPlus::from_move_and_play_unchecked(&mut pos, m).to_string());
     }
     Ok(out)
 }
@@ -228,7 +228,7 @@ pub fn to_pgn(
             Color::Black => {}
         }
         first = false;
-        tokens.push(SanPlus::from_move_and_play_unchecked(&mut pos, &m).to_string());
+        tokens.push(SanPlus::from_move_and_play_unchecked(&mut pos, m).to_string());
     }
     tokens.push(result.to_string());
 
@@ -564,7 +564,7 @@ impl GameBuilder {
         match san.to_move(pos) {
             Ok(m) => {
                 self.moves.push(move_to_uci(&m));
-                pos.play_unchecked(&m);
+                pos.play_unchecked(m);
             }
             Err(_) => {
                 let n = pos.fullmoves().get();

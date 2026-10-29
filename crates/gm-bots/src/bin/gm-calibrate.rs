@@ -35,7 +35,7 @@ use rand::rngs::StdRng;
 use rand::{RngExt, SeedableRng};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use shakmaty::zobrist::{Zobrist64, ZobristHash};
+use shakmaty::zobrist::Zobrist64;
 use shakmaty::{Chess, Color, EnPassantMode, Position};
 
 use gm_bots::calibration::{fit_with_ci, GameResult};
@@ -378,7 +378,7 @@ fn play(job: &Job, players: &[Player], content: &Content, opening: &[String], en
     for u in opening {
         let Ok(m) = uci_to_move(&pos, u) else { break };
         history.push(pos.clone());
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(u.clone());
         reps.push(zobrist(&pos));
     }
@@ -433,7 +433,7 @@ fn play(job: &Job, players: &[Player], content: &Content, opening: &[String], en
         };
         history.push(pos.clone());
         let irreversible = m.is_zeroing();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(uci);
         if irreversible {
             reps.clear();

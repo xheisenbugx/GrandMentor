@@ -210,7 +210,7 @@ pub fn parse_fen(fen: &str) -> Result<Chess, String> {
 
 /// Full 6-field FEN. En passant square only when a legal en passant capture exists.
 pub fn to_fen(pos: &Chess) -> String {
-    Fen::from_position(pos.clone(), EnPassantMode::Legal).to_string()
+    Fen::from_position(pos, EnPassantMode::Legal).to_string()
 }
 
 /// First four FEN fields (placement, side, castling, ep) — a position key independent of clocks.
@@ -247,12 +247,12 @@ pub fn san_to_move(pos: &Chess, san: &str) -> Result<Move, String> {
 
 /// SAN including check/mate suffix (`Nf3`, `Qxf7#`).
 pub fn move_to_san(pos: &Chess, m: &Move) -> String {
-    SanPlus::from_move(pos.clone(), m).to_string()
+    SanPlus::from_move(pos.clone(), *m).to_string()
 }
 
 /// Standard UCI (castling as king-to-destination, e.g. `e1g1`).
 pub fn move_to_uci(m: &Move) -> String {
-    UciMove::from_move(m, CastlingMode::Standard).to_string()
+    UciMove::from_move(*m, CastlingMode::Standard).to_string()
 }
 
 /// Replay UCI moves from `start`, returning the final position and the SAN of each move.
@@ -262,7 +262,7 @@ pub fn replay_uci(start: &Chess, moves: &[String]) -> Result<(Chess, Vec<String>
     for (i, u) in moves.iter().enumerate() {
         let m = uci_to_move(&pos, u).map_err(|e| format!("ply {}: {e}", i + 1))?;
         sans.push(move_to_san(&pos, &m));
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     Ok((pos, sans))
 }
@@ -275,7 +275,7 @@ pub fn uci_line_to_san(pos: &Chess, moves: &[String]) -> Vec<String> {
         match uci_to_move(&p, u) {
             Ok(m) => {
                 out.push(move_to_san(&p, &m));
-                p.play_unchecked(&m);
+                p.play_unchecked(m);
             }
             Err(_) => break,
         }

@@ -546,7 +546,7 @@ impl Store {
             buf.extend_from_slice(b":[");
             let mut stmt = conn.prepare(&format!("SELECT * FROM {} ORDER BY rowid", q(table)))
                 .or_else(|_| conn.prepare(&format!("SELECT * FROM {}", q(table))))?;
-            let names: Vec<String> = stmt.column_names().into_iter().map(str::to_string).collect();
+            let names: Vec<String> = stmt.column_names().map(str::to_string).collect();
             let mut rows = stmt.query([])?;
             let mut first = true;
             while let Some(row) = rows.next()? {

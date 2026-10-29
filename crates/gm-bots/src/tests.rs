@@ -24,9 +24,9 @@ fn random_positions(n: usize, seed: u64) -> Vec<(String, Vec<String>)> {
             if legal.is_empty() {
                 break;
             }
-            let m = legal[rng.random_range(0..legal.len())].clone();
+            let m = legal[rng.random_range(0..legal.len())];
             moves.push(move_to_uci(&m));
-            pos.play_unchecked(&m);
+            pos.play_unchecked(m);
         }
         if pos.is_game_over() {
             continue;
@@ -208,7 +208,7 @@ fn play_game(engine: &mut Engine, content: &Content, a: &str, b: &str, a_white: 
         let id = if white_to_move == a_white { a } else { b };
         let r = choose_move_with(engine, content, id, START_FEN, &moves, &mut rng, Some(cap_ms), Lang::En).expect("bot move");
         let m = uci_to_move(&pos, &r.uci).expect("legal");
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(r.uci);
     }
     let a_color = if a_white { Color::White } else { Color::Black };

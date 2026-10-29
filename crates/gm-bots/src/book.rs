@@ -1,7 +1,7 @@
 //! Opening book built on the fly from `gm_content` openings, matched by Zobrist hash so
 //! transpositions are found. Weighted by popularity and the bot's style.
 
-use shakmaty::zobrist::{Zobrist64, ZobristHash};
+use shakmaty::zobrist::Zobrist64;
 use shakmaty::{Chess, EnPassantMode, Position};
 
 use gm_content::{Content, Opening};
@@ -106,7 +106,7 @@ pub fn candidates(content: &Content, pos: &Chess, style: Style) -> Vec<BookCandi
                     }),
                 }
             }
-            p.play_unchecked(&m);
+            p.play_unchecked(m);
         }
     }
     out.sort_by(|a, b| b.weight.total_cmp(&a.weight).then_with(|| a.uci.cmp(&b.uci)));
@@ -124,7 +124,7 @@ pub fn opening_id_at(content: &Content, pos: &Chess) -> Option<String> {
             let mut p = Chess::default();
             for u in &o.uci {
                 let Ok(m) = uci_to_move(&p, u) else { return false };
-                p.play_unchecked(&m);
+                p.play_unchecked(m);
             }
             hash(&p) == target
         })

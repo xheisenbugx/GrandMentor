@@ -187,7 +187,7 @@ pub fn target_moves(pos: &Chess, captures: bool) -> Vec<MoveAnswer> {
             if captures {
                 m.is_capture()
             } else {
-                pos.clone().play(m).map(|p| p.is_check()).unwrap_or(false)
+                pos.clone().play(**m).map(|p| p.is_check()).unwrap_or(false)
             }
         })
         .map(|m| MoveAnswer { uci: move_to_uci(m), san: move_to_san(pos, m) })
@@ -207,7 +207,7 @@ fn puzzle_position<R: Rng>(puzzles: &[Puzzle], rng: &mut R) -> Option<Chess> {
     let plies = rng.random_range(0..=p.moves.len().min(12));
     for uci in p.moves.iter().take(plies) {
         let m = gm_engine::uci_to_move(&pos, uci).ok()?;
-        pos = pos.play(&m).ok()?;
+        pos = pos.play(m).ok()?;
     }
     Some(pos)
 }
@@ -529,7 +529,7 @@ mod tests {
                         if captures {
                             m.capture().is_some()
                         } else {
-                            let after = pos.clone().play(m).unwrap();
+                            let after = pos.clone().play(**m).unwrap();
                             after.is_check()
                         }
                     })

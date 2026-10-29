@@ -182,7 +182,7 @@ fn sacrifice_is_brilliant() {
     let before_pos = gm_engine::parse_fen("4k3/8/8/3p4/8/8/8/4KB2 w - - 0 1").expect("fen");
     let mv = uci_to_move(&before_pos, "f1c4").expect("move");
     let mut after_pos = before_pos.clone();
-    after_pos.play_unchecked(&mv);
+    after_pos.play_unchecked(mv);
     let line = |uci: &str, cp: i32| PvLine { score: Score::Cp(cp), moves: vec![uci.to_string()], san: vec![] };
     let before = PosData {
         fen: to_fen(&before_pos),
@@ -224,7 +224,7 @@ fn miss_after_opponent_error() {
     let before_pos = gm_engine::parse_fen("4k3/8/8/3q4/8/8/8/3RK3 w - - 0 1").expect("fen");
     let mv = uci_to_move(&before_pos, "e1f2").expect("move");
     let mut after_pos = before_pos.clone();
-    after_pos.play_unchecked(&mv);
+    after_pos.play_unchecked(mv);
     let before = PosData {
         fen: to_fen(&before_pos),
         pos: before_pos,
@@ -286,7 +286,7 @@ async fn perf_40_move_game_depth_12() {
         let info = engine.search(&pos, &SearchLimits { depth: Some(4), ..Default::default() }, &stop, &mut |_| {});
         let Some(u) = info.best_move().map(str::to_string) else { break };
         let m = uci_to_move(&pos, &u).expect("engine move");
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         moves.push(u);
     }
     let n = num_cpus();
@@ -474,12 +474,12 @@ async fn perf_reason_derivation() {
         let legal = pos.legal_moves();
         let captures: Vec<&Move> = legal.iter().filter(|m| m.is_capture()).collect();
         let m = if !captures.is_empty() && rand() % 2 == 0 {
-            captures[rand() as usize % captures.len()].clone()
+            *captures[rand() as usize % captures.len()]
         } else {
-            legal[rand() as usize % legal.len()].clone()
+            legal[rand() as usize % legal.len()]
         };
         moves.push(gm_engine::move_to_uci(&m));
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
     }
     let r = review_game(&pool(), content, "start", &moves, 10, None, Lang::En).await.expect("review");
     let errors: Vec<&MoveReview> = r.moves.iter().filter(|m| m.reason.is_some()).collect();

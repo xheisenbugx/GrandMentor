@@ -30,7 +30,7 @@ use std::time::Instant;
 use rand::rngs::StdRng;
 use rand::{Rng, RngExt};
 use serde::{Deserialize, Serialize};
-use shakmaty::zobrist::{Zobrist64, ZobristHash};
+use shakmaty::zobrist::Zobrist64;
 use shakmaty::{Chess, Color, EnPassantMode, Move, Position, Role, Square};
 
 use gm_content::words::{fill, kv, PieceRef};
@@ -170,7 +170,7 @@ fn replay(start_fen: &str, moves: &[String]) -> Result<Game, String> {
         }
         let m = uci_to_move(&pos, u).map_err(|e| format!("ply {}: {e}", i + 1))?;
         let before = pos.clone();
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         history.push(zobrist(&pos));
         if i + 1 == moves.len() {
             last = Some((before, m));
@@ -209,7 +209,7 @@ fn value(role: Role) -> i32 {
 
 fn after(pos: &Chess, m: &Move) -> Chess {
     let mut p = pos.clone();
-    p.play_unchecked(m);
+    p.play_unchecked(*m);
     p
 }
 
@@ -508,7 +508,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
 
     // Forced move: no need to think.
     if legal.len() == 1 {
-        let m = legal[0].clone();
+        let m = legal[0];
         let chat = make_chat(rng, persona, &game, &m, None, None, lang);
         return Ok(finish(pos, &m, chat, rng.random_range(300..=550)));
     }
@@ -567,7 +567,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
         // Naive one-ply choice over all legal moves (may hang pieces / miss threats).
         let naive: Vec<f64> = legal.iter().map(|m| naive_score(rng, pos, m, ply)).collect();
         let i = softmax_pick(rng, &naive, 40.0);
-        let m = legal[i].clone();
+        let m = legal[i];
         let sc = cands.iter().find(|c| c.mv == m).map(|c| c.score);
         (m, sc)
     } else {
@@ -598,7 +598,7 @@ pub(crate) fn choose_move_inner<R: Rng>(
             })
             .collect();
         let i = softmax_pick(rng, &adjusted, st.temperature_cp);
-        (pool[i].mv.clone(), Some(pool[i].score))
+        (pool[i].mv, Some(pool[i].score))
     };
 
     // ---- 4. Chat + think time -----------------------------------------------------------------

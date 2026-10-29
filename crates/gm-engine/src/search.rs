@@ -462,7 +462,7 @@ impl Searcher<'_> {
             moves.push(move_to_uci(m));
             san.push(move_to_san(pos, m));
             let before = pos.clone();
-            pos.play_unchecked(m);
+            pos.play_unchecked(*m);
             *hash = hash_after(*hash, &before, m, pos);
         };
         for &code in pv {
@@ -700,7 +700,7 @@ impl Searcher<'_> {
             }
 
             let mut child = pos.clone();
-            child.play_unchecked(m);
+            child.play_unchecked(*m);
             let gives_check = child.is_check();
             let advanced_pawn = is_advanced_pawn_push(pos, m);
 
@@ -942,7 +942,7 @@ impl Searcher<'_> {
                 }
             }
             let mut child = pos.clone();
-            child.play_unchecked(m);
+            child.play_unchecked(*m);
             let child_hash = hash_after(hash, pos, m, &child);
             let score = -self.qsearch(&child, child_hash, -beta, -alpha, ply + 1);
             if self.stopped {

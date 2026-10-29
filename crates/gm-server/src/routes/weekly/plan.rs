@@ -298,7 +298,7 @@ pub fn classify_mistake(m: &MistakePosition) -> Option<&'static str> {
         let mut ok = true;
         for u in &m.solution {
             match gm_engine::uci_to_move(&p, u) {
-                Ok(mv) => p.play_unchecked(&mv),
+                Ok(mv) => p.play_unchecked(mv),
                 Err(_) => {
                     ok = false;
                     break;

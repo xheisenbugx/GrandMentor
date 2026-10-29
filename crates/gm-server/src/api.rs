@@ -700,7 +700,7 @@ fn detect_opening(
     let mut fens = Vec::new();
     for u in moves.iter().take(30) {
         let m = gm_engine::uci_to_move(&pos, u).ok()?;
-        pos.play_unchecked(&m);
+        pos.play_unchecked(m);
         fens.push(to_fen(&pos));
     }
     fens.iter()

@@ -389,7 +389,7 @@ fn is_discovered_attack(pos: &Chess, m: &Move) -> bool {
     }
     let mover = pos.turn();
     let mut after = pos.clone();
-    after.play_unchecked(m);
+    after.play_unchecked(*m);
     let before = pos.board();
     let board = after.board();
     let sliders = board.by_color(mover) & (board.bishops() | board.rooks() | board.queens());
