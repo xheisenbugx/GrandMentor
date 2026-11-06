@@ -1,4 +1,7 @@
 # GrandMentor quality gate. The same checks run locally; see tools/qa/README.md.
+#
+# Third-party actions are pinned to full commit SHAs (the comment names the release);
+# Dependabot (.github/dependabot.yml) opens PRs to update them.
 name: CI
 
 on:
@@ -25,87 +28,107 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install the pinned Rust toolchain (rust-toolchain.toml)
+        run: rustup toolchain install && rustup show active-toolchain
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           shared-key: release
       # `cargo fmt --check` is not enforced yet: the codebase is not rustfmt-clean.
       # Add a `cargo fmt --all --check` step here after a one-off formatting PR.
       - name: Build
         run: cargo build --workspace --release --locked
+      # The bench and e2e jobs reuse these binaries instead of compiling the workspace again.
+      - name: Upload release binaries
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-binaries
+          path: |
+            target/release/grandmentor
+            target/release/gm-bench-gate
+          if-no-files-found: error
+          retention-days: 3
       - name: Test
         run: cargo test --workspace --release --locked
       - name: Clippy
         run: cargo clippy --workspace --all-targets --release --locked -- -D warnings
 
+  deny:
+    name: Dependencies (cargo deny)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Advisories, bans (duplicates only warn), sources and licenses; configured in deny.toml.
+      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
+        with:
+          command: check
+          arguments: --all-features
+
   js:
-    name: JS (syntax, i18n)
+    name: JS (syntax, unit tests, i18n)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - name: Module syntax check
-        run: |
-          fail=0
-          for f in $(find web/js web/locales -name '*.js') $(find tools -name '*.mjs'); do
-            node --input-type=module --check < "$f" || { echo "FAIL $f"; fail=1; }
-          done
-          exit $fail
+      - name: Syntax check (web/, tools/, tests/, incl. the service worker)
+        run: node tools/qa/check-syntax.mjs
+      - name: Unit tests
+        run: node --test 'tests/js/**/*.test.mjs'
       - name: i18n check
         run: node tools/qa/check-i18n.mjs --verbose
 
   bench:
     name: Engine benchmark gate
+    needs: rust
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: release
-          save-if: false
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - name: Build bench
-        run: cargo build --release --locked -p gm-engine --bin gm-bench-gate
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-binaries
+          path: dist
+      - name: Restore executable bits (artifacts drop file permissions)
+        run: chmod +x dist/grandmentor dist/gm-bench-gate
       - name: Bench gate
         run: node tools/qa/bench-gate.mjs
         env:
+          BENCH_BIN: dist/gm-bench-gate
           BENCH_RUNS: 5
 
   e2e:
     name: UI sweep (headless Chrome)
+    needs: rust
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: release
-          save-if: false
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - uses: browser-actions/setup-chrome@v2
+      - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
         id: chrome
         with:
           chrome-version: stable
-      - name: Build server
-        run: cargo build --release --locked -p gm-server
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-binaries
+          path: dist
+      - name: Restore executable bits (artifacts drop file permissions)
+        run: chmod +x dist/grandmentor dist/gm-bench-gate
       - name: Sweep every route × language × viewport
-        # The sweep starts its own server on a throwaway database.
+        # The sweep starts the prebuilt server on a free port and a throwaway database.
         # QA_SAMPLE=N visits every N-th route for non-English languages if this gets too slow.
         run: node tools/qa/sweep.mjs
         env:
+          GM_BIN: dist/grandmentor
           CHROME: ${{ steps.chrome.outputs.chrome-path }}
           QA_OUT: target/qa-sweep
           QA_SAMPLE: 1
@@ -117,7 +140,7 @@ jobs:
           fi
       - name: Upload sweep report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qa-sweep
           path: target/qa-sweep
