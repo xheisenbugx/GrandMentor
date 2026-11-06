@@ -175,7 +175,7 @@ pub fn get(bot_id: &str, lang: Lang) -> Option<BotProfile>;
 pub fn choose_move(engine: &mut gm_engine::Engine, content: &gm_content::Content /* English source */, bot_id: &str,
                    start_fen: &str, moves: &[String], lang: Lang) -> Result<BotMove, String>; // chat in `lang`
 ```
-~14 bots from ~250 to ~3000 Elo plus a "coach" bot. Weak bots blunder plausibly (not randomly):
+14 rated bots from 250 to 3000 Elo, the adaptive bot Sparky (`adaptive`, strength follows the user's results) and two coach bots (`coach`, `coach-leo`). Weak bots blunder plausibly (not randomly):
 limited depth/nodes, softmax over multipv with Elo-dependent temperature, occasional missed captures,
 use opening book (content) with style preferences. `think_ms` = suggested UI delay for realism.
 
@@ -299,6 +299,7 @@ match `[a-z0-9_-]{1,16}`, at most 16 modes.
 | GET `/api/puzzles/daily` | – | `Puzzle` (deterministic by date) |
 | GET `/api/puzzles/themes` | – | `[{theme, count}]` |
 | GET `/api/puzzles/rush?count=40` | – | `[Puzzle]` sorted by ascending rating |
+| GET `/api/puzzles/:id` | – | `Puzzle` (`404 {error}` for an unknown id; the static `/api/puzzles/next`, `/daily`, `/themes`, `/rush` paths take precedence) |
 | POST `/api/puzzles/:id/attempt` | `{solved, time_ms}` | `{rating, delta}` |
 | POST `/api/puzzles/rush` | `{score, mode?}` (`mode` e.g. `"3"`, `"5"`, `"survival"`) | `{best}` + with `mode`: `{mode_best, previous_mode_best}` |
 | GET `/api/puzzles/rush/bests` | – | `{bests: {mode: score}, overall}` (`overall` = best over all modes / `rush_best`) |
@@ -310,6 +311,7 @@ match `[a-z0-9_-]{1,16}`, at most 16 modes.
 | GET `/api/openings/:id` | – | `Opening` |
 | GET `/api/openings/lookup?fen=` | – | `OpeningMatch` or `null` |
 | GET `/api/endgames` | – | `[EndgameDrill]` |
+| GET `/api/endgames/:id` | – | `EndgameDrill` in the request's language (`404 {error}` for an unknown id) |
 | GET/PUT `/api/profile` | PUT `ProfilePatch` | `Profile` |
 | POST `/api/profile/puzzles/reset` | `{confirm: true}` (`400` otherwise) | `Profile` — puzzle rating back to 1200 (RD 350), solved/failed 0, attempts and puzzle rating history deleted; Rush scores, games and lessons kept |
 | GET `/api/stats` | – | `Stats` |

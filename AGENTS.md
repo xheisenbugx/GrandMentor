@@ -20,11 +20,17 @@ cargo run --release -p gm-server                 # http://localhost:8080 (run fr
 cargo build --release --workspace
 cargo test --workspace --release
 cargo clippy --workspace --all-targets           # must stay warning-free
-cargo test -p gm-content                         # validates every move in data/*.json
-for f in $(find web/js -name '*.js'); do node --input-type=module --check < "$f" || echo "FAIL $f"; done
+cargo test -p gm-content                         # validates every move in data/*.json and every translation overlay
+cargo deny check                                 # advisories, licenses, sources (install: cargo install cargo-deny --locked)
+node tools/qa/check-syntax.mjs                   # syntax of every JS file in web/, tools/, tests/
+node --test 'tests/js/**/*.test.mjs'             # JS unit tests (zero dependencies)
 ```
 
-Note: plain `node --check file.js` does **not** reliably catch syntax errors in these module files. Use the `--input-type=module` form above.
+Note: plain `node --check file.js` does **not** reliably catch syntax errors in these module files. `check-syntax.mjs`
+uses `node --input-type=module --check` for modules and parses `web/sw.js` (a classic service-worker script) as a script.
+
+The toolchain is pinned in `rust-toolchain.toml` (rustup picks it up automatically; CI uses the same file).
+The minimum supported Rust is `rust-version` in `Cargo.toml`.
 
 ## Git & pull request workflow
 
@@ -76,22 +82,26 @@ CI (`.github/workflows/ci.yml`) runs these on every PR to `dev`/`main`. Run them
 (details in [`tools/qa/README.md`](tools/qa/README.md)):
 
 ```bash
-cargo build --release --workspace
+cargo build --release --workspace --locked
+cargo test --workspace --release --locked
 cargo clippy --workspace --all-targets -- -D warnings
+cargo deny check                 # RustSec advisories, licenses, crate sources (deny.toml)
+node tools/qa/check-syntax.mjs   # every JS file parses
+node --test 'tests/js/**/*.test.mjs'   # JS unit tests for pure modules (tests/js/)
 node tools/qa/check-i18n.mjs     # every language has the same keys/placeholders as English; t() keys exist
-node tools/qa/bench-gate.mjs     # engine speed floor + tactical positions (tools/qa/bench-baseline.json)
-node tools/qa/sweep.mjs          # every route × language × desktop/mobile in headless Chrome, own throwaway DB
+node tools/qa/bench-gate.mjs     # builds gm-bench-gate, then engine speed floor + tactical positions (tools/qa/bench-baseline.json)
+node tools/qa/sweep.mjs          # builds the server, then every route × language × desktop/mobile in headless Chrome, own DB and port
 ```
 
-The sweep fails on console errors, failed API calls, horizontal scroll, elements sticking out of the viewport,
+The sweep fails on routes it had to skip for lack of data, console errors, failed API calls, horizontal scroll, elements sticking out of the viewport,
 raw i18n keys, stray "null"/"undefined" text, oversized icons, English text on non-English pages, bubbles/toasts covering the board and overlapping buttons.
 Its report (`target/qa-sweep/report.md` + screenshots) shows what to fix. Intentional exceptions go in
 `tools/qa/allowlist.json`, each with a reason. New routes in `web/js/app.js` are swept automatically.
 
 ## Definition of done
 
-- [ ] `cargo build`, `cargo test --workspace --release` and `cargo clippy` are clean
-- [ ] All `web/js` files pass the module syntax check
+- [ ] `cargo build`, `cargo test --workspace --release`, `cargo clippy` and `cargo deny check` are clean
+- [ ] `node tools/qa/check-syntax.mjs` and `node --test 'tests/js/**/*.test.mjs'` pass
 - [ ] `node tools/qa/check-i18n.mjs` and `node tools/qa/sweep.mjs` pass (and `node tools/qa/bench-gate.mjs` for engine changes)
 - [ ] UI changes checked in a real browser (desktop and ~390px mobile), no console errors
 - [ ] `docs/CONTRACT.md` updated if an interface changed
