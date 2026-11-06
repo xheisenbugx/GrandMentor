@@ -6,21 +6,46 @@ request to `dev`/`main` and every push to `dev`.
 
 | Script | What it checks | Needs |
 |---|---|---|
+| `check-syntax.mjs` | Every `.js`/`.mjs` file in `web/`, `tools/` and `tests/` parses | Node |
+| `tests/js/*.test.mjs` | Unit tests for pure frontend modules (`node --test`) | Node |
 | `check-i18n.mjs` | Locale catalogs and `t()` keys used in code | Node |
-| `sweep.mjs` | Every route × language × viewport in headless Chrome | release server build, Chrome |
-| `bench-gate.mjs` | Engine speed and tactical strength against `bench-baseline.json` | `gm-bench-gate` release build |
+| `sweep.mjs` | Every route × language × viewport in headless Chrome | Rust (it builds the server), Chrome |
+| `bench-gate.mjs` | Engine speed and tactical strength against `bench-baseline.json` | Rust (it builds `gm-bench-gate`) |
+| `cargo deny check` | RustSec advisories, licenses, crate sources, duplicate versions (`deny.toml`) | `cargo install cargo-deny --locked` |
 
 ## Run it before opening a PR
 
 ```bash
 cargo build --release --workspace
+cargo deny check                      # a few seconds (fetches the RustSec database)
+node tools/qa/check-syntax.mjs        # a few seconds
+node --test 'tests/js/**/*.test.mjs'  # under a second
 node tools/qa/check-i18n.mjs          # a few seconds
-node tools/qa/bench-gate.mjs          # about 5 s
-node tools/qa/sweep.mjs               # about 2 min; starts its own server on a throwaway database
+node tools/qa/bench-gate.mjs          # about 5 s plus the build
+node tools/qa/sweep.mjs               # several minutes; builds and starts its own server on a free port and a throwaway database
 ```
 
+`sweep.mjs` and `bench-gate.mjs` run `cargo build --release` for their binary first (a no-op when it is up to date),
+so they never test a stale build. Set `GM_BIN` / `BENCH_BIN` to use a prebuilt binary as is (CI does this).
+
 Each script exits with `0` when clean and `1` when it found problems. `sweep.mjs` exits with `2` when it
-could not run at all (no Chrome, server did not start).
+could not run at all (no Chrome, the server did not start or exited, `QA_PORT` already in use).
+
+## `check-syntax.mjs`
+
+ES modules are checked with `node --input-type=module --check` (plain `node --check file.js` does not reliably
+treat these files as modules). Two files are classic scripts and are parsed as such, so an `import` in them fails:
+`web/sw.js` (the service worker is registered without `type: 'module'`) and `tools/qa/page-checks.js`
+(evaluated inside the page by the sweep).
+
+## JS unit tests (`tests/js/`)
+
+`node --test 'tests/js/**/*.test.mjs'` runs zero-dependency tests for pure modules: `i18n.js` (lookup, `{placeholders}`,
+plural forms, language switching), the router's `parseHash`/`matchRoute` and the `ROUTES` table in `app.js`,
+the formatting helpers in `ui.js`/`api.js` and `sound-catalog.js`. `tests/js/dom-shim.mjs` provides the few browser
+globals these modules touch at import time (`localStorage`, `<html>`, `window`, `location`) and keeps
+`document.readyState` at `"loading"` so `app.js` never boots. Add a `*.test.mjs` file next to the others for new
+pure helpers; anything that needs real DOM belongs in the sweep.
 
 ## `check-i18n.mjs`
 
@@ -48,7 +73,8 @@ Loads `web/locales/<lang>/index.js` for every language in `web/js/languages.js` 
    - bots, courses and lessons, openings and endgames
    - a game, seeded through the API if the database has none
    - any other `/x/:id` route gets the first item of `GET /api/x`
-3. Skips a route and lists it in the report when no data exists for it.
+3. Skips a route and lists it in the report when no data exists for it. **A skipped route fails the sweep**
+   (it was never tested) unless `allowlist.json` has a `{ "check": "skipped", "route": "<pattern>", "reason": "…" }` entry.
 4. Visits each page in headless Chrome, once per language and per viewport (desktop 1440×900, mobile 390×844 with touch).
 
 Each page is checked for:
@@ -85,7 +111,8 @@ Output goes to `QA_OUT` (default `target/qa-sweep/`):
 | Variable | Default | |
 |---|---|---|
 | `BASE` | – | test an already running server instead of starting one. It seeds a game when the database has none, so point it at a throwaway database |
-| `QA_PORT` | `8199` | port of the server the sweep starts (`GM_BIN` overrides the binary) |
+| `GM_BIN` | – | prebuilt server binary, used as is. Unset: the sweep runs `cargo build --release -p gm-server --bin grandmentor` first |
+| `QA_PORT` | free port | port of the server the sweep starts. Unset: the OS picks a free port. Set: the sweep refuses to start when the port is already taken, so it never tests (and seeds) another server |
 | `CDP_PORT` | `9555` | Chrome DevTools port |
 | `CHROME`, `CHROME_ARGS` | auto | Chrome executable and extra flags. Detection order: macOS app, then `google-chrome`, then `chromium`. On Linux `--no-sandbox --disable-dev-shm-usage` is the default |
 | `QA_LANGS` | all | e.g. `en` or `en,es` |
@@ -100,7 +127,8 @@ Output goes to `QA_OUT` (default `target/qa-sweep/`):
 
 ## `bench-gate.mjs`
 
-`cargo run --release -p gm-engine --bin gm-bench-gate` searches reference positions to a fixed depth.
+`gm-bench-gate` (built with `cargo build --release -p gm-engine --bin gm-bench-gate` unless `BENCH_BIN` points at a
+prebuilt binary) searches reference positions to a fixed depth.
 Fresh tables make the node counts deterministic. It also searches six tactical positions and records
 the expected best moves: mates in 1 and 2, a hanging queen and a knight fork. The gate takes the best
 of `BENCH_RUNS` runs (default 3) and fails when any of these is true:
@@ -119,7 +147,8 @@ Intentional exceptions. Every entry carries a `reason`.
 - `visibleEnglish`: English text allowed on non-English pages, such as "Puzzle Rush" and the app name.
 - `sweep`: suppresses sweep issues. `{ "check", "route", "lang", "viewport", "match", "reason" }`, where `route` is the
   pattern from `app.js`, `match` is a substring of the issue detail, and any omitted field matches everything.
-  Suppressed issues are still counted in the report.
+  Suppressed issues are still counted in the report. `"check": "skipped"` (with `route`, without `lang`/`viewport`)
+  accepts a route the sweep could not visit because no data exists for its parameter; `match` then matches the skip reason.
 
 ## CI
 
@@ -127,10 +156,14 @@ Intentional exceptions. Every entry carries a `reason`.
 
 | Job | Steps |
 |---|---|
-| `rust` | build, test, and `clippy -D warnings` |
-| `js` | module syntax check and `check-i18n` |
-| `bench` | the engine benchmark gate |
-| `e2e` | release build, then the sweep with Chrome from `browser-actions/setup-chrome` |
+| `rust` | pinned toolchain from `rust-toolchain.toml`, release build, uploads `grandmentor` + `gm-bench-gate` as the `release-binaries` artifact, then test and `clippy -D warnings` |
+| `deny` | `cargo deny check` (advisories, bans, sources, licenses) via `EmbarkStudios/cargo-deny-action` |
+| `js` | `check-syntax`, `node --test` unit tests and `check-i18n` |
+| `bench` | after `rust`: the engine benchmark gate on the prebuilt `gm-bench-gate` (`BENCH_BIN`) |
+| `e2e` | after `rust`: the sweep on the prebuilt server (`GM_BIN`) with Chrome from `browser-actions/setup-chrome` |
 
-The `e2e` job uploads the sweep report as the `qa-sweep` artifact and adds a summary to the job page.
+`bench` and `e2e` download the binaries instead of compiling the workspace again, and restore their executable bit
+(artifacts do not keep file permissions). The `e2e` job uploads the sweep report as the `qa-sweep` artifact and adds a
+summary to the job page. Third-party actions are pinned to commit SHAs; Dependabot (`.github/dependabot.yml`) updates
+them and the Cargo dependencies weekly.
 `cargo fmt --check` is not enforced yet because the codebase is not rustfmt-clean. Enable it after a one-off formatting PR.

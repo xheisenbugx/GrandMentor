@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 // Engine benchmark gate. Plain Node 22, no dependencies.
 //
-//   cargo build --release -p gm-engine --bin gm-bench-gate
-//   node tools/qa/bench-gate.mjs            # compare with tools/qa/bench-baseline.json (exit 1 on regression)
+//   node tools/qa/bench-gate.mjs            # build gm-bench-gate, then compare with tools/qa/bench-baseline.json (exit 1 on regression)
 //   node tools/qa/bench-gate.mjs --update   # re-measure and rewrite the baseline (floor = 40% of this machine)
 //
 // The bench binary searches fixed positions to a fixed depth with fresh tables, so node counts are
@@ -10,7 +9,7 @@
 //   - nodes/second (best of BENCH_RUNS runs, default 3) drops below `nps_floor`;
 //   - total nodes exceed `max_total_nodes` (search got much less efficient: pruning/ordering regression);
 //   - any tactical position's best move is not one of the expected moves.
-// Environment: BENCH_BIN (default target/release/gm-bench-gate, built with cargo when missing), BENCH_RUNS.
+// Environment: BENCH_BIN (a prebuilt binary, used as is; default: build target/release/gm-bench-gate first), BENCH_RUNS.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -24,12 +23,15 @@ const FLOOR_RATIO = 0.4;
 const NODES_SLACK = 3;
 
 function binary() {
-  const bin = path.resolve(ROOT, process.env.BENCH_BIN || 'target/release/gm-bench-gate');
-  if (!existsSync(bin)) {
-    console.log('bench: building gm-bench-gate…');
-    execFileSync('cargo', ['build', '--release', '-q', '-p', 'gm-engine', '--bin', 'gm-bench-gate'], { cwd: ROOT, stdio: 'inherit' });
+  if (process.env.BENCH_BIN) {
+    const bin = path.resolve(ROOT, process.env.BENCH_BIN);
+    if (!existsSync(bin)) { console.error(`bench: BENCH_BIN=${process.env.BENCH_BIN} not found`); process.exit(2); }
+    return bin;
   }
-  return bin;
+  // Always build: cargo is a no-op when nothing changed, and benchmarking a stale binary is misleading.
+  console.log('bench: cargo build --release -p gm-engine --bin gm-bench-gate');
+  execFileSync('cargo', ['build', '--release', '-q', '-p', 'gm-engine', '--bin', 'gm-bench-gate'], { cwd: ROOT, stdio: 'inherit' });
+  return path.join(ROOT, 'target/release/gm-bench-gate');
 }
 
 const bin = binary();
