@@ -171,19 +171,18 @@ struct ReviewNextResp {
 }
 
 /// Only one background review at a time (each one already uses the whole engine pool).
-static BUSY: AtomicBool = AtomicBool::new(false);
-
-struct BusyGuard;
+/// Holds `AppState::review_busy` while alive.
+struct BusyGuard(Arc<AtomicBool>);
 
 impl BusyGuard {
-    fn acquire() -> Option<BusyGuard> {
-        BUSY.compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire).ok().map(|_| BusyGuard)
+    fn acquire(flag: &Arc<AtomicBool>) -> Option<BusyGuard> {
+        flag.compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire).ok().map(|_| BusyGuard(Arc::clone(flag)))
     }
 }
 
 impl Drop for BusyGuard {
     fn drop(&mut self) {
-        BUSY.store(false, Ordering::Release);
+        self.0.store(false, Ordering::Release);
     }
 }
 
@@ -195,7 +194,7 @@ async fn review_next(
     if req.skip.len() > MAX_SKIP {
         return Err(ApiError::bad_request(format!("too many ids in skip (max {MAX_SKIP})")));
     }
-    let _guard = BusyGuard::acquire()
+    let _guard = BusyGuard::acquire(&st.review_busy)
         .ok_or_else(|| ApiError::new(StatusCode::CONFLICT, "a review is already running"))?;
 
     let skip = req.skip;
@@ -264,11 +263,12 @@ mod tests {
 
     #[test]
     fn busy_guard_is_exclusive() {
-        let g = BusyGuard::acquire();
+        let flag = Arc::new(AtomicBool::new(false));
+        let g = BusyGuard::acquire(&flag);
         assert!(g.is_some());
-        assert!(BusyGuard::acquire().is_none());
+        assert!(BusyGuard::acquire(&flag).is_none());
         drop(g);
-        let again = BusyGuard::acquire();
+        let again = BusyGuard::acquire(&flag);
         assert!(again.is_some());
     }
 

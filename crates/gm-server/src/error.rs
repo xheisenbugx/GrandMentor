@@ -52,11 +52,13 @@ impl IntoResponse for ApiError {
     }
 }
 
-/// Internal failures (store / IO). The detail is logged; clients get a short message.
+/// Internal failures (store / IO). The full detail is logged; clients only get the generic
+/// `"internal error"` (translated by `lang::localize_errors`) so SQLite messages, file paths
+/// and the like never leave the server.
 impl From<anyhow::Error> for ApiError {
     fn from(e: anyhow::Error) -> Self {
         tracing::error!("internal error: {e:#}");
-        ApiError::internal(format!("internal error: {e}"))
+        ApiError::internal("internal error")
     }
 }
 
@@ -105,3 +107,15 @@ pub struct ApiQuery<T>(pub T);
 #[derive(axum::extract::FromRequestParts)]
 #[from_request(via(axum::extract::Path), rejection(ApiError))]
 pub struct ApiPath<T>(pub T);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal_errors_hide_their_detail() {
+        let e = ApiError::from(anyhow::anyhow!("no such table: games (/home/alex/grandmentor.db)"));
+        assert_eq!(e.status, StatusCode::INTERNAL_SERVER_ERROR);
+        assert_eq!(e.message, "internal error");
+    }
+}

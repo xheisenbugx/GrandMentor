@@ -3,10 +3,12 @@
 //! Security model for sync (see docs/CONTRACT.md "Backup & sync"):
 //! * `POST /api/sync/pair` only answers requests coming from this machine (loopback peer and,
 //!   when an `Origin` is sent, a localhost origin). It creates a short pairing code that lives
-//!   in memory for [`PAIR_TTL`] — one code at a time, wiped after [`MAX_PAIR_FAILURES`] wrong
-//!   guesses or on `DELETE /api/sync/pair`.
+//!   in memory ([`PairState`] in `AppState`) for [`PAIR_TTL`] — one code at a time, wiped on
+//!   `DELETE /api/sync/pair` or after [`MAX_PAIR_FAILURES`] wrong guesses in total. Wrong codes
+//!   are limited per address ([`MAX_PAIR_FAILURES_PER_IP`] per [`PAIR_TTL`] → `429`), so one
+//!   device guessing cannot revoke the code for everybody else.
 //! * `GET /api/sync/snapshot` and `POST /api/sync/merge` always require that code in the
-//!   `X-GM-Pair` header — with or without CORS.
+//!   `X-GM-Pair` header — with or without CORS. `merge` checks it *before* reading the body.
 //! * CORS for those two endpoints (only) is granted to non-local origins when the request
 //!   carries a valid code (preflights: when they announce the `x-gm-pair` header). Setting
 //!   `GM_SYNC_ALLOW_ORIGINS=http://a:8080,http://b:8080` restricts that to the listed origins.
@@ -14,11 +16,12 @@
 //!   user starts it with `GM_HOST=0.0.0.0` (or a LAN address) or turns on phone mode. The access
 //!   PIN gate (`crate::phone::gate`) lets `snapshot` / `merge` through: they have their own code.
 
-use std::net::SocketAddr;
+use std::collections::HashMap;
+use std::net::{IpAddr, SocketAddr};
 use std::sync::OnceLock;
 use std::time::{Duration, Instant};
 
-use axum::body::Bytes;
+use axum::body::{Body, Bytes};
 use axum::extract::{ConnectInfo, DefaultBodyLimit, State};
 use axum::http::request::Parts;
 use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
@@ -26,7 +29,7 @@ use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Extension, Json, Router};
 use gm_content::Lang;
-use gm_store::backup::{self, BackupError, BackupFile, ImportMode, ImportSource};
+use gm_store::backup::{self, BackupError, BackupFile, ImportMode, ImportOptions, ImportSource};
 use parking_lot::Mutex;
 use rand::RngExt;
 use serde::Deserialize;
@@ -39,10 +42,16 @@ use crate::state::AppState;
 
 /// Pairing codes expire after this long.
 pub const PAIR_TTL: Duration = Duration::from_secs(10 * 60);
-/// Wrong codes tolerated before the active code is revoked.
-pub const MAX_PAIR_FAILURES: u32 = 20;
+/// Wrong codes (from all addresses together) tolerated before the active code is revoked.
+pub const MAX_PAIR_FAILURES: u32 = 200;
+/// Wrong codes one address may send per [`PAIR_TTL`] before it has to wait (`429`).
+pub const MAX_PAIR_FAILURES_PER_IP: u32 = 10;
+/// Addresses remembered by the wrong-code limiter.
+const MAX_TRACKED_IPS: usize = 1024;
 /// Request header carrying the pairing code.
 pub const PAIR_HEADER: &str = "x-gm-pair";
+/// The two endpoints other devices call with a pairing code (no access PIN, CORS allowed).
+pub const SYNC_PATHS: &[&str] = &["/api/sync/snapshot", "/api/sync/merge"];
 /// Body limit for the routes that receive a backup file.
 const BACKUP_BODY_LIMIT: usize = backup::MAX_BACKUP_BYTES + 64 * 1024;
 const CODE_ALPHABET: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -56,7 +65,8 @@ pub fn router() -> Router<AppState> {
         .route("/backup/import", post(import).layer(DefaultBodyLimit::max(BACKUP_BODY_LIMIT)))
         .route("/sync/pair", get(pair_status).post(pair_create).delete(pair_revoke))
         .route("/sync/snapshot", get(sync_snapshot))
-        .route("/sync/merge", post(sync_merge).layer(DefaultBodyLimit::max(BACKUP_BODY_LIMIT)))
+        // Reads its body itself (after the pairing check), bounded by BACKUP_BODY_LIMIT.
+        .route("/sync/merge", post(sync_merge))
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -126,8 +136,27 @@ fn file_err(e: &BackupError, lang: Lang) -> ApiError {
         (BackupError::TooLarge, Lang::Pt) => format!("O backup é grande demais (máximo de {mb} MB)."),
         (BackupError::TooLarge, Lang::Fr) => format!("La sauvegarde est trop volumineuse ({mb} Mo maximum)."),
         (BackupError::TooLarge, Lang::De) => format!("Die Sicherung ist zu groß (höchstens {mb} MB)."),
+        (BackupError::RowsFailed { failed }, Lang::En) => format!(
+            "{failed} entries in this backup could not be restored, so nothing was changed. Your current data is untouched."
+        ),
+        (BackupError::RowsFailed { failed }, Lang::Es) => format!(
+            "No se pudieron restaurar {failed} elementos de esta copia, así que no se ha cambiado nada. Tus datos actuales siguen intactos."
+        ),
+        (BackupError::RowsFailed { failed }, Lang::Pt) => format!(
+            "Não foi possível restaurar {failed} itens deste backup, então nada foi alterado. Seus dados atuais continuam intactos."
+        ),
+        (BackupError::RowsFailed { failed }, Lang::Fr) => format!(
+            "{failed} éléments de cette sauvegarde n'ont pas pu être restaurés, donc rien n'a été modifié. Tes données actuelles sont intactes."
+        ),
+        (BackupError::RowsFailed { failed }, Lang::De) => format!(
+            "{failed} Einträge dieser Sicherung konnten nicht wiederhergestellt werden, deshalb wurde nichts geändert. Deine aktuellen Daten sind unverändert."
+        ),
     };
-    let status = if matches!(e, BackupError::TooLarge) { StatusCode::PAYLOAD_TOO_LARGE } else { StatusCode::BAD_REQUEST };
+    let status = match e {
+        BackupError::TooLarge => StatusCode::PAYLOAD_TOO_LARGE,
+        BackupError::RowsFailed { .. } => StatusCode::UNPROCESSABLE_ENTITY,
+        _ => StatusCode::BAD_REQUEST,
+    };
     ApiError::new(status, msg)
 }
 
@@ -182,6 +211,32 @@ async fn export(State(st): State<AppState>, ReqLang(lang): ReqLang, ApiQuery(q):
     Ok(json_attachment(bytes, Some(format!("grandmentor-backup-{}.json", today_iso()))))
 }
 
+/// Backup bodies must be sent as `application/json`: a browser can only send that type to
+/// another site after a CORS preflight, which closes the "simple request" CSRF path.
+fn require_json(headers: &HeaderMap, lang: Lang) -> ApiResult<()> {
+    let ok = headers
+        .get(header::CONTENT_TYPE)
+        .and_then(|v| v.to_str().ok())
+        .and_then(|v| v.split(';').next())
+        .is_some_and(|v| v.trim().eq_ignore_ascii_case("application/json"));
+    if ok {
+        return Ok(());
+    }
+    Err(ApiError::new(
+        StatusCode::UNSUPPORTED_MEDIA_TYPE,
+        tr(
+            lang,
+            [
+                "Send the backup file as JSON (Content-Type: application/json).",
+                "Envía la copia de seguridad como JSON (Content-Type: application/json).",
+                "Envie o backup como JSON (Content-Type: application/json).",
+                "Envoie la sauvegarde en JSON (Content-Type: application/json).",
+                "Sende die Sicherung als JSON (Content-Type: application/json).",
+            ],
+        ),
+    ))
+}
+
 async fn parse_body(body: Bytes, lang: Lang) -> ApiResult<BackupFile> {
     if body.is_empty() {
         return Err(ApiError::bad_request(tr(
@@ -198,7 +253,13 @@ async fn parse_body(body: Bytes, lang: Lang) -> ApiResult<BackupFile> {
     blocking(move || backup::parse_backup(&body)).await?.map_err(|e| file_err(&e, lang))
 }
 
-async fn preview(State(st): State<AppState>, ReqLang(lang): ReqLang, body: Bytes) -> ApiResult<Json<backup::BackupPreview>> {
+async fn preview(
+    State(st): State<AppState>,
+    ReqLang(lang): ReqLang,
+    headers: HeaderMap,
+    body: Bytes,
+) -> ApiResult<Json<backup::BackupPreview>> {
+    require_json(&headers, lang)?;
     let file = parse_body(body, lang).await?;
     let store = st.store.clone();
     let p = blocking(move || store.preview_backup(&file)).await?.map_err(|e| backup_err(e, lang))?;
@@ -213,14 +274,19 @@ struct ImportQuery {
     confirm: Option<String>,
     /// `sync` records the import as a device sync instead of a restore.
     source: Option<String>,
+    /// `1` / `true`: a replace that could not restore every row still commits (otherwise it is
+    /// rolled back and answered with `422`).
+    allow_partial: Option<String>,
 }
 
 async fn import(
     State(st): State<AppState>,
     ReqLang(lang): ReqLang,
     ApiQuery(q): ApiQuery<ImportQuery>,
+    headers: HeaderMap,
     body: Bytes,
 ) -> ApiResult<Json<backup::ImportReport>> {
+    require_json(&headers, lang)?;
     let mode = ImportMode::parse(q.mode.as_deref().unwrap_or("merge"))
         .ok_or_else(|| ApiError::bad_request(tr(
                 lang,
@@ -245,9 +311,12 @@ async fn import(
         )));
     }
     let source = if q.source.as_deref() == Some("sync") { ImportSource::Sync } else { ImportSource::File };
+    let opts = ImportOptions { allow_partial: matches!(q.allow_partial.as_deref(), Some("1" | "true")) };
     let file = parse_body(body, lang).await?;
     let store = st.store.clone();
-    let report = blocking(move || store.import_backup(&file, mode, source)).await?.map_err(|e| backup_err(e, lang))?;
+    let report = blocking(move || store.import_backup_with(&file, mode, source, opts))
+        .await?
+        .map_err(|e| backup_err(e, lang))?;
     Ok(Json(report))
 }
 
@@ -261,41 +330,105 @@ struct Pairing {
     failures: u32,
 }
 
-fn pairing() -> &'static Mutex<Option<Pairing>> {
-    static P: OnceLock<Mutex<Option<Pairing>>> = OnceLock::new();
-    P.get_or_init(|| Mutex::new(None))
+/// Wrong codes from one address within a [`PAIR_TTL`] window.
+#[derive(Clone, Copy)]
+struct Misses {
+    start: Instant,
+    count: u32,
+}
+
+/// The active pairing code and the wrong-code limiter (one per server, in `AppState`).
+#[derive(Default)]
+pub struct PairState {
+    code: Mutex<Option<Pairing>>,
+    misses: Mutex<HashMap<IpAddr, Misses>>,
+}
+
+/// Why a pairing code was not accepted.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PairRejected {
+    /// Wrong, expired or no active code.
+    Wrong,
+    /// This address sent too many wrong codes; try again in this many seconds.
+    Blocked(u64),
+}
+
+impl PairState {
+    /// Seconds `ip` has to wait before it may try a code again.
+    fn blocked(&self, ip: IpAddr, now: Instant) -> Option<u64> {
+        let misses = self.misses.lock();
+        let m = misses.get(&ip)?;
+        let elapsed = now.saturating_duration_since(m.start);
+        (elapsed < PAIR_TTL && m.count >= MAX_PAIR_FAILURES_PER_IP).then(|| PAIR_TTL.saturating_sub(elapsed).as_secs().max(1))
+    }
+
+    fn record_miss(&self, ip: IpAddr, now: Instant) {
+        let mut misses = self.misses.lock();
+        if misses.len() >= MAX_TRACKED_IPS && !misses.contains_key(&ip) {
+            misses.retain(|_, m| now.saturating_duration_since(m.start) < PAIR_TTL);
+            if misses.len() >= MAX_TRACKED_IPS {
+                if let Some(oldest) = misses.iter().min_by_key(|(_, m)| m.start).map(|(k, _)| *k) {
+                    misses.remove(&oldest);
+                }
+            }
+        }
+        let m = misses.entry(ip).or_insert(Misses { start: now, count: 0 });
+        if now.saturating_duration_since(m.start) >= PAIR_TTL {
+            *m = Misses { start: now, count: 0 };
+        }
+        m.count += 1;
+    }
+
+    /// Checks `code` sent by `ip` against the active pairing code. Wrong guesses count towards
+    /// that address's limit and towards revoking the code ([`MAX_PAIR_FAILURES`] in total).
+    pub fn check(&self, ip: IpAddr, code: &str) -> Result<(), PairRejected> {
+        let now = Instant::now();
+        if let Some(wait) = self.blocked(ip, now) {
+            return Err(PairRejected::Blocked(wait));
+        }
+        let code = normalize_code(code);
+        let ok = {
+            let mut guard = self.code.lock();
+            let Some(p) = guard.as_mut() else { return self.miss(ip, now) };
+            if p.expires <= now {
+                *guard = None;
+                return self.miss(ip, now);
+            }
+            // Constant-time comparison over equal-length strings.
+            let ok = code.len() == p.code.len() && code.bytes().zip(p.code.bytes()).fold(0u8, |acc, (a, b)| acc | (a ^ b)) == 0;
+            if !ok {
+                p.failures += 1;
+                if p.failures >= MAX_PAIR_FAILURES {
+                    tracing::warn!("pairing code revoked after {MAX_PAIR_FAILURES} wrong attempts");
+                    *guard = None;
+                }
+            }
+            ok
+        };
+        if ok {
+            self.misses.lock().remove(&ip);
+            Ok(())
+        } else {
+            self.miss(ip, now)
+        }
+    }
+
+    fn miss(&self, ip: IpAddr, now: Instant) -> Result<(), PairRejected> {
+        self.record_miss(ip, now);
+        Err(PairRejected::Wrong)
+    }
+
+    /// Read-only check (CORS predicate): does not count failures.
+    fn code_is_active(&self, code: &str) -> bool {
+        let code = normalize_code(code);
+        let guard = self.code.lock();
+        guard.as_ref().is_some_and(|p| p.expires > Instant::now() && p.code == code)
+    }
 }
 
 /// Upper-case, alphanumerics only (users may type `abc-234` or `ABC 234`).
 fn normalize_code(s: &str) -> String {
     s.chars().filter(char::is_ascii_alphanumeric).take(32).map(|c| c.to_ascii_uppercase()).collect()
-}
-
-/// Whether `code` matches the active pairing code. Wrong guesses count towards revocation.
-pub fn check_pair_code(code: &str) -> bool {
-    let code = normalize_code(code);
-    let mut guard = pairing().lock();
-    let Some(p) = guard.as_mut() else { return false };
-    if p.expires <= Instant::now() {
-        *guard = None;
-        return false;
-    }
-    // Constant-time comparison over equal-length strings.
-    let ok = code.len() == p.code.len() && code.bytes().zip(p.code.bytes()).fold(0u8, |acc, (a, b)| acc | (a ^ b)) == 0;
-    if !ok {
-        p.failures += 1;
-        if p.failures >= MAX_PAIR_FAILURES {
-            *guard = None;
-        }
-    }
-    ok
-}
-
-/// Read-only check (CORS predicate): does not count failures.
-fn code_is_active(code: &str) -> bool {
-    let code = normalize_code(code);
-    let guard = pairing().lock();
-    guard.as_ref().is_some_and(|p| p.expires > Instant::now() && p.code == code)
 }
 
 /// Whether this request was made on this machine (loopback peer, local or absent Origin).
@@ -350,6 +483,7 @@ fn forbid_remote(lang: Lang) -> ApiError {
 }
 
 async fn pair_status(
+    State(st): State<AppState>,
     peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
@@ -357,11 +491,12 @@ async fn pair_status(
     if !is_local_request(peer.map(|Extension(c)| c.0), &headers) {
         return Err(forbid_remote(lang));
     }
-    let guard = pairing().lock();
+    let guard = st.pairing.code.lock();
     Ok(Json(pair_json(guard.as_ref())))
 }
 
 async fn pair_create(
+    State(st): State<AppState>,
     peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
@@ -373,12 +508,15 @@ async fn pair_create(
         let mut rng = rand::rng();
         (0..CODE_LEN).map(|_| CODE_ALPHABET[rng.random_range(0..CODE_ALPHABET.len())] as char).collect()
     };
-    let mut guard = pairing().lock();
+    // A fresh code is a fresh start for devices that mistyped the old one.
+    st.pairing.misses.lock().clear();
+    let mut guard = st.pairing.code.lock();
     *guard = Some(Pairing { code, expires: Instant::now() + PAIR_TTL, failures: 0 });
     Ok(Json(pair_json(guard.as_ref())))
 }
 
 async fn pair_revoke(
+    State(st): State<AppState>,
     peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
@@ -386,46 +524,78 @@ async fn pair_revoke(
     if !is_local_request(peer.map(|Extension(c)| c.0), &headers) {
         return Err(forbid_remote(lang));
     }
-    let mut guard = pairing().lock();
-    *guard = None;
+    *st.pairing.code.lock() = None;
     Ok(Json(pair_json(None)))
 }
 
-/// 401 unless the request carries the active pairing code.
-fn require_pair(headers: &HeaderMap, lang: Lang) -> ApiResult<()> {
-    let code = headers.get(PAIR_HEADER).and_then(|v| v.to_str().ok()).unwrap_or("");
-    if !code.is_empty() && check_pair_code(code) {
-        return Ok(());
-    }
-    Err(ApiError::new(
-        StatusCode::UNAUTHORIZED,
-        tr(
-            lang,
-            [
-                "That pairing code is wrong or has expired. Create a new one on the other device.",
-                "Ese código de enlace no es correcto o ha caducado. Crea uno nuevo en el otro dispositivo.",
-                "Esse código de pareamento está errado ou expirou. Crie um novo no outro dispositivo.",
-                "Ce code d'appairage est incorrect ou a expiré. Crées-en un nouveau sur l'autre appareil.",
-                "Dieser Kopplungscode ist falsch oder abgelaufen. Erstelle auf dem anderen Gerät einen neuen.",
-            ],
-        ),
-    ))
+/// Address used for the wrong-code limiter (in-process callers count as this machine).
+fn peer_ip(peer: Option<&Extension<ConnectInfo<SocketAddr>>>) -> IpAddr {
+    peer.map_or(IpAddr::from([127, 0, 0, 1]), |Extension(c)| c.0.ip().to_canonical())
 }
 
-async fn sync_snapshot(State(st): State<AppState>, ReqLang(lang): ReqLang, headers: HeaderMap) -> ApiResult<Response> {
-    require_pair(&headers, lang)?;
+/// `401` unless the request carries the active pairing code; `429` for an address that sent
+/// too many wrong codes.
+fn require_pair(pairing: &PairState, ip: IpAddr, headers: &HeaderMap, lang: Lang) -> ApiResult<()> {
+    let code = headers.get(PAIR_HEADER).and_then(|v| v.to_str().ok()).unwrap_or("");
+    let result = if code.is_empty() { Err(PairRejected::Wrong) } else { pairing.check(ip, code) };
+    match result {
+        Ok(()) => Ok(()),
+        Err(PairRejected::Blocked(wait)) => {
+            let mins = wait.div_ceil(60);
+            let msg = match lang {
+                Lang::En => format!("Too many wrong pairing codes from this device. Try again in {mins} min."),
+                Lang::Es => format!("Demasiados códigos de enlace incorrectos desde este dispositivo. Vuelve a intentarlo en {mins} min."),
+                Lang::Pt => format!("Códigos de pareamento errados demais neste dispositivo. Tente de novo em {mins} min."),
+                Lang::Fr => format!("Trop de codes d'appairage incorrects depuis cet appareil. Réessaie dans {mins} min."),
+                Lang::De => format!("Zu viele falsche Kopplungscodes von diesem Gerät. Versuch es in {mins} Min. erneut."),
+            };
+            Err(ApiError::new(StatusCode::TOO_MANY_REQUESTS, msg))
+        }
+        Err(PairRejected::Wrong) => Err(ApiError::new(
+            StatusCode::UNAUTHORIZED,
+            tr(
+                lang,
+                [
+                    "That pairing code is wrong or has expired. Create a new one on the other device.",
+                    "Ese código de enlace no es correcto o ha caducado. Crea uno nuevo en el otro dispositivo.",
+                    "Esse código de pareamento está errado ou expirou. Crie um novo no outro dispositivo.",
+                    "Ce code d'appairage est incorrect ou a expiré. Crées-en un nouveau sur l'autre appareil.",
+                    "Dieser Kopplungscode ist falsch oder abgelaufen. Erstelle auf dem anderen Gerät einen neuen.",
+                ],
+            ),
+        )),
+    }
+}
+
+async fn sync_snapshot(
+    State(st): State<AppState>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
+    ReqLang(lang): ReqLang,
+    headers: HeaderMap,
+) -> ApiResult<Response> {
+    require_pair(&st.pairing, peer_ip(peer.as_ref()), &headers, lang)?;
     let store = st.store.clone();
     let bytes = blocking(move || store.export_backup(false)).await?.map_err(|e| backup_err(e, lang))?;
     Ok(json_attachment(bytes, None))
 }
 
+/// Takes the raw body so the pairing code is checked before a single byte is buffered.
 async fn sync_merge(
     State(st): State<AppState>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
     ReqLang(lang): ReqLang,
     headers: HeaderMap,
-    body: Bytes,
+    body: Body,
 ) -> ApiResult<Json<backup::ImportReport>> {
-    require_pair(&headers, lang)?;
+    require_pair(&st.pairing, peer_ip(peer.as_ref()), &headers, lang)?;
+    require_json(&headers, lang)?;
+    let too_large = || file_err(&BackupError::TooLarge, lang);
+    let declared = headers.get(header::CONTENT_LENGTH).and_then(|v| v.to_str().ok()).and_then(|v| v.parse::<u64>().ok());
+    if declared.is_some_and(|n| n > BACKUP_BODY_LIMIT as u64) {
+        return Err(too_large());
+    }
+    // Errors here are the limit or a client that went away; either way nothing was imported.
+    let body = axum::body::to_bytes(body, BACKUP_BODY_LIMIT).await.map_err(|_| too_large())?;
     let file = parse_body(body, lang).await?;
     let store = st.store.clone();
     let mut report = blocking(move || store.import_backup(&file, ImportMode::Merge, ImportSource::Sync))
@@ -458,9 +628,8 @@ fn allowed_origins() -> Option<&'static [String]> {
 /// CORS predicate for non-local origins: only `/api/sync/snapshot` and `/api/sync/merge`, only
 /// for requests carrying a valid pairing code (or preflights announcing the header), and only
 /// for `GM_SYNC_ALLOW_ORIGINS` when that is set.
-pub fn sync_cors_allowed(origin: &HeaderValue, parts: &Parts) -> bool {
-    let path = parts.uri.path();
-    if path != "/api/sync/snapshot" && path != "/api/sync/merge" {
+pub fn sync_cors_allowed(pairing: &PairState, origin: &HeaderValue, parts: &Parts) -> bool {
+    if !SYNC_PATHS.contains(&parts.uri.path()) {
         return false;
     }
     let Ok(origin) = origin.to_str() else { return false };
@@ -471,7 +640,7 @@ pub fn sync_cors_allowed(origin: &HeaderValue, parts: &Parts) -> bool {
         }
     }
     if let Some(code) = parts.headers.get(PAIR_HEADER).and_then(|v| v.to_str().ok()) {
-        return code_is_active(code);
+        return pairing.code_is_active(code);
     }
     // Preflight: the browser announces the header it will send; the real request is checked.
     parts
