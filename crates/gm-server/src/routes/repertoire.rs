@@ -112,22 +112,9 @@ fn now_secs() -> i64 {
         .unwrap_or(0)
 }
 
-/// Pick the message for `lang` from `[en, es, pt, fr, de]`.
-fn msg(lang: Lang, s: [&str; 5]) -> String {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-    .to_string()
-}
-
 fn parse_side(lang: Lang, s: &str) -> ApiResult<Side> {
     Side::parse(s).ok_or_else(|| {
-        ApiError::bad_request(msg(
-            lang,
+        ApiError::bad_request(lang.pick(
             [
                 "`side` must be \"white\" or \"black\"",
                 "`side` debe ser \"white\" o \"black\"",
@@ -135,14 +122,13 @@ fn parse_side(lang: Lang, s: &str) -> ApiResult<Side> {
                 "`side` doit valoir \"white\" ou \"black\"",
                 "`side` muss \"white\" oder \"black\" sein",
             ],
-        ))
+        ).to_string())
     })
 }
 
 fn rep_error(lang: Lang, e: RepError) -> ApiError {
     match e {
-        RepError::NotFound => ApiError::not_found(msg(
-            lang,
+        RepError::NotFound => ApiError::not_found(lang.pick(
             [
                 "repertoire move not found",
                 "No se encontró esa jugada del repertorio",
@@ -150,11 +136,10 @@ fn rep_error(lang: Lang, e: RepError) -> ApiError {
                 "Ce coup du répertoire est introuvable",
                 "Dieser Repertoirezug wurde nicht gefunden",
             ],
-        )),
-        RepError::NoMoves => ApiError::bad_request(msg(
-            lang,
+        ).to_string()),
+        RepError::NoMoves => ApiError::bad_request(lang.pick(
             ["no moves given", "No se indicó ninguna jugada", "Nenhum lance foi informado", "Aucun coup n'a été indiqué", "Es wurden keine Züge angegeben"],
-        )),
+        ).to_string()),
         RepError::TooDeep => ApiError::bad_request(match lang {
             Lang::En => format!("line too long (max {} plies)", gm_store::repertoire::MAX_PLY),
             Lang::Es => format!("Línea demasiado larga (máximo {} medias jugadas)", gm_store::repertoire::MAX_PLY),
@@ -191,8 +176,7 @@ fn rep_error(lang: Lang, e: RepError) -> ApiError {
             Lang::Fr => format!("Le coup {i} est illégal : {m}"),
             Lang::De => format!("Zug {i} ist illegal: {m}"),
         }),
-        RepError::WrongSide => ApiError::bad_request(msg(
-            lang,
+        RepError::WrongSide => ApiError::bad_request(lang.pick(
             [
                 "that move belongs to the other side's repertoire",
                 "Esa jugada pertenece al repertorio del otro color",
@@ -200,9 +184,8 @@ fn rep_error(lang: Lang, e: RepError) -> ApiError {
                 "Ce coup appartient au répertoire de l'autre couleur",
                 "Dieser Zug gehört zum Repertoire der anderen Farbe",
             ],
-        )),
-        RepError::NotACard => ApiError::bad_request(msg(
-            lang,
+        ).to_string()),
+        RepError::NotACard => ApiError::bad_request(lang.pick(
             [
                 "only your own moves can be drilled",
                 "Solo se entrenan tus propias jugadas",
@@ -210,7 +193,7 @@ fn rep_error(lang: Lang, e: RepError) -> ApiError {
                 "Seuls tes propres coups peuvent être entraînés",
                 "Nur deine eigenen Züge können trainiert werden",
             ],
-        )),
+        ).to_string()),
     }
 }
 
