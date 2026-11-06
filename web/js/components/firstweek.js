@@ -8,24 +8,11 @@
 //   createFirstWeekSection()        -> Settings card { el, destroy }
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, toast, confirmDialog } from '../ui.js';
+import { h, icon, disposables, toast, confirmDialog, iconLabel, loadCss, confetti } from '../ui.js';
 import { t, formatDateIntl } from '../i18n.js';
-import { reducedMotion } from '../settings.js';
 
-let cssPromise = null;
 export function ensureFirstWeekCss() {
-  if (cssPromise) return cssPromise;
-  cssPromise = new Promise((resolve) => {
-    if (document.querySelector('link[data-page-css="firstweek"]')) { resolve(); return; }
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/css/firstweek.css';
-    link.dataset.pageCss = 'firstweek';
-    link.onload = () => resolve();
-    link.onerror = () => resolve();
-    document.head.appendChild(link);
-  });
-  return cssPromise;
+  return loadCss('/css/firstweek.css');
 }
 
 /** Status of a day for the UI: done | today | open | locked. */
@@ -63,30 +50,13 @@ export const stepTitle = (id) => t(`firstweek.steps.${id}.title`);
 // ---------------------------------------------------------------------------
 // Celebration
 // ---------------------------------------------------------------------------
-const CONFETTI_COLORS = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)'];
-
-/** Confetti burst (skipped under reduced motion). Returns a cancel function. */
-export function confetti({ pieces = 70 } = {}) {
-  let motionOff = false;
-  try { motionOff = reducedMotion(); } catch { motionOff = false; }
-  if (motionOff) return () => {};
-  const layer = h('div', { class: 'fw-confetti', 'aria-hidden': 'true' });
-  for (let i = 0; i < pieces; i++) {
-    const x = Math.random() * 100;
-    const drift = (Math.random() - 0.5) * 40;
-    const delay = Math.random() * 400;
-    const dur = 1400 + Math.random() * 1200;
-    layer.appendChild(h('i', {
-      style: {
-        left: `${x}vw`, background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-        '--fw-drift': `${drift}vw`, '--fw-spin': `${Math.round(Math.random() * 720 - 360)}deg`,
-        animationDelay: `${delay}ms`, animationDuration: `${dur}ms`,
-      },
-    }));
-  }
-  document.body.appendChild(layer);
-  const timer = setTimeout(() => layer.remove(), 3200);
-  return () => { clearTimeout(timer); layer.remove(); };
+const FW_COLORS = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)'];
+/** Full-screen confetti rain (skipped under reduced motion). Returns a cancel function. */
+function rain(pieces = 70) {
+  return confetti(null, {
+    kind: 'fall', fixed: true, count: pieces, colors: FW_COLORS, fall: '105vh', removeAfter: 3200,
+    piece: (i, r) => ({ '--x': `${r() * 100}vw`, '--dx': `${(r() - 0.5) * 40}vw`, '--d': `${Math.round(r() * 400)}ms`, '--dur': `${Math.round(1400 + r() * 1200)}ms`, '--r': `${Math.round(r() * 720 - 360)}deg` }),
+  }).cancel;
 }
 
 /** Toasts (and confetti) for what this response newly finished. Registers cleanup on `bag`. */
@@ -95,11 +65,11 @@ export function celebrate(state, { bag, quietSteps = false } = {}) {
   const days = Array.isArray(state.newly_completed_days) ? state.newly_completed_days : [];
   if (state.week_just_completed) {
     toast(t('firstweek.celebrate.week'), 'success', { duration: 6000 });
-    const stop = confetti({ pieces: 120 });
+    const stop = rain(120);
     if (bag) bag.add(stop);
   } else if (days.length) {
     toast(t('firstweek.celebrate.day', { day: days[days.length - 1] }), 'success', { duration: 5000 });
-    const stop = confetti();
+    const stop = rain();
     if (bag) bag.add(stop);
   } else if (!quietSteps && Array.isArray(state.newly_done) && state.newly_done.length) {
     toast(t('firstweek.celebrate.step', { step: stepTitle(state.newly_done[state.newly_done.length - 1]) }), 'success');
@@ -158,7 +128,7 @@ export class FirstWeekCard {
     // Nothing open right now: show the day that opens next.
     const day = next ? next.day : (state.started ? (state.days || []).find((d) => !d.unlocked) || null : null);
     const primary = !state.started
-      ? h('a', { class: 'btn btn-primary', href: '#/start', html: icon('play') + `<span>${t('firstweek.card.startBtn')}</span>` })
+      ? h('a', { class: 'btn btn-primary', href: '#/start', html: iconLabel('play', t('firstweek.card.startBtn')) })
       : h('a', { class: 'btn btn-primary', href: next ? next.step.href : '#/start', html: icon(next ? 'play' : 'calendar') + `<span>${next ? t('firstweek.card.continueBtn') : t('firstweek.card.open')}</span>` });
     const dismissBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm fw-dismiss', onClick: () => this.dismiss() }, t('firstweek.dismiss'));
     this.container.hidden = false;
@@ -198,9 +168,9 @@ export function createFirstWeekSection() {
   bag.add(() => ctrl.abort());
   const status = h('div', { class: 'setting-row-desc subtle text-xs' });
   const showBtn = h('button', { type: 'button', class: 'btn btn-secondary', hidden: true }, t('firstweek.settings.show'));
-  const restartBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('refresh') + `<span>${t('firstweek.restart')}</span>` });
+  const restartBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: iconLabel('refresh', t('firstweek.restart')) });
   const el = h('section', { class: 'card' },
-    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', html: icon('flag') + `<span>${t('firstweek.settings.section')}</span>` })),
+    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', html: iconLabel('flag', t('firstweek.settings.section')) })),
     h('div', { class: 'setting-row' },
       h('div', { class: 'setting-row-text' },
         h('div', { class: 'setting-row-title' }, h('a', { href: '#/start' }, t('firstweek.title'))),

@@ -87,21 +87,11 @@
 .dp-day-name { font-size: var(--fs-xs); color: var(--text-subtle); text-transform: uppercase; }
 .dp-day.today .dp-day-name { color: var(--text); font-weight: var(--fw-bold); }
 
-/* ---- confetti ------------------------------------------------------------ */
-.dp-confetti { position: absolute; left: 52px; top: 52px; width: 0; height: 0; pointer-events: none; z-index: 2; }
-.dp-confetti i {
-  position: absolute; left: 0; top: 0; width: 8px; height: 12px; border-radius: 2px; background: var(--c);
-  opacity: 0; animation: dp-confetti 1.5s cubic-bezier(.15, .7, .3, 1) var(--d) forwards;
-}
+/* ---- confetti (ui.js confetti(); bursts from the ring's centre) ---------- */
+.gm-confetti.dp-confetti { inset: auto; left: 52px; top: 52px; width: 0; height: 0; overflow: visible; z-index: 2; --ox: 0px; --oy: 0px; }
 .dp-confetti i:nth-child(3n) { width: 6px; height: 6px; border-radius: 50%; }
-@keyframes dp-confetti {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(0.6); }
-  60% { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 140px)) rotate(var(--r)) scale(1); }
-}
 @keyframes dp-pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .dp-confetti { display: none; }
   .dp-ring.met, .dp-task.done .dp-check { animation: none; }
   .dp-ring-fill { transition: none; }
 }
@@ -175,7 +165,7 @@
   .dp-go { display: none; }
   .dp-task-title, .dp-task-sub { white-space: normal; }
   .dp-ring, .dp-ring-skel { width: 88px; height: 88px; }
-  .dp-confetti { left: 44px; top: 44px; }
+  .gm-confetti.dp-confetti { left: 44px; top: 44px; }
   .dp-heat-summary { padding: var(--sp-3) var(--sp-4); }
   .dp-heat-body { padding: 0 var(--sp-4) var(--sp-4); }
   .dp-heat-meta { display: none; }

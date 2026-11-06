@@ -76,7 +76,7 @@ the colour alone**: always show the symbol (`classificationBadge()`, `.gm-ml-dot
 Piece image URL: `settings.pieceUrl('wK')` → `/img/pieces/<set>/wK.svg`.
 
 ### Typography
-`--font-sans` (Inter + system fallback), `--font-mono`.
+`--font-sans` (Inter + system fallback; Inter is vendored in `web/fonts/` with `@font-face` in `app.css`, never loaded from a CDN), `--font-mono`.
 Sizes: `--fs-xs` 12 · `--fs-sm` 13 · `--fs-md` 15 (body) · `--fs-lg` 17 · `--fs-xl` 20 ·
 `--fs-2xl` 26 · `--fs-3xl` 34 · `--fs-4xl` 44. Weights: `--fw-regular|medium|semibold|bold|black`.
 Line heights: `--lh-tight`, `--lh`.
@@ -375,6 +375,11 @@ Engine lines: `<div class="engine-line"><span class="engine-score [neg]">+0.45</
 | `h(tag, attrs, ...children)` | `class` (string/array), `style` (string/object, supports `--vars`), `dataset`, `html` (trusted), `onClick` etc., `ref`, booleans. SVG tags supported. |
 | `htmlToNode(html)`, `clear(el)` | |
 | `escapeHtml(s)` | always escape user/server text you put into `innerHTML` |
+| `labelHtml(text)`, `iconLabel(icon, text, iconOpts)` | escaped label HTML for `html:` (`iconLabel('play', t('play.start'))`); translations are text, never markup |
+| `tHtml(key, params)` | only for translations that intentionally contain `<strong>` (lesson/opening feedback); escapes params |
+| `loadCss(href)` | load a page stylesheet once (→ Promise); a `<link>` already in `index.html` counts |
+| `confetti(host, opts)` | `.gm-confetti` burst/fall; `{count, colors, kind, piece, later, …}`; skipped under reduced motion |
+| `shortcutAllowed(e)`, `isTypingTarget(el)` | the guard for page keyboard shortcuts (no modifiers, not typing, no modal) |
 | `icon(name, {size, cls, label, strokeWidth})` → SVG string; `iconNode(...)` → Node; `ICON_NAMES` | |
 | `brandMark(size)` | logo SVG |
 | `formatScore(score, {pov, digits})` | `{cp:123}`→`+1.2`, `{mate:3}`→`M3`, `{mate:-2}`→`-M2` |
@@ -434,7 +439,7 @@ Settings keys: `boardTheme` (green|brown|blue|purple|gray), `pieceSet` (cburnett
 - **Touch targets.** Buttons, chips and form controls are at least 40×40 px on phones (≤ 860px wide); `.btn-sm`,
   `.chip`, `.segmented` buttons, move-list moves grow automatically.
 - **Motion.** Don't check `prefers-reduced-motion` yourself: use `reducedMotion()` / `scrollBehavior()` from
-  `settings.js`, and in CSS `:root[data-motion="reduce"]`. Confetti (`.lrn-confetti`, `.pz-confetti`, `.dp-confetti`) is
+  `settings.js`, and in CSS `:root[data-motion="reduce"]`. Confetti (`.gm-confetti`, from `ui.confetti()`) is
   hidden and every animation/transition is cut to 1 ms when motion is reduced; the board sets its slide time to 0.
 - **High contrast.** `:root[data-contrast="high"]` (dark or light) raises text to AAA (`--text`, `--text-muted`,
   `--text-subtle` ≥ 7:1), strengthens borders and dividers, outlines active segmented/nav items and underlines links.

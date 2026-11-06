@@ -22,7 +22,7 @@
 
 import { Chess, DEFAULT_POSITION } from '../../vendor/chess.js';
 import { getSetting, onSettingsChange, reducedMotion } from '../settings.js';
-import { classificationMeta } from '../ui.js';
+import { classificationMeta, loadCss } from '../ui.js';
 import { t } from '../i18n.js';
 import { playSound } from './sound.js';
 import { announceMove, announce, squareLabel, coloredPiece, describeMove } from './announcer.js';
@@ -36,19 +36,9 @@ const SQUARE_RE = /^[a-h][1-8]$/;
 const MAX_SHAPES = 128; // bound on user + programmatic shapes
 const DROP_SLACK = 0.5; // squares: drops this far past the board edge snap to the edge square
 
-let cssInjected = false;
 /** board.css is linked by index.html; inject it once for pages that don't (e.g. dev demos). */
 function ensureCss() {
-  if (cssInjected || typeof document === 'undefined') return;
-  cssInjected = true;
-  const linked = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-    .some((l) => /\/board\.css(\?|$)/.test(l.getAttribute('href') || ''));
-  if (linked) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = new URL('../../css/board.css', import.meta.url).href;
-  link.dataset.gmBoardCss = '';
-  document.head.appendChild(link);
+  return loadCss(new URL('../../css/board.css', import.meta.url).href);
 }
 
 const isSquare = (s) => typeof s === 'string' && SQUARE_RE.test(s);
@@ -1519,7 +1509,9 @@ export class Board {
     const overlay = document.createElement('div');
     overlay.className = premove ? 'gm-promo gm-promo-premove' : 'gm-promo';
     overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-label', t('ui.board.promoteChoose'));
+    const prevFocus = document.activeElement;
     const [col, row] = this._vis(to);
     const down = row === 0;
     const names = { q: t('common.pieces.queen'), n: t('common.pieces.knight'), r: t('common.pieces.rook'), b: t('common.pieces.bishop') };
@@ -1560,15 +1552,26 @@ export class Board {
     overlay.addEventListener('pointerdown', onDown);
     document.addEventListener('keydown', this._onKeyDown);
     this.root.appendChild(overlay);
-    this._promo = { overlay, onClick, onDown, from, to, victim, premove };
+    this._promo = { overlay, onClick, onDown, from, to, victim, premove, prevFocus };
     const first = overlay.querySelector('button');
     if (first) { try { first.focus({ preventScroll: true }); } catch { /* ignore */ } }
   }
 
   _onKeyDown(e) {
-    if (e.key === 'Escape' && this._promo) {
+    const pr = this._promo;
+    if (!pr) return;
+    if (e.key === 'Escape') {
       e.preventDefault();
+      e.stopPropagation();
       this._closePromo(true);
+    } else if (e.key === 'Tab') {
+      // Modal picker: Tab / Shift+Tab cycle through the four choices and never leave it.
+      const btns = Array.from(pr.overlay.querySelectorAll('button'));
+      if (!btns.length) return;
+      e.preventDefault();
+      const i = btns.indexOf(document.activeElement);
+      const next = i < 0 ? btns[0] : btns[(i + (e.shiftKey ? -1 : 1) + btns.length) % btns.length];
+      try { next.focus({ preventScroll: true }); } catch { /* ignore */ }
     }
   }
 
@@ -1582,7 +1585,17 @@ export class Board {
     const hadFocus = pr.overlay.contains(document.activeElement);
     pr.overlay.remove();
     if (pr.victim) pr.victim.el.classList.remove('gm-hidden');
-    if (hadFocus && !this._destroyed) this._later(() => { if (!this._destroyed && !this._promo) this._setFocusSquare(this._focusSq || pr.to); }, 0);
+    if (hadFocus && !this._destroyed) {
+      // Give focus back: to the control that had it before (outside the board: e.g. a move-input
+      // field), or else to the board square, as keyboard play expects.
+      const prev = pr.prevFocus;
+      const outside = prev && prev !== document.body && prev.isConnected && !this.root.contains(prev);
+      this._later(() => {
+        if (this._destroyed || this._promo) return;
+        if (outside && prev.isConnected) { try { prev.focus({ preventScroll: true }); } catch { /* ignore */ } }
+        else this._setFocusSquare(this._focusSq || pr.to);
+      }, 0);
+    }
     if (cancel) {
       const p = this._pieces.get(pr.from);
       if (p) this._placeEl(p.el, pr.from);

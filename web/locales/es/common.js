@@ -75,6 +75,13 @@ export default {
   lessons: { one: '{count} lección', other: '{count} lecciones' },
   minutes: { one: '{count} min', other: '{count} min' },
   seconds: { one: '{count} s', other: '{count} s' },
+  errors: {
+    timeout: 'El servidor tardó demasiado en responder. Inténtalo de nuevo en un momento.',
+    unreachable: 'No se puede conectar con el servidor de GrandMentor. ¿Está en marcha?',
+    requestFailed: 'Algo salió mal (error {status}). Inténtalo de nuevo.',
+    engine: 'El motor tuvo un problema.',
+    engineUnreachable: 'Ahora mismo no se puede conectar con el motor. Comprueba que GrandMentor esté en marcha y vuelve a intentarlo.',
+  },
   pieces: {
     king: 'Rey',
     queen: 'Dama',

@@ -10,9 +10,9 @@ import { Chess } from '/vendor/chess.js';
 import { api, qs, isAbort, EngineClient } from '../api.js';
 import {
   h, icon, toast, modal, confirmDialog, disposables, loadingBlock, emptyState,
-  classificationMeta, mdLite, escapeHtml,
+  classificationMeta, mdLite, escapeHtml, loadCss, confetti, shortcutAllowed,
 } from '../ui.js';
-import { DEFAULT_AVATAR } from '../ui.js';
+import { DEFAULT_AVATAR, engineErrorToast } from '../ui.js';
 import { getSettings } from '../settings.js';
 import { Board } from '../components/board.js';
 import { parseMoveText, looksLikeMove } from '../components/moveinput.js';
@@ -222,19 +222,7 @@ function sanitizePractice(p, moveCount) {
 
 /** Inject /css/play.css once; resolves when loaded (or after a short timeout). */
 function ensureCss() {
-  const existing = document.querySelector('link[href="/css/play.css"]');
-  if (existing) return Promise.resolve();
-  return new Promise((resolve) => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/css/play.css';
-    let done = false;
-    const finish = () => { if (!done) { done = true; clearTimeout(t); resolve(); } };
-    const t = setTimeout(finish, 800);
-    link.addEventListener('load', finish, { once: true });
-    link.addEventListener('error', finish, { once: true });
-    document.head.appendChild(link);
-  });
+  return loadCss('/css/play.css');
 }
 
 function avatarNode(value, cls = '') {
@@ -709,17 +697,12 @@ function renderSetup(host, ctx, { preselectId, onPlay, onResume }) {
   if (!ctx.custom && !ctx.practice) bag.raf(() => { const t = tileById.get(state.botId); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest' }); });
 
   bag.on(window, 'keydown', (e) => {
-    if (e.key === 'Enter' && !e.defaultPrevented && !isTyping(e) && !document.querySelector('.modal-backdrop') && document.activeElement === document.body) play();
+    if (e.key === 'Enter' && shortcutAllowed(e) && document.activeElement === document.body) play();
   });
 
   return bag.dispose;
 }
 
-function isTyping(e) {
-  const t = e.target;
-  if (!t || !(t instanceof Element)) return false;
-  return t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName);
-}
 
 // ---------------------------------------------------------------------------
 // Game screen
@@ -1219,7 +1202,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
         analysis = { fen, best: (line.moves && line.moves[0]) || analysis.best, score: line.score, depth: info.depth || 0 };
         rememberEval(fen, line.score);
         if (evalbar && isLive()) evalbar.set(line.score);
-      }, () => { /* engine hiccup: the bar just stays where it was */ });
+      }, (message) => { if (!bag.disposed) engineErrorToast(message); /* the bar stays where it was */ });
     } catch (e) { console.warn('[play] engine', e); }
   }
 
@@ -1235,7 +1218,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
         if (!line || !line.score) return;
         rememberEval(fen, line.score);
         if (g.fens[currentPly()] === fen) evalbar.set(line.score);
-      }, () => { /* engine hiccup: keep the cached value */ });
+      }, (message) => { if (!bag.disposed) engineErrorToast(message); /* keep the cached value */ });
     } catch (e) { console.warn('[play] engine', e); }
   }
 
@@ -1654,8 +1637,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   }
 
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isTyping(e)) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     if (pendingConfirm) {
       if (e.key === 'Enter') { e.preventDefault(); confirmPending(); return; }
       if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); undoPending(); return; }
@@ -1842,7 +1824,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
   /** Update the estimated rating / adaptive level with the saved game (counted once per game). */
   async function reportResult(gameId) {
     try {
-      const r = await api.post('/api/adaptive/result', { game_id: gameId }, { signal: ctx.signal, timeout: 15000 });
+      const r = await api.post('/api/adaptive/result', { game_id: gameId }, { keepalive: true, timeout: 15000 });
       if (!r || typeof r !== 'object') return;
       if (r.estimate) {
         ctx.estimate = r.estimate;
@@ -1923,7 +1905,7 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
       g.hintsUsed ? h('span', { class: 'badge badge-warning' }, t('play.gameOver.hints', { count: g.hintsUsed })) : null,
       g.takebacksUsed ? h('span', { class: 'badge badge-warning' }, t('play.gameOver.takebacks', { count: g.takebacksUsed })) : null);
     const body = h('div', { class: `go-body go-${o}` },
-      o === 'win' ? confetti() : null,
+      o === 'win' ? confetti(null, { kind: 'fall', duration: 1600, colors: ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--cls-brilliant)', 'var(--cls-mistake)'], later: bag.timeout, removeAfter: 4000 }).el : null,
       h('div', { class: 'result-hero' },
         h('div', { class: 'go-icon', html: icon(o === 'win' ? 'trophy' : o === 'loss' ? 'flag' : 'handshake') }),
         h('div', { class: 'result-hero-title' }, resultHeadline()),
@@ -1942,14 +1924,6 @@ function buildGame(bag, host, ctx, cfg, { onNewBot, onRematch }) {
     gameOverModal = modal({ title: t('play.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; goRatingEl = null; } });
   }
 
-  function confetti() {
-    const wrap = h('div', { class: 'confetti', 'aria-hidden': 'true' });
-    const colors = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--cls-brilliant)', 'var(--cls-mistake)'];
-    for (let i = 0; i < 36; i++) {
-      wrap.appendChild(h('i', { style: { '--x': `${Math.round(Math.random() * 100)}%`, '--d': `${(Math.random() * 0.6).toFixed(2)}s`, '--r': `${Math.round(Math.random() * 720 - 360)}deg`, '--c': colors[i % colors.length], '--dx': `${Math.round(Math.random() * 120 - 60)}px` } }));
-    }
-    return wrap;
-  }
 
   // ---- Persistence (resume unfinished games) -----------------------------
   function persist() {

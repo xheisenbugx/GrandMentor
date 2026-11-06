@@ -33,7 +33,11 @@ Loads `web/locales/<lang>/index.js` for every language in `web/js/languages.js` 
 - plural objects without `other`
 - empty strings
 - locale files that `index.js` does not import
-- keys used in `web/js` that English does not define. This covers `t('a.b')` and `` t(`a.b`) ``. Dynamic keys such as `` t(`play.modes.${id}.label`) `` or `t('nav.' + k)` are checked by prefix.
+- keys used in `web/js` that English does not define. This covers `t('a.b')` and `` t(`a.b`) `` (also `tHtml`, `tOr`). Dynamic keys such as `` t(`play.modes.${id}.label`) `` or `t('nav.' + k)` are checked by prefix.
+- a raw `${t(...)}` inside an HTML template literal (one that contains a tag, or is the value of `html:` /
+  `innerHTML`). Translations are text: wrap them in `escapeHtml()`, or use `labelHtml(text)` /
+  `iconLabel(icon, text)` from `web/js/ui.js`. A message that intentionally contains markup (`<strong>`)
+  goes through `tHtml(key, params)`, which escapes the parameters.
 
 **Warnings** (`--verbose` lists them):
 - list messages whose length differs from English
@@ -117,6 +121,7 @@ machine and commit the new `bench-baseline.json`. Add positions to `TACTICS` in
 Intentional exceptions. Every entry carries a `reason`.
 - `untranslated`: i18n keys whose translation may equal English. A trailing `*` matches a prefix.
 - `visibleEnglish`: English text allowed on non-English pages, such as "Puzzle Rush" and the app name.
+- `rawHtmlT`: raw `${t(...)}` allowed in an HTML template, `{ "file": "web/js/…", "key": "a.b", "reason" }` (`"key": "*"` covers the file).
 - `sweep`: suppresses sweep issues. `{ "check", "route", "lang", "viewport", "match", "reason" }`, where `route` is the
   pattern from `app.js`, `match` is a substring of the issue detail, and any omitted field matches everything.
   Suppressed issues are still counted in the report.

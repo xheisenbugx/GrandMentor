@@ -5,7 +5,7 @@
 import { api, qs, isAbort } from '../api.js';
 import {
   h, icon, pageHeader, emptyState, skeleton, disposables, debounce, modal, confirmDialog,
-  toast, escapeHtml,
+  toast, escapeHtml, loadCss,
 } from '../ui.js';
 import { getSetting, pieceUrl } from '../settings.js';
 import { t, getLocale, formatDateIntl } from '../i18n.js';
@@ -37,27 +37,9 @@ export function formatRelativeIntl(date) {
 // ---------------------------------------------------------------------------
 
 /** Load web/css/hub.css once (it is not linked from index.html). */
-let hubCssPromise = null;
 /** Load web/css/hub.css once (it is not linked from index.html). Resolves when loaded (or after 1.5s). */
 export function ensureHubCss() {
-  if (hubCssPromise) return hubCssPromise;
-  const existing = document.querySelector('link[data-hub-css], link[href$="/css/hub.css"]');
-  if (existing && existing.sheet) { hubCssPromise = Promise.resolve(); return hubCssPromise; }
-  hubCssPromise = new Promise((resolve) => {
-    const link = existing || document.createElement('link');
-    let timer = 0;
-    const done = () => { clearTimeout(timer); link.removeEventListener('load', done); link.removeEventListener('error', done); resolve(); };
-    link.addEventListener('load', done);
-    link.addEventListener('error', done);
-    timer = setTimeout(done, 1500);
-    if (!existing) {
-      link.rel = 'stylesheet';
-      link.href = '/css/hub.css';
-      link.dataset.hubCss = '1';
-      document.head.appendChild(link);
-    }
-  });
-  return hubCssPromise;
+  return loadCss('/css/hub.css');
 }
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';

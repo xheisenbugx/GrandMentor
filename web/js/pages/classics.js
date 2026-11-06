@@ -2,7 +2,7 @@
 // Contract: docs/CONTRACT.md "Classic games" (GET /api/classics, GET /api/classics/:id,
 // POST /api/classics/:id/progress).
 
-import { h, icon, disposables, mdLite, escapeHtml, emptyState, loadingBlock, pageHeader, toast, formatSan } from '../ui.js';
+import { h, icon, disposables, mdLite, escapeHtml, emptyState, loadingBlock, pageHeader, toast, formatSan, engineErrorToast, loadCss, shortcutAllowed } from '../ui.js';
 import { api, isAbort, EngineClient } from '../api.js';
 import { t, formatNumber } from '../i18n.js';
 import { getSetting, pieceUrl } from '../settings.js';
@@ -27,12 +27,7 @@ const ENGINE_MOVETIME = 700;
 const MAX_SEARCH = 60;
 
 function ensureCss() {
-  if (document.querySelector('link[data-gm-css="classics"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/classics.css';
-  link.dataset.gmCss = 'classics';
-  document.head.appendChild(link);
+  return loadCss('/css/classics.css');
 }
 
 function readPrefs() {
@@ -641,7 +636,7 @@ async function mountPlayer(root, classicId) {
   function recordAnswer(ply, correct) {
     if (firstAnswers.has(ply)) return;
     firstAnswers.set(ply, correct);
-    api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { answer: { ply, correct } }, { signal: ctrl.signal }).catch(() => {});
+    api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { answer: { ply, correct } }, { keepalive: true }).catch(() => {});
   }
 
   function onUserMove(mv) {
@@ -727,7 +722,7 @@ async function mountPlayer(root, classicId) {
         if (bag.disposed || fens[cur] !== fen) return;
         const line = Array.isArray(info.lines) ? info.lines[0] : null;
         if (line && line.score) evalBar.set(line.score, { fen });
-      }, () => {});
+      }, (message) => { if (!bag.disposed) engineErrorToast(message); });
     }, 180);
   }
 
@@ -736,7 +731,7 @@ async function mountPlayer(root, classicId) {
     cancel(saveTimer);
     saveTimer = later(() => {
       saveTimer = 0;
-      api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { ply: cur }, { signal: ctrl.signal }).catch(() => {});
+      api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { ply: cur }, { keepalive: true }).catch(() => {});
     }, SAVE_DEBOUNCE_MS);
   }
 
@@ -744,7 +739,7 @@ async function mountPlayer(root, classicId) {
     stopPlay();
     cancel(saveTimer);
     saveTimer = 0;
-    api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { ply: N, completed: true }, { signal: ctrl.signal })
+    api.post(`/api/classics/${encodeURIComponent(game.id)}/progress`, { ply: N, completed: true }, { keepalive: true })
       .then(() => {
         if (bag.disposed || completedBefore) return;
         completedBefore = true;
@@ -757,10 +752,7 @@ async function mountPlayer(root, classicId) {
   // ---- Wire up -----------------------------------------------------------------------------
   evalInput.addEventListener('change', () => setEval(evalInput.checked));
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tag = (e.target && e.target.tagName) || '';
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable)) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     if (e.key === 'ArrowLeft') { e.preventDefault(); if (cur > 0) userGo(cur - 1); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); stopPlay(); stepForward(); }
     else if (e.key === 'Home') { e.preventDefault(); userGo(0); }

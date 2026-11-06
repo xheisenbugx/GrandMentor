@@ -16,6 +16,18 @@ const PREFETCH_DELAY_MS = 4000;
 const QUEUE_TOAST_GAP_MS = 10000;
 
 let ctx = null;
+/** Another tab installed an update: this tab's modules are from the old version (see needsReload()). */
+let staleShell = false;
+
+/**
+ * True when a new service worker took control of this tab without this tab asking for it (the
+ * player clicked "Reload" in another tab). The old shell cache is gone by then, so mixing new page
+ * modules with this tab's old shared modules would fail: the router does a full reload on the next
+ * navigation instead.
+ */
+export function needsReload() {
+  return staleShell;
+}
 
 function isStandalone() {
   return window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
@@ -313,8 +325,12 @@ async function registerWorker() {
   const { signal } = ctx;
   const sw = navigator.serviceWorker;
   sw.addEventListener('message', onWorkerMessage, { signal });
+  // The first controllerchange on a fresh install (clients.claim) is not an update: no old modules.
+  let hadController = !!sw.controller;
   sw.addEventListener('controllerchange', () => {
-    if (ctx?.reloadRequested) location.reload();
+    if (ctx?.reloadRequested) { location.reload(); return; }
+    if (hadController) staleShell = true;
+    hadController = true;
   }, { signal });
 
   let reg;

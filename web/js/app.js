@@ -7,7 +7,7 @@ import { announce, clearAnnouncements } from './components/announcer.js';
 import { api } from './api.js';
 import { getSettings, setSetting, onSettingsChange } from './settings.js';
 import { initI18n, onLanguageChange, t } from './i18n.js';
-import { initPwa } from './pwa.js';
+import { initPwa, needsReload } from './pwa.js';
 
 // ---------------------------------------------------------------------------
 // Navigation model (labels are i18n keys nav.<key>, resolved at render time)
@@ -297,7 +297,20 @@ function setTitle(text) {
   document.title = text ? `${text} · ${APP_NAME}` : t('nav.defaultTitle', { app: APP_NAME });
 }
 
+const RELOAD_FLAG = 'gm-import-reload';
+/** 'get' → flag set?  'set' → true only if stored (no storage = no auto-reload, never a loop).  'clear'. */
+function sessionFlag(op) {
+  try {
+    if (op === 'get') return sessionStorage.getItem(RELOAD_FLAG) === '1';
+    if (op === 'set') { sessionStorage.setItem(RELOAD_FLAG, '1'); return sessionStorage.getItem(RELOAD_FLAG) === '1'; }
+    sessionStorage.removeItem(RELOAD_FLAG);
+  } catch { /* storage blocked */ }
+  return false;
+}
+
 async function handleRoute() {
+  // Another tab installed an update: load the new version as a whole instead of mixing modules.
+  if (needsReload()) { location.reload(); return; }
   const token = ++navToken;
   const { path, segments, query } = parseHash();
   const match = matchRoute(segments);
@@ -330,7 +343,17 @@ async function handleRoute() {
   showProgress(true);
 
   try {
-    const mod = await import(`./pages/${route.page}.js`);
+    let mod;
+    try {
+      mod = await import(`./pages/${route.page}.js`);
+    } catch (importErr) {
+      // A page module that can't load after an update ("does not provide an export named …",
+      // failed fetch of a deleted cached file): reload the whole app once. The session flag stops
+      // a reload loop when the module is genuinely broken.
+      if (token === navToken && !sessionFlag('get') && sessionFlag('set')) { location.reload(); return; }
+      throw importErr;
+    }
+    sessionFlag('clear');
     if (token !== navToken) return;
     if (typeof mod.mount !== 'function') throw new Error(`Page "${route.page}" has no mount() export`);
     if (mod.title) setTitle(typeof mod.title === 'function' ? mod.title(params, query) : mod.title);
@@ -393,7 +416,9 @@ window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason;
   if (r && r.name === 'AbortError') { e.preventDefault(); return; }
   console.error('[unhandled]', r);
-  reportGlobal(r && r.message ? r.message : tOr('common.somethingWentWrong', 'Something went wrong'));
+  // Only API errors carry text meant for players (translated client-side or by the server); a raw
+  // JS error message ("Cannot read properties of undefined") would be English jargon.
+  reportGlobal(r && r.name === 'ApiError' && r.message ? r.message : tOr('common.somethingWentWrong', 'Something went wrong'));
 });
 window.addEventListener('error', (e) => {
   if (!e.error) return; // resource load errors etc.

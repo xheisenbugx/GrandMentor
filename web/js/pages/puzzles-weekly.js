@@ -6,7 +6,7 @@
 // Views: overview (why these themes, progress, start) → solver (reuses PuzzleRunner) → summary.
 // Every view owns a disposables() bag; fetches share the page AbortController.
 
-import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, confirmDialog } from '../ui.js';
+import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, confirmDialog, iconLabel, shortcutAllowed } from '../ui.js';
 import { api, isAbort } from '../api.js';
 import { createMoveInput } from '../components/moveinput.js';
 import { t, formatDateIntl, formatNumber } from '../i18n.js';
@@ -184,8 +184,8 @@ export function mountWeekly(root, { bag, signal }) {
         h('p', { class: 'subtle text-sm' }, t('weekly.summary.again')),
         h('div', { class: 'row row-wrap wk-hero-actions' },
           btn(t('weekly.newSet'), 'refresh', 'primary', () => newSet()),
-          h('a', { class: 'btn btn-secondary', href: '#/insights', html: icon('chart') + `<span>${t('weekly.summary.insights')}</span>` }),
-          h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: icon('grid') + `<span>${t('weekly.summary.backToPuzzles')}</span>` })))));
+          h('a', { class: 'btn btn-secondary', href: '#/insights', html: iconLabel('chart', t('weekly.summary.insights')) }),
+          h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: iconLabel('grid', t('weekly.summary.backToPuzzles')) })))));
   }
 
   // ----- Solver -----
@@ -213,9 +213,9 @@ export function mountWeekly(root, { bag, signal }) {
     const actions = h('div', { class: 'pz-actions' });
 
     const panel = h('div', { class: 'panel grow' },
-      h('div', { class: 'panel-header', html: icon('calendar') + `<span>${t('weekly.title')}</span>` },
+      h('div', { class: 'panel-header', html: iconLabel('calendar', t('weekly.title')) },
         h('div', { class: 'spacer' }),
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('grid') + `<span>${t('weekly.overview')}</span>`, onClick: () => showOverview() })),
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('grid', t('weekly.overview')), onClick: () => showOverview() })),
       h('div', { class: 'panel-body stack' }, head, status, moveInput.el, after),
       h('div', { class: 'panel-footer' }, actions));
 
@@ -262,7 +262,7 @@ export function mountWeekly(root, { bag, signal }) {
       st.recorded = true;
       st.saving = true;
       try {
-        const res = await api.post('/api/weekly/attempt', { set_id: set.set_id, index: item.index, solved, time_ms: Math.round(stopwatch.ms) }, { signal });
+        const res = await api.post('/api/weekly/attempt', { set_id: set.set_id, index: item.index, solved, time_ms: Math.round(stopwatch.ms) }, { keepalive: true });
         if (bag.disposed || !res) return;
         if (res.item) set.items[index] = res.item;
         if (res.progress) set.progress = res.progress;
@@ -353,7 +353,7 @@ export function mountWeekly(root, { bag, signal }) {
 
       const extra = [];
       if (done && item.kind === 'mistake' && item.game?.best_san) extra.push(h('div', { class: 'wk-best' }, h('span', { html: icon('star') }), h('span', null, t('weekly.bestWas', { best: item.game.best_san }))));
-      if (done && item.kind === 'mistake' && item.game?.game_id) extra.push(h('a', { class: 'btn btn-ghost btn-sm', href: `#/review/${encodeURIComponent(item.game.game_id)}`, html: icon('analysis') + `<span>${t('puzzles.mistakes.openReview')}</span>` }));
+      if (done && item.kind === 'mistake' && item.game?.game_id) extra.push(h('a', { class: 'btn btn-ghost btn-sm', href: `#/review/${encodeURIComponent(item.game.game_id)}`, html: iconLabel('analysis', t('puzzles.mistakes.openReview')) }));
       if (st.ratingMsg) extra.push(h('div', { class: 'subtle text-sm tabular' }, st.ratingMsg));
       if (done || st.saving) extra.push(progressBlock());
       after.replaceChildren(...extra);
@@ -400,10 +400,7 @@ export function mountWeekly(root, { bag, signal }) {
 
     vb.on(flipBtn, 'click', () => board.flip());
     vb.on(window, 'keydown', (e) => {
-      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
-      const tg = e.target;
-      if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
-      if (document.querySelector('.modal-backdrop')) return;
+      if (!shortcutAllowed(e)) return;
       const k = e.key.toLowerCase();
       const done = ['solved', 'solvedLate', 'solution', 'error'].includes(st.feedback);
       if (k === 'f') { board.flip(); e.preventDefault(); }

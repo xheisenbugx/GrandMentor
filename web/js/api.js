@@ -2,6 +2,7 @@
 // Contract: docs/CONTRACT.md §4–§5.
 
 import { getSetting } from './settings.js';
+import { t } from './i18n.js';
 
 const DEFAULT_TIMEOUT_MS = 60000;
 
@@ -13,6 +14,16 @@ export class ApiError extends Error {
     this.status = status;
     this.data = data;
   }
+}
+
+/**
+ * Translated client-side error text, resolved at call time. Falls back to English when i18n has not
+ * loaded yet (an error during boot) so a raw key such as "common.errors.timeout" is never shown.
+ */
+function tr(key, fallback, params) {
+  let v = key;
+  try { v = t(key, params); } catch { /* i18n not ready */ }
+  return v === key ? fallback : v;
 }
 
 /**
@@ -36,6 +47,9 @@ async function request(method, path, body, opts = {}) {
   }
 
   const init = { method, headers: { Accept: 'application/json', 'Accept-Language': getSetting('language') || 'en' }, signal: ctrl.signal };
+  // keepalive: the request outlives the page (progress saves that must land even when the player
+  // navigates away right after finishing). Browsers cap keepalive bodies at 64 KB.
+  if (opts.keepalive) init.keepalive = true;
   if (body !== undefined) {
     init.headers['Content-Type'] = 'application/json';
     init.body = JSON.stringify(body);
@@ -47,12 +61,12 @@ async function request(method, path, body, opts = {}) {
   } catch (e) {
     if (ctrl.signal.aborted) {
       const reason = ctrl.signal.reason;
-      if (reason?.name === 'TimeoutError' && !outer?.aborted) throw new ApiError('The server took too long to respond.', 0);
+      if (reason?.name === 'TimeoutError' && !outer?.aborted) throw new ApiError(tr('common.errors.timeout', 'The server took too long to respond.'), 0);
       // Caller aborted: always surface a standard AbortError so callers can ignore it via isAbort().
       throw new DOMException('Request aborted', 'AbortError');
     }
     signalReach(false);
-    throw new ApiError('Cannot reach the GrandMentor server. Is it running?', 0);
+    throw new ApiError(tr('common.errors.unreachable', 'Cannot reach the GrandMentor server. Is it running?'), 0);
   } finally {
     if (timer) clearTimeout(timer);
     if (outer) outer.removeEventListener('abort', onOuterAbort);
@@ -74,7 +88,7 @@ async function request(method, path, body, opts = {}) {
     if (res.status === 401 && data && typeof data === 'object' && data.login === '/login') location.assign('/login');
     const msg = (data && typeof data === 'object' && data.error) ? String(data.error)
       : (typeof data === 'string' && data && data.length < 300) ? data
-      : `Request failed (${res.status})`;
+      : tr('common.errors.requestFailed', `Request failed (${res.status})`, { status: res.status });
     throw new ApiError(msg, res.status, data);
   }
   return data;
@@ -82,7 +96,9 @@ async function request(method, path, body, opts = {}) {
 
 /**
  * REST client. Paths are absolute like '/api/games'. Throws ApiError(message) on non-2xx.
- * Optional last arg: { signal?: AbortSignal, timeout?: ms }.
+ * Optional last arg: { signal?: AbortSignal, timeout?: ms, keepalive?: boolean }.
+ * Progress writes (attempts, scores, lesson completion) pass { keepalive: true } and no page signal
+ * so leaving the page right after finishing doesn't cancel the save; guard only the UI update.
  */
 export const api = {
   get: (path, opts) => request('GET', path, undefined, opts),
@@ -113,6 +129,8 @@ export function isAbort(e) {
 
 const BACKOFF_BASE_MS = 500;
 const BACKOFF_MAX_MS = 10000;
+/** Consecutive connection attempts that never opened before giving up and reporting onError. */
+const MAX_FAILED_CONNECTS = 5;
 
 /**
  * One lazily-connected websocket to /api/engine/ws.
@@ -120,7 +138,9 @@ const BACKOFF_MAX_MS = 10000;
  *   engine.analyze(fen, { multipv: 3, movetime_ms: 4000 }, (info, done) => { ... });
  *   engine.stop();   engine.close();   // close() in page cleanup!
  * Only the latest analyze() request receives callbacks; stale ids are ignored.
- * Reconnects with exponential backoff while a request is active and re-sends it.
+ * Reconnects with exponential backoff while a request is active and re-sends it. After
+ * MAX_FAILED_CONNECTS attempts in a row that never open (server down, revoked phone sign-in), it
+ * stops, calls the active request's onError(message) and forgets it; the next analyze() tries again.
  */
 export class EngineClient {
   constructor({ url } = {}) {
@@ -130,6 +150,8 @@ export class EngineClient {
     this._active = null;          // { id, msg, onInfo, onError }
     this._closed = false;
     this._attempts = 0;
+    this._failedConnects = 0;     // consecutive sockets that closed before 'open'
+    this._wsOpened = false;       // whether the current socket reached 'open'
     this._reconnectTimer = null;
     this._onOpen = this._handleOpen.bind(this);
     this._onMessage = this._handleMessage.bind(this);
@@ -186,10 +208,11 @@ export class EngineClient {
     try {
       ws = new WebSocket(this._url);
     } catch (e) {
-      this._scheduleReconnect();
+      this._connectFailed();
       return;
     }
     this._ws = ws;
+    this._wsOpened = false;
     ws.addEventListener('open', this._onOpen);
     ws.addEventListener('message', this._onMessage);
     ws.addEventListener('close', this._onClose);
@@ -220,6 +243,8 @@ export class EngineClient {
 
   _handleOpen() {
     this._attempts = 0;
+    this._failedConnects = 0;
+    this._wsOpened = true;
     if (this._active) this._send(this._active.msg);
   }
 
@@ -237,19 +262,42 @@ export class EngineClient {
       }
     } else if (msg.type === 'error') {
       this._active = null;
-      const text = msg.message || msg.error || 'Engine error';
+      const text = msg.message || msg.error || tr('common.errors.engine', 'The engine had a problem.');
       if (a.onError) { try { a.onError(text); } catch (e) { console.error(e); } }
       else console.warn('[engine]', text);
     }
   }
 
   _handleClose(ev) {
+    const opened = this._wsOpened;
+    this._wsOpened = false;
     this._teardownSocket(false);
     if (this._closed) return;
     // Dropped while waiting for results (1006 = abnormal): maybe the server stopped.
     if (this._active && ev && ev.code === 1006) signalReach(false);
+    if (!opened) { this._connectFailed(); return; }
     // Only reconnect if someone is waiting for results; otherwise connect lazily next time.
     if (this._active) this._scheduleReconnect();
+  }
+
+  /** A socket that never opened (refused upgrade, 401, server down): retry a few times, then give up. */
+  _connectFailed() {
+    if (this._closed) return;
+    this._failedConnects++;
+    if (this._failedConnects < MAX_FAILED_CONNECTS) {
+      if (this._active) this._scheduleReconnect();
+      return;
+    }
+    this._failedConnects = 0;
+    this._attempts = 0;
+    const a = this._active;
+    this._active = null;
+    // The upgrade's HTTP status isn't visible to scripts: ask the REST API, which redirects a
+    // revoked phone sign-in to /login (and lets pwa.js show the "server isn't running" banner).
+    request('GET', '/api/health', undefined, { timeout: 5000 }).catch(() => {});
+    if (a && a.onError) {
+      try { a.onError(tr('common.errors.engineUnreachable', 'Can’t reach the engine right now. Check that GrandMentor is running, then try again.')); } catch (e) { console.error(e); }
+    }
   }
 
   _scheduleReconnect() {

@@ -6,7 +6,7 @@
 // White area grows from the bottom; black fills the top. Dots mark notable moves.
 // Owns: a ResizeObserver and a handful of DOM listeners — all removed in destroy().
 
-import { winPercent, formatScore, classificationMeta } from '../ui.js';
+import { winPercent, formatScore, classificationMeta, loadCss } from '../ui.js';
 import { t } from '../i18n.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -14,12 +14,7 @@ const DOT_CLASSES = new Set(['brilliant', 'great', 'miss', 'mistake', 'blunder']
 const MAX_POINTS = 1200; // hard bound for absurdly long inputs
 
 export function ensureAnalysisCss() {
-  if (typeof document === 'undefined' || document.getElementById('gm-analysis-css')) return;
-  const link = document.createElement('link');
-  link.id = 'gm-analysis-css';
-  link.rel = 'stylesheet';
-  link.href = '/css/analysis.css';
-  document.head.appendChild(link);
+  return loadCss('/css/analysis.css');
 }
 
 function svg(tag, attrs = {}) {

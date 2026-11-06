@@ -423,6 +423,7 @@ node tools/qa/bench-gate.mjs     # engine speed and tactics (for engine changes)
 - **Puzzles** — [Lichess puzzle database](https://database.lichess.org/#puzzles) (CC0). See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
 - **Pieces** — from [lichess-org/lila](https://github.com/lichess-org/lila): *cburnett* (Colin M.L. Burnett, GPLv2+), *merida* (Armando Hernandez Marroquin, GPLv2+), *chessnut* (Alexis Luengas, Apache 2.0). See [`web/img/pieces/LICENSE.md`](web/img/pieces/LICENSE.md).
 - **[chess.js](https://github.com/jhlywa/chess.js)** v1.4.0 (BSD-2-Clause) and **[shakmaty](https://github.com/niklasf/shakmaty)** (GPL-3.0+).
+- **Font** — [Inter](https://github.com/rsms/inter) by Rasmus Andersson (SIL Open Font License 1.1), bundled in `web/fonts/` so the app works offline. See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
 - Opening names follow the standard ECO classification. The *Opera Game* in the screenshots is Morphy vs. Duke Karl / Count Isouard, Paris 1858.
 
 <div align="center">

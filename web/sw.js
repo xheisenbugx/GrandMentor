@@ -3,7 +3,7 @@
  *
  * Caches (all bounded, all prefixed "gm-"; anything else with that prefix is deleted on activate):
  *   gm-shell-<BUILD>  app shell precached from /precache-manifest.json (exact file list, versioned)
- *   gm-runtime-v1     same-origin static files missed by the precache + Google Fonts (max 120)
+ *   gm-runtime-v1     same-origin static files missed by the precache (max 120; fonts are local)
  *   gm-content-v1     read-only content, stale-while-revalidate, keyed per language (max 250)
  *   gm-api-v1         other GET /api responses, network-first with offline fallback (max 80)
  * Never cached: POST/PUT/DELETE, /api/health, the engine WebSocket, mentor, backups/exports.
@@ -30,7 +30,6 @@ const PREFETCH_EVERY_MS = 12 * 3600 * 1000;
 const QUEUE_MAX = 200;
 const QUEUE_MAX_AGE_MS = 30 * 24 * 3600 * 1000;
 const QUEUE_MAX_BODY = 8 * 1024;
-const FONT_HOSTS = new Set(['fonts.googleapis.com', 'fonts.gstatic.com']);
 
 // GET /api paths that must always hit the network (live data, streams, large downloads).
 const API_BYPASS = [/^\/api\/health$/, /^\/api\/engine\//, /^\/api\/mentor\//, /^\/api\/backup/, /\/export/, /\/pgn$/];
@@ -113,10 +112,7 @@ self.addEventListener('fetch', (event) => {
     }
     return; // never cache other methods
   }
-  if (!sameOrigin) {
-    if (FONT_HOSTS.has(url.hostname)) event.respondWith(staleWhileRevalidate(event, req, RUNTIME, req.url, true));
-    return;
-  }
+  if (!sameOrigin) return;
   const path = url.pathname;
   if (path.startsWith('/api/')) {
     if (API_BYPASS.some((re) => re.test(path)) || req.headers.get('upgrade')) return;
@@ -413,6 +409,10 @@ async function postOrQueue(req, url) {
   try {
     return await fetch(req);
   } catch (e) {
+    // The page cancelled the request (AbortError): the server may already have it, and replaying a
+    // non-idempotent write (an attempt, a Rush score) later would count it twice. Only real network
+    // failures are queued.
+    if (e && e.name === 'AbortError') throw e;
     if (body.length > QUEUE_MAX_BODY) throw e;
     await enqueue({ path: url.pathname + url.search, body, lang: req.headers.get('accept-language') || 'en', at: Date.now() });
     try { if (self.registration.sync) await self.registration.sync.register('gm-replay'); } catch { /* not supported */ }
