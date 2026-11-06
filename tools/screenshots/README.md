@@ -18,6 +18,13 @@ node tools/screenshots/capture.mjs /tmp/gm-chrome /tmp/gm-shots
 node tools/screenshots/capture.mjs /tmp/gm-chrome /tmp/gm-shots play,review
 ```
 
+Publish PR evidence to the orphan `media` branch (not the code history) and get the URLs to embed:
+
+```bash
+tools/screenshots/publish-evidence.sh fix/my-branch /tmp/gm-shots/play.png /tmp/gm-shots/review.gif
+# https://raw.githubusercontent.com/xheisenbugx/GrandMentor/media/prs/fix-my-branch/play.png
+```
+
 Scenes: `home play review analysis puzzle learn openings endgames profile library light mobile`.
 `BASE` overrides the server URL (default `http://localhost:8097`).
 Use `b.shot()` for a screenshot and `b.record(file, async () => { ... })` for a GIF when adding scenes.

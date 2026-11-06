@@ -9,7 +9,8 @@
 
 <!-- At least one screenshot or GIF showing the change (UI changes always).
      Backend-only: a screenshot of the affected screen, or tests / benchmark / API output.
-     Tip: tools/screenshots/ captures the real app in headless Chrome. -->
+     Tip: tools/screenshots/ captures the real app in headless Chrome, and
+     tools/screenshots/publish-evidence.sh uploads it to the `media` branch (don't commit it here). -->
 
 ## What changed
 

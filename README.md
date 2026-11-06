@@ -81,7 +81,7 @@ One click after the game ends. You get **accuracy** for both players, an **estim
 
 **Why was that a mistake?** Every inaccuracy, mistake and blunder comes with a concrete reason taken from the engine's own lines: *"After Kxf7, you lose your queen for a pawn"*, *"This allows Qh4#"*, *"You missed a chance: exd5 wins the queen"*. Press **Show me** to watch the punishment play out on the board, or **Better** to see what you should have played.
 
-<p align="center"><img src="docs/media/prs/feat-learn-play-home/why-mistake-showme.gif" width="760" alt="The Why? box explaining a lost queen and playing the refutation on the board" /></p>
+<p align="center"><img src="docs/media/why-mistake-showme.gif" width="760" alt="The Why? box explaining a lost queen and playing the refutation on the board" /></p>
 
 ### 🧠 Analysis board
 
@@ -106,8 +106,8 @@ Your **puzzle rating** adapts as you solve. Race the clock in **Puzzle Rush** (3
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learn-play-home/my-puzzles-overview.png" alt="This week's personal puzzle set with the chosen themes" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learn-play-home/my-puzzles-insights.png" alt="Weekly set progress on the Insights page" /></td>
+<td width="50%"><img src="docs/media/my-puzzles-overview.png" alt="This week's personal puzzle set with the chosen themes" /></td>
+<td width="50%"><img src="docs/media/my-puzzles-insights.png" alt="Weekly set progress on the Insights page" /></td>
 </tr>
 </table>
 
@@ -152,8 +152,8 @@ New to chess? A **7-day path** walks you through it: how the pieces move, captur
 
 <table>
 <tr>
-<td width="60%"><img src="docs/media/prs/feat-learn-play-home/first-week-home.png" alt="The first-week card on Home" /></td>
-<td width="40%"><img src="docs/media/prs/feat-learn-play-home/first-week-mobile.png" alt="The 7-day path on a phone" /></td>
+<td width="60%"><img src="docs/media/first-week-home.png" alt="The first-week card on Home" /></td>
+<td width="40%"><img src="docs/media/first-week-mobile.png" alt="The 7-day path on a phone" /></td>
 </tr>
 </table>
 
@@ -163,8 +163,8 @@ Home suggests a 10–15 minute session built from what you need today: the daily
 
 <table>
 <tr>
-<td width="55%"><img src="docs/media/prs/feat-learning-platform/daily-plan.png" alt="Today's plan on the Home page with tasks, goal ring and streak" /></td>
-<td width="45%"><img src="docs/media/prs/feat-learning-platform/daily-goal-met.gif" alt="Completing the daily goal" /></td>
+<td width="55%"><img src="docs/media/daily-plan.png" alt="Today's plan on the Home page with tasks, goal ring and streak" /></td>
+<td width="45%"><img src="docs/media/daily-goal-met.gif" alt="Completing the daily goal" /></td>
 </tr>
 </table>
 
@@ -172,7 +172,7 @@ Home suggests a 10–15 minute session built from what you need today: the daily
 
 GrandMentor reads all your reviewed games and tells you, in plain words, what costs you the most points: pieces you leave hanging, tactics you miss, endgames you let slip, winning positions you don't convert. Every weakness has a **one-click drill** to fix it.
 
-<img src="docs/media/prs/feat-learning-platform/insights-page.png" width="860" alt="Insights page with top weaknesses and charts" />
+<img src="docs/media/insights-page.png" width="860" alt="Insights page with top weaknesses and charts" />
 
 ### 🔁 Learn from your mistakes
 
@@ -180,8 +180,8 @@ Every blunder and missed win from your own games becomes a "find the better move
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/mistakes-solve.gif" alt="Solving a puzzle taken from your own game" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/mistakes-hub.png" alt="The mistakes deck on the Puzzles page" /></td>
+<td width="50%"><img src="docs/media/mistakes-solve.gif" alt="Solving a puzzle taken from your own game" /></td>
+<td width="50%"><img src="docs/media/mistakes-hub.png" alt="The mistakes deck on the Puzzles page" /></td>
 </tr>
 </table>
 
@@ -191,8 +191,8 @@ Build your own lines for White and Black (or start from a beginner-friendly star
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/repertoire-tree.png" alt="Repertoire tree for White" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/repertoire-drill.gif" alt="Repertoire drill with spaced repetition" /></td>
+<td width="50%"><img src="docs/media/repertoire-tree.png" alt="Repertoire tree for White" /></td>
+<td width="50%"><img src="docs/media/repertoire-drill.gif" alt="Repertoire drill with spaced repetition" /></td>
 </tr>
 </table>
 
@@ -202,8 +202,8 @@ Thirty-second board-vision games with personal bests (find the square, spot the 
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/drills-coordinates.gif" alt="Coordinates drill" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/lessons-tasks.gif" alt="Interactive lesson tasks" /></td>
+<td width="50%"><img src="docs/media/drills-coordinates.gif" alt="Coordinates drill" /></td>
+<td width="50%"><img src="docs/media/lessons-tasks.gif" alt="Interactive lesson tasks" /></td>
 </tr>
 </table>
 
@@ -213,8 +213,8 @@ Thirty-second board-vision games with personal bests (find the square, spot the 
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/classics-library.png" alt="Classic games library" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/classics-player.gif" alt="Narrated classic game" /></td>
+<td width="50%"><img src="docs/media/classics-library.png" alt="Classic games library" /></td>
+<td width="50%"><img src="docs/media/classics-player.gif" alt="Narrated classic game" /></td>
 </tr>
 </table>
 
@@ -229,12 +229,12 @@ Thirty-second board-vision games with personal bests (find the square, spot the 
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/play-premove.gif" alt="Premoves against a bot" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/local-pass-and-play.gif" alt="Two players on one device" /></td>
+<td width="50%"><img src="docs/media/play-premove.gif" alt="Premoves against a bot" /></td>
+<td width="50%"><img src="docs/media/local-pass-and-play.gif" alt="Two players on one device" /></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learn-play-home/opening-practice-game.png" alt="Practising the Italian Game against a bot" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learn-play-home/board-editor.gif" alt="Building a position in the board editor" /></td>
+<td width="50%"><img src="docs/media/opening-practice-game.png" alt="Practising the Italian Game against a bot" /></td>
+<td width="50%"><img src="docs/media/board-editor.gif" alt="Building a position in the board editor" /></td>
 </tr>
 </table>
 
@@ -246,15 +246,15 @@ Install GrandMentor like a native app on your phone or computer. Puzzles and les
 
 <table>
 <tr>
-<td width="60%"><img src="docs/media/prs/feat-learn-play-home/phone-settings-desktop-en.png" alt="Use on your phone settings with QR codes and the PIN" /></td>
-<td width="40%"><img src="docs/media/prs/feat-learn-play-home/phone-login-mobile.png" alt="Entering the PIN on a phone" /></td>
+<td width="60%"><img src="docs/media/phone-settings-desktop-en.png" alt="Use on your phone settings with QR codes and the PIN" /></td>
+<td width="40%"><img src="docs/media/phone-login-mobile.png" alt="Entering the PIN on a phone" /></td>
 </tr>
 </table>
 
 <table>
 <tr>
-<td width="25%"><img src="docs/media/prs/feat-learning-platform/pwa-offline-mobile.png" alt="A lesson working offline on a phone" /></td>
-<td width="75%"><img src="docs/media/prs/feat-learning-platform/backup-section.png" alt="Backup and sync settings" /></td>
+<td width="25%"><img src="docs/media/pwa-offline-mobile.png" alt="A lesson working offline on a phone" /></td>
+<td width="75%"><img src="docs/media/backup-section.png" alt="Backup and sync settings" /></td>
 </tr>
 </table>
 
@@ -264,8 +264,8 @@ Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every 
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/a11y-keyboard.gif" alt="Playing with the keyboard, with square names and screen-reader announcements" /></td>
-<td width="50%"><img src="docs/media/prs/feat-learning-platform/a11y-high-contrast.png" alt="High-contrast mode with colour-blind-friendly move colours" /></td>
+<td width="50%"><img src="docs/media/a11y-keyboard.gif" alt="Playing with the keyboard, with square names and screen-reader announcements" /></td>
+<td width="50%"><img src="docs/media/a11y-high-contrast.png" alt="High-contrast mode with colour-blind-friendly move colours" /></td>
 </tr>
 </table>
 
@@ -273,9 +273,9 @@ Play entirely with the keyboard (arrow keys + Enter, or type `Nf3`), hear every 
 
 <table>
 <tr>
-<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-pt-home.png" alt="Home in Portuguese" /></td>
-<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-fr-play.png" alt="Play setup in French" /></td>
-<td width="33%"><img src="docs/media/prs/feat-learning-platform/i18n-de-review.png" alt="Game Review in German" /></td>
+<td width="33%"><img src="docs/media/i18n-pt-home.png" alt="Home in Portuguese" /></td>
+<td width="33%"><img src="docs/media/i18n-fr-play.png" alt="Play setup in French" /></td>
+<td width="33%"><img src="docs/media/i18n-de-review.png" alt="Game Review in German" /></td>
 </tr>
 </table>
 
@@ -415,6 +415,14 @@ node tools/qa/check-i18n.mjs     # every language has every key
 node tools/qa/sweep.mjs          # every page × language × desktop/mobile in headless Chrome
 node tools/qa/bench-gate.mjs     # engine speed and tactics (for engine changes)
 ```
+
+---
+
+## 📜 License
+
+GrandMentor is free software under the [GNU General Public License v3.0 or later](LICENSE) (`GPL-3.0-or-later`).
+It links the GPL-3.0+ [shakmaty](https://github.com/niklasf/shakmaty) library and ships GPLv2+ piece sets, so the
+whole app is distributed under the GPL. Bundled third-party content keeps its own license (see Credits).
 
 ---
 

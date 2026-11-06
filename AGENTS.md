@@ -43,9 +43,10 @@ These rules are mandatory.
      the person using the app and why it matters. No code, file names or jargon.
    - **Evidence** — at least one screenshot or GIF showing the change whenever possible (UI changes always).
      For backend-only changes, a screenshot of the affected screen, or a terminal capture of tests, benchmarks or
-     API output. Commit images to `docs/media/` (or `docs/media/prs/<branch-name>/` for PR-only evidence) and
-     embed them with a raw GitHub URL pinned to the branch, e.g.
-     `https://raw.githubusercontent.com/xheisenbugx/GrandMentor/<branch>/docs/media/prs/<branch>/after.png`.
+     API output. **Don't commit PR-only evidence to the code branch**: publish it to the orphan `media` branch
+     with `tools/screenshots/publish-evidence.sh <branch-name> <files...>`, which prints the URLs to embed, e.g.
+     `https://raw.githubusercontent.com/xheisenbugx/GrandMentor/media/prs/<branch-name>/after.png`
+     (slashes in the branch name become `-`). Only images the README or docs actually use go in `docs/media/`.
    - What changed (technical summary) and how it was tested.
 4. **Capturing evidence.** Use [`tools/screenshots/`](tools/screenshots/README.md): it drives the real app in
    headless Chrome and produces PNGs and GIFs. Run it against a throwaway database (`GM_DB=/tmp/...`), never your real one.
