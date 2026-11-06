@@ -434,12 +434,14 @@ export async function mount(root) {
     const counts = { win: 0, loss: 0, draw: 0 };
     for (const g of state.games) { const o = gameOutcome(g); if (o in counts) counts[o]++; }
     const total = state.games.length;
-    summaryEl.replaceChildren(
+    // Native replaceChildren() turns null into the text "null" (unlike h()): drop empty parts.
+    summaryEl.replaceChildren(...[
       h('span', { class: 'semibold' }, t('library.summary.games', { count: list.length })),
       total ? h('span', { class: 'hub-lib-counts' },
         h('span', { class: 'hub-dot hub-dot-win' }), t('library.summary.won', { count: counts.win }),
         h('span', { class: 'hub-dot hub-dot-draw' }), t('library.summary.drawn', { count: counts.draw }),
-        h('span', { class: 'hub-dot hub-dot-loss' }), t('library.summary.lost', { count: counts.loss })) : null);
+        h('span', { class: 'hub-dot hub-dot-loss' }), t('library.summary.lost', { count: counts.loss })) : null,
+    ].filter(Boolean));
   }
 
   function renderList() {

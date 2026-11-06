@@ -1046,14 +1046,15 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
   }
 
   function renderAfter() {
-    afterEl.replaceChildren(
+    afterEl.replaceChildren(...[
       plies() >= 2 ? h('button', { type: 'button', class: 'btn btn-primary btn-lg btn-block', html: icon('sparkles') + `<span>${escapeHtml(t('local.after.review'))}</span>`, onClick: async (e) => { const b = e.currentTarget; b.classList.add('loading'); try { await goReview(); } finally { b.classList.remove('loading'); } } }) : null,
       h('div', { class: 'row-sm' },
         h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('refresh') + `<span>${escapeHtml(t('local.after.rematch'))}</span>`, onClick: () => rematch() }),
         h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('users') + `<span>${escapeHtml(t('local.after.newGame'))}</span>`, onClick: () => onNewGame() })),
       h('div', { class: 'row-sm' },
         h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('analysis') + `<span>${escapeHtml(t('local.after.analyze'))}</span>`, onClick: () => { location.hash = `#/analysis?fen=${encodeURIComponent(chess.fen())}`; } }),
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + `<span>${escapeHtml(t('local.actions.flip'))}</span>`, onClick: () => onFlip() })));
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + `<span>${escapeHtml(t('local.actions.flip'))}</span>`, onClick: () => onFlip() })),
+    ].filter(Boolean));
   }
 
   function showGameOver() {

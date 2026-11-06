@@ -601,7 +601,8 @@ async function mountDetail(root, id, query, bag, signal) {
     const ideas = Array.isArray(o.ideas) ? o.ideas.filter(Boolean) : [];
     const traps = Array.isArray(o.traps) ? o.traps.filter(Boolean) : [];
     const rec = trainRecord(o.id);
-    body.replaceChildren(
+    // Native replaceChildren() would print a null part as "null": keep only real nodes.
+    body.replaceChildren(...[
       h('div', { class: 'stack-sm' },
         h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, t('openings.mainLine')),
         moves,
@@ -614,7 +615,8 @@ async function mountDetail(root, id, query, bag, signal) {
         h('div', { class: 'op-block-title', html: icon('alert') + `<span>${escapeHtml(t('openings.traps'))}</span>` }),
         traps.map((trap) => h('div', { class: 'op-trap', html: icon('alert') + `<div>${mdLite(trap).replace(/^<p>|<\/p>$/g, '')}</div>` }))) : null,
       h('div', { class: 'callout mt-6', html: icon('target') + `<div>${tHtml(userSide === 'white' ? 'openings.readyWhite' : 'openings.readyBlack')}${rec ? ' ' + tHtml('openings.currentStreak', { streak: rec.streak || 0, due: dueLabel(rec) }) : ''}</div>` }),
-      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + `<span>${escapeHtml(t('openings.trainThis'))}</span>`, onClick: () => setMode('train') }));
+      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + `<span>${escapeHtml(t('openings.trainThis'))}</span>`, onClick: () => setMode('train') }),
+    ].filter(Boolean));
   }
 
   function renderExploreBody() {
