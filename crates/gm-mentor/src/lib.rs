@@ -172,11 +172,17 @@ impl Mentor {
             .await
             .map_err(|_| llm::LlmError::Other("mentor is busy".into()))?
             .map_err(|_| llm::LlmError::Other("mentor shutting down".into()))?;
-        match llm::call(&self.client, &self.endpoint, key, &self.model, req, true, lang).await {
-            Err(llm::LlmError::BadRequest(msg)) => {
-                tracing::debug!(%msg, "retrying mentor LLM call without optional parameters");
-                llm::call(&self.client, &self.endpoint, key, &self.model, req, false, lang).await
-            }
+        let extras = llm::Extras::ALL;
+        match llm::call(&self.client, &self.endpoint, key, &self.model, req, extras, lang).await {
+            // Only retry when the error names an optional parameter we sent, and drop just that
+            // one (keeping e.g. `effort: low` when the fallback option was the problem).
+            Err(llm::LlmError::BadRequest(msg)) => match extras.without_rejected(&self.model, &msg) {
+                Some(fewer) => {
+                    tracing::debug!(%msg, ?fewer, "retrying mentor LLM call without the rejected parameter");
+                    llm::call(&self.client, &self.endpoint, key, &self.model, req, fewer, lang).await
+                }
+                None => Err(llm::LlmError::BadRequest(msg)),
+            },
             other => other,
         }
     }
