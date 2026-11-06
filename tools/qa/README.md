@@ -113,7 +113,7 @@ Output goes to `QA_OUT` (default `target/qa-sweep/`):
 | `BASE` | – | test an already running server instead of starting one. It seeds a game when the database has none, so point it at a throwaway database |
 | `GM_BIN` | – | prebuilt server binary, used as is. Unset: the sweep runs `cargo build --release -p gm-server --bin grandmentor` first |
 | `QA_PORT` | free port | port of the server the sweep starts. Unset: the OS picks a free port. Set: the sweep refuses to start when the port is already taken, so it never tests (and seeds) another server |
-| `CDP_PORT` | `9555` | Chrome DevTools port |
+| `CDP_PORT` | free port | Chrome DevTools port. Unset: the OS picks a free one, so parallel sweeps never drive each other's Chrome |
 | `CHROME`, `CHROME_ARGS` | auto | Chrome executable and extra flags. Detection order: macOS app, then `google-chrome`, then `chromium`. On Linux `--no-sandbox --disable-dev-shm-usage` is the default |
 | `QA_LANGS` | all | e.g. `en` or `en,es` |
 | `QA_VIEWPORTS` | `desktop,mobile` | |

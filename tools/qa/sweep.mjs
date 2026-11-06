@@ -12,7 +12,7 @@
 //   QA_PORT        port for the server the sweep starts (default: a free port picked by the OS)
 //   GM_BIN         prebuilt server binary to use as is; when unset the sweep first runs
 //                  `cargo build --release -p gm-server --bin grandmentor` so it never tests a stale build
-//   CDP_PORT       Chrome DevTools port (default 9555)
+//   CDP_PORT       Chrome DevTools port (default: a free port picked by the OS)
 //   CHROME         Chrome/Chromium executable (auto-detected); CHROME_ARGS extra flags
 //   QA_OUT         output directory (default target/qa-sweep): report.json, report.md, shots/
 //   QA_LANGS       comma-separated language codes (default: every language in web/js/languages.js)
@@ -67,7 +67,8 @@ const chrome = findChrome();
 if (!chrome) { console.error('sweep: no Chrome found; set CHROME=/path/to/chrome'); process.exit(2); }
 env.CHROME = chrome;
 if (env.CHROME_ARGS === undefined && process.platform === 'linux') env.CHROME_ARGS = '--no-sandbox --disable-dev-shm-usage';
-env.CDP_PORT = env.CDP_PORT || '9555';
+// A free DevTools port unless CDP_PORT is set: parallel sweeps on a fixed port would drive each other's Chrome.
+env.CDP_PORT = env.CDP_PORT || String(await probePort(0));
 const { launch } = await import(pathToFileURL(path.join(ROOT, 'tools/screenshots/cdp.mjs')).href);
 
 // ---------------------------------------------------------------------------
