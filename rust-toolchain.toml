@@ -1,0 +1,6 @@
+# Pinned development toolchain: rustup installs it automatically, and CI uses the same version.
+# The minimum supported version for building is `rust-version` in Cargo.toml.
+[toolchain]
+channel = "1.99.1"
+components = ["clippy", "rustfmt"]
+profile = "minimal"
