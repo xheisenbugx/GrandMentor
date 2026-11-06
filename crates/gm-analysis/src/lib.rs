@@ -4,7 +4,9 @@
 //!
 //! 1. Replay and validate the moves (bad input is an `Err`, never a panic).
 //! 2. Evaluate every distinct non-terminal position with MultiPV 2 at the requested depth,
-//!    concurrently across the [`EnginePool`]. Transpositions/repetitions are searched once.
+//!    concurrently across the [`EnginePool`] as background work (one engine stays free for bot
+//!    moves and live analysis). Each search knows the game's earlier positions, so repetition
+//!    draws are seen; a position is searched once per distinct (position, reversible history).
 //!    Dropping the returned future stops all in-flight searches (no orphaned CPU work).
 //! 3. Classify every move chess.com style (book, forced, best, brilliant, great, excellent,
 //!    good, inaccuracy, mistake, miss, blunder) from the mover's expected-points (win%) loss.
@@ -29,8 +31,8 @@ use shakmaty::{Chess, Color, Move, Position};
 use gm_content::words::{capitalize, decimal1, fill, kv, side_name};
 use gm_content::{Lang, OpeningRef};
 use gm_engine::{
-    fen_key, move_to_san, parse_fen, to_fen, uci_line_to_san, uci_to_move, EnginePool, PvLine, Score, SearchInfo,
-    SearchLimits,
+    fen_key, move_to_san, move_to_uci, parse_fen, position_hash, to_fen, uci_line_to_san, uci_to_move, EnginePool,
+    PvLine, Score, SearchInfo, SearchLimits,
 };
 
 pub use accuracy::{estimate_elo, game_accuracy, move_accuracy};
@@ -215,7 +217,16 @@ struct PosData {
     lines: Vec<PvLine>,
 }
 
-/// Evaluate all positions concurrently across the pool, deduplicating identical positions.
+/// First index of the game history that can still repeat in `positions[i]`: positions before
+/// the last capture or pawn move (the halfmove clock) can never occur again.
+fn reversible_start(positions: &[Chess], i: usize) -> usize {
+    let halfmoves = positions.get(i).map_or(0, |p| p.halfmoves() as usize);
+    i - halfmoves.min(i)
+}
+
+/// Evaluate all positions concurrently across the pool (as background work), deduplicating
+/// identical positions with identical reversible history. Each search gets the earlier
+/// positions of the game, so it sees repetition draws.
 async fn evaluate_positions(
     pool: &EnginePool,
     positions: &[Chess],
@@ -226,23 +237,27 @@ async fn evaluate_positions(
     if stop.load(Ordering::Relaxed) {
         return Err(REVIEW_CANCELLED.to_string());
     }
-    // Map each non-terminal position to a unique search job.
+    // Map each non-terminal position to a unique search job: (index of the position, first
+    // index of the history it is searched with). Repetitions have different histories (the
+    // earlier occurrence is in it) and so are searched separately.
     let mut job_of: Vec<Option<usize>> = Vec::with_capacity(positions.len());
-    let mut jobs: Vec<Chess> = Vec::new();
-    let mut seen: HashMap<String, usize> = HashMap::new();
-    for p in positions {
+    let mut jobs: Vec<(usize, usize)> = Vec::new();
+    let mut seen: HashMap<(String, Vec<u64>), usize> = HashMap::new();
+    for (i, p) in positions.iter().enumerate() {
         if p.is_game_over() {
             job_of.push(None);
             continue;
         }
-        let key = fen_key(&to_fen(p));
+        let from = reversible_start(positions, i);
+        let key = (fen_key(&to_fen(p)), positions[from..i].iter().map(position_hash).collect());
         let idx = *seen.entry(key).or_insert_with(|| {
-            jobs.push(p.clone());
+            jobs.push((i, from));
             jobs.len() - 1
         });
         job_of.push(Some(idx));
     }
     drop(seen);
+    let shared: Arc<Vec<Chess>> = Arc::new(positions.to_vec());
 
     let _guard = StopOnDrop(Arc::clone(&stop));
     let limits = SearchLimits {
@@ -253,19 +268,25 @@ async fn evaluate_positions(
     };
     let total = jobs.len().max(1);
     let mut results: Vec<Option<SearchInfo>> = vec![None; jobs.len()];
-    // JoinSet aborts outstanding tasks when dropped (e.g. client went away).
+    // JoinSet aborts outstanding tasks when dropped (e.g. client went away). The tasks queue
+    // on the pool's background slots, so at most `pool.background_capacity()` searches run at
+    // once and bot moves / live analysis never wait behind a whole review.
     let mut set = tokio::task::JoinSet::new();
-    for (idx, pos) in jobs.into_iter().enumerate() {
+    for (idx, (at, from)) in jobs.into_iter().enumerate() {
         let pool = pool.clone();
         let stop = Arc::clone(&stop);
         let limits = limits.clone();
+        let positions = Arc::clone(&shared);
         set.spawn(async move {
             let info = pool
-                .with_engine(move |engine| {
+                .with_engine_background(move |engine| {
                     if stop.load(Ordering::Relaxed) {
                         return SearchInfo::default();
                     }
-                    engine.search(&pos, &limits, &stop, &mut |_| {})
+                    let (Some(pos), Some(history)) = (positions.get(at), positions.get(from..at)) else {
+                        return SearchInfo::default();
+                    };
+                    engine.search_with_history(pos, history, &limits, &stop, &mut |_| {})
                 })
                 .await;
             (idx, info)
@@ -413,17 +434,6 @@ fn move_label(m: &MoveReview, start_fullmove: u32, white_first: bool) -> String 
     }
 }
 
-/// Pick the string for `lang` from `[en, es, pt, fr, de]`.
-fn t(lang: Lang, s: [&'static str; 5]) -> &'static str {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-}
-
 fn mover_side(m: &MoveReview) -> Color {
     if m.color == "white" {
         Color::White
@@ -457,7 +467,7 @@ fn build_summary(
     let with_op = opening.is_some();
     let opener = match &opening {
         Some(name) => fill(
-            t(lang, ["After a {o} opening, ", "Tras la apertura ({o}), ", "Depois da abertura ({o}), ", "Après l'ouverture ({o}), ", ""]),
+            lang.pick(["After a {o} opening, ", "Tras la apertura ({o}), ", "Depois da abertura ({o}), ", "Après l'ouverture ({o}), ", ""]),
             &kv(&[("o", name)]),
         ),
         None => String::new(),
@@ -466,8 +476,7 @@ fn build_summary(
     match worst {
         Some(m) => {
             let tpl = match (m.classification == Classification::Miss, m.best_move_san.is_empty()) {
-                (true, true) => t(
-                    lang,
+                (true, true) => lang.pick(
                     [
                         "{op}the game turned when {w} let a big chance slip with {l}.",
                         "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l}.",
@@ -476,8 +485,7 @@ fn build_summary(
                         "{head}, als {w} mit {l} eine große Chance ausließ.",
                     ],
                 ),
-                (true, false) => t(
-                    lang,
+                (true, false) => lang.pick(
                     [
                         "{op}the game turned when {w} let a big chance slip with {l} — {b} was the move.",
                         "{op}la partida cambió cuando {w} dejaron escapar una gran oportunidad con {l} (la jugada era {b}).",
@@ -486,8 +494,7 @@ fn build_summary(
                         "{head}, als {w} mit {l} eine große Chance ausließ – richtig war {b}.",
                     ],
                 ),
-                (false, true) => t(
-                    lang,
+                (false, true) => lang.pick(
                     [
                         "{op}the game turned when {w} went wrong with {l}.",
                         "{op}la partida cambió cuando {w} fallaron con {l}.",
@@ -496,8 +503,7 @@ fn build_summary(
                         "{head}, als {w} mit {l} danebengriff.",
                     ],
                 ),
-                (false, false) => t(
-                    lang,
+                (false, false) => lang.pick(
                     [
                         "{op}the game turned when {w} went wrong with {l} — {b} was the move.",
                         "{op}la partida cambió cuando {w} fallaron con {l} (la jugada era {b}).",
@@ -514,8 +520,7 @@ fn build_summary(
             sentences.push(capitalize(&s));
         }
         None if !review.moves.is_empty() => {
-            let tpl = t(
-                lang,
+            let tpl = lang.pick(
                 [
                     "{op}both sides played a clean game without any serious mistakes.",
                     "{op}ambos bandos jugaron una partida limpia, sin errores graves.",
@@ -532,8 +537,7 @@ fn build_summary(
             sentences.push(capitalize(&fill(tpl, &kv(&[("op", &opener), ("o", &o)]))));
         }
         None => sentences.push(
-            t(
-                lang,
+            lang.pick(
                 [
                     "No moves were played yet — make some moves and review again!",
                     "Todavía no se ha jugado nada: ¡haz algunas jugadas y vuelve a revisar!",
@@ -563,8 +567,7 @@ fn build_summary(
     } else if final_pos.is_checkmate() {
         let winner = final_pos.turn().other();
         if let Some(last) = review.moves.last() {
-            let tpl = t(
-                lang,
+            let tpl = lang.pick(
                 [
                     "{W} finished it in style with checkmate on {l}.",
                     "{W} remataron con estilo: jaque mate con {l}.",
@@ -577,8 +580,7 @@ fn build_summary(
         }
     } else if final_pos.is_stalemate() {
         sentences.push(
-            t(
-                lang,
+            lang.pick(
                 [
                     "The game ended in stalemate — always check your opponent has a move!",
                     "La partida terminó en ahogado: ¡comprueba siempre que tu rival tenga alguna jugada!",
@@ -590,8 +592,7 @@ fn build_summary(
             .to_string(),
         );
     } else if let Some(m) = review.moves.iter().find(|m| m.classification == Classification::Great) {
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 "{W} found a great move with {l}.",
                 "{W} encontraron una gran jugada: {l}.",
@@ -607,8 +608,7 @@ fn build_summary(
     if !review.moves.is_empty() {
         let (w, b) = (review.white.accuracy, review.black.accuracy);
         let verdict = if (w - b).abs() < 3.0 {
-            t(
-                lang,
+            lang.pick(
                 [
                     "an evenly matched performance",
                     "una actuación muy pareja",
@@ -618,8 +618,7 @@ fn build_summary(
                 ],
             )
         } else if w > b {
-            t(
-                lang,
+            lang.pick(
                 [
                     "White was the more precise side",
                     "las blancas fueron el bando más preciso",
@@ -629,8 +628,7 @@ fn build_summary(
                 ],
             )
         } else {
-            t(
-                lang,
+            lang.pick(
                 [
                     "Black was the more precise side",
                     "las negras fueron el bando más preciso",
@@ -640,8 +638,7 @@ fn build_summary(
                 ],
             )
         };
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 "Accuracy: White {w}%, Black {b}% — {v}.",
                 "Precisión: blancas {w} %, negras {b} %: {v}.",
@@ -775,11 +772,13 @@ pub async fn review_game_cancellable(
     for (i, m) in played.iter().enumerate() {
         let (before, after) = (&data[i], &data[i + 1]);
         let mover = before.pos.turn();
-        let uci = moves[i].trim();
+        // Canonical UCI of the parsed move (castling as king-to-destination, `e1g1`), so it
+        // compares equal to the engine's moves even if the client sent `e1h1`.
+        let played_uci = move_to_uci(m);
+        let uci = played_uci.as_str();
         let win_before = for_mover(before.white_win, mover);
         let win_after = for_mover(after.white_win, mover);
         let best_uci = before.lines.first().and_then(|l| l.moves.first()).cloned().unwrap_or_default();
-        // Playing the engine's top move never "loses" (search noise between plies).
         // Playing the engine's top move never "loses" (search noise between plies). If the
         // played move is one of the MultiPV lines, compare scores from the same search, which
         // avoids odd/even-depth noise between consecutive positions.

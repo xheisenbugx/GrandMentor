@@ -122,11 +122,54 @@ async fn forced_and_black_to_move_start() {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn repeated_positions_are_consistent() {
+    // A repeated position is searched again with its own history (the earlier occurrence is
+    // in it), but a mere twofold repetition must not change the evaluation much.
     let content = Arc::new(gm_content::Content::default());
     let moves = ucis("g1f3 g8f6 f3g1 f6g8 g1f3 g8f6 f3g1 f6g8");
     let review = review_game(&pool(), content, "start", &moves, 6, None, Lang::En).await.expect("review");
-    assert_eq!(review.evals[0], review.evals[4]);
-    assert_eq!(review.evals[1], review.evals[5]);
+    assert_eq!(review.moves.len(), 8);
+    for (a, b) in [(0, 4), (1, 5)] {
+        let (x, y) = (review.evals[a].to_cp(), review.evals[b].to_cp());
+        assert!((x - y).abs() <= 150, "evals[{a}] {x} vs evals[{b}] {y}");
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn allowing_a_threefold_repetition_when_winning_is_flagged() {
+    // K+Q vs K: the queen and the black king shuffle. 2.Qd1 only repeats once (harmless),
+    // but 4.Qd1 lets black claim a threefold repetition with 4...Kh8, throwing the win away.
+    let content = Arc::new(gm_content::Content::default());
+    let fen = "7k/8/8/8/8/8/8/2KQ4 w - - 0 1";
+    let moves = ucis("d1d2 h8g8 d2d1 g8h8 d1d2 h8g8 d2d1");
+    let review = review_game(&pool(), content, fen, &moves, 8, None, Lang::En).await.expect("review");
+    let harmless = &review.moves[2];
+    assert_eq!(harmless.uci, "d2d1");
+    assert!(!harmless.classification.is_error(), "2.Qd1 is fine: {:?}", harmless.classification);
+    let fatal = &review.moves[6];
+    assert_eq!(fatal.uci, "d2d1");
+    assert!(fatal.classification.is_error(), "4.Qd1 allows a draw: {:?}", fatal.classification);
+    assert!(fatal.win_chance_loss >= 20.0, "loss {}", fatal.win_chance_loss);
+    assert_eq!(fatal.eval_after, Score::Cp(0));
+    assert_ne!(fatal.best_move_uci, "d2d1");
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn castling_sent_as_king_takes_rook_is_canonical() {
+    // `e1h1` (king onto its rook) is accepted as castling but stored and compared as `e1g1`,
+    // the engine's notation, so playing the engine's top move is recognised as best.
+    let content = Arc::new(gm_content::Content::default());
+    let fen = "6k1/8/8/8/8/8/8/4K2R w K - 0 1"; // O-O is the engine's choice here
+    let review = review_game(&pool(), content, fen, &ucis("e1h1 g8h7"), 6, None, Lang::En).await.expect("review");
+    let castle = &review.moves[0];
+    assert_eq!(castle.uci, "e1g1");
+    assert_eq!(castle.san, "O-O");
+    assert_eq!(castle.best_move_uci, "e1g1");
+    assert_eq!(castle.win_chance_loss, 0.0);
+    assert!(
+        matches!(castle.classification, Classification::Best | Classification::Great),
+        "{:?}",
+        castle.classification
+    );
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
