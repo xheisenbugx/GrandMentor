@@ -22,10 +22,8 @@ ignore = []
 [licenses]
 # Licenses found in the dependency tree today (`cargo deny list` shows which crate uses which).
 #
-# LICENSE DECISION PENDING: the workspace declares `license = "MIT"` in Cargo.toml, but the
-# server links shakmaty (GPL-3.0-or-later) and the app ships GPL-licensed piece art. That makes
-# the distributed program effectively GPL-3.0-or-later. Until the owner settles the project's
-# license, GPL-3.0-or-later is allowed here so the check reflects the dependencies as they are.
+# The project is licensed GPL-3.0-or-later (see LICENSE): the server links shakmaty
+# (GPL-3.0-or-later) and the app ships GPL-licensed piece art.
 # Do not add more copyleft licenses without discussing it in the PR.
 allow = [
     "MIT",
@@ -37,7 +35,7 @@ allow = [
     "Unicode-3.0",                    # icu_* (via url/idna)
     "Zlib",                           # foldhash, miniz_oxide
     "CDLA-Permissive-2.0",            # webpki-root-certs (Mozilla root store data)
-    "GPL-3.0-or-later",               # shakmaty (see the note above)
+    "GPL-3.0-or-later",               # shakmaty, and our own crates
 ]
 confidence-threshold = 0.93
 
