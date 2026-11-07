@@ -7,6 +7,8 @@ version = "0.1.0"
 edition = "2021"
 license = "GPL-3.0-or-later"
 publish = false
+# Minimum supported Rust. The pinned development toolchain lives in rust-toolchain.toml.
+rust-version = "1.98"
 
 [workspace.dependencies]
 gm-engine = { path = "crates/gm-engine" }
@@ -26,6 +28,8 @@ axum = { version = "0.8", features = ["ws"] }
 tower = "0.5"
 tower-http = { version = "0.7", features = ["fs", "compression-gzip", "compression-br", "cors", "trace", "set-header", "limit"] }
 reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "json"] }
+# reqwest and axum-server are built without a bundled crypto provider; the workspace uses ring.
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 parking_lot = "0.13"

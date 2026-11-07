@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish.workspace = true
+rust-version.workspace = true
 
 [lints]
 workspace = true
@@ -38,7 +39,7 @@ futures-util.workspace = true
 rand.workspace = true
 # Phone & home use (docs/PHONE.md): HTTPS on the LAN with a local CA, QR codes, LAN addresses.
 axum-server = { version = "0.8", features = ["tls-rustls-no-provider"] }
-rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+rustls = { workspace = true, features = ["logging"] }
 rcgen = { version = "0.14", default-features = false, features = ["crypto", "pem", "ring", "x509-parser"] }
 ring = "0.17"
 qrcode = { version = "0.14", default-features = false, features = ["svg"] }

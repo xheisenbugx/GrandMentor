@@ -701,7 +701,6 @@ dependencies = [
  "serde_json",
  "shakmaty",
  "tokio",
- "tracing",
 ]
 
 [[package]]
@@ -714,7 +713,6 @@ dependencies = [
  "serde",
  "serde_json",
  "shakmaty",
- "tracing",
 ]
 
 [[package]]
@@ -738,14 +736,12 @@ dependencies = [
  "serde_json",
  "shakmaty",
  "tokio",
- "tracing",
 ]
 
 [[package]]
 name = "gm-mentor"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "gm-content",
  "gm-engine",
  "reqwest",

@@ -19,6 +19,11 @@
 ## How it was tested
 
 - [ ] `cargo test --workspace --release`
-- [ ] `cargo clippy --workspace --all-targets`
-- [ ] Frontend module syntax check
+- [ ] `cargo clippy --workspace --all-targets -- -D warnings`
+- [ ] `cargo deny check` (dependency changes)
+- [ ] `node tools/qa/check-syntax.mjs` (JS syntax)
+- [ ] `node --test 'tests/js/**/*.test.mjs'` (JS unit tests)
+- [ ] `node tools/qa/check-i18n.mjs`
+- [ ] `node tools/qa/sweep.mjs`
+- [ ] `node tools/qa/bench-gate.mjs` (engine changes)
 - [ ] Checked in a browser (desktop + mobile)

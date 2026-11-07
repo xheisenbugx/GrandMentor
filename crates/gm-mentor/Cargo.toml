@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish.workspace = true
+rust-version.workspace = true
 
 [lints]
 workspace = true
@@ -16,7 +17,6 @@ serde_json.workspace = true
 shakmaty.workspace = true
 reqwest.workspace = true
 # reqwest is built without a bundled crypto provider; use ring like the rest of the workspace.
-rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-anyhow.workspace = true

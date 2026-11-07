@@ -4,15 +4,15 @@
 // languages, elements sticking out of the viewport and overlapping layers/buttons.
 // Plain Node 22, no dependencies; drives Chrome through tools/screenshots/cdp.mjs.
 //
-//   cargo build --release -p gm-server
-//   node tools/qa/sweep.mjs                    # starts its own server on a throwaway database
+//   node tools/qa/sweep.mjs                    # builds gm-server, starts it on a free port and a throwaway database
 //   BASE=http://localhost:8080 node tools/qa/sweep.mjs   # use a running server (it seeds a game if none exist!)
 //
 // Environment (all optional):
 //   BASE           server to test; when unset the sweep starts target/release/grandmentor itself
-//   QA_PORT        port for the server the sweep starts (default 8199)
-//   GM_BIN         server binary (default target/release/grandmentor)
-//   CDP_PORT       Chrome DevTools port (default 9555)
+//   QA_PORT        port for the server the sweep starts (default: a free port picked by the OS)
+//   GM_BIN         prebuilt server binary to use as is; when unset the sweep first runs
+//                  `cargo build --release -p gm-server --bin grandmentor` so it never tests a stale build
+//   CDP_PORT       Chrome DevTools port (default: a free port picked by the OS)
 //   CHROME         Chrome/Chromium executable (auto-detected); CHROME_ARGS extra flags
 //   QA_OUT         output directory (default target/qa-sweep): report.json, report.md, shots/
 //   QA_LANGS       comma-separated language codes (default: every language in web/js/languages.js)
@@ -25,8 +25,11 @@
 //   QA_KEYBOARD    0 skips the keyboard smoke test (Tab through QA_KBD_STEPS focus stops, default 20)
 //   QA_INJECT      JS injected into every page before it loads (to test the sweep itself, e.g.
 //                  QA_INJECT="console.error('boom'); fetch('/api/nope')" must make every page fail)
+// Routes skipped because no data exists for a parameter fail the sweep unless tools/qa/allowlist.json
+// has a `{ "check": "skipped", "route": "<pattern>", "reason": "..." }` entry for them.
 // Exit code: 0 clean, 1 failures found, 2 the sweep itself could not run.
 import { spawn, execFileSync } from 'node:child_process';
+import net from 'node:net';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, mkdtempSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -64,7 +67,8 @@ const chrome = findChrome();
 if (!chrome) { console.error('sweep: no Chrome found; set CHROME=/path/to/chrome'); process.exit(2); }
 env.CHROME = chrome;
 if (env.CHROME_ARGS === undefined && process.platform === 'linux') env.CHROME_ARGS = '--no-sandbox --disable-dev-shm-usage';
-env.CDP_PORT = env.CDP_PORT || '9555';
+// A free DevTools port unless CDP_PORT is set: parallel sweeps on a fixed port would drive each other's Chrome.
+env.CDP_PORT = env.CDP_PORT || String(await probePort(0));
 const { launch } = await import(pathToFileURL(path.join(ROOT, 'tools/screenshots/cdp.mjs')).href);
 
 // ---------------------------------------------------------------------------
@@ -128,9 +132,25 @@ function englishPhrases(en, other, allowed) {
 let server = null;
 let tmpDir = null;
 let serverLog = null;
-async function waitHealthy(base, ms) {
+/** Listen on `port` (0 = any free port) on 127.0.0.1, then release it. Resolves to the port, or null when taken. */
+function probePort(port) {
+  return new Promise((resolve) => {
+    const srv = net.createServer();
+    srv.once('error', () => resolve(null));
+    srv.listen({ port, host: '127.0.0.1', exclusive: true }, () => {
+      const { port: p } = srv.address();
+      srv.close(() => resolve(p));
+    });
+  });
+}
+async function waitHealthy(base, ms, child) {
   const t0 = Date.now();
   while (Date.now() - t0 < ms) {
+    // Fail fast when our server died (bad binary, port taken, broken data) instead of polling for a minute.
+    if (child && (child.exitCode !== null || child.signalCode !== null)) {
+      const tail = serverLog ? serverLog().toString('utf8').trim().split('\n').slice(-15).join('\n') : '';
+      throw new Error(`server exited (${child.exitCode ?? child.signalCode}) before it became healthy${tail ? `:\n${tail}` : ''}`);
+    }
     try { if ((await fetch(base + '/api/health')).ok) return true; } catch { /* not up yet */ }
     await sleep(250);
   }
@@ -138,13 +158,25 @@ async function waitHealthy(base, ms) {
 }
 async function startServer() {
   if (env.BASE) return env.BASE.replace(/\/$/, '');
-  const bin = path.resolve(ROOT, env.GM_BIN || 'target/release/grandmentor');
-  if (!existsSync(bin)) throw new Error(`${path.relative(ROOT, bin)} not found; run: cargo build --release -p gm-server`);
-  const port = env.QA_PORT || '8199';
+  let bin;
+  if (env.GM_BIN) {
+    bin = path.resolve(ROOT, env.GM_BIN);
+    if (!existsSync(bin)) throw new Error(`GM_BIN=${env.GM_BIN} not found`);
+  } else {
+    // Always build first: cargo is a no-op when nothing changed, and a stale binary gives misleading results.
+    log('sweep: cargo build --release -p gm-server --bin grandmentor');
+    execFileSync('cargo', ['build', '--release', '-q', '-p', 'gm-server', '--bin', 'grandmentor'], { cwd: ROOT, stdio: 'inherit' });
+    bin = path.join(ROOT, 'target/release/grandmentor');
+  }
+  // A fixed port could already belong to another GrandMentor (with a real database the sweep would seed into),
+  // so check it is free; without QA_PORT let the OS pick a free one.
+  const port = await probePort(Number(env.QA_PORT) || 0);
+  if (!port) throw new Error(`QA_PORT ${env.QA_PORT} is already in use; stop that server or pick another port`);
   tmpDir = mkdtempSync(path.join(os.tmpdir(), 'gm-qa-'));
-  const childEnv = { ...env, NO_COLOR: '1', GM_PORT: port, GM_HOST: '127.0.0.1', GM_DB: path.join(tmpDir, 'qa.sqlite'), GM_WEB_DIR: path.join(ROOT, 'web') };
+  const childEnv = { ...env, NO_COLOR: '1', GM_PORT: String(port), GM_HOST: '127.0.0.1', GM_DB: path.join(tmpDir, 'qa.sqlite'), GM_WEB_DIR: path.join(ROOT, 'web') };
   delete childEnv.ANTHROPIC_API_KEY; // never call a paid LLM from the sweep
   server = spawn(bin, [], { cwd: ROOT, env: childEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  server.on('error', () => { /* spawn failures surface as exitCode below */ });
   const chunks = [];
   let size = 0;
   const keep = (d) => { if (size < 4 << 20) { chunks.push(d); size += d.length; } }; // bounded
@@ -152,7 +184,7 @@ async function startServer() {
   server.stderr.on('data', keep);
   serverLog = () => Buffer.concat(chunks);
   const base = `http://127.0.0.1:${port}`;
-  if (!(await waitHealthy(base, 60000))) throw new Error(`server did not become healthy on ${base}`);
+  if (!(await waitHealthy(base, 60000, server))) throw new Error(`server did not become healthy on ${base}`);
   return base;
 }
 function cleanup() {
@@ -448,22 +480,29 @@ async function main() {
   }
 
   const failed = results.filter((r) => r.issues.length);
+  // A skipped route was never tested: it fails the sweep unless the allowlist says why that is fine.
+  for (const s of skipped) {
+    const a = allowed({ check: 'skipped', detail: s.reason }, { route: s.route }, allow);
+    if (a) s.allowed = a.reason || 'allowlisted';
+  }
+  const badSkips = skipped.filter((s) => !s.allowed);
   const report = {
-    ok: failed.length === 0, base, generated: new Date().toISOString(), languages: langs, viewports: vps,
-    pages: results.length, failedPages: failed.length, skipped, results,
+    ok: failed.length === 0 && badSkips.length === 0, base, generated: new Date().toISOString(), languages: langs, viewports: vps,
+    pages: results.length, failedPages: failed.length, skipped, unallowedSkips: badSkips.length, results,
   };
   writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 2));
   writeFileSync(path.join(OUT, 'report.md'), markdown(report));
-  log(`\nsweep: ${results.length} pages, ${failed.length} with issues, ${skipped.length} routes skipped — ${path.relative(ROOT, OUT)}/report.md`);
+  for (const s of badSkips) log(`FAIL skipped ${s.route}: ${s.reason} (add data, or a { "check": "skipped", "route": "${s.route}", "reason": "…" } entry to tools/qa/allowlist.json)`);
+  log(`\nsweep: ${results.length} pages, ${failed.length} with issues, ${skipped.length} routes skipped (${badSkips.length} not allowlisted) — ${path.relative(ROOT, OUT)}/report.md`);
   return report.ok ? 0 : 1;
 }
 
 function markdown(r) {
   const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
   const lines = [`# UI sweep report`, '', `${r.generated} · ${r.base} · languages: ${r.languages.join(', ')} · viewports: ${r.viewports.join(', ')}`, '',
-    `**${r.ok ? 'PASS' : 'FAIL'}** — ${r.pages} pages visited, ${r.failedPages} with issues.`, ''];
+    `**${r.ok ? 'PASS' : 'FAIL'}** — ${r.pages} pages visited, ${r.failedPages} with issues, ${r.unallowedSkips} route(s) skipped without an allowlist entry.`, ''];
   if (r.skipped.length) {
-    lines.push('## Skipped routes', '', ...r.skipped.map((s) => `- \`${s.route}\`: ${s.reason}`), '');
+    lines.push('## Skipped routes', '', ...r.skipped.map((s) => `- \`${s.route}\`: ${s.reason}${s.allowed ? ` (allowlisted: ${s.allowed})` : ' — **not allowlisted: fails the sweep**'}`), '');
   }
   const failed = r.results.filter((x) => x.issues.length);
   if (failed.length) {
