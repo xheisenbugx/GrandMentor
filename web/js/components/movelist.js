@@ -5,21 +5,12 @@
 // Extension: setMoves(moves, { startColor: 'black', startMoveNumber: 23 }) for positions that
 // don't start with white to move at move 1 (e.g. puzzles / imported FENs).
 
-import { classificationMeta, formatSan } from '../ui.js';
+import { classificationMeta, formatSan, loadCss } from '../ui.js';
 import { t } from '../i18n.js';
 import { getSetting, onSettingsChange } from '../settings.js';
 
-let cssInjected = false;
 function ensureCss() {
-  if (cssInjected || typeof document === 'undefined') return;
-  cssInjected = true;
-  const linked = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-    .some((l) => /\/board\.css(\?|$)/.test(l.getAttribute('href') || ''));
-  if (linked) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = new URL('../../css/board.css', import.meta.url).href;
-  document.head.appendChild(link);
+  return loadCss(new URL('../../css/board.css', import.meta.url).href);
 }
 
 // Known classifications (others are ignored); emoji symbols render as a plain colored dot.

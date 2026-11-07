@@ -2,7 +2,7 @@
 // recent games, tip of the day and a mini daily-puzzle preview.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName, userAvatar } from '../ui.js';
+import { h, icon, disposables, skeleton, emptyState, formatRelative, displayName, userAvatar, iconLabel } from '../ui.js';
 import { t, hasKey, formatDateIntl } from '../i18n.js';
 import {
   ensureHubCss, fenBoardSvg, playUci, resultMarker, outcomeLabel, userAccuracy, accuracyPill,
@@ -121,7 +121,7 @@ export async function mount(root) {
         h('div', { class: 'hub-eyebrow' }, t('home.tipOfTheDay')),
         h('div', { class: 'hub-tip-title' }, t(`home.tips.${id}.title`)),
         h('p', { class: 'muted' }, t(`home.tips.${id}.body`))),
-      h('button', { type: 'button', class: 'btn btn-ghost btn-sm hub-tip-next', 'aria-label': t('home.nextTip'), html: icon('refresh', { size: 16 }) + `<span>${t('home.anotherTip')}</span>`, onClick: () => { tipIndex = (tipIndex + 1) % TIP_IDS.length; renderTip(); } }));
+      h('button', { type: 'button', class: 'btn btn-ghost btn-sm hub-tip-next', 'aria-label': t('home.nextTip'), html: iconLabel('refresh', t('home.anotherTip'), { size: 16 }), onClick: () => { tipIndex = (tipIndex + 1) % TIP_IDS.length; renderTip(); } }));
   };
   renderTip();
 
@@ -298,8 +298,8 @@ export async function mount(root) {
     const failed = Number(profile.puzzles_failed) || 0;
     const rate = solved + failed ? Math.round((solved / (solved + failed)) * 100) : 0;
     ratingEl.replaceChildren(
-      h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('puzzle') + `<span>${t('nav.puzzles')}</span>` }),
-        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles/rush', html: icon('bolt', { size: 16 }) + `<span>${t('home.rating.rush')}</span>` })),
+      h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('puzzle', t('nav.puzzles')) }),
+        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles/rush', html: iconLabel('bolt', t('home.rating.rush'), { size: 16 }) })),
       h('div', { class: 'hub-rating-row' },
         h('div', null,
           h('div', { class: 'hub-rating-num tabular' }, String(rating)),
@@ -307,7 +307,7 @@ export async function mount(root) {
         h('div', { class: 'progress-ring', style: { '--value': rate }, title: t('home.rating.successRate') }, `${rate}%`)),
       h('div', { class: 'hub-mini-stats' },
         miniStat(t('home.rating.solved'), solved), miniStat(t('home.rating.missed'), failed), miniStat(t('home.rating.rushBest'), Number(profile.rush_best) || 0)),
-      h('a', { class: 'btn btn-secondary btn-block', href: '#/puzzles', html: icon('target') + `<span>${t('home.rating.train')}</span>` }));
+      h('a', { class: 'btn btn-secondary btn-block', href: '#/puzzles', html: iconLabel('target', t('home.rating.train')) }));
   }
 
   async function renderDaily() {
@@ -333,7 +333,7 @@ export async function mount(root) {
         Array.isArray(daily.themes) && daily.themes.length
           ? h('div', { class: 'chip-row hub-themes' }, daily.themes.slice(0, 3).map((th) => h('span', { class: 'badge' }, prettyTheme(th))))
           : null,
-        h('a', { class: 'btn btn-primary btn-block', href: '#/puzzles/daily', html: icon('play') + `<span>${t('home.daily.solve')}</span>` })));
+        h('a', { class: 'btn btn-primary btn-block', href: '#/puzzles/daily', html: iconLabel('play', t('home.daily.solve')) })));
     // Prefer the real (non-interactive) Board; fall back to the static SVG thumbnail.
     const lastMove = pos.lastMove ? [pos.lastMove.slice(0, 2), pos.lastMove.slice(2, 4)] : null;
     try {

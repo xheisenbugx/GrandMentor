@@ -235,17 +235,6 @@
 .go-chips { justify-content: center; }
 .go-tip { margin: 0; max-width: 360px; }
 
-.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.confetti i {
-  position: absolute; top: -12px; left: var(--x); width: 8px; height: 12px; border-radius: 2px;
-  background: var(--c); opacity: 0;
-  animation: play-confetti 1.6s var(--ease-out) var(--d) forwards;
-}
-@keyframes play-confetti {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0); }
-  100% { opacity: 0; transform: translate(var(--dx), 320px) rotate(var(--r)); }
-}
-
 /* ------------------------------------------- Adaptive bot & rating estimate */
 .play-estimate {
   display: flex; align-items: center; gap: 6px; margin-top: 6px;
@@ -362,8 +351,7 @@
   .play-actions { grid-template-columns: repeat(3, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .thinking-dots i, .confetti i { animation: none; }
-  .confetti { display: none; }
+  .thinking-dots i { animation: none; }
   .bot-tile:hover { transform: none; }
 }
 

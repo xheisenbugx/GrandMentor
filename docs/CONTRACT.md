@@ -201,7 +201,7 @@ pub fn choose_move_deterministic(engine, stop, content, bot_id, start_fen, moves
 `stop` interrupts the bot's search (the server raises it when the client disconnects or the server
 shuts down); the bot then plays its best move so far. The search gets the game's earlier positions,
 so the engine sees threefold-repetition draws.
-~14 bots from ~250 to ~3000 Elo plus a "coach" bot. Weak bots blunder plausibly (not randomly):
+14 rated bots from 250 to 3000 Elo, the adaptive bot Sparky (`adaptive`, strength follows the user's results) and two coach bots (`coach`, `coach-leo`). Weak bots blunder plausibly (not randomly):
 limited depth/nodes, softmax over multipv with Elo-dependent temperature, occasional missed captures,
 use opening book (content) with style preferences. `think_ms` = suggested UI delay for realism.
 
@@ -336,6 +336,7 @@ match `[a-z0-9_-]{1,16}`, at most 16 modes.
 | GET `/api/puzzles/daily` | – | `Puzzle` (deterministic by date) |
 | GET `/api/puzzles/themes` | – | `[{theme, count}]` |
 | GET `/api/puzzles/rush?count=40` | – | `[Puzzle]` sorted by ascending rating |
+| GET `/api/puzzles/:id` | – | `Puzzle` (`404 {error}` for an unknown id; the static `/api/puzzles/next`, `/daily`, `/themes`, `/rush` paths take precedence) |
 | POST `/api/puzzles/:id/attempt` | `{solved, time_ms}` | `{rating, delta}` |
 | POST `/api/puzzles/rush` | `{score, mode?}` (`mode` e.g. `"3"`, `"5"`, `"survival"`) | `{best}` + with `mode`: `{mode_best, previous_mode_best}` |
 | GET `/api/puzzles/rush/bests` | – | `{bests: {mode: score}, overall}` (`overall` = best over all modes / `rush_best`) |
@@ -347,11 +348,27 @@ match `[a-z0-9_-]{1,16}`, at most 16 modes.
 | GET `/api/openings/:id` | – | `Opening` |
 | GET `/api/openings/lookup?fen=` | – | `OpeningMatch` or `null` |
 | GET `/api/endgames` | – | `[EndgameDrill]` |
+| GET `/api/endgames/:id` | – | `EndgameDrill` in the request's language (`404 {error}` for an unknown id) |
 | GET/PUT `/api/profile` | PUT `ProfilePatch` | `Profile` |
 | POST `/api/profile/puzzles/reset` | `{confirm: true}` (`400` otherwise) | `Profile` — puzzle rating back to 1200 (RD 350), solved/failed 0, attempts and puzzle rating history deleted; Rush scores, games and lessons kept |
 | GET `/api/stats` | – | `Stats` |
 
 Errors: HTTP 4xx/5xx with `{error: "message"}` (message in the request language, see below).
+Unexpected server failures (database, I/O) answer `500 {"error": "internal error"}` (localized);
+the detail is only written to the server log, never sent to the client.
+
+**Request guard** (`gm_server::guard`, wraps every route, outside the access gate):
+
+* **Host allowlist (DNS rebinding).** `Host` (or the HTTP/2 authority) must be `localhost` /
+  `*.localhost`, an IP literal, this computer's host name (bare, `<name>.local`, or as the OS
+  reports it), a name on the phone-mode certificate, or an entry of `GM_ALLOWED_HOSTS`
+  (comma-separated, for custom DNS names / reverse proxies). Otherwise `421 {error}`. Any port.
+* **Cross-site writes (CSRF).** `POST`/`PUT`/`PATCH`/`DELETE` and websocket upgrades whose
+  `Origin` is another site → `403 {error}`. Allowed: the request's own origin (`Origin` host:port =
+  `Host`), a localhost origin (any port) from this machine, and `/api/sync/snapshot` /
+  `/api/sync/merge` requests carrying `X-GM-Pair` (CORS preflight + pairing code decide). Without
+  `Origin`, `Sec-Fetch-Site: cross-site` is refused the same way; clients that send neither
+  (curl, scripts) are unaffected.
 
 **Language.** Every endpoint accepts `?lang=en|es|pt|fr|de` (regional tags such as `pt-BR` map to their language); otherwise the `Accept-Language` header picks the
 first supported language by q-weight (`es-MX,es;q=0.9,en;q=0.8` → `es`); otherwise English. Only
@@ -374,8 +391,19 @@ The `/engine/ws` socket is language-neutral.
 cancels the previous one on this socket), `{"type":"stop"}`. Server → client:
 `{"type":"info","id":7,"depth":12,"nodes":..., "nps":..., "lines":[{"score":{"cp":30},"moves":["e2e4",...],"san":["e4",...]}]}`
 (throttled ≤ 10/s) and `{"type":"done","id":7, ...same fields}`. Server-side cap: movetime 30s.
+At most 16 sockets are open at once (`gm_server::ws::MAX_SOCKETS`); further upgrades get
+`503 {error}`. Upgrades with a foreign `Origin` get `403` (request guard above).
 Static files: everything else served from `web/` with gzip/br compression and caching headers;
-unknown non-/api paths → `index.html`.
+unknown non-/api paths → `index.html`. `web/dev/*` (component demos) is only served by debug
+builds or with `GM_DEV=1`; release builds answer `404`. Every HTML response (the app shell, its
+SPA fallback, `/login`) carries a `Content-Security-Policy`:
+`default-src 'self'; script-src 'self' 'sha256-…'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' ws: wss: http: https:;
+worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'`.
+The `sha256-…` sources are computed by the server from the inline `<script>` blocks of the file
+being served (re-computed when it changes), so inline scripts need no manual hash; inline event
+handlers (`onclick=` …) are not allowed. `connect-src` includes `http:`/`https:` because device
+sync fetches another GrandMentor by its LAN address.
 
 ---
 
@@ -399,12 +427,26 @@ The router (`app.js`) always calls the previous page's cleanup before mounting t
 
 **`web/js/api.js`**
 ```js
-export const api = { get(path), post(path, body), put(path, body), del(path) }; // path like '/api/games'; throws Error(message) on non-2xx
+export const api = { get(path, opts), post(path, body, opts), put(path, body, opts), del(path, opts) }; // path like '/api/games'; throws ApiError(message) on non-2xx
+// opts: { signal?: AbortSignal, timeout?: ms (default 60000), keepalive?: boolean }
 export class EngineClient {           // one websocket, lazy-connect, auto-reconnect
-  analyze(fen, { multipv = 1, movetime_ms = 3000, depth = null } = {}, onInfo /* (info, done:boolean) */);
+  analyze(fen, { multipv = 1, movetime_ms = 3000, depth = null } = {}, onInfo /* (info, done:boolean) */, onError /* (message) */);
   stop(); close();
 }
 ```
+- Client-side error messages (timeout, server unreachable, `Request failed (status)` fallback, engine unreachable)
+  are translated at call time (`common.errors.*`); server `{ "error" }` texts are already localized.
+- **Progress writes** (puzzle / mistake / weekly attempts, Rush and drill scores, lesson completion, endgame and
+  repertoire drill attempts, classics progress, the adaptive rating update) pass `{ keepalive: true }` and **no page
+  signal**, so leaving the page right after finishing doesn't cancel the save; only the UI update is guarded with
+  `bag.disposed`. The service worker never queues a write the page aborted (`AbortError`), so a request the server
+  may already have is not replayed.
+- `EngineClient`: after 5 connection attempts in a row that never open (server down, revoked phone sign-in) it stops
+  retrying, calls the active request's `onError(message)` and forgets it (the next `analyze()` tries again). It also
+  probes `GET /api/health`, which sends a revoked phone session to `/login` like any REST 401.
+- After an update installed from another tab (`controllerchange` this tab didn't ask for), the router does a full
+  `location.reload()` on the next navigation; a page module that fails to import reloads the app once (guarded by
+  `sessionStorage['gm-import-reload']`).
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
 Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|chessnut; a stored `alpha` is migrated to `chessnut`), `sounds` (bool),
 `soundVolume` (0–100, default 100), `soundPicks` (`{ event: style }` overrides of the default sound per event, see Sound below),
@@ -417,6 +459,13 @@ Also exported: `reducedMotion()` (true when `motion` is reduce, or system + `pre
 **`web/js/ui.js`**: `toast(msg, kind)`, `modal({title, body /*Node|string*/, actions:[{label, kind, onClick}]}) → {close}`,
 `h(tag, attrs, ...children)` tiny DOM helper, `icon(name)` → inline SVG string, `formatScore(score)` → "+1.2"/"M3",
 `classificationMeta(cls)` → `{label, color, symbol /* "!!","!","★","👍","📖","?!","?","✗","??" */}`, `escapeHtml`.
+Safe HTML for translations: `labelHtml(text)` (escaped `<span>`), `iconLabel(icon, text, iconOpts)` (icon + escaped
+label, for `html:` on buttons/titles), `tHtml(key, params)` (a translation that intentionally contains `<strong>`;
+params are escaped). Never interpolate raw `t()` into `html:`/`innerHTML`; `tools/qa/check-i18n.mjs` fails on it.
+Shared helpers: `loadCss(href, {timeout})` → Promise (load a stylesheet once; existing `<link>`s count),
+`confetti(host, opts)` → `{el, cancel}` (`.gm-confetti`, skipped under reduced motion), `shortcutAllowed(e)` (page
+keyboard shortcuts: no modifiers, not typing in a field, no open modal) and `isTypingTarget(el)`,
+`engineErrorToast(message)` (throttled "engine unavailable" toast).
 
 **`web/js/components/board.js`**
 ```js
@@ -628,7 +677,7 @@ GrandMentor can be installed as an app and keeps puzzles and lessons working wit
 | Cache | Strategy | Contents | Limit |
 |---|---|---|---|
 | `gm-shell-<build>` | precache, cache-first | the precache manifest list; navigations fall back to the cached `/index.html` | exact list |
-| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache; Google Fonts (SWR) | 120 entries |
+| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache (the Inter font is vendored in `web/fonts/` and precached) | 120 entries |
 | `gm-content-v1` | stale-while-revalidate | `GET /api/courses[/:id]`, `/api/openings[/:id]`, `/api/endgames[/:id]`, `/api/classics[/:id]`, `/api/puzzles/themes`, `/api/bots`, `/api/puzzles/:id`, plus the offline puzzle pack | 250 entries |
 | `gm-api-v1` | network-first, cached fallback | any other JSON `GET /api/*` (profile, progress, stats, summaries…) | 80 entries |
 
@@ -838,30 +887,40 @@ Whole-profile backup file, restore (merge or replace) and LAN device sync. Store
 |---|---|---|
 | `GET /api/backup/status` | — | `{ last_backup_at, last_restore_at, last_sync_at, tables: [{name, rows}], total_rows, schema_version, format_version }` (timestamps ISO or null) |
 | `GET /api/backup/export[?mark=false]` | — | the backup JSON (without `browser`), `Content-Disposition: attachment; filename="grandmentor-backup-YYYY-MM-DD.json"`. Records `last_backup_at` unless `mark=false`. |
-| `POST /api/backup/preview` | backup file (raw JSON, ≤ 200 MB) | `{ format_version, schema_version, current_schema_version, app_version, created_at, profile_name, tables: [{name, rows, known, current_rows}], total_rows, warnings: [Warning], browser }` |
-| `POST /api/backup/import?mode=merge\|replace[&confirm=replace][&source=sync]` | backup file | `ImportReport` = `{ mode, tables: [{name, inserted, updated, skipped, failed}], inserted, updated, skipped, failed, warnings: [Warning], browser }`. `mode=replace` requires `confirm=replace`; `source=sync` records `last_sync_at` instead of `last_restore_at`. |
+| `POST /api/backup/preview` | backup file (raw JSON, `Content-Type: application/json`, ≤ 200 MB) | `{ format_version, schema_version, current_schema_version, app_version, created_at, profile_name, tables: [{name, rows, known, current_rows}], total_rows, warnings: [Warning], browser }` |
+| `POST /api/backup/import?mode=merge\|replace[&confirm=replace][&source=sync][&allow_partial=1]` | backup file (`Content-Type: application/json`) | `ImportReport` = `{ mode, tables: [{name, inserted, updated, skipped, failed}], inserted, updated, skipped, failed, warnings: [Warning], browser }`. `mode=replace` requires `confirm=replace`; `source=sync` records `last_sync_at` instead of `last_restore_at`. A replace that cannot restore every row is rolled back (nothing changes) with `422 {error}`, unless `allow_partial=1` (then it commits and reports the rows as `failed` + a `rows_failed` warning). |
 | `GET /api/sync/pair` | — | `{ active, code?, expires_in?, network_visible }` — local requests only |
 | `POST /api/sync/pair` | — | new pairing code (replaces any previous one): `{ active: true, code: "ABC-234", expires_in: 600, network_visible }` — local requests only |
 | `DELETE /api/sync/pair` | — | revokes the code — local requests only |
 | `GET /api/sync/snapshot` | header `X-GM-Pair: <code>` | backup JSON of this device (does not touch `last_backup_at`) |
-| `POST /api/sync/merge` | header `X-GM-Pair`, backup file | `ImportReport` (merge mode; `browser` is always `{}`) |
+| `POST /api/sync/merge` | header `X-GM-Pair`, backup file (`Content-Type: application/json`) | `ImportReport` (merge mode; `browser` is always `{}`). The code is checked before the body is read. |
 
 `Warning` = `{ code, table?, column?, count }` with `code` one of `unknown_table` (skipped, `count`
 rows), `unknown_column` (skipped), `rows_failed` (`count` rows violated a constraint and were
 skipped), `newer_schema` (file from a newer DB schema) or `browser_dropped` (invalid browser entries
 left out). The UI translates them. Errors are `{ "error": "..." }`, localized via `Accept-Language`:
 400 bad / foreign file or unsupported version, 401 wrong or expired pairing code, 403 pairing
-requested from another machine, 413 too large.
+requested from another machine (or a write from another website), 413 too large, 415 body not sent
+as `application/json`, 422 replace rolled back because rows could not be restored, 429 too many
+wrong pairing codes from this address (`snapshot` / `merge`).
 
 ### Import semantics (always one transaction)
 
-* **Replace**: empties every user table, inserts the backup rows verbatim (original ids, only
-  columns known locally), drops rows with dangling foreign keys, keeps a profile row.
+* **Replace** (all or nothing): empties every user table, inserts the backup rows verbatim
+  (original ids, only columns known locally), keeps a profile row. If any row violates a
+  constraint or has a dangling foreign key the transaction is rolled back and the request fails
+  with `422` — the local data is untouched. With `allow_partial=1` those rows are dropped instead
+  and counted as `failed`.
 * **Merge** (idempotent — merging the same file twice changes nothing):
   * tables keyed by an auto-increment `INTEGER PRIMARY KEY` (games, puzzle_attempts, …): rows get
     new local ids and are de-duplicated by content — games by `(start_fen, moves, created_at)`,
     other tables by every column except the id and `updated_at`. Columns referencing those ids
     through a declared foreign key, or any column named `game_id`, are remapped to the new ids.
+    A reference whose parent row is not in the backup is set to NULL, or the row is skipped
+    (counted as `skipped`) when the column is `NOT NULL` or the primary key — it never keeps an
+    old id that could point at an unrelated local row. Tables whose `INTEGER PRIMARY KEY` is itself
+    such a reference (`adaptive_games.game_id`, `mistake_scanned_games.game_id`) keep the remapped
+    id and merge like natural-key tables.
   * tables with a natural primary key (lesson_progress, activity, …): missing rows are inserted; an
     existing row is overwritten only when the backup's `updated_at` is newer.
   * `profile`: best-of counters (`rush_best`, `puzzles_solved`, `puzzles_failed`, at least the merged
@@ -880,10 +939,12 @@ Flow (device B, Settings → "Connect to another device"): B's browser fetches
   mode on (`GM_LAN=1` / Settings → Use on your phone), which also opens the plain HTTP port to the
   network. Everything else on A is then behind the access PIN (see "Phone & home use"); the two sync
   endpoints below are exempt from the PIN because they carry their own pairing code.
-* Pairing codes (6 characters from a 32-letter alphabet, shown as `ABC-234`) live only in memory,
-  one at a time, for 10 minutes; 20 wrong attempts revoke the code. They can only be created, read
-  or revoked by requests from this machine (loopback peer address and, when present, a localhost
-  `Origin`).
+* Pairing codes (6 characters from a 32-letter alphabet, shown as `ABC-234`) live only in memory
+  (`AppState::pairing`), one at a time, for 10 minutes. Wrong codes are limited per address: 10
+  per 10 minutes, then that address gets `429` (even with the right code) until the window ends;
+  other devices are not affected, and creating a new code clears the limits. 200 wrong codes in
+  total revoke the code. Codes can only be created, read or revoked by requests from this machine
+  (loopback peer address and, when present, a localhost `Origin`).
 * `snapshot` / `merge` always require a valid `X-GM-Pair` header, with or without CORS.
 * CORS for non-local origins is granted **only** to `/api/sync/snapshot` and `/api/sync/merge`,
   and only for requests carrying a currently valid code (preflights: when they announce the
@@ -891,7 +952,11 @@ Flow (device B, Settings → "Connect to another device"): B's browser fetches
   those origins. Every other endpoint keeps the localhost-only CORS policy.
 * Traffic is plain HTTP (code and data are not encrypted): use it on your own network.
 * The request body limit is raised to 200 MB only for `backup/preview`, `backup/import` and
-  `sync/merge` (everything else stays at 1 MB); parsing and database work run on the blocking pool.
+  `sync/merge` (everything else stays at 1 MB); `sync/merge` reads its body only after the pairing
+  code was accepted. Parsing and database work run on the blocking pool.
+* All three take the backup only as `Content-Type: application/json` (`415` otherwise), so a web
+  page can't post one cross-site as a "simple" (`text/plain`) request; foreign `Origin`s are
+  refused by the request guard anyway.
 
 ## Quick drills
 
@@ -1301,7 +1366,7 @@ FirstWeekState { started, started_on: "YYYY-MM-DD"|null, today, dismissed, eligi
 
 **Frontend** — `web/js/pages/start.js` (`#/start`; opening it starts the path), `web/js/components/firstweek.js`:
 `ensureFirstWeekCss()` (`web/css/firstweek.css`), `dotPath(state, {compact})`, `celebrate(state, {bag})` (toast +
-confetti, confetti skipped under reduced motion), `new FirstWeekCard(container)` (Home card: `.load()`, `.destroy()`;
+confetti via `ui.confetti()`, skipped under reduced motion), `new FirstWeekCard(container)` (Home card: `.load()`, `.destroy()`;
 hides itself when not `eligible`; "I already know how to play" dismisses), `createFirstWeekSection()` (Settings card
 with "Start over" / "Show on Home": `{el, destroy}`). Strings: `firstweek` locale namespace (step/day copy keyed by id).
 
@@ -1371,6 +1436,8 @@ strings in the `phone` locale namespace). User guide: [`docs/PHONE.md`](PHONE.md
 | `GM_LAN_PORT` | `8443` | HTTPS listener (`0.0.0.0`) in phone mode. |
 | `GM_PHONE_DIR` | `<dir of GM_DB>/grandmentor-phone` | `phone.json`, `access.json` (0600), `ca.key.pem` (0600), `ca.crt.pem`, `ca.json`, `server.key.pem` (0600), `server.crt.pem`, `server.json`. |
 | `GM_ACCESS_PIN` | on | `off` disables the PIN gate for non-loopback clients. |
+| `GM_ALLOWED_HOSTS` | unset | Extra host names (comma-separated) the request guard accepts in `Host`, e.g. a custom DNS name. |
+| `GM_DEV` | unset | `1` serves `web/dev/*` in release builds. |
 
 In phone mode the plain HTTP listener binds `0.0.0.0:GM_PORT` unless `GM_HOST` is set explicitly.
 Nothing is written to `GM_PHONE_DIR` while phone mode is off and the server is loopback-only (except
@@ -1395,8 +1462,12 @@ builds the router for one listener (`gm_server::app` = in-memory phone state, HT
    `"login": "/login"`.
 
 Cookie: `gm_access=<64 hex>; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict[; Secure on HTTPS]`.
-At most 32 signed-in devices are kept (oldest dropped). Wrong PINs: 5 per IP per 15 min, 30 in total
-per hour → `429` + `Retry-After`. PIN = 6 digits (spaces/dashes ignored when typed).
+At most 32 signed-in devices are kept (oldest dropped). Wrong PINs (`phone::access::Limiter`) → `429`
++ `Retry-After`: per IP address, 5 free tries, then each further wrong PIN locks that address for
+30 s × 2ⁿ (30 s, 1 min, 2 min, … at most 1 h; forgotten after 24 h without a wrong PIN, cleared by
+the right PIN); globally at most 300 wrong PINs per 24 h (≈ 9 addresses guessing all day; a random
+PIN then takes ~4½ years on average). Devices with a valid cookie never hit the limiter. PIN = 6
+digits (spaces/dashes ignored when typed).
 
 ### Endpoints
 
@@ -1410,7 +1481,7 @@ per hour → `429` + `Retry-After`. PIN = 6 digits (spaces/dashes ignored when t
 | `GET /api/access/status` | any (behind the gate) | — | `{ "local": bool, "signed_in": bool, "pin_required": bool }` |
 | `POST /api/access/login` | any | form `pin=…&next=/…` or JSON `{ "pin", "next"? }` (≤ 4 KB) | form: `303` to `next` (same-site path only) + cookie, or the login page with an error (`401` wrong, `429` locked); JSON: `{ "ok": true, "next" }` + cookie, or `401/429 {error}`. A cross-origin `Origin` → `403`. |
 | `POST /api/access/logout` | any | — | `{ "ok": true }`, forgets this device's session, clears the cookie |
-| `GET /login[?next=/…]` | any | — | self-contained localized HTML sign-in page (no scripts); redirects to `next` when the caller is local or already signed in |
+| `GET /login[?next=/…]` | any | — | self-contained localized HTML sign-in page (no scripts, CSP as above); redirects to `next` when the caller is local or already signed in |
 | `GET /phone/ca.crt` | any | — | the local CA (DER, `application/x-x509-ca-cert`, `attachment; filename="grandmentor-ca.crt"`); `404` when phone mode is off |
 
 "This computer" = loopback peer and, when an `Origin` header is sent, a localhost origin; otherwise

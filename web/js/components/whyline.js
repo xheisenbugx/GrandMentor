@@ -9,7 +9,7 @@
 // position (via `onExit`). Every listener and timer is released by stop()/destroy().
 
 import { Chess } from '../../vendor/chess.js';
-import { h, icon, formatSan, escapeHtml } from '../ui.js';
+import { h, icon, formatSan, escapeHtml, loadCss, shortcutAllowed } from '../ui.js';
 import { getSettings } from '../settings.js';
 import { t } from '../i18n.js';
 
@@ -20,16 +20,8 @@ const KINDS = new Set([
   'missed_mate', 'missed_fork', 'missed_material', 'positional',
 ]);
 
-let cssInjected = false;
 function ensureCss() {
-  if (cssInjected || typeof document === 'undefined') return;
-  cssInjected = true;
-  if (document.getElementById('gm-whyline-css')) return;
-  const link = document.createElement('link');
-  link.id = 'gm-whyline-css';
-  link.rel = 'stylesheet';
-  link.href = new URL('../../css/whyline.css', import.meta.url).href;
-  document.head.appendChild(link);
+  return loadCss(new URL('../../css/whyline.css', import.meta.url).href);
 }
 
 /** Replay a UCI line from `fen`; stops at the first illegal move. */
@@ -255,9 +247,7 @@ export class WhyPanel {
   }
 
   _onKey(e) {
-    if (!this.mode || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tgt = e.target;
-    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
+    if (!this.mode || !shortcutAllowed(e)) return;
     let handled = true;
     if (e.key === 'ArrowLeft') { this._pause(); this.go(this.idx - 1); }
     else if (e.key === 'ArrowRight') { this._pause(); this.go(this.idx + 1); }

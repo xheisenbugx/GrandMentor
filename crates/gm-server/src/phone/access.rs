@@ -3,8 +3,15 @@
 //! * The PIN is 6 digits, stored in `access.json` (owner-only file) next to the certificates.
 //! * Signing in gives the device a random 256-bit token (cookie); the server keeps at most
 //!   [`MAX_SESSIONS`] tokens. "Sign out all devices" forgets them all.
-//! * Wrong PINs are limited per address ([`PER_IP_FAILURES`] per [`PER_IP_WINDOW`]) and globally
-//!   ([`GLOBAL_FAILURES`] per [`GLOBAL_WINDOW`]), so guessing a 6-digit PIN would take centuries.
+//! * Wrong PINs are limited **per address** with exponential backoff: [`PER_IP_FREE`] tries, then
+//!   every further wrong PIN locks that address for [`BACKOFF_BASE`] × 2ⁿ (30 s, 1 min, 2 min, …,
+//!   at most [`BACKOFF_MAX`]). A right PIN clears the address; it is forgotten after
+//!   [`FORGET_AFTER`] without a wrong PIN. One address can try roughly 35 PINs a day.
+//! * A **global ceiling** of [`GLOBAL_FAILURES`] wrong PINs per [`GLOBAL_WINDOW`] caps guessing
+//!   from many addresses at once (reaching it takes about 9 addresses guessing all day). A random
+//!   6-digit PIN needs 500 000 guesses on average, so even at the ceiling that is ~1 700 days
+//!   (~4½ years; ~9 years to try them all). Devices that are already signed in (valid cookie)
+//!   never go through this check, so a lockout never affects them.
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -18,10 +25,15 @@ use super::tls::write_private;
 
 pub const PIN_LEN: usize = 6;
 pub const MAX_SESSIONS: usize = 32;
-pub const PER_IP_FAILURES: u32 = 5;
-pub const PER_IP_WINDOW: Duration = Duration::from_secs(15 * 60);
-pub const GLOBAL_FAILURES: u32 = 30;
-pub const GLOBAL_WINDOW: Duration = Duration::from_secs(60 * 60);
+/// Wrong PINs an address may send before the backoff starts.
+pub const PER_IP_FREE: u32 = 5;
+/// First lock after the free tries; doubles with every further wrong PIN.
+pub const BACKOFF_BASE: Duration = Duration::from_secs(30);
+pub const BACKOFF_MAX: Duration = Duration::from_secs(60 * 60);
+/// An address with no wrong PIN for this long starts from scratch.
+pub const FORGET_AFTER: Duration = Duration::from_secs(24 * 60 * 60);
+pub const GLOBAL_FAILURES: u32 = 300;
+pub const GLOBAL_WINDOW: Duration = Duration::from_secs(24 * 60 * 60);
 /// Addresses remembered by the limiter.
 const MAX_TRACKED: usize = 1024;
 const TOKEN_BYTES: usize = 32;
@@ -181,24 +193,36 @@ impl Window {
     }
 }
 
-/// Failed-PIN limiter.
+/// Wrong PINs of one address.
+#[derive(Clone, Copy, Debug)]
+struct Strikes {
+    count: u32,
+    last: Instant,
+    until: Option<Instant>,
+}
+
+/// How long an address is locked after its `count`-th wrong PIN.
+pub fn backoff(count: u32) -> Option<Duration> {
+    let extra = count.checked_sub(PER_IP_FREE)?;
+    Some(BACKOFF_BASE.saturating_mul(1u32 << extra.min(16)).min(BACKOFF_MAX))
+}
+
+/// Failed-PIN limiter: per-address backoff plus a global ceiling.
 #[derive(Default)]
 pub struct Limiter {
-    per_ip: HashMap<IpAddr, Window>,
+    per_ip: HashMap<IpAddr, Strikes>,
     global: Option<Window>,
 }
 
 impl Limiter {
     /// `Some(seconds)` to wait when `ip` may not try right now.
     pub fn blocked(&self, ip: IpAddr, now: Instant) -> Option<u64> {
-        let wait = |w: &Window, len: Duration| len.saturating_sub(now.saturating_duration_since(w.start)).as_secs().max(1);
+        let secs = |d: Duration| d.as_secs().max(1);
         if let Some(g) = self.global.filter(|g| g.active(now, GLOBAL_WINDOW) && g.count >= GLOBAL_FAILURES) {
-            return Some(wait(&g, GLOBAL_WINDOW));
+            return Some(secs(GLOBAL_WINDOW.saturating_sub(now.saturating_duration_since(g.start))));
         }
-        self.per_ip
-            .get(&ip)
-            .filter(|w| w.active(now, PER_IP_WINDOW) && w.count >= PER_IP_FAILURES)
-            .map(|w| wait(w, PER_IP_WINDOW))
+        let s = self.per_ip.get(&ip)?;
+        s.until.filter(|u| *u > now).map(|u| secs(u.saturating_duration_since(now)))
     }
 
     pub fn record_failure(&mut self, ip: IpAddr, now: Instant) {
@@ -207,19 +231,22 @@ impl Limiter {
             *g = Window { start: now, count: 0 };
         }
         g.count += 1;
+        let stale = |s: &Strikes| now.saturating_duration_since(s.last) >= FORGET_AFTER;
         if self.per_ip.len() >= MAX_TRACKED && !self.per_ip.contains_key(&ip) {
-            self.per_ip.retain(|_, w| w.active(now, PER_IP_WINDOW));
+            self.per_ip.retain(|_, s| !stale(s));
             if self.per_ip.len() >= MAX_TRACKED {
-                if let Some(oldest) = self.per_ip.iter().min_by_key(|(_, w)| w.start).map(|(k, _)| *k) {
+                if let Some(oldest) = self.per_ip.iter().min_by_key(|(_, s)| s.last).map(|(k, _)| *k) {
                     self.per_ip.remove(&oldest);
                 }
             }
         }
-        let w = self.per_ip.entry(ip).or_insert(Window { start: now, count: 0 });
-        if !w.active(now, PER_IP_WINDOW) {
-            *w = Window { start: now, count: 0 };
+        let s = self.per_ip.entry(ip).or_insert(Strikes { count: 0, last: now, until: None });
+        if stale(s) {
+            *s = Strikes { count: 0, last: now, until: None };
         }
-        w.count += 1;
+        s.count = s.count.saturating_add(1);
+        s.last = now;
+        s.until = backoff(s.count).map(|d| now + d);
     }
 
     pub fn record_success(&mut self, ip: IpAddr) {
@@ -266,26 +293,48 @@ mod tests {
     }
 
     #[test]
-    fn limiter_per_ip_and_global() {
+    fn limiter_backs_off_per_ip() {
         let mut l = Limiter::default();
         let a: IpAddr = "192.168.1.5".parse().expect("ip");
         let b: IpAddr = "192.168.1.6".parse().expect("ip");
         let t0 = Instant::now();
-        for _ in 0..PER_IP_FAILURES {
-            assert!(l.blocked(a, t0).is_none());
+        for _ in 0..PER_IP_FREE - 1 {
             l.record_failure(a, t0);
+            assert!(l.blocked(a, t0).is_none());
         }
-        assert!(l.blocked(a, t0).is_some());
+        l.record_failure(a, t0);
+        assert_eq!(l.blocked(a, t0), Some(30));
+        // Other addresses are not affected.
         assert!(l.blocked(b, t0).is_none());
-        // The window passes.
-        assert!(l.blocked(a, t0 + PER_IP_WINDOW + Duration::from_secs(1)).is_none());
-        // Global cap across many addresses.
+        // The lock passes, the next wrong PIN doubles it.
+        let t1 = t0 + Duration::from_secs(31);
+        assert!(l.blocked(a, t1).is_none());
+        l.record_failure(a, t1);
+        assert_eq!(l.blocked(a, t1), Some(60));
+        assert_eq!(backoff(PER_IP_FREE + 2), Some(Duration::from_secs(120)));
+        assert_eq!(backoff(PER_IP_FREE + 40), Some(BACKOFF_MAX));
+        assert_eq!(backoff(PER_IP_FREE - 1), None);
+        // A day later the address starts from scratch.
+        let t2 = t1 + FORGET_AFTER;
+        l.record_failure(a, t2);
+        assert!(l.blocked(a, t2).is_none());
+        // A right PIN clears it.
+        l.record_success(a);
+        assert!(l.blocked(a, t2).is_none());
+    }
+
+    #[test]
+    fn limiter_global_ceiling() {
+        let t0 = Instant::now();
+        let b: IpAddr = "192.168.1.6".parse().expect("ip");
         let mut g = Limiter::default();
         for i in 0..GLOBAL_FAILURES {
             let ip: IpAddr = format!("10.0.{}.{}", i / 200, i % 200 + 1).parse().expect("ip");
+            assert!(g.blocked(b, t0).is_none());
             g.record_failure(ip, t0);
         }
         assert!(g.blocked(b, t0).is_some());
+        assert!(g.blocked(b, t0 + GLOBAL_WINDOW).is_none());
     }
 
     #[test]

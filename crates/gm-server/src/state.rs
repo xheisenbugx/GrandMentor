@@ -49,6 +49,12 @@ pub struct AppState {
     pub opening_cache: Arc<BoundedCache<String, Option<gm_content::OpeningMatch>>>,
     /// Flipped to `true` on Ctrl-C so long-lived websockets close and shutdown completes.
     pub shutdown: Arc<tokio::sync::watch::Sender<bool>>,
+    /// Device-sync pairing code and its wrong-code limiter (`routes/backup.rs`).
+    pub pairing: Arc<crate::routes::backup::PairState>,
+    /// Set while `POST /api/insights/review-next` runs (one background review at a time).
+    pub review_busy: Arc<std::sync::atomic::AtomicBool>,
+    /// Open `/api/engine/ws` sockets (at most [`crate::ws::MAX_SOCKETS`]).
+    pub ws_slots: Arc<tokio::sync::Semaphore>,
 }
 
 impl AppState {
@@ -65,6 +71,9 @@ impl AppState {
             position_cache: Arc::new(BoundedCache::new(POSITION_CACHE)),
             opening_cache: Arc::new(BoundedCache::new(OPENING_CACHE)),
             shutdown: Arc::new(tokio::sync::watch::Sender::new(false)),
+            pairing: Arc::default(),
+            review_busy: Arc::default(),
+            ws_slots: Arc::new(tokio::sync::Semaphore::new(crate::ws::MAX_SOCKETS)),
         }
     }
 }

@@ -15,10 +15,14 @@
 //!   automatically. Rows are JSON objects keyed by column name.
 //! * **Import** validates the format version, skips unknown tables / columns with a warning and
 //!   runs inside one transaction, in one of two modes:
-//!   * [`ImportMode::Replace`] — wipe every user table and restore the backup verbatim.
+//!   * [`ImportMode::Replace`] — wipe every user table and restore the backup verbatim. If any
+//!     row cannot be restored (constraint failure, dangling reference) the whole import is
+//!     rolled back with [`BackupError::RowsFailed`], unless [`ImportOptions::allow_partial`].
 //!   * [`ImportMode::Merge`] — keep local data and add what is missing. Tables keyed by an
 //!     auto-increment `INTEGER PRIMARY KEY` get fresh ids (rows referencing them through a
-//!     foreign key, or a `game_id` column, are remapped); rows are de-duplicated by content
+//!     foreign key, or a `game_id` column, are remapped; a reference to a parent row that is not
+//!     in the backup becomes NULL, or the row is skipped when the column is NOT NULL, so it can
+//!     never point at an unrelated local row); rows are de-duplicated by content
 //!     (games by start position + moves + creation time). Tables with a natural primary key are
 //!     upserted (newer `updated_at` wins, otherwise the local row is kept). `profile` is merged
 //!     field by field. Merging the same file twice changes nothing the second time.
@@ -76,6 +80,8 @@ pub enum BackupError {
     UnsupportedVersion { found: u64, supported: u64 },
     /// Bigger than [`MAX_BACKUP_BYTES`].
     TooLarge,
+    /// A replace import could not restore `failed` rows and was rolled back (nothing changed).
+    RowsFailed { failed: u64 },
 }
 
 impl std::fmt::Display for BackupError {
@@ -88,6 +94,9 @@ impl std::fmt::Display for BackupError {
                 "this backup uses format version {found}, but this GrandMentor only understands up to {supported}"
             ),
             BackupError::TooLarge => write!(f, "backup too large (max {} MB)", MAX_BACKUP_BYTES / (1024 * 1024)),
+            BackupError::RowsFailed { failed } => {
+                write!(f, "{failed} rows of the backup could not be restored; nothing was changed")
+            }
         }
     }
 }
@@ -136,6 +145,14 @@ impl ImportMode {
             ImportMode::Replace => "replace",
         }
     }
+}
+
+/// Extra switches for [`Store::import_backup_with`].
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct ImportOptions {
+    /// Commit a replace import even when some rows could not be restored (they are reported as
+    /// `failed`). Off by default: a replace is all or nothing.
+    pub allow_partial: bool,
 }
 
 /// Which timestamp an import updates in [`BackupStatus`].
@@ -378,6 +395,8 @@ struct TableInfo {
     rowid_pk: Option<String>,
     /// (column, parent table) pairs whose values are ids of a rowid-keyed parent.
     refs: Vec<(String, String)>,
+    /// Columns declared `NOT NULL`.
+    notnull: Vec<String>,
 }
 
 /// User tables (no SQLite internals, no [`EXCLUDED`]), sorted by name.
@@ -402,9 +421,9 @@ fn table_infos(conn: &Connection) -> anyhow::Result<Vec<TableInfo>> {
             })
             .map(|v| v != 0)
             .unwrap_or(false);
-        let mut stmt = conn.prepare("SELECT name, upper(type), pk FROM pragma_table_info(?1) ORDER BY cid")?;
-        let cols: Vec<(String, String, i64)> = stmt
-            .query_map([name], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))?
+        let mut stmt = conn.prepare("SELECT name, upper(type), pk, \"notnull\" FROM pragma_table_info(?1) ORDER BY cid")?;
+        let cols: Vec<(String, String, i64, i64)> = stmt
+            .query_map([name], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)))?
             .collect::<rusqlite::Result<_>>()?;
         let mut pk: Vec<(i64, String)> = cols.iter().filter(|c| c.2 > 0).map(|c| (c.2, c.0.clone())).collect();
         pk.sort();
@@ -415,6 +434,7 @@ fn table_infos(conn: &Connection) -> anyhow::Result<Vec<TableInfo>> {
         };
         infos.push(TableInfo {
             name: name.clone(),
+            notnull: cols.iter().filter(|c| c.3 != 0).map(|c| c.0.clone()).collect(),
             cols: cols.into_iter().map(|c| c.0).collect(),
             pk,
             rowid_pk,
@@ -649,8 +669,19 @@ impl Store {
         })
     }
 
-    /// Imports `file` in one transaction. See the module docs for the merge rules.
+    /// Imports `file` in one transaction with default [`ImportOptions`]. See the module docs.
     pub fn import_backup(&self, file: &BackupFile, mode: ImportMode, source: ImportSource) -> anyhow::Result<ImportReport> {
+        self.import_backup_with(file, mode, source, ImportOptions::default())
+    }
+
+    /// Imports `file` in one transaction. See the module docs for the merge rules.
+    pub fn import_backup_with(
+        &self,
+        file: &BackupFile,
+        mode: ImportMode,
+        source: ImportSource,
+        opts: ImportOptions,
+    ) -> anyhow::Result<ImportReport> {
         let mut conn = self.conn.lock();
         let infos = table_infos(&conn)?;
         let mut report = ImportReport { mode: mode.as_str().into(), ..Default::default() };
@@ -673,6 +704,14 @@ impl Store {
         match mode {
             ImportMode::Replace => replace_all(&tx, &infos, file, &mut report)?,
             ImportMode::Merge => merge_all(&tx, &infos, file, &mut report)?,
+        }
+        if mode == ImportMode::Replace && !opts.allow_partial {
+            let failed: u64 = report.tables.iter().map(|t| t.failed).sum();
+            if failed > 0 {
+                // Dropping `tx` rolls the wipe back: the local data stays exactly as it was.
+                drop(tx);
+                return Err(BackupError::RowsFailed { failed }.into());
+            }
         }
         tx.execute_batch("INSERT OR IGNORE INTO profile (id) VALUES (1)")?;
         // Games from older backups have no thumbnail position yet.
@@ -816,22 +855,36 @@ fn merge_all(tx: &rusqlite::Transaction<'_>, infos: &[TableInfo], file: &BackupF
             report.tables.push(tr);
             continue;
         }
-        // Remap references to rowid-keyed parents imported earlier.
-        let remapped: Vec<Map<String, Value>> = rows
-            .iter()
-            .map(|row| {
-                let mut row = row.clone();
-                for (col, parent) in &info.refs {
-                    if let (Some(map), Some(old)) = (id_maps.get(parent), row.get(col).and_then(Value::as_i64)) {
-                        if let Some(new) = map.get(&old) {
-                            row.insert(col.clone(), Value::from(*new));
-                        }
+        // Remap references to rowid-keyed parents imported earlier. An id with no mapping names
+        // a row that is not in the backup; kept as is it could point at an unrelated local row,
+        // so it becomes NULL, or the row is skipped when the column can't be NULL.
+        let mut remapped: Vec<Map<String, Value>> = Vec::with_capacity(rows.len());
+        'rows: for row in rows {
+            let mut row = row.clone();
+            for (col, parent) in &info.refs {
+                if parent == &info.name {
+                    continue; // self-references: ids of this table are only known after insert
+                }
+                let Some(old) = row.get(col).and_then(Value::as_i64) else { continue };
+                match id_maps.get(parent).and_then(|m| m.get(&old)) {
+                    Some(new) => {
+                        row.insert(col.clone(), Value::from(*new));
+                    }
+                    None if info.notnull.contains(col) || info.pk.contains(col) => {
+                        tr.skipped += 1;
+                        continue 'rows;
+                    }
+                    None => {
+                        row.insert(col.clone(), Value::Null);
                     }
                 }
-                row
-            })
-            .collect();
-        if info.pk.is_empty() || info.rowid_pk.is_some() {
+            }
+            remapped.push(row);
+        }
+        // A rowid key that is itself a reference (`adaptive_games.game_id`) is a natural key:
+        // the remapped parent id must be kept, not replaced by a fresh rowid.
+        let key_is_ref = info.rowid_pk.as_ref().is_some_and(|pk| info.refs.iter().any(|(c, _)| c == pk));
+        if info.pk.is_empty() || (info.rowid_pk.is_some() && !key_is_ref) {
             let map = merge_by_content(tx, info, &remapped, &mut tr)?;
             if info.rowid_pk.is_some() {
                 id_maps.insert(info.name.clone(), map);
@@ -1156,6 +1209,83 @@ mod tests {
             )
             .unwrap();
         assert_eq!(dangling, 0);
+    }
+
+    #[test]
+    fn replace_with_failed_rows_rolls_back_unless_partial_is_allowed() {
+        let a = Store::open_in_memory().unwrap();
+        seed(&a);
+        let mut file = parse_backup(&a.export_backup(false).unwrap()).unwrap();
+        // The same natural key twice: the second copy violates the primary key.
+        let dup = file.tables["activity"][0].clone();
+        file.tables.get_mut("activity").unwrap().push(dup);
+
+        let b = Store::open_in_memory().unwrap();
+        b.create_game(&NewGame { moves: vec!["c2c4".into()], ..Default::default() }).unwrap();
+        let before = tables_of(&b.export_backup(false).unwrap());
+        let err = b.import_backup(&file, ImportMode::Replace, ImportSource::File).unwrap_err();
+        assert_eq!(err.downcast_ref::<BackupError>(), Some(&BackupError::RowsFailed { failed: 1 }));
+        assert_eq!(tables_of(&b.export_backup(false).unwrap()), before, "nothing changed");
+        assert!(b.backup_status().unwrap().last_restore_at.is_none());
+
+        let rep = b
+            .import_backup_with(&file, ImportMode::Replace, ImportSource::File, ImportOptions { allow_partial: true })
+            .unwrap();
+        assert_eq!(rep.failed, 1);
+        assert!(rep.warnings.iter().any(|w| w.code == "rows_failed"));
+        assert_eq!(b.list_games(&Default::default()).unwrap().len(), 2);
+    }
+
+    #[test]
+    fn merge_never_keeps_references_to_rows_outside_the_backup() {
+        let a = Store::open_in_memory().unwrap();
+        seed(&a);
+        let mut file = parse_backup(&a.export_backup(false).unwrap()).unwrap();
+        let first_game = file.tables["games"][0]["id"].as_i64().unwrap();
+        let row = |v: Value| v.as_object().unwrap().clone();
+        // Nullable reference to a game that is not in the backup -> NULL.
+        file.tables.insert(
+            "mistake_cards".into(),
+            vec![row(serde_json::json!({
+                "id": 7, "fen_key": "k1", "fen": "8/8/8/8/8/8/8/K6k w - - 0 1", "played_uci": "a1a2",
+                "best_uci": "a1b1", "game_id": 999, "due_at": 0, "created_at": 0
+            }))],
+        );
+        // Game id used as the primary key: unknown -> skipped, known -> remapped (not a new id).
+        let adaptive = |game_id: i64, elo: i64| {
+            row(serde_json::json!({
+                "game_id": game_id, "opponent_elo": elo, "score": 1.0, "rating_after": 900.0, "games_after": 1
+            }))
+        };
+        file.tables.insert("adaptive_games".into(), vec![adaptive(999, 800), adaptive(first_game, 850)]);
+
+        let b = Store::open_in_memory().unwrap();
+        // Local games whose ids collide with the backup's.
+        for m in ["c2c4", "g1f3", "b1c3"] {
+            b.create_game(&NewGame { moves: vec![m.into()], ..Default::default() }).unwrap();
+        }
+        // Local game 999 exists too, so a kept id would silently point at it.
+        b.conn.lock().execute("INSERT INTO games (id, moves) VALUES (999, '[]')", []).unwrap();
+        let rep = b.import_backup(&file, ImportMode::Merge, ImportSource::Sync).unwrap();
+        assert_eq!(rep.failed, 0, "{rep:?}");
+        let adaptive_rep = rep.tables.iter().find(|t| t.name == "adaptive_games").unwrap();
+        assert_eq!((adaptive_rep.inserted, adaptive_rep.skipped), (1, 1), "{adaptive_rep:?}");
+
+        let conn = b.conn.lock();
+        let card_game: Option<i64> = conn.query_row("SELECT game_id FROM mistake_cards WHERE fen_key = 'k1'", [], |r| r.get(0)).unwrap();
+        assert_eq!(card_game, None);
+        let (gid, moves): (i64, String) = conn
+            .query_row("SELECT a.game_id, g.moves FROM adaptive_games a JOIN games g ON g.id = a.game_id", [], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
+            .unwrap();
+        assert_ne!(gid, 999);
+        assert_eq!(moves, file.tables["games"][0]["moves"].as_str().unwrap(), "points at the imported game");
+        drop(conn);
+
+        // Still idempotent.
+        let again = b.import_backup(&file, ImportMode::Merge, ImportSource::Sync).unwrap();
+        assert_eq!(again.inserted, 0, "{again:?}");
     }
 
     #[test]

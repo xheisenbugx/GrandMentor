@@ -1,4 +1,4 @@
-/* Guided first week: #/start page, Home card, 7-dot path, confetti. Loaded by components/firstweek.js. */
+/* Guided first week: #/start page, Home card, 7-dot path (confetti: .gm-confetti in app.css). Loaded by components/firstweek.js. */
 
 /* ---- 7-dot path ---------------------------------------------------------- */
 .fw-path { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); position: relative; }
@@ -97,13 +97,3 @@
   .fw-step-actions { grid-column: 2; justify-content: flex-start; }
 }
 
-/* ---- Confetti (never shown under reduced motion: JS skips it) ------------- */
-.fw-confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 900; }
-.fw-confetti i {
-  position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; opacity: 0.95;
-  animation-name: fw-fall; animation-timing-function: cubic-bezier(.25,.6,.4,1); animation-fill-mode: forwards;
-}
-@keyframes fw-fall {
-  to { transform: translate(var(--fw-drift, 0), 105vh) rotate(var(--fw-spin, 360deg)); opacity: 0.6; }
-}
-@media (prefers-reduced-motion: reduce) { .fw-confetti { display: none; } }

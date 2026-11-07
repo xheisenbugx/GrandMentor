@@ -2,7 +2,7 @@
 // Also exports small shared helpers used by lesson.js, openings.js and endgames.js.
 // Contract: docs/CONTRACT.md §4 (/api/courses, /api/progress) and §5 (page interface).
 
-import { h, icon, pageHeader, disposables, emptyState, skeleton, escapeHtml } from '../ui.js';
+import { h, icon, pageHeader, disposables, emptyState, skeleton, escapeHtml, loadCss } from '../ui.js';
 import { api, isAbort } from '../api.js';
 import { getSettings, pieceUrl, reducedMotion } from '../settings.js';
 import { Chess } from '/vendor/chess.js';
@@ -18,12 +18,7 @@ export const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0
 
 /** Inject /css/learn.css once (idempotent, kept for the session — it is tiny). */
 export function ensureLearnCss() {
-  if (document.querySelector('link[data-gm-css="learn"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/learn.css';
-  link.dataset.gmCss = 'learn';
-  document.head.appendChild(link);
+  return loadCss('/css/learn.css');
 }
 
 /** localStorage helpers: never throw, always return a usable value. */
@@ -176,31 +171,6 @@ export function timerSet() {
     clear() { for (const id of ids) clearTimeout(id); ids.clear(); },
     get size() { return ids.size; },
   };
-}
-
-/** Confetti-lite burst over `host` (position:relative). Self-removes via `timers` (a timerSet). */
-export function confetti(host, timers, { count = 36 } = {}) {
-  if (!host) return;
-  if (reducedMotion()) return;
-  host.querySelectorAll(':scope > .lrn-confetti').forEach((n) => n.remove());
-  const colors = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)', 'var(--accent)'];
-  const layer = h('div', { class: 'lrn-confetti', 'aria-hidden': 'true' });
-  for (let i = 0; i < count; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 90 + Math.random() * 180;
-    layer.appendChild(h('i', {
-      style: {
-        '--x': `${Math.cos(angle) * dist}px`,
-        '--y': `${Math.sin(angle) * dist - 60}px`,
-        '--r': `${Math.round(Math.random() * 720 - 360)}deg`,
-        '--c': colors[i % colors.length],
-        '--delay': `${Math.round(Math.random() * 120)}ms`,
-        width: `${6 + Math.round(Math.random() * 5)}px`,
-      },
-    }));
-  }
-  host.appendChild(layer);
-  timers.later(() => layer.remove(), 1700);
 }
 
 /** Restartable CSS class animation (e.g. 'shake', 'flash-bad'). */

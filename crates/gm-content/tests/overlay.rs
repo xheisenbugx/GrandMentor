@@ -182,3 +182,161 @@ fn shipped_data_localizes_in_every_language() {
         }
     }
 }
+
+/// Records a gap when English has text but the overlay field is missing or blank.
+fn need(gaps: &mut Vec<String>, en: &str, tr: Option<&String>, what: impl FnOnce() -> String) {
+    if !en.trim().is_empty() && tr.is_none_or(|s| s.trim().is_empty()) {
+        gaps.push(what());
+    }
+}
+
+/// Same for lists (opening ideas/traps, endgame technique/lesson): same length, no blank items.
+fn need_list(gaps: &mut Vec<String>, en: &[String], tr: Option<&Vec<String>>, what: impl FnOnce() -> String) {
+    if en.is_empty() {
+        return;
+    }
+    match tr {
+        Some(v) if v.len() == en.len() && v.iter().all(|s| !s.trim().is_empty()) => {}
+        Some(v) => gaps.push(format!("{} ({} of {} items)", what(), v.len(), en.len())),
+        None => gaps.push(what()),
+    }
+}
+
+/// Every shipped overlay (courses, openings, endgames, classics) translates every entry, every
+/// lesson step, task text, list item, annotation and question, for every language besides
+/// English. Puzzles have no content overlay: their themes are UI strings in `web/locales/`.
+#[test]
+fn shipped_overlays_are_complete_in_every_language() {
+    let data = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data");
+    let i18n = data.join("i18n");
+    for lang in Lang::ALL.into_iter().filter(|l| *l != Lang::En) {
+        let base = Content::load(&data).expect("load");
+        let (ov, bad) = load_overlay(&i18n, lang);
+        assert_eq!(bad, 0, "{lang}: unparsable overlay entries");
+        let mut applied = base.clone();
+        let st = apply_overlay(&mut applied, &ov);
+        assert_eq!(st.ignored, 0, "{lang}: overlay entries for unknown ids or surplus steps: {st:?}");
+
+        let mut gaps = Vec::new();
+        for c in &base.courses {
+            let Some(co) = ov.courses.get(&c.id) else {
+                gaps.push(format!("course {}", c.id));
+                continue;
+            };
+            need(&mut gaps, &c.title, co.title.as_ref(), || format!("course {}: title", c.id));
+            need(&mut gaps, &c.description, co.description.as_ref(), || format!("course {}: description", c.id));
+            for l in &c.lessons {
+                let Some(lo) = co.lessons.get(&l.id) else {
+                    gaps.push(format!("lesson {}/{}", c.id, l.id));
+                    continue;
+                };
+                need(&mut gaps, &l.title, lo.title.as_ref(), || format!("lesson {}/{}: title", c.id, l.id));
+                need(&mut gaps, &l.summary, lo.summary.as_ref(), || format!("lesson {}/{}: summary", c.id, l.id));
+                if lo.steps.len() != l.steps.len() {
+                    gaps.push(format!("lesson {}/{}: {} of {} steps", c.id, l.id, lo.steps.len(), l.steps.len()));
+                }
+                for (i, (s, so)) in l.steps.iter().zip(&lo.steps).enumerate() {
+                    let at = || format!("lesson {}/{} step {}", c.id, l.id, i + 1);
+                    let Some(so) = so else {
+                        gaps.push(at());
+                        continue;
+                    };
+                    need(&mut gaps, &s.text, so.text.as_ref(), || format!("{}: text", at()));
+                    let Some(task) = &s.task else { continue };
+                    let Some(to) = &so.task else {
+                        gaps.push(format!("{}: task", at()));
+                        continue;
+                    };
+                    need(&mut gaps, &task.prompt, to.prompt.as_ref(), || format!("{}: task prompt", at()));
+                    need(&mut gaps, &task.success, to.success.as_ref(), || format!("{}: task success", at()));
+                    if let Some(h) = &task.hint {
+                        need(&mut gaps, h, to.hint.as_ref(), || format!("{}: task hint", at()));
+                    }
+                    if let Some(g) = &task.extra.game {
+                        need(&mut gaps, g, to.game.as_ref(), || format!("{}: guess game", at()));
+                    }
+                    for (n, note) in task.extra.notes.iter().enumerate() {
+                        need(&mut gaps, note, to.notes.get(n).and_then(Option::as_ref), || format!("{}: guess note {}", at(), n + 1));
+                    }
+                    for (n, opt) in task.extra.options.iter().enumerate() {
+                        let oo = to.options.get(n).and_then(Option::as_ref);
+                        need(&mut gaps, &opt.text, oo.and_then(|o| o.text.as_ref()), || format!("{}: option {} text", at(), n + 1));
+                        need(&mut gaps, &opt.explain, oo.and_then(|o| o.explain.as_ref()), || format!("{}: option {} explanation", at(), n + 1));
+                    }
+                }
+            }
+        }
+        for o in &base.openings {
+            let Some(oo) = ov.openings.get(&o.id) else {
+                gaps.push(format!("opening {}", o.id));
+                continue;
+            };
+            need(&mut gaps, &o.name, oo.name.as_ref(), || format!("opening {}: name", o.id));
+            need(&mut gaps, &o.description, oo.description.as_ref(), || format!("opening {}: description", o.id));
+            need_list(&mut gaps, &o.ideas, oo.ideas.as_ref(), || format!("opening {}: ideas", o.id));
+            need_list(&mut gaps, &o.traps, oo.traps.as_ref(), || format!("opening {}: traps", o.id));
+        }
+        for d in &base.endgames {
+            let Some(eo) = ov.endgames.get(&d.id) else {
+                gaps.push(format!("endgame {}", d.id));
+                continue;
+            };
+            need(&mut gaps, &d.title, eo.title.as_ref(), || format!("endgame {}: title", d.id));
+            need(&mut gaps, &d.description, eo.description.as_ref(), || format!("endgame {}: description", d.id));
+            need(&mut gaps, &d.hint, eo.hint.as_ref(), || format!("endgame {}: hint", d.id));
+            need(&mut gaps, &d.pitfall, eo.pitfall.as_ref(), || format!("endgame {}: pitfall", d.id));
+            need_list(&mut gaps, &d.technique, eo.technique.as_ref(), || format!("endgame {}: technique", d.id));
+            let steps: Vec<String> = d.lesson.iter().map(|s| s.text.clone()).collect();
+            need_list(&mut gaps, &steps, eo.lesson.as_ref(), || format!("endgame {}: lesson steps", d.id));
+        }
+        for g in &base.classics {
+            let Some(co) = ov.classics.get(&g.id) else {
+                gaps.push(format!("classic {}", g.id));
+                continue;
+            };
+            need(&mut gaps, &g.title, co.title.as_ref(), || format!("classic {}: title", g.id));
+            need(&mut gaps, &g.event, co.event.as_ref(), || format!("classic {}: event", g.id));
+            need(&mut gaps, &g.opening, co.opening.as_ref(), || format!("classic {}: opening", g.id));
+            need(&mut gaps, &g.summary, co.summary.as_ref(), || format!("classic {}: summary", g.id));
+            if co.annotations.len() != g.annotations.len() || co.questions.len() != g.questions.len() {
+                gaps.push(format!("classic {}: annotation/question count", g.id));
+            }
+            for (i, (n, no)) in g.annotations.iter().zip(&co.annotations).enumerate() {
+                need(&mut gaps, &n.text, no.as_ref().and_then(|x| x.text.as_ref()), || format!("classic {} note {}: text", g.id, i + 1));
+                if let Some(label) = &n.label {
+                    need(&mut gaps, label, no.as_ref().and_then(|x| x.label.as_ref()), || format!("classic {} note {}: label", g.id, i + 1));
+                }
+            }
+            for (i, (q, qo)) in g.questions.iter().zip(&co.questions).enumerate() {
+                let qo = qo.as_ref();
+                need(&mut gaps, &q.prompt, qo.and_then(|x| x.prompt.as_ref()), || format!("classic {} question {}: prompt", g.id, i + 1));
+                need(&mut gaps, &q.explanation, qo.and_then(|x| x.explanation.as_ref()), || format!("classic {} question {}: explanation", g.id, i + 1));
+                if let Some(h) = &q.hint {
+                    need(&mut gaps, h, qo.and_then(|x| x.hint.as_ref()), || format!("classic {} question {}: hint", g.id, i + 1));
+                }
+            }
+        }
+        assert!(gaps.is_empty(), "{lang}: {} untranslated item(s), e.g.\n  {}", gaps.len(), gaps.iter().take(25).cloned().collect::<Vec<_>>().join("\n  "));
+    }
+}
+
+/// The README's content numbers match the shipped data, so the docs cannot drift silently.
+#[test]
+fn readme_numbers_match_shipped_data() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let readme = std::fs::read_to_string(root.join("README.md")).expect("README.md");
+    let c = Content::load(&root.join("data")).expect("load");
+    let lessons: usize = c.courses.iter().map(|x| x.lessons.len()).sum();
+    let thousands = |n: usize| if n >= 1000 { format!("{},{:03}", n / 1000, n % 1000) } else { n.to_string() };
+    let expected = [
+        format!("**{} courses · {} interactive lessons.**", c.courses.len(), lessons),
+        format!("**{} hand-picked tactics**", thousands(c.puzzles.len())),
+        format!("Puzzles-{}-", thousands(c.puzzles.len()).replace(',', "%2C")),
+        format!("**{} endgame drills**", c.endgames.len()),
+        format!("{} of the most famous games", c.classics.len()),
+        format!("**~{} named openings**", (c.openings.len() + 5) / 10 * 10),
+    ];
+    for e in expected {
+        assert!(readme.contains(&e), "README.md should contain \"{e}\"");
+    }
+}

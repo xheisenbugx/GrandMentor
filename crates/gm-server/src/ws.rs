@@ -4,6 +4,9 @@
 //! (or `stop`, or the socket closing, or server shutdown) raises the previous search's
 //! `AtomicBool` stop flag so the engine returns to the pool promptly. `info` messages are
 //! throttled to <= 10/s; the final result is sent as `done`.
+//!
+//! At most [`MAX_SOCKETS`] sockets are open at once (`503` beyond that). Upgrades from another
+//! website's `Origin` are refused before they get here (`crate::guard`).
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -11,7 +14,8 @@ use std::time::{Duration, Instant};
 
 use axum::extract::ws::{CloseFrame, Message, Utf8Bytes, WebSocket, WebSocketUpgrade};
 use axum::extract::State;
-use axum::response::Response;
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
 use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -21,7 +25,12 @@ use tokio::task::{AbortHandle, JoinSet};
 use gm_engine::{parse_fen, SearchInfo};
 
 use crate::api::clamp_limits;
+use crate::lang::ReqLang;
+use crate::phone::tr;
 use crate::state::AppState;
+
+/// Concurrent `/api/engine/ws` sockets (a tab uses one; more are refused with `503`).
+pub const MAX_SOCKETS: usize = 16;
 
 /// Server-side cap for websocket searches.
 pub const WS_MAX_MOVETIME_MS: u64 = 30_000;
@@ -49,10 +58,29 @@ struct ClientMsg {
     nodes: Option<u64>,
 }
 
-pub async fn engine_ws(State(st): State<AppState>, ws: WebSocketUpgrade) -> Response {
+pub async fn engine_ws(State(st): State<AppState>, ReqLang(lang): ReqLang, ws: WebSocketUpgrade) -> Response {
+    // The permit lives as long as the socket task (it is dropped with the closure if the
+    // upgrade never completes).
+    let Ok(permit) = Arc::clone(&st.ws_slots).try_acquire_owned() else {
+        tracing::warn!("refused an engine websocket: {MAX_SOCKETS} already open");
+        let msg = tr(
+            lang,
+            [
+                "Too many analysis connections are open. Close a few GrandMentor tabs and try again.",
+                "Hay demasiadas conexiones de análisis abiertas. Cierra algunas pestañas de GrandMentor y vuelve a intentarlo.",
+                "Há conexões de análise demais abertas. Feche algumas abas do GrandMentor e tente de novo.",
+                "Trop de connexions d'analyse sont ouvertes. Ferme quelques onglets GrandMentor et réessaie.",
+                "Zu viele Analyse-Verbindungen sind offen. Schließe ein paar GrandMentor-Tabs und versuch es erneut.",
+            ],
+        );
+        return (StatusCode::SERVICE_UNAVAILABLE, axum::Json(json!({ "error": msg }))).into_response();
+    };
     ws.max_message_size(MAX_MESSAGE_BYTES)
         .max_frame_size(MAX_MESSAGE_BYTES)
-        .on_upgrade(move |socket| handle_socket(st, socket))
+        .on_upgrade(move |socket| async move {
+            handle_socket(st, socket).await;
+            drop(permit);
+        })
 }
 
 /// `{"type": kind, "id": id, ...SearchInfo}`

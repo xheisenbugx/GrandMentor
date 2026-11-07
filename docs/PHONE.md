@@ -72,8 +72,14 @@ User**) → GrandMentor local CA → **Remove**.
   year (`HttpOnly`, `SameSite=Strict`, and `Secure` on HTTPS). The computer itself never needs the
   PIN. The PIN can be replaced (**New PIN**) and all phones can be signed out (**Sign out all
   devices**) from Settings; a phone can sign itself out from its own Settings page.
-* **Wrong PINs** are limited to 5 per device per 15 minutes and 30 in total per hour (HTTP 429 with
-  `Retry-After`). PINs and cookies are compared in constant time.
+* **Wrong PINs** are limited per device: 5 tries, then a wait that doubles with every further
+  wrong PIN (30 seconds, 1 minute, 2 minutes, … up to 1 hour). All devices together get at most
+  300 wrong PINs a day. Phones that are already signed in are never locked out. (HTTP 429 with
+  `Retry-After`.) PINs and cookies are compared in constant time.
+* **Other websites** can't use GrandMentor through your browser: requests that would change data
+  are refused when they come from another site, and addresses that aren't this computer's
+  (`localhost`, an IP address, `<name>.local`) are refused too. If you reach GrandMentor through
+  your own DNS name, list it in `GM_ALLOWED_HOSTS`.
 * **Files** live in `GM_PHONE_DIR` (default: a `grandmentor-phone/` folder next to the database):
   `phone.json` (the switch), `access.json` (PIN + signed-in devices, owner-only),
   `ca.key.pem` / `server.key.pem` (owner-only), `ca.crt.pem`, `server.crt.pem` and small `.json`
@@ -88,6 +94,7 @@ User**) → GrandMentor local CA → **Remove**.
 | `GM_LAN_PORT` | `8443` | HTTPS port for phones. |
 | `GM_PHONE_DIR` | `<folder of GM_DB>/grandmentor-phone` | Certificates, PIN, signed-in devices, `phone.json`. |
 | `GM_ACCESS_PIN` | on | `off` lets other devices in **without** a PIN. Only for networks where every device is trusted (e.g. a private VPN). Not recommended. |
+| `GM_ALLOWED_HOSTS` | unset | Extra host names (comma-separated) to accept, if you open GrandMentor through your own DNS name. |
 | `GM_HOST` | `127.0.0.1` | Address of the plain HTTP port. `0.0.0.0` without phone mode serves the whole app over plain HTTP to the network — now protected by the PIN, but without HTTPS phones can't install the app and the cookie travels unencrypted. |
 
 ## Device sync between two computers
@@ -98,6 +105,8 @@ PIN: `/api/sync/snapshot` and `/api/sync/merge` carry their own short-lived pair
 address (`http://<ip>:8080`) in the sync form; in phone mode the HTTP port is reachable from the
 network for exactly this purpose. Creating a pairing code is still only possible on the computer
 itself, and `GM_SYNC_ALLOW_ORIGINS` still restricts which origins may call those two endpoints.
+A device that sends 10 wrong pairing codes has to wait 10 minutes; the code keeps working for
+everyone else.
 
 ## Troubleshooting
 
@@ -113,8 +122,8 @@ itself, and `GM_SYNC_ALLOW_ORIGINS` still restricts which origins may call those
   from the browser.
 * **Asked for the PIN again.** Someone used **Sign out all devices**, the phone's cookies were
   cleared, or the phone was signed in more than a year ago.
-* **"Too many tries".** Wait for the time shown (at most 15 minutes for one device, one hour if many
-  wrong PINs came in), then check the PIN on the computer.
+* **"Too many tries".** Wait for the time shown (it grows with every wrong PIN, at most one hour for
+  one device; up to a day if many devices sent wrong PINs), then check the PIN on the computer.
 * **`<hostname>.local` doesn't work.** Not every phone resolves `.local` names; use the IP address
   (the QR codes always do).
 * **Port in use.** Set `GM_LAN_PORT` (and `GM_PORT`) to free ports.

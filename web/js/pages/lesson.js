@@ -9,14 +9,14 @@
 //   square  – coordinate quiz: click the named squares (optionally without board coordinates)
 // Completion → POST /api/progress.
 
-import { h, icon, disposables, mdLite, escapeHtml, emptyState, loadingBlock } from '../ui.js';
+import { h, icon, disposables, mdLite, escapeHtml, emptyState, loadingBlock, tHtml, confetti, shortcutAllowed } from '../ui.js';
 import { api, isAbort } from '../api.js';
 import { Board } from '../components/board.js';
 import { createMoveInput } from '../components/moveinput.js';
 import { pieceUrl } from '../settings.js';
 import {
   ensureLearnCss, START_FEN, chessAt, applyUci, isSameMove, sideToMove, playLine, timerSet,
-  confetti, flashClass, sfx, setFeedback, breadcrumbs, rememberLesson, errorBlock, CATEGORIES,
+  flashClass, sfx, setFeedback, breadcrumbs, rememberLesson, errorBlock, CATEGORIES,
 } from './learn.js';
 import { t, formatNumber } from '../i18n.js';
 
@@ -333,7 +333,7 @@ export async function mount(root, { params = {} } = {}) {
     setFeedback(feedbackEl, 'good', html || mdLite(step.task && step.task.success ? step.task.success : t('lesson.wellDone')));
     sfx('correct');
     flashClass(boardWrap, 'flash-good', timers, 900);
-    confetti(boardSlot, timers, { count: 28 });
+    confetti(boardSlot, { count: 28, duration: 1300, later: timers.later });
     syncChrome();
   }
 
@@ -395,7 +395,7 @@ export async function mount(root, { params = {} } = {}) {
       board.setHighlights([{ square: mv.to, kind: 'bad' }]);
       timers.later(() => { if (!solved) board.setHighlights(idx === 0 ? stepHighlights(step) : []); }, 650);
     }
-    setFeedback(feedbackEl, 'bad', t('lesson.wrong'));
+    setFeedback(feedbackEl, 'bad', tHtml('lesson.wrong'));
     return false;
   }
 
@@ -546,8 +546,8 @@ export async function mount(root, { params = {} } = {}) {
     updateGuessBar();
 
     const head = exact
-      ? t('lesson.guess.exact', { san: escapeHtml(master.san), pts: escapeHtml(ptsLabel) })
-      : t(`lesson.guess.${quality}`, { san: escapeHtml(guessSan), master: escapeHtml(master.san), pts: escapeHtml(ptsLabel) });
+      ? tHtml('lesson.guess.exact', { san: master.san, pts: ptsLabel })
+      : tHtml(`lesson.guess.${quality}`, { san: guessSan, master: master.san, pts: ptsLabel });
     const html = `<p>${head}</p>${note ? mdLite(note) : ''}`;
     const kind = exact ? 'good' : pts > 0 ? 'info' : 'warn';
 
@@ -563,7 +563,7 @@ export async function mount(root, { params = {} } = {}) {
       if (!m || idx >= step.task.solution.length) { finishGuess(html); return; }
       busy = false;
       board.setInteractive(true, sideToMove(curFen));
-      setFeedback(feedbackEl, kind, html + `<p class="lrn-guess-next">${t(m.color === 'w' ? 'lesson.guess.whiteReplied' : 'lesson.guess.blackReplied', { san: escapeHtml(m.san) })}</p>`);
+      setFeedback(feedbackEl, kind, html + `<p class="lrn-guess-next">${tHtml(m.color === 'w' ? 'lesson.guess.whiteReplied' : 'lesson.guess.blackReplied', { san: m.san })}</p>`);
       updateGuessBar();
       syncChrome();
     }, exact ? GUESS_REPLY_MS - 400 : GUESS_REPLY_MS);
@@ -740,7 +740,7 @@ export async function mount(root, { params = {} } = {}) {
       kindState.misses++;
       wrongFlash(sq);
       timers.later(() => { if (!solved && steps[cur] === step) board.setHighlights([]); }, 650);
-      setFeedback(feedbackEl, 'bad', t('lesson.square.wrong', { clicked: escapeHtml(sq), sq: escapeHtml(target) }));
+      setFeedback(feedbackEl, 'bad', tHtml('lesson.square.wrong', { clicked: sq, sq: target }));
     }
   }
 
@@ -895,10 +895,10 @@ export async function mount(root, { params = {} } = {}) {
     footer.hidden = true;
     stepCount.textContent = t('lesson.completed');
     sfx('gameEnd');
-    confetti(boardSlot, timers, { count: 48 });
+    confetti(boardSlot, { count: 48, duration: 1300, later: timers.later });
 
     try {
-      await api.post('/api/progress', { course_id: course.id, lesson_id: lesson.id, completed: true }, { signal: ctrl.signal });
+      await api.post('/api/progress', { course_id: course.id, lesson_id: lesson.id, completed: true }, { keepalive: true });
       if (!bag.disposed) status.textContent = t('lesson.saved');
     } catch (e) {
       if (isAbort(e) || bag.disposed) return;
@@ -914,10 +914,7 @@ export async function mount(root, { params = {} } = {}) {
 
   // Keyboard: ← / → step through the lesson (Enter = next when ready); 1–9 pick an answer.
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tgt = e.target;
-    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
     else if ((e.key === 'h' || e.key === 'H') && !completed) showHint();

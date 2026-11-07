@@ -13,6 +13,10 @@
 //   - a locale file that index.js does not import (its keys would silently never load)
 //   - a literal key used in web/js (t('a.b'), t(`a.b`)) that English does not define, or a dynamic
 //     key prefix (t(`play.modes.${id}.label`) → "play.modes.") that matches no English key
+//   - a raw `${t(...)}` inside an HTML template literal: one that contains a tag or is the value of
+//     an `html:` attribute / innerHTML. Translations are text; escape them (escapeHtml, labelHtml,
+//     iconLabel) or, for messages that intentionally contain markup, use tHtml(). Intentional
+//     exceptions go in tools/qa/allowlist.json "rawHtmlT" ({ file, key, reason }).
 // Warnings (reported, never fail):
 //   - list messages whose length differs from English
 //   - non-English values identical to English (possible untranslated text), minus tools/qa/allowlist.json
@@ -105,7 +109,7 @@ function walk(dir, out = []) {
 function scanCode() {
   const literal = new Map(); // key -> first location
   const prefixes = new Map();
-  const re = /(?<![\w$.])t\(\s*(?:(['"])((?:\\.|(?!\1)[^\\\n])*)\1\s*([+,)])|`([^`]*)`)/g;
+  const re = /(?<![\w$.])(?:t|tHtml|tOr|tr)\(\s*(?:(['"])((?:\\.|(?!\1)[^\\\n])*)\1\s*([+,)])|`([^`]*)`)/g;
   for (const file of walk(path.join(WEB, 'js'))) {
     const src = readFileSync(file, 'utf8');
     const rel = path.relative(ROOT, file);
@@ -127,6 +131,97 @@ function scanCode() {
     }
   }
   return { literal, prefixes };
+}
+
+// ---------------------------------------------------------------------------
+// Raw t() in HTML sinks
+// ---------------------------------------------------------------------------
+const REGEX_PRECEDERS = new Set('(,=:[!&|?{};+-*%~^<>'.split(''));
+const REGEX_KEYWORDS = /(?:^|[^\w$])(?:return|typeof|case|in|of|void|delete|throw|new|else|do|yield|await)$/;
+const HTML_SINK = /(?:\bhtml\s*:|\b(?:innerHTML|outerHTML)\s*\+?=|\binsertAdjacentHTML\s*\([^,]*,)\s*$/;
+const TAG = /<\/?[a-zA-Z][\w-]*[\s>/]/;
+
+/** Start of the expression segment that ends at `end`: back to the nearest top-level `,` `;` or unmatched opener. */
+function exprStart(src, end) {
+  let depth = 0;
+  for (let i = end - 1; i >= 0 && end - i < 400; i--) {
+    const c = src[i];
+    if (c === ')' || c === ']' || c === '}') depth++;
+    else if (c === '(' || c === '[' || c === '{') { if (depth === 0) return i + 1; depth--; }
+    else if (depth === 0 && (c === ',' || c === ';')) return i + 1;
+  }
+  return Math.max(0, end - 400);
+}
+
+/**
+ * Find `${t(` directly inside template literals that build HTML. A tiny JS lexer (comments,
+ * strings, regex literals, nested templates) keeps it honest without a parser dependency.
+ * Returns [{ file, line, key }].
+ */
+function scanRawHtmlT(file, src) {
+  const out = [];
+  const stack = []; // template frames: { start, hasTag, raws: [{ pos, key }] } or { brace: n } for ${ } code
+  let i = 0;
+  let lastSig = ''; // last significant code char (for regex detection)
+  const closeTemplate = (frame) => {
+    if (!frame.raws.length) return;
+    const before = src.slice(exprStart(src, frame.start), frame.start);
+    const sink = frame.hasTag || HTML_SINK.test(before) || /^\s*html\s*:/.test(before);
+    if (!sink) return;
+    for (const r of frame.raws) out.push({ file, line: src.slice(0, r.pos).split('\n').length, key: r.key });
+  };
+  while (i < src.length) {
+    const top = stack[stack.length - 1];
+    if (top && top.tpl) {
+      const c = src[i];
+      if (c === '\\') { i += 2; continue; }
+      if (c === '`') { stack.pop(); closeTemplate(top); i++; lastSig = '`'; continue; }
+      if (c === '$' && src[i + 1] === '{') {
+        stack.push({ code: true, depth: 0 });
+        const m = /^\s*t\(\s*(?:(['"`])([^'"`$]*)\1)?/.exec(src.slice(i + 2, i + 200));
+        if (m && /^\s*t\(/.test(src.slice(i + 2))) top.raws.push({ pos: i, key: m[2] || '(dynamic)' });
+        i += 2; lastSig = '{'; continue;
+      }
+      if (c === '<' && TAG.test(src.slice(i, i + 40))) top.hasTag = true;
+      i++; continue;
+    }
+    const c = src[i];
+    const n = src[i + 1];
+    if (c === '/' && n === '/') { const e = src.indexOf('\n', i); i = e < 0 ? src.length : e; continue; }
+    if (c === '/' && n === '*') { const e = src.indexOf('*/', i + 2); i = e < 0 ? src.length : e + 2; continue; }
+    if (c === "'" || c === '"') {
+      let j = i + 1;
+      while (j < src.length && src[j] !== c && src[j] !== '\n') j += src[j] === '\\' ? 2 : 1;
+      i = j + 1; lastSig = c; continue;
+    }
+    if (c === '`') { stack.push({ tpl: true, start: i, hasTag: false, raws: [] }); i++; continue; }
+    if (c === '/') {
+      const word = src.slice(Math.max(0, i - 12), i).replace(/\s+$/, '');
+      if (!lastSig || REGEX_PRECEDERS.has(lastSig) || REGEX_KEYWORDS.test(word)) {
+        let j = i + 1, cls = false;
+        while (j < src.length && src[j] !== '\n') {
+          if (src[j] === '\\') { j += 2; continue; }
+          if (src[j] === '[') cls = true;
+          else if (src[j] === ']') cls = false;
+          else if (src[j] === '/' && !cls) break;
+          j++;
+        }
+        i = j + 1;
+        while (/[a-z]/.test(src[i] || '')) i++;
+        lastSig = 'r'; continue;
+      }
+    }
+    if (top && top.code) {
+      if (c === '{') top.depth++;
+      else if (c === '}') {
+        if (top.depth === 0) { stack.pop(); i++; lastSig = '}'; continue; }
+        top.depth--;
+      }
+    }
+    if (!/\s/.test(c)) lastSig = /[\w$]/.test(c) ? 'w' : c;
+    i++;
+  }
+  return out;
 }
 
 const LANGUAGES = await loadLanguages();
@@ -171,6 +266,17 @@ const { literal, prefixes } = scanCode();
 for (const [key, loc] of literal) if (!en.has(key)) err('code', key, `used at ${loc} but not defined in en`);
 const enKeys = [...en.keys()];
 for (const [pre, loc] of prefixes) if (!enKeys.some((k) => k.startsWith(pre))) err('code', `${pre}*`, `dynamic key prefix used at ${loc} matches no en key`);
+
+const allowRaw = (allow.rawHtmlT || []);
+let rawHtmlCount = 0;
+for (const file of walk(path.join(WEB, 'js'))) {
+  const rel = path.relative(ROOT, file).split(path.sep).join('/');
+  for (const f of scanRawHtmlT(rel, readFileSync(file, 'utf8'))) {
+    if (allowRaw.some((a) => a.file === f.file && (a.key === f.key || a.key === '*'))) continue;
+    rawHtmlCount++;
+    err('code', f.key, `raw \${t(...)} in an HTML template at ${f.file}:${f.line}: escape it (escapeHtml / labelHtml / iconLabel) or use tHtml() for messages with intentional markup`);
+  }
+}
 
 const report = { ok: errors.length === 0, languages: langs, keys: stats, codeKeys: literal.size, codePrefixes: prefixes.size, errors, warnings };
 if (JSON_OUT) {

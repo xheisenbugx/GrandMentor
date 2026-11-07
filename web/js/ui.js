@@ -2,7 +2,7 @@
 // Contract: docs/CONTRACT.md §5. Class vocabulary: docs/STYLEGUIDE.md.
 
 import { t, getLocale } from './i18n.js';
-import { getSetting } from './settings.js';
+import { getSetting, reducedMotion } from './settings.js';
 import { announce } from './components/announcer.js';
 
 /**
@@ -243,6 +243,36 @@ export function icon(name, opts = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"${size}${cls}${a11y} fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" focusable="false">${body}</svg>`;
 }
 
+/**
+ * Plain text as a `<span>` HTML string, escaped. Use it whenever translated text goes into an
+ * `html:` attribute or innerHTML: translations are data and must never be parsed as markup.
+ */
+export function labelHtml(text) {
+  return `<span>${escapeHtml(text)}</span>`;
+}
+
+/**
+ * Icon followed by an escaped text label, as an HTML string for `html:` (buttons, card titles).
+ *   h('button', { class: 'btn', html: iconLabel('play', t('play.start')) })
+ *   iconLabel('lock', t('phone.signOut'), { size: 16 })
+ * When a translation intentionally contains markup, render it with mdLite() instead.
+ */
+export function iconLabel(name, text, opts) {
+  return icon(name, opts) + labelHtml(text);
+}
+
+/**
+ * A translation that intentionally contains markup (`<strong>` in lesson / opening feedback), as
+ * an HTML string. The message itself is ours and trusted; every parameter is escaped. This is the
+ * one explicit path for translated markup: everything else goes through escapeHtml/labelHtml.
+ *   setFeedback(el, 'good', tHtml('openings.train.correct', { san }))
+ */
+export function tHtml(key, params) {
+  const safe = {};
+  for (const [k, v] of Object.entries(params || {})) safe[k] = (k === 'count' && typeof v === 'number') ? v : escapeHtml(v);
+  return t(key, safe);
+}
+
 /** Same as icon() but returns an SVG Node. */
 export function iconNode(name, opts) {
   return htmlToNode(icon(name, opts));
@@ -449,6 +479,127 @@ export function disposables() {
   };
 }
 
+const cssLoads = new Map(); // pathname -> Promise (bounded: one per stylesheet in web/css)
+
+/**
+ * Load a stylesheet once. Idempotent per path: a <link> already in the page (index.html links the
+ * common ones) counts, so nothing is fetched twice. Resolves when it has loaded, failed, or after
+ * `timeout` ms, so a page can await it to avoid a flash of unstyled content without ever hanging.
+ *   loadCss('/css/puzzles.css');                                   // fire and forget
+ *   await loadCss(new URL('../../css/board.css', import.meta.url).href);
+ */
+export function loadCss(href, { timeout = 1500 } = {}) {
+  if (typeof document === 'undefined') return Promise.resolve();
+  let path;
+  try { path = new URL(href, location.href).pathname; } catch { return Promise.resolve(); }
+  if (cssLoads.has(path)) return cssLoads.get(path);
+  const existing = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find((l) => {
+    try { return new URL(l.getAttribute('href') || '', location.href).pathname === path; } catch { return false; }
+  });
+  let p;
+  if (existing && existing.sheet) p = Promise.resolve();
+  else {
+    p = new Promise((resolve) => {
+      const link = existing || document.createElement('link');
+      let timer = 0;
+      const done = () => { clearTimeout(timer); link.removeEventListener('load', done); link.removeEventListener('error', done); resolve(); };
+      link.addEventListener('load', done);
+      link.addEventListener('error', done);
+      timer = setTimeout(done, timeout);
+      if (!existing) {
+        link.rel = 'stylesheet';
+        link.href = href;
+        document.head.appendChild(link);
+      }
+    });
+  }
+  cssLoads.set(path, p);
+  return p;
+}
+
+// ---------------------------------------------------------------------------
+// Keyboard shortcuts
+// ---------------------------------------------------------------------------
+
+/** True when `el` takes text input (fields, selects, contenteditable): shortcuts must not fire. */
+export function isTypingTarget(el) {
+  if (!el || typeof Element === 'undefined' || !(el instanceof Element)) return false;
+  return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+}
+
+/**
+ * The one guard for page-level keyboard shortcuts (← → Home End, F to flip, H for hint…):
+ * not already handled, no Ctrl/Alt/Meta (browser and OS shortcuts win), not typing in a field,
+ * and no modal dialog open (the dialog owns the keyboard).
+ *   bag.on(window, 'keydown', (e) => { if (!shortcutAllowed(e)) return; ... });
+ */
+export function shortcutAllowed(e) {
+  if (!e || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return false;
+  if (isTypingTarget(e.target)) return false;
+  return !document.querySelector('.modal-backdrop');
+}
+
+// ---------------------------------------------------------------------------
+// Confetti (styles: .gm-confetti in app.css)
+// ---------------------------------------------------------------------------
+export const CONFETTI_COLORS = Object.freeze(['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)', 'var(--accent)']);
+
+/**
+ * Celebrate with a burst of CSS confetti. Skipped (returns { el: null }) under reduced motion.
+ *   confetti(boardSlot, { count: 48, later: timers.later })           // radial burst over the board
+ *   const { el } = confetti(null, { kind: 'fall', later: bag.timeout }); card.append(el);
+ * opts:
+ *   count, colors           pieces and their colours (cycled)
+ *   kind 'burst' | 'fall'   burst flies out from `origin`; fall drops from the top edge
+ *   piece(i, rand)          style overrides per piece (CSS vars --x --y --r --r0 --d --dx --dur, width…)
+ *   duration (ms)           animation length (--dur); fall (CSS length) drop distance; gravity (px) burst drop
+ *   origin {x, y}           burst start (CSS lengths, default 50% / 45%)
+ *   fixed                   cover the viewport instead of `host`
+ *   className               extra class for page-specific tweaks; rand: random source (seeded = stable)
+ *   later(fn, ms)           timer used to remove the layer (pass the page's so cleanup cancels it)
+ *   removeAfter (ms)        default duration + 800
+ * Appends to `host` when given (replacing a previous burst there). Returns { el, cancel }.
+ */
+export function confetti(host, opts = {}) {
+  const {
+    count = 36, colors = CONFETTI_COLORS, kind = 'burst', piece, duration = 1500, fall, gravity, origin,
+    fixed = false, className = '', rand = Math.random, later, removeAfter,
+  } = opts;
+  let off = false;
+  try { off = reducedMotion(); } catch { off = false; }
+  if (off) return { el: null, cancel: () => {} };
+  const style = { '--dur': `${duration}ms` };
+  if (fall != null) style['--fall'] = fall;
+  if (gravity != null) style['--g'] = `${gravity}px`;
+  if (origin) { style['--ox'] = origin.x; style['--oy'] = origin.y; }
+  const layer = h('div', { class: ['gm-confetti', `gm-confetti-${kind === 'fall' ? 'fall' : 'burst'}`, fixed && 'is-fixed', className], 'aria-hidden': 'true', style });
+  for (let i = 0; i < count; i++) {
+    const base = kind === 'fall'
+      ? { '--x': `${Math.round(rand() * 100)}%`, '--d': `${Math.round(rand() * 600)}ms`, '--r': `${Math.round(rand() * 720 - 360)}deg`, '--dx': `${Math.round(rand() * 120 - 60)}px` }
+      : (() => {
+        const angle = rand() * Math.PI * 2;
+        const dist = 90 + rand() * 180;
+        return {
+          '--x': `${Math.round(Math.cos(angle) * dist)}px`, '--y': `${Math.round(Math.sin(angle) * dist - 60)}px`,
+          '--r': `${Math.round(rand() * 720 - 360)}deg`, '--d': `${Math.round(rand() * 120)}ms`, width: `${6 + Math.round(rand() * 5)}px`,
+        };
+      })();
+    layer.appendChild(h('i', { style: { ...base, ...(piece ? piece(i, rand) : null), '--c': colors[i % colors.length] } }));
+  }
+  if (host) {
+    host.querySelectorAll(':scope > .gm-confetti').forEach((n) => n.remove());
+    host.appendChild(layer);
+  } else if (fixed) {
+    document.body.appendChild(layer);
+  }
+  const ms = removeAfter ?? duration + 800;
+  let id = null;
+  const remove = () => layer.remove();
+  if (typeof later === 'function') later(remove, ms);
+  else id = setTimeout(remove, ms);
+  return { el: layer, cancel: () => { if (id) clearTimeout(id); remove(); } };
+}
+
 /** Copy text to clipboard; toasts on success/failure. */
 export async function copyText(text, successMsg) {
   try {
@@ -516,6 +667,18 @@ export function toast(msg, kind = 'info', opts = {}) {
   }
   if (duration > 0) timer = setTimeout(dismiss, duration);
   return dismiss;
+}
+
+let lastEngineToast = 0;
+/**
+ * Tell the player the live engine is unavailable (EngineClient gave up reconnecting). Throttled so
+ * several boards on one page, or repeated attempts, show one toast rather than a stack.
+ */
+export function engineErrorToast(message) {
+  const now = Date.now();
+  if (now - lastEngineToast < 20000) return;
+  lastEngineToast = now;
+  toast(message, 'warning');
 }
 
 // ---------------------------------------------------------------------------

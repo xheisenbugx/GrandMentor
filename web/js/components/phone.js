@@ -11,30 +11,12 @@
 // devices get 403 and see a short note plus "Sign out this device"). Guide: docs/PHONE.md.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, toast, confirmDialog, copyText } from '../ui.js';
+import { h, icon, disposables, toast, confirmDialog, copyText, iconLabel, loadCss } from '../ui.js';
 import { t } from '../i18n.js';
 
-let cssPromise = null;
 /** Load web/css/phone.css once. */
 function ensurePhoneCss() {
-  if (cssPromise) return cssPromise;
-  const existing = document.querySelector('link[data-phone-css]');
-  if (existing && existing.sheet) { cssPromise = Promise.resolve(); return cssPromise; }
-  cssPromise = new Promise((resolve) => {
-    const link = existing || document.createElement('link');
-    let timer = 0;
-    const done = () => { clearTimeout(timer); link.removeEventListener('load', done); link.removeEventListener('error', done); resolve(); };
-    link.addEventListener('load', done);
-    link.addEventListener('error', done);
-    timer = setTimeout(done, 1500);
-    if (!existing) {
-      link.rel = 'stylesheet';
-      link.href = '/css/phone.css';
-      link.dataset.phoneCss = '1';
-      document.head.appendChild(link);
-    }
-  });
-  return cssPromise;
+  return loadCss('/css/phone.css');
 }
 
 /** "123456" → "123 456". */
@@ -71,7 +53,7 @@ export function createPhoneSection() {
   const renderRemote = () => {
     resetRender();
     badge.hidden = true;
-    const btn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('lock', { size: 16 }) + `<span>${t('phone.remote.signOut')}</span>` });
+    const btn = h('button', { type: 'button', class: 'btn btn-secondary', html: iconLabel('lock', t('phone.remote.signOut'), { size: 16 }) });
     rb.on(btn, 'click', async () => {
       btn.classList.add('loading');
       try { await api.post('/api/access/logout', {}, { signal }); } catch (e) { if (isAbort(e)) return; }
@@ -119,7 +101,7 @@ export function createPhoneSection() {
   };
 
   const urlLine = (url) => {
-    const copyBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('copy', { size: 16 }) + `<span>${t('phone.copy')}</span>` });
+    const copyBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('copy', t('phone.copy'), { size: 16 }) });
     rb.on(copyBtn, 'click', () => copyText(url, t('phone.copied')));
     return h('div', { class: 'ph-url' }, h('code', null, url), copyBtn);
   };
@@ -127,7 +109,7 @@ export function createPhoneSection() {
   // ---- PIN + devices ------------------------------------------------------------------------
   const pinBlock = (st) => {
     const pinEl = h('div', { class: 'ph-pin', role: 'text', 'aria-label': t('phone.step3.pinAria', { pin: String(st.pin || '').split('').join(' ') }) }, spacedPin(st.pin));
-    const newBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('refresh', { size: 16 }) + `<span>${t('phone.step3.newPin')}</span>` });
+    const newBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: iconLabel('refresh', t('phone.step3.newPin'), { size: 16 }) });
     rb.on(newBtn, 'click', async () => {
       newBtn.classList.add('loading');
       try {
@@ -147,7 +129,7 @@ export function createPhoneSection() {
 
   const devicesRow = (st) => {
     const count = h('div', { class: 'setting-row-desc' }, t('phone.devices.count', { count: st.devices || 0 }));
-    const btn = h('button', { type: 'button', class: 'btn btn-secondary', disabled: !st.devices, html: icon('users', { size: 16 }) + `<span>${t('phone.devices.signOutAll')}</span>` });
+    const btn = h('button', { type: 'button', class: 'btn btn-secondary', disabled: !st.devices, html: iconLabel('users', t('phone.devices.signOutAll'), { size: 16 }) });
     rb.on(btn, 'click', async () => {
       const ok = await confirmDialog({ title: t('phone.devices.confirmTitle'), message: t('phone.devices.confirmText'), confirmLabel: t('phone.devices.signOutAll'), danger: true });
       if (!ok || bag.disposed) return;
@@ -201,7 +183,7 @@ export function createPhoneSection() {
             h('p', { class: 'setting-row-desc' }, t('phone.step1.text')),
             urlLine(caUrl),
             h('div', { class: 'ph-actions' },
-              h('a', { class: 'btn btn-secondary btn-sm', href: st.ca?.download || '/phone/ca.crt', download: 'grandmentor-ca.crt', html: icon('download', { size: 16 }) + `<span>${t('phone.step1.download')}</span>` })),
+              h('a', { class: 'btn btn-secondary btn-sm', href: st.ca?.download || '/phone/ca.crt', download: 'grandmentor-ca.crt', html: iconLabel('download', t('phone.step1.download'), { size: 16 }) })),
             h('details', { class: 'ph-details' }, h('summary', null, t('phone.step1.androidTitle')), stepList(t('phone.step1.android'))),
             h('details', { class: 'ph-details' }, h('summary', null, t('phone.step1.iosTitle')), stepList(t('phone.step1.ios'))),
             st.ca?.fingerprint ? h('p', { class: 'subtle text-xs ph-fp' }, t('phone.step1.fingerprint', { value: st.ca.fingerprint })) : null),
@@ -223,7 +205,7 @@ export function createPhoneSection() {
       }
       parts.push(steps);
       if (st.pin_required) parts.push(devicesRow(st));
-      parts.push(h('p', { class: 'subtle text-xs ph-safety', html: icon('shield', { size: 14 }) + `<span>${t('phone.safety')}</span>` }));
+      parts.push(h('p', { class: 'subtle text-xs ph-safety', html: iconLabel('shield', t('phone.safety'), { size: 14 }) }));
     } else if (!running && !plain && !st.lan.restart_required) {
       parts.push(h('p', { class: 'setting-row-desc' }, t('phone.off.text')));
     }
@@ -244,7 +226,7 @@ export function createPhoneSection() {
 
   const el = h('section', { class: 'card ph-section', id: 'phone', 'aria-labelledby': 'settings-phone-title' },
     h('div', { class: 'card-header' },
-      h('h2', { class: 'card-title', id: 'settings-phone-title', html: icon('wifi') + `<span>${t('phone.title')}</span>` }),
+      h('h2', { class: 'card-title', id: 'settings-phone-title', html: iconLabel('wifi', t('phone.title')) }),
       badge),
     h('p', { class: 'setting-row-desc ph-intro' }, t('phone.intro')),
     body);

@@ -8,18 +8,27 @@
 //! - `/precache-manifest.json` lists every app-shell file the worker should precache, plus the
 //!   same build id. The walk is bounded (depth and file count) and runs on a blocking thread.
 //! - `/manifest.webmanifest` gets `application/manifest+json`.
+//!
+//! Security:
+//! - HTML responses carry a `Content-Security-Policy` ([`content_security_policy`]). Inline
+//!   `<script>` blocks are allowed by their SHA-256 hash, computed from the served file itself
+//!   (cached by size + mtime), so editing `index.html` never needs a hard-coded hash update.
+//! - `web/dev/*` (component demos) is only served by debug builds or with `GM_DEV=1`; release
+//!   builds answer `404` so other devices on the network never see it.
 
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
-use std::time::UNIX_EPOCH;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use axum::body::Body;
 use axum::extract::{Request, State};
 use axum::http::{header, HeaderName, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::Router;
+use parking_lot::Mutex;
 use serde::Serialize;
 use tower::ServiceExt as _;
 use tower_http::services::{ServeDir, ServeFile};
@@ -37,16 +46,169 @@ const MAX_DEPTH: usize = 8;
 const MAX_SW_BYTES: u64 = 512 * 1024;
 /// Top-level folders that are not part of the app shell.
 const SKIP_TOP_DIRS: &[&str] = &["dev"];
+/// Demo pages, only served by debug builds or with `GM_DEV=1`.
+const DEV_DIR: &str = "dev";
+/// HTML files larger than this get a policy without inline-script hashes.
+const MAX_HASHED_HTML: u64 = 2 * 1024 * 1024;
+/// Cached policies (one per HTML file).
+const MAX_CSP_CACHE: usize = 64;
+
+/// HTML file -> (size, mtime, policy).
+type CspCache = Mutex<HashMap<PathBuf, (u64, SystemTime, HeaderValue)>>;
 
 #[derive(Clone)]
 struct WebFiles {
     dir: ServeDir,
     index: PathBuf,
     root: PathBuf,
+    dev: bool,
+    csp: Arc<CspCache>,
+}
+
+/// The `Content-Security-Policy` for an HTML page whose inline scripts have these SHA-256
+/// hashes (base64). `connect-src` allows `http:`/`https:` because device sync fetches another
+/// GrandMentor on the home network by address (Settings → Connect to another device).
+pub fn content_security_policy(script_hashes: &[String]) -> String {
+    let mut script = String::from("'self'");
+    for h in script_hashes {
+        script.push_str(" 'sha256-");
+        script.push_str(h);
+        script.push('\'');
+    }
+    format!(
+        "default-src 'self'; script-src {script}; \
+         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+         font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; \
+         connect-src 'self' ws: wss: http: https:; worker-src 'self'; manifest-src 'self'; \
+         frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    )
+}
+
+/// [`content_security_policy`] as a header value.
+pub fn csp_header(script_hashes: &[String]) -> HeaderValue {
+    HeaderValue::from_str(&content_security_policy(script_hashes))
+        .unwrap_or_else(|_| HeaderValue::from_static("default-src 'self'; frame-ancestors 'none'; object-src 'none'"))
+}
+
+/// Base64 (standard alphabet, padded).
+fn base64(bytes: &[u8]) -> String {
+    const ABC: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
+    for chunk in bytes.chunks(3) {
+        let n = (u32::from(chunk[0]) << 16)
+            | (u32::from(chunk.get(1).copied().unwrap_or(0)) << 8)
+            | u32::from(chunk.get(2).copied().unwrap_or(0));
+        for i in 0..4 {
+            if i <= chunk.len() {
+                out.push(ABC[((n >> (18 - 6 * i)) & 63) as usize] as char);
+            } else {
+                out.push('=');
+            }
+        }
+    }
+    out
+}
+
+/// SHA-256 (base64) of every inline `<script>` body (no `src` attribute) in `html`.
+pub fn inline_script_hashes(html: &str) -> Vec<String> {
+    // ASCII lowercasing keeps byte offsets, so indices into `lower` are valid in `html`.
+    let lower = html.to_ascii_lowercase();
+    let mut out = Vec::new();
+    let mut pos = 0;
+    while let Some(i) = lower[pos..].find("<script") {
+        let start = pos + i;
+        let Some(gt) = lower[start..].find('>') else { break };
+        let tag = &lower[start + "<script".len()..start + gt];
+        let body_start = start + gt + 1;
+        let Some(len) = lower[body_start..].find("</script") else { break };
+        pos = body_start + len;
+        let is_tag = tag.is_empty() || tag.starts_with(|c: char| c.is_ascii_whitespace() || c == '/');
+        let has_src = tag.split(|c: char| c.is_ascii_whitespace()).any(|a| a == "src" || a.starts_with("src="));
+        if is_tag && !has_src {
+            let digest = ring::digest::digest(&ring::digest::SHA256, &html.as_bytes()[body_start..pos]);
+            out.push(base64(digest.as_ref()));
+        }
+    }
+    out.sort();
+    out.dedup();
+    out
+}
+
+impl WebFiles {
+    /// Policy for the HTML file at `file` (hashes of its inline scripts; none when unreadable).
+    async fn csp_for(&self, file: Option<&Path>) -> HeaderValue {
+        let Some(file) = file else { return csp_header(&[]) };
+        let Ok(meta) = tokio::fs::metadata(file).await else { return csp_header(&[]) };
+        let stamp = (meta.len(), meta.modified().unwrap_or(UNIX_EPOCH));
+        if let Some((len, mtime, v)) = self.csp.lock().get(file) {
+            if (*len, *mtime) == stamp {
+                return v.clone();
+            }
+        }
+        if !meta.is_file() || meta.len() > MAX_HASHED_HTML {
+            return csp_header(&[]);
+        }
+        let Ok(html) = tokio::fs::read_to_string(file).await else { return csp_header(&[]) };
+        let value = csp_header(&inline_script_hashes(&html));
+        let mut cache = self.csp.lock();
+        if cache.len() >= MAX_CSP_CACHE {
+            cache.clear();
+        }
+        cache.insert(file.to_path_buf(), (stamp.0, stamp.1, value.clone()));
+        value
+    }
+
+    /// The file under `root` that serves `path` (`/` → `index.html`), if `path` is clean.
+    fn file_for(&self, path: &str) -> Option<PathBuf> {
+        let rel = Path::new(path.trim_start_matches('/'));
+        if !rel.components().all(|c| matches!(c, Component::Normal(_))) {
+            return None;
+        }
+        let full = self.root.join(rel);
+        Some(if path.ends_with('/') || full.is_dir() { full.join("index.html") } else { full })
+    }
+}
+
+/// `%xx`-decoded path (what `ServeDir` resolves on disk).
+fn decode_path(path: &str) -> String {
+    let b = path.as_bytes();
+    let mut out = Vec::with_capacity(b.len());
+    let mut i = 0;
+    while i < b.len() {
+        let hex = (b[i] == b'%' && i + 2 < b.len())
+            .then(|| std::str::from_utf8(&b[i + 1..i + 3]).ok().and_then(|h| u8::from_str_radix(h, 16).ok()))
+            .flatten();
+        match hex {
+            Some(v) => {
+                out.push(v);
+                i += 3;
+            }
+            None => {
+                out.push(b[i]);
+                i += 1;
+            }
+        }
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
+/// Whether `path` points into `web/dev/` (case-insensitive: macOS file systems are).
+fn is_dev_path(decoded: &str) -> bool {
+    decoded.split('/').find(|seg| !seg.is_empty() && *seg != ".").is_some_and(|seg| seg.eq_ignore_ascii_case(DEV_DIR))
+}
+
+/// `GM_DEV=1` (or a debug build) serves `web/dev/*`.
+fn dev_pages_enabled() -> bool {
+    cfg!(debug_assertions) || std::env::var("GM_DEV").ok().and_then(|v| crate::phone::parse_switch(&v)) == Some(true)
 }
 
 /// Router serving `web_dir` (used as the app's fallback for every non-`/api` path).
 pub fn router(web_dir: &Path) -> Router {
+    router_with(web_dir, dev_pages_enabled())
+}
+
+/// [`router`] with an explicit choice about `web/dev/*`.
+pub fn router_with(web_dir: &Path, dev: bool) -> Router {
     let files = WebFiles {
         dir: ServeDir::new(web_dir)
             .precompressed_br()
@@ -54,6 +216,8 @@ pub fn router(web_dir: &Path) -> Router {
             .append_index_html_on_directories(true),
         index: web_dir.join("index.html"),
         root: web_dir.to_path_buf(),
+        dev,
+        csp: Arc::default(),
     };
     Router::new().fallback(serve).with_state(Arc::new(files))
 }
@@ -223,6 +387,12 @@ async fn serve(State(files): State<Arc<WebFiles>>, req: Request) -> Response {
     if path == PRECACHE_PATH {
         return serve_precache(&files).await;
     }
+    let decoded = decode_path(&path);
+    if !files.dev && is_dev_path(&decoded) {
+        let mut res = StatusCode::NOT_FOUND.into_response();
+        res.headers_mut().insert(header::CACHE_CONTROL, HeaderValue::from_static(NO_CACHE));
+        return res;
+    }
     let (parts, _) = req.into_parts();
 
     let res = match files
@@ -234,7 +404,8 @@ async fn serve(State(files): State<Arc<WebFiles>>, req: Request) -> Response {
         Ok(r) => r.map(Body::new),
         Err(never) => match never {},
     };
-    let mut res = if res.status() == StatusCode::NOT_FOUND && !looks_like_file(&path) {
+    let fallback = res.status() == StatusCode::NOT_FOUND && !looks_like_file(&path);
+    let mut res = if fallback {
         // SPA fallback (hash routing makes this rare, but deep links still work).
         let mut index_req = Request::from_parts(parts, Body::empty());
         *index_req.uri_mut() = axum::http::Uri::from_static("/index.html");
@@ -246,6 +417,18 @@ async fn serve(State(files): State<Arc<WebFiles>>, req: Request) -> Response {
         res
     };
     let ok = res.status().is_success() || res.status() == StatusCode::NOT_MODIFIED;
+    let is_html = res
+        .headers()
+        .get(header::CONTENT_TYPE)
+        .and_then(|v| v.to_str().ok())
+        .map_or(res.status() == StatusCode::NOT_MODIFIED && (decoded.ends_with(".html") || !looks_like_file(&decoded)), |t| {
+            t.starts_with("text/html")
+        });
+    if is_html {
+        let file = if fallback { Some(files.index.clone()) } else { files.file_for(&decoded) };
+        let csp = files.csp_for(file.as_deref()).await;
+        res.headers_mut().insert(header::CONTENT_SECURITY_POLICY, csp);
+    }
     let cc = if ok { cache_control_for(&path) } else { NO_CACHE };
     let headers = res.headers_mut();
     headers.insert(header::CACHE_CONTROL, HeaderValue::from_static(cc));
@@ -370,6 +553,61 @@ mod tests {
 
         let (status, _, _) = get(app, "/learn/some/deep/link").await;
         assert_eq!(status, StatusCode::OK);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn inline_script_hashes_cover_inline_blocks_only() {
+        let html = "<script>a()</script><SCRIPT type=\"module\" src=\"/x.js\"></SCRIPT><scripts></scripts><script type=\"module\">b()</script>";
+        let h = inline_script_hashes(html);
+        assert_eq!(h.len(), 2);
+        // echo -n 'a()' | openssl dgst -sha256 -binary | base64
+        assert!(h.contains(&"qVpDBgj7bpq5hMAcGp3AOc79J3Y1Z4HvySTwKrWDoy4=".to_string()), "{h:?}");
+        assert_eq!(base64(b"f"), "Zg==");
+        assert_eq!(base64(b"fo"), "Zm8=");
+        assert_eq!(base64(b"foo"), "Zm9v");
+        let csp = content_security_policy(&h);
+        assert!(csp.contains("script-src 'self' 'sha256-"));
+        assert!(csp.contains("frame-ancestors 'none'"));
+    }
+
+    #[test]
+    fn dev_paths() {
+        assert!(is_dev_path(&decode_path("/dev/board-demo.html")));
+        assert!(is_dev_path(&decode_path("/%64ev/board-demo.html")));
+        assert!(is_dev_path(&decode_path("//DEV/")));
+        assert!(is_dev_path("/dev"));
+        assert!(!is_dev_path("/js/dev/x.js"));
+        assert!(!is_dev_path("/developer"));
+    }
+
+    #[tokio::test]
+    async fn dev_pages_and_csp() {
+        let dir = temp_web("dev");
+        std::fs::write(dir.join("index.html"), "<!doctype html><script>boot()</script><script src=\"/js/app.js\"></script>").unwrap();
+        let (status, _, _) = get(router_with(&dir, false), "/dev/demo.html").await;
+        assert_eq!(status, StatusCode::NOT_FOUND);
+        let (status, _, _) = get(router_with(&dir, false), "/%64ev/demo.html").await;
+        assert_eq!(status, StatusCode::NOT_FOUND);
+        let (status, _, _) = get(router_with(&dir, true), "/dev/demo.html").await;
+        assert_eq!(status, StatusCode::OK);
+
+        let app = router_with(&dir, false);
+        let want = format!("'sha256-{}'", inline_script_hashes("<script>boot()</script>")[0]);
+        for path in ["/", "/index.html", "/play/max"] {
+            let (status, headers, _) = get(app.clone(), path).await;
+            assert_eq!(status, StatusCode::OK, "{path}");
+            let csp = headers[header::CONTENT_SECURITY_POLICY].to_str().unwrap();
+            assert!(csp.contains(&want), "{path}: {csp}");
+        }
+        // Editing the page updates the hash.
+        std::fs::write(dir.join("index.html"), "<!doctype html><script>boot2()</script>").unwrap();
+        let (_, headers, _) = get(app.clone(), "/").await;
+        let csp = headers[header::CONTENT_SECURITY_POLICY].to_str().unwrap();
+        assert!(csp.contains(&format!("'sha256-{}'", inline_script_hashes("<script>boot2()</script>")[0])), "{csp}");
+        // Not on other files.
+        let (_, headers, _) = get(app, "/js/app.js").await;
+        assert!(headers.get(header::CONTENT_SECURITY_POLICY).is_none());
         let _ = std::fs::remove_dir_all(&dir);
     }
 

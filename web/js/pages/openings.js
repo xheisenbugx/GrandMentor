@@ -3,13 +3,13 @@
 // /api/openings/lookup as weighted bars, chess.com explorer style) and Train (play your repertoire
 // side from memory against auto-replies, with a spaced-repetition-lite streak in localStorage).
 
-import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, debounce, formatSan, loadingBlock } from '../ui.js';
+import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, debounce, formatSan, loadingBlock, tHtml, confetti, shortcutAllowed } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
 import { getSetting } from '../settings.js';
 import { Board } from '../components/board.js';
 import {
   ensureLearnCss, START_FEN, chessAt, applyUci, isSameMove, sideToMove, playLine, sanLineToUci, fenKey,
-  miniBoardSvg, levelPill, timerSet, confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
+  miniBoardSvg, levelPill, timerSet, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
   readStore, writeStore,
 } from './learn.js';
 import { t } from '../i18n.js';
@@ -168,7 +168,7 @@ async function mountLibrary(root, bag, signal) {
     const db = trainDb();
     const trained = items.filter((it) => db[it.o.id]);
     if (!trained.length) {
-      trainingBox.replaceChildren(h('div', { class: 'callout mt-6', html: icon('info') + `<div>${t('openings.tip')}</div>` }));
+      trainingBox.replaceChildren(h('div', { class: 'callout mt-6', html: icon('info') + `<div>${tHtml('openings.tip')}</div>` }));
       return;
     }
     const due = trained.filter((it) => isDue(db[it.o.id]));
@@ -601,7 +601,8 @@ async function mountDetail(root, id, query, bag, signal) {
     const ideas = Array.isArray(o.ideas) ? o.ideas.filter(Boolean) : [];
     const traps = Array.isArray(o.traps) ? o.traps.filter(Boolean) : [];
     const rec = trainRecord(o.id);
-    body.replaceChildren(
+    // Native replaceChildren() would print a null part as "null": keep only real nodes.
+    body.replaceChildren(...[
       h('div', { class: 'stack-sm' },
         h('div', { class: 'text-xs subtle semibold', style: 'text-transform:uppercase;letter-spacing:.06em' }, t('openings.mainLine')),
         moves,
@@ -613,8 +614,9 @@ async function mountDetail(root, id, query, bag, signal) {
       traps.length ? h('div', null,
         h('div', { class: 'op-block-title', html: icon('alert') + `<span>${escapeHtml(t('openings.traps'))}</span>` }),
         traps.map((trap) => h('div', { class: 'op-trap', html: icon('alert') + `<div>${mdLite(trap).replace(/^<p>|<\/p>$/g, '')}</div>` }))) : null,
-      h('div', { class: 'callout mt-6', html: icon('target') + `<div>${t(userSide === 'white' ? 'openings.readyWhite' : 'openings.readyBlack')}${rec ? ' ' + t('openings.currentStreak', { streak: rec.streak || 0, due: escapeHtml(dueLabel(rec)) }) : ''}</div>` }),
-      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + `<span>${escapeHtml(t('openings.trainThis'))}</span>`, onClick: () => setMode('train') }));
+      h('div', { class: 'callout mt-6', html: icon('target') + `<div>${tHtml(userSide === 'white' ? 'openings.readyWhite' : 'openings.readyBlack')}${rec ? ' ' + tHtml('openings.currentStreak', { streak: rec.streak || 0, due: dueLabel(rec) }) : ''}</div>` }),
+      h('button', { class: 'btn btn-primary btn-block mt-3', type: 'button', html: icon('target') + `<span>${escapeHtml(t('openings.trainThis'))}</span>`, onClick: () => setMode('train') }),
+    ].filter(Boolean));
   }
 
   function renderExploreBody() {
@@ -637,7 +639,7 @@ async function mountDetail(root, id, query, bag, signal) {
     if (lookup === undefined) { explorerList.replaceChildren(h('div', { class: 'loading-center', style: 'padding:var(--sp-6)' }, h('div', { class: 'spinner' }))); return; }
     const conts = lookup && Array.isArray(lookup.continuations) ? lookup.continuations.filter((c) => c && c.uci) : [];
     if (!conts.length) {
-      explorerList.replaceChildren(h('div', { class: 'callout callout-warning', html: icon('info') + `<div>${t('openings.explore.outOfBook')}</div>` }));
+      explorerList.replaceChildren(h('div', { class: 'callout callout-warning', html: icon('info') + `<div>${tHtml('openings.explore.outOfBook')}</div>` }));
       return;
     }
     const total = conts.reduce((s, c) => s + Math.max(0, Number(c.weight) || 0), 0) || conts.length;
@@ -735,7 +737,7 @@ async function mountDetail(root, id, query, bag, signal) {
       board.setHighlights([]); board.clearBadges();
       syncNav();
       refreshLookup();
-      if (train.ply < main.ucis.length) setFeedback(trainFeedback, 'info', t('openings.train.opponentPlayed', { san: escapeHtml(sanOf(m.san)) }));
+      if (train.ply < main.ucis.length) setFeedback(trainFeedback, 'info', tHtml('openings.train.opponentPlayed', { san: sanOf(m.san) }));
       trainAdvance();
     }, train.ply === 0 ? 600 : 450);
   }
@@ -752,7 +754,7 @@ async function mountDetail(root, id, query, bag, signal) {
       board.setHighlights([{ square: mv.to, kind: 'good' }]);
       board.clearBadges(); board.setBadge(mv.to, 'book');
       sfx('correct');
-      setFeedback(trainFeedback, 'good', t('openings.train.correct', { san: escapeHtml(sanOf(mv.san)) }));
+      setFeedback(trainFeedback, 'good', tHtml('openings.train.correct', { san: sanOf(mv.san) }));
       renderTrainProgress();
       syncNav();
       refreshLookup();
@@ -767,9 +769,9 @@ async function mountDetail(root, id, query, bag, signal) {
     const bookSan = main.sans[train.ply];
     if (train.misses >= 2) {
       board.setArrows([{ from: expected.slice(0, 2), to: expected.slice(2, 4), color: 'green' }]);
-      setFeedback(trainFeedback, 'bad', t('openings.train.wrongShow', { san: escapeHtml(sanOf(bookSan)) }));
+      setFeedback(trainFeedback, 'bad', tHtml('openings.train.wrongShow', { san: sanOf(bookSan) }));
     } else {
-      setFeedback(trainFeedback, 'bad', t('openings.train.wrong'));
+      setFeedback(trainFeedback, 'bad', tHtml('openings.train.wrong'));
     }
     return false;
   }
@@ -780,7 +782,7 @@ async function mountDetail(root, id, query, bag, signal) {
     if (!expected) return;
     train.misses = Math.max(train.misses, 1);
     board.setArrows([{ from: expected.slice(0, 2), to: expected.slice(2, 4), color: 'green' }]);
-    setFeedback(trainFeedback, 'warn', t('openings.train.hint', { san: escapeHtml(sanOf(main.sans[train.ply])) }));
+    setFeedback(trainFeedback, 'warn', tHtml('openings.train.hint', { san: sanOf(main.sans[train.ply]) }));
   }
 
   function trainFinish() {
@@ -793,7 +795,7 @@ async function mountDetail(root, id, query, bag, signal) {
     const perfect = ok === total;
     const rec = saveTrainResult(o.id, perfect, pct);
     syncNav();
-    if (perfect) { confetti(boardSlot, timers); sfx('gameEnd'); }
+    if (perfect) { confetti(boardSlot, { duration: 1300, later: timers.later }); sfx('gameEnd'); }
     body.replaceChildren(h('div', { class: 'lrn-complete' },
       h('div', { class: ['lrn-complete-badge', perfect ? '' : 'gold'], html: icon(perfect ? 'trophy' : 'target') }),
       h('h2', null, perfect ? t('openings.train.perfect') : t('openings.train.pctCorrect', { pct })),
@@ -808,11 +810,8 @@ async function mountDetail(root, id, query, bag, signal) {
 
   // ------------------------------------------------------------------ keyboard
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tgt = e.target;
-    if (e.key === ' ' && tgt && tgt.tagName === 'BUTTON') return; // let buttons handle Space
-    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
+    if (e.key === ' ' && e.target && e.target.tagName === 'BUTTON') return; // let buttons handle Space
     if (e.key === 'f' || e.key === 'F') { board.flip(); return; }
     if (mode === 'train') return;
     if (e.key === 'ArrowLeft') { e.preventDefault(); stopPlay(); setPly(ply - 1); }

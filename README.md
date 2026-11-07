@@ -42,7 +42,7 @@ Most chess sites are built for people who already play well. GrandMentor is buil
 
 ### ♟️ Play against bots with personality
 
-Sixteen opponents from **Pawnny 🐣 (250)** to **Titan 🤖 (3000)**, plus two coach bots who explain their ideas.
+Fourteen rated opponents from **Pawnny 🐣 (250)** to **Titan 🤖 (3000)**, plus **Sparky ⚡**, who grows with you, and two coach bots who explain their ideas.
 The ratings are measured, not guessed: a 5,520-game tournament between the bots and fixed-strength engine anchors places every bot within its rating's confidence interval ([how it's measured](docs/BOT_CALIBRATION.md)).
 Pick your colour, a time control, and how much help you want — *Friendly* (hints, takebacks, eval bar, coach) or *Challenge* (just you and the board).
 
@@ -113,7 +113,7 @@ Your **puzzle rating** adapts as you solve. Race the clock in **Puzzle Rush** (3
 
 ### 📚 Learn — from "how does the knight move?" to the Lucena position
 
-**10 courses · 58 interactive lessons.** Each lesson is a short story with arrows and highlights, then *your turn*: find the move on the board. Wrong? Get a gentle nudge and a hint. Right? A little celebration ✨.
+**12 courses · 69 interactive lessons.** Each lesson is a short story with arrows and highlights, then *your turn*: find the move on the board. Wrong? Get a gentle nudge and a hint. Right? A little celebration ✨.
 
 <table>
 <tr>
@@ -308,7 +308,7 @@ cargo run --release -p gm-server
 
 ## 🚀 Quick start
 
-You only need a recent stable **Rust** toolchain (tested with 1.98). No Node, no database server.
+You only need **Rust** 1.98 or newer. With [rustup](https://rustup.rs), `rust-toolchain.toml` installs the exact version CI uses (1.99.1) automatically. No Node, no database server.
 
 ```bash
 git clone https://github.com/xheisenbugx/GrandMentor.git
@@ -336,6 +336,8 @@ Run from the repository root so `./data` and `./web` are found. Your games live 
 | `GM_ENGINES` | cores − 1, clamped to 2–8 | Engines in the search pool, one thread each |
 | `GM_TT_MB` | `32` | Hash table per engine (MB). Memory ≈ `GM_ENGINES × GM_TT_MB`. |
 | `GM_SYNC_ALLOW_ORIGINS` | – | Extra origins allowed to sync with this device (pairing code still required) |
+| `GM_ALLOWED_HOSTS` | – | Extra host names accepted in the `Host` header (e.g. your own DNS name); `localhost`, IP addresses and `<hostname>.local` always work |
+| `GM_DEV` | off | `1` serves the `web/dev/` component demos in release builds |
 | `ANTHROPIC_API_KEY` | – | Enables the Claude-powered mentor chat |
 | `GM_MENTOR_MODEL` | `claude-opus-5-5` | Claude model used by the mentor |
 | `RUST_LOG` | `info` | Log filter |
@@ -411,6 +413,9 @@ Contributions are welcome! Please read [`AGENTS.md`](AGENTS.md) — it describes
 Before opening a PR, run the quality gate (it also runs in CI on every PR):
 
 ```bash
+cargo deny check                 # dependency advisories, licenses and sources
+node tools/qa/check-syntax.mjs   # every JS file parses (modules and the service worker)
+node --test 'tests/js/**/*.test.mjs'   # JS unit tests (i18n, router, formatting helpers)
 node tools/qa/check-i18n.mjs     # every language has every key
 node tools/qa/sweep.mjs          # every page × language × desktop/mobile in headless Chrome
 node tools/qa/bench-gate.mjs     # engine speed and tactics (for engine changes)
@@ -431,6 +436,7 @@ whole app is distributed under the GPL. Bundled third-party content keeps its ow
 - **Puzzles** — [Lichess puzzle database](https://database.lichess.org/#puzzles) (CC0). See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
 - **Pieces** — from [lichess-org/lila](https://github.com/lichess-org/lila): *cburnett* (Colin M.L. Burnett, GPLv2+), *merida* (Armando Hernandez Marroquin, GPLv2+), *chessnut* (Alexis Luengas, Apache 2.0). See [`web/img/pieces/LICENSE.md`](web/img/pieces/LICENSE.md).
 - **[chess.js](https://github.com/jhlywa/chess.js)** v1.4.0 (BSD-2-Clause) and **[shakmaty](https://github.com/niklasf/shakmaty)** (GPL-3.0+).
+- **Font** — [Inter](https://github.com/rsms/inter) by Rasmus Andersson (SIL Open Font License 1.1), bundled in `web/fonts/` so the app works offline. See [`data/ATTRIBUTION.md`](data/ATTRIBUTION.md).
 - Opening names follow the standard ECO classification. The *Opera Game* in the screenshots is Morphy vs. Duke Karl / Count Isouard, Paris 1858.
 
 <div align="center">

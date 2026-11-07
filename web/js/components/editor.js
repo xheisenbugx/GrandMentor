@@ -19,7 +19,7 @@
 // Memory: every listener, timer and DOM node created here is released by destroy().
 
 import { Chess, validateFen } from '../../vendor/chess.js';
-import { h, icon } from '../ui.js';
+import { h, icon, loadCss } from '../ui.js';
 import { pieceUrl, onSettingsChange } from '../settings.js';
 import { t, formatList } from '../i18n.js';
 import { Board } from './board.js';
@@ -35,12 +35,7 @@ const CSS_HREF = '/css/editor.css';
 
 /** Inject the editor stylesheet once. */
 function ensureCss() {
-  if (typeof document === 'undefined' || document.querySelector(`link[href="${CSS_HREF}"]`)) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = CSS_HREF;
-  link.dataset.pageCss = 'editor';
-  document.head.appendChild(link);
+  return loadCss(CSS_HREF);
 }
 
 const sqIndex = (sq) => (8 - Number(sq[1])) * 8 + (sq.charCodeAt(0) - 97); // a8 = 0 … h1 = 63

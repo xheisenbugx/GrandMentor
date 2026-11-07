@@ -8,7 +8,7 @@
 // Memory hygiene: every view owns a `disposables()` bag; every puzzle runner owns a timer set that is
 // cleared on each new puzzle and on destroy; all fetches share an AbortController aborted on unmount.
 
-import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, formatClock, confirmDialog, classificationMeta } from '../ui.js';
+import { h, icon, pageHeader, disposables, loadingBlock, emptyState, toast, formatClock, confirmDialog, classificationMeta, iconLabel, labelHtml, loadCss, confetti, shortcutAllowed } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
 import { getSetting, reducedMotion } from '../settings.js';
 import { Board } from '../components/board.js';
@@ -27,12 +27,7 @@ export const title = (params) => t(TITLE_KEYS[params?.mode] || 'puzzles.title');
 
 const CSS_HREF = '/css/puzzles.css';
 function ensureCss() {
-  if (document.querySelector('link[data-page-css="puzzles"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = CSS_HREF;
-  link.dataset.pageCss = 'puzzles';
-  document.head.appendChild(link);
+  return loadCss(CSS_HREF);
 }
 
 /** A set of timeouts that forget themselves when they fire (no unbounded growth). */
@@ -135,7 +130,7 @@ function btn(label, iconName, kind, onClick, extra = {}) {
   return h('button', {
     type: 'button',
     class: `btn btn-${kind}${extra.cls ? ' ' + extra.cls : ''}`,
-    html: (iconName ? icon(iconName) : '') + `<span>${label}</span>`,
+    html: (iconName ? icon(iconName) : '') + labelHtml(label),
     onClick,
     'aria-keyshortcuts': extra.key || null,
     title: extra.title || null,
@@ -368,16 +363,38 @@ export class PuzzleRunner {
   }
 }
 
-/** Elapsed-time stopwatch rendering into an element. One interval, only while running. */
+/**
+ * Elapsed-time stopwatch rendering into an element. One interval, only while running.
+ * Time in a hidden tab doesn't count: it pauses on visibilitychange and resumes when the tab is
+ * visible again, so the time_ms sent with an attempt is the time actually spent on the puzzle.
+ * destroy() removes the listener.
+ */
 class Stopwatch {
-  constructor(el) { this.el = el; this.start = 0; this.acc = 0; this.id = 0; }
+  constructor(el) {
+    this.el = el; this.start = 0; this.acc = 0; this.id = 0;
+    this.wanted = false;      // run() called and not stopped (may be paused while hidden)
+    this._onVis = () => this._sync();
+    document.addEventListener('visibilitychange', this._onVis);
+  }
   reset() { this.stop(); this.acc = 0; this.render(); }
   run() {
+    this.wanted = true;
+    this._sync();
+  }
+  stop() {
+    this.wanted = false;
+    this._pause();
+  }
+  _sync() {
+    if (this.wanted && document.visibilityState !== 'hidden') this._resume();
+    else this._pause();
+  }
+  _resume() {
     if (this.id) return;
     this.start = performance.now();
     this.id = setInterval(() => this.render(), 250);
   }
-  stop() {
+  _pause() {
     if (!this.id) return;
     clearInterval(this.id);
     this.id = 0;
@@ -386,7 +403,11 @@ class Stopwatch {
   }
   get ms() { return this.acc + (this.id ? performance.now() - this.start : 0); }
   render() { if (this.el) this.el.textContent = formatClock(this.ms, { tenths: false }); }
-  destroy() { if (this.id) clearInterval(this.id); this.id = 0; this.el = null; }
+  destroy() {
+    document.removeEventListener('visibilitychange', this._onVis);
+    if (this.id) clearInterval(this.id);
+    this.id = 0; this.wanted = false; this.el = null;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -453,7 +474,7 @@ async function mountHub(root, { bag, signal }) {
       h('span', { class: 'subtle' }, t('puzzles.hub.rated.ratingLabel'))),
     h('div', { class: 'row-sm subtle text-sm' },
       h('span', null, t('puzzles.hub.rated.solved', { count: solved })), h('span', { class: 'dot-sep' }), h('span', null, total ? t('puzzles.hub.rated.success', { pct }) : t('puzzles.hub.rated.noAttempts'))),
-    h('span', { class: 'btn btn-primary btn-lg btn-block mt-3', html: icon('play') + `<span>${t('puzzles.hub.rated.cta')}</span>` }));
+    h('span', { class: 'btn btn-primary btn-lg btn-block mt-3', html: iconLabel('play', t('puzzles.hub.rated.cta')) }));
 
   const rush = h('a', { class: 'card card-link pz-mode pz-mode-rush', href: '#/puzzles/rush' },
     h('div', { class: 'pz-mode-icon', html: icon('bolt') }),
@@ -463,7 +484,7 @@ async function mountHub(root, { bag, signal }) {
       h('span', { class: 'pz-rating-num tabular' }, String(rushBest)),
       h('span', { class: 'subtle' }, t('puzzles.hub.rush.bestLabel'))),
     h('div', { class: 'row-sm subtle text-sm' }, h('span', null, t('puzzles.rush.modes.3.short')), h('span', { class: 'dot-sep' }), h('span', null, t('puzzles.rush.modes.5.short')), h('span', { class: 'dot-sep' }), h('span', null, t('puzzles.rush.modes.survival.short'))),
-    h('span', { class: 'btn btn-secondary btn-lg btn-block mt-3', html: icon('bolt') + `<span>${t('puzzles.hub.rush.cta')}</span>` }));
+    h('span', { class: 'btn btn-secondary btn-lg btn-block mt-3', html: iconLabel('bolt', t('puzzles.hub.rush.cta')) }));
 
   const daily = h('a', { class: 'card card-link pz-mode pz-mode-daily', href: '#/puzzles/daily' },
     calendarCard(now, dailyDone),
@@ -577,7 +598,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
   const slot = h('div', { class: 'board-slot' });
   const turnBar = h('div', { class: 'pz-turnbar' });
   const flipBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-icon', 'aria-label': t('puzzles.solver.flipBoard'), 'data-tooltip': t('puzzles.solver.flipBoard'), html: icon('flip') });
-  const analyzeLink = h('a', { class: 'btn btn-ghost btn-sm', href: '#/analysis', html: icon('analysis') + `<span>${t('puzzles.solver.analyze')}</span>` });
+  const analyzeLink = h('a', { class: 'btn btn-ghost btn-sm', href: '#/analysis', html: iconLabel('analysis', t('puzzles.solver.analyze')) });
   const themeLink = h('span', { class: 'pz-theme-current subtle text-sm' });
   const toolbar = h('div', { class: 'toolbar pz-toolbar' }, flipBtn, h('div', { class: 'spacer' }), themeLink, analyzeLink);
 
@@ -616,7 +637,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
   const panel = h('div', { class: 'panel grow' },
     h('div', { class: 'panel-header', html: icon(isDaily ? 'calendar' : 'puzzle') + `<span>${isDaily ? t('puzzles.dailyTitle') : t('puzzles.title')}</span>` },
       h('div', { class: 'spacer' }),
-      h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })),
+      h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: iconLabel('grid', t('puzzles.solver.allModes')) })),
     panelBody,
     h('div', { class: 'panel-footer' }, actions));
 
@@ -685,7 +706,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
     st.recorded = true;
     const p = st.puzzle;
     try {
-      const res = await api.post(`/api/puzzles/${encodeURIComponent(p.id)}/attempt`, { solved, time_ms: Math.round(stopwatch.ms) }, { signal });
+      const res = await api.post(`/api/puzzles/${encodeURIComponent(p.id)}/attempt`, { solved, time_ms: Math.round(stopwatch.ms) }, { keepalive: true });
       if (bag.disposed || !res) return;
       const from = Number.isFinite(st.rating) ? st.rating : Math.round(res.rating - (res.delta || 0));
       st.rating = Math.round(res.rating);
@@ -696,7 +717,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
       deltaEl.className = `pz-delta pop-in ${d > 0 ? 'up' : d < 0 ? 'down' : ''}`;
       if (st.puzzle === p) render();
     } catch (e) {
-      if (!isAbort(e)) toast(t('puzzles.errors.saveFailed', { message: e.message }), 'warning');
+      if (!isAbort(e) && !bag.disposed) toast(t('puzzles.errors.saveFailed', { message: e.message }), 'warning');
     }
   }
 
@@ -909,10 +930,7 @@ function mountSolver(root, { bag, signal }, { mode, theme: initialTheme = '' }) 
   // ----- Events -----
   bag.on(flipBtn, 'click', () => board.flip());
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
-    const tg = e.target;
-    if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     const k = e.key.toLowerCase();
     const done = ['solved', 'solvedLate', 'solution'].includes(st.feedback);
     if (k === 'f') { board.flip(); e.preventDefault(); }
@@ -972,11 +990,13 @@ function cardPuzzle(card) {
   return { id: `mistake-${card.id}`, fen: card.fen, moves: sol, userFirst: true };
 }
 
-function confettiBurst(count = 36) {
-  return h('div', { class: 'pz-confetti', 'aria-hidden': 'true' },
-    Array.from({ length: count }, (_, i) => h('span', {
-      style: { '--x': `${(i * 37) % 100}%`, '--d': `${(i % 9) * 70}ms`, '--r': `${(i * 53) % 360}deg`, '--c': `var(--${['primary', 'gold', 'info', 'accent', 'cls-brilliant'][i % 5]})` },
-    })));
+/** Confetti falling over a result card; removed by `later` (the view's timer). */
+function confettiRain(later, count = 36) {
+  return confetti(null, {
+    kind: 'fall', count, duration: 2600, fall: '560px', later, removeAfter: 4000,
+    colors: ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--cls-brilliant)'],
+    piece: (i) => ({ '--x': `${(i * 37) % 100}%`, '--d': `${(i % 9) * 70}ms`, '--r0': `${(i * 53) % 360}deg`, '--r': `${(i * 53) % 360 + 540}deg`, '--dx': '0px', height: '14px' }),
+  }).el;
 }
 
 function masteryPips(streak) {
@@ -1066,7 +1086,7 @@ function mountMistakes(root, { bag, signal }) {
     const s = summary || {};
     const allMastered = (s.total | 0) > 0;
     const card = h('div', { class: 'card pz-mx-done' },
-      allMastered ? confettiBurst() : null,
+      allMastered ? confettiRain(vb.timeout) : null,
       h('div', { class: 'pz-mx-done-emoji', 'aria-hidden': 'true' }, allMastered ? '🏆' : '🌱'),
       h('h2', { class: 'pz-mx-done-title' }, t(allMastered ? 'puzzles.mistakes.allMasteredTitle' : 'puzzles.mistakes.emptyTitle')),
       h('p', { class: 'muted pz-mx-done-text' }, t(allMastered ? 'puzzles.mistakes.allMasteredText' : 'puzzles.mistakes.emptyText')),
@@ -1075,11 +1095,10 @@ function mountMistakes(root, { bag, signal }) {
         h('li', null, t('puzzles.mistakes.emptyStep2')),
         h('li', null, t('puzzles.mistakes.emptyStep3'))),
       h('div', { class: 'row row-wrap pz-mx-done-actions' },
-        h('a', { class: 'btn btn-primary btn-lg', href: '#/play', html: icon('play') + `<span>${t('puzzles.mistakes.playBot')}</span>` }),
-        h('a', { class: 'btn btn-secondary', href: '#/library', html: icon('library') + `<span>${t('puzzles.mistakes.reviewGame')}</span>` }),
-        h('a', { class: 'btn btn-ghost', href: '#/puzzles?play=1', html: icon('puzzle') + `<span>${t('puzzles.mistakes.ratedPuzzles')}</span>` })));
+        h('a', { class: 'btn btn-primary btn-lg', href: '#/play', html: iconLabel('play', t('puzzles.mistakes.playBot')) }),
+        h('a', { class: 'btn btn-secondary', href: '#/library', html: iconLabel('library', t('puzzles.mistakes.reviewGame')) }),
+        h('a', { class: 'btn btn-ghost', href: '#/puzzles?play=1', html: iconLabel('puzzle', t('puzzles.mistakes.ratedPuzzles')) })));
     page.append(h('div', { class: 'page' }, header(t('puzzles.mistakes.subtitle')), card));
-    if (allMastered) vb.timeout(() => card.querySelector('.pz-confetti')?.remove(), 4000);
   }
 
   // ----- Everything due is done: celebrate, show when the next one is due -----
@@ -1088,18 +1107,17 @@ function mountMistakes(root, { bag, signal }) {
     const s = summary || {};
     const secs = Number.isFinite(s.next_due_in_secs) ? s.next_due_in_secs : nextCard?.due_in_secs;
     const card = h('div', { class: 'card pz-mx-done' },
-      confettiBurst(),
+      confettiRain(vb.timeout),
       h('div', { class: 'pz-mx-done-emoji', 'aria-hidden': 'true' }, '🎉'),
       h('h2', { class: 'pz-mx-done-title' }, t('puzzles.mistakes.caughtUpTitle')),
       h('p', { class: 'muted pz-mx-done-text' }, t('puzzles.mistakes.caughtUpText')),
       Number.isFinite(secs) ? h('div', { class: 'pz-mx-next-due' }, h('span', { html: icon('clock') }), h('span', null, t('puzzles.mistakes.nextDue', { when: relTime(secs) }))) : null,
       statsRow(),
       h('div', { class: 'row row-wrap pz-mx-done-actions' },
-        h('a', { class: 'btn btn-primary btn-lg', href: '#/puzzles?play=1', html: icon('puzzle') + `<span>${t('puzzles.mistakes.ratedPuzzles')}</span>` }),
+        h('a', { class: 'btn btn-primary btn-lg', href: '#/puzzles?play=1', html: iconLabel('puzzle', t('puzzles.mistakes.ratedPuzzles')) }),
         btn(t('puzzles.mistakes.practiceAnyway'), 'refresh', 'secondary', () => { practiceMode = true; showCard(nextCard, { practice: true }); }),
-        h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })));
+        h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: iconLabel('grid', t('puzzles.solver.allModes')) })));
     page.append(h('div', { class: 'page' }, header(t('puzzles.mistakes.subtitle')), card));
-    vb.timeout(() => card.querySelector('.pz-confetti')?.remove(), 4000);
   }
 
   // ----- Solve one card -----
@@ -1111,7 +1129,7 @@ function mountMistakes(root, { bag, signal }) {
     const slot = h('div', { class: 'board-slot' });
     const turnBar = h('div', { class: 'pz-turnbar' });
     const flipBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-icon', 'aria-label': t('puzzles.solver.flipBoard'), 'data-tooltip': t('puzzles.solver.flipBoard'), html: icon('flip') });
-    const analyzeLink = h('a', { class: 'btn btn-ghost btn-sm', href: `#/analysis?fen=${encodeURIComponent(card.fen)}`, html: icon('analysis') + `<span>${t('puzzles.solver.analyze')}</span>` });
+    const analyzeLink = h('a', { class: 'btn btn-ghost btn-sm', href: `#/analysis?fen=${encodeURIComponent(card.fen)}`, html: iconLabel('analysis', t('puzzles.solver.analyze')) });
     const timeEl = h('span', { class: 'tabular' }, '0:00');
     const stopwatch = new Stopwatch(timeEl);
     vb.add(() => stopwatch.destroy());
@@ -1128,9 +1146,9 @@ function mountMistakes(root, { bag, signal }) {
     const actions = h('div', { class: 'pz-actions' });
 
     const panel = h('div', { class: 'panel grow' },
-      h('div', { class: 'panel-header', html: icon('target') + `<span>${t('puzzles.mistakes.title')}</span>` },
+      h('div', { class: 'panel-header', html: iconLabel('target', t('puzzles.mistakes.title')) },
         h('div', { class: 'spacer' }),
-        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: icon('grid') + `<span>${t('puzzles.solver.allModes')}</span>` })),
+        h('a', { class: 'btn btn-ghost btn-sm', href: '#/puzzles', html: iconLabel('grid', t('puzzles.solver.allModes')) })),
       h('div', { class: 'panel-body stack' }, progress, context, status, mxInput.el, after),
       h('div', { class: 'panel-footer' }, actions));
 
@@ -1177,7 +1195,7 @@ function mountMistakes(root, { bag, signal }) {
       st.recorded = true;
       st.saving = true;
       try {
-        const res = await api.post(`/api/mistakes/${encodeURIComponent(card.id)}/attempt`, { solved, time_ms: Math.round(stopwatch.ms) }, { signal });
+        const res = await api.post(`/api/mistakes/${encodeURIComponent(card.id)}/attempt`, { solved, time_ms: Math.round(stopwatch.ms) }, { keepalive: true });
         if (vb.disposed || !res) return;
         st.outcome = { ...res, solved };
         if (res.summary) summary = res.summary;
@@ -1279,7 +1297,7 @@ function mountMistakes(root, { bag, signal }) {
               h('div', { class: 'stat-label' }, t('puzzles.mistakes.coachSays')),
               h('p', null, explanation))) : null,
           schedule ? h('div', { class: 'pz-mx-schedule subtle text-sm' }, h('span', { html: icon('calendar') }), h('span', null, schedule)) : null,
-          card.game_id ? h('a', { class: 'btn btn-ghost btn-sm pz-mx-review-link', href: `#/review/${encodeURIComponent(card.game_id)}`, html: icon('analysis') + `<span>${t('puzzles.mistakes.openReview')}</span>` }) : null,
+          card.game_id ? h('a', { class: 'btn btn-ghost btn-sm pz-mx-review-link', href: `#/review/${encodeURIComponent(card.game_id)}`, html: iconLabel('analysis', t('puzzles.mistakes.openReview')) }) : null,
         ].filter(Boolean));
       } else {
         after.replaceChildren();
@@ -1346,10 +1364,7 @@ function mountMistakes(root, { bag, signal }) {
     // ----- Events -----
     vb.on(flipBtn, 'click', () => board.flip());
     vb.on(window, 'keydown', (e) => {
-      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
-      const tg = e.target;
-      if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
-      if (document.querySelector('.modal-backdrop')) return;
+      if (!shortcutAllowed(e)) return;
       const k = e.key.toLowerCase();
       const done = ['solved', 'solvedLate', 'solution'].includes(st.feedback);
       if (k === 'f') { board.flip(); e.preventDefault(); }
@@ -1475,7 +1490,7 @@ function mountRush(root, { bag, signal }) {
     vb.add(() => rushInput.destroy());
 
     const panel = h('div', { class: 'panel grow' },
-      h('div', { class: 'panel-header', html: icon('bolt') + `<span>${t('puzzles.rush.panelTitle', { mode: rushText(mode, 'short') })}</span>` }),
+      h('div', { class: 'panel-header', html: iconLabel('bolt', t('puzzles.rush.panelTitle', { mode: rushText(mode, 'short') })) }),
       h('div', { class: 'panel-body stack' },
         h('div', { class: 'pz-rush-top' },
           h('div', null, h('div', { class: 'stat-label' }, cfg.ms ? t('puzzles.rush.timeLeft') : t('puzzles.rush.time')), clockEl),
@@ -1600,7 +1615,7 @@ function mountRush(root, { bag, signal }) {
       let prevBest = rushBest(mode);
       let best = Math.max(serverBest, run.score);
       try {
-        const res = await api.post('/api/puzzles/rush', { score: run.score, mode }, { signal });
+        const res = await api.post('/api/puzzles/rush', { score: run.score, mode }, { keepalive: true });
         if (res && Number.isFinite(res.best)) best = res.best;
         if (res && Number.isFinite(res.previous_mode_best)) prevBest = res.previous_mode_best;
       } catch (e) {
@@ -1637,13 +1652,10 @@ function mountRush(root, { bag, signal }) {
     const solvedCount = results.filter((r) => r.solved).length;
     const hardest = results.filter((r) => r.solved).reduce((m, r) => Math.max(m, r.puzzle.rating || 0), 0);
 
-    const confetti = isPb ? h('div', { class: 'pz-confetti', 'aria-hidden': 'true' },
-      Array.from({ length: 36 }, (_, i) => h('span', {
-        style: { '--x': `${(i * 37) % 100}%`, '--d': `${(i % 9) * 70}ms`, '--r': `${(i * 53) % 360}deg`, '--c': `var(--${['primary', 'gold', 'info', 'accent', 'cls-brilliant'][i % 5]})` },
-      }))) : null;
+    const rain = isPb ? confettiRain(vb.timeout) : null;
 
     const card = h('div', { class: 'card pz-end' },
-      confetti,
+      rain,
       h('div', { class: 'result-hero' },
         h('div', { class: 'subtle semibold' }, t('puzzles.rush.end.header', { mode: rushText(mode, 'label'), reason: reasonText })),
         h('div', { class: 'pz-end-score tabular pop-in' }, String(score)),
@@ -1663,9 +1675,8 @@ function mountRush(root, { bag, signal }) {
       h('div', { class: 'row row-wrap pz-end-actions' },
         btn(t('puzzles.rush.end.playAgain'), 'refresh', 'primary', () => startRun(mode), { cls: 'btn-lg' }),
         btn(t('puzzles.rush.end.changeMode'), 'grid', 'secondary', () => showSelect()),
-        h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: icon('puzzle') + `<span>${t('puzzles.rush.end.allPuzzles')}</span>` })));
+        h('a', { class: 'btn btn-ghost', href: '#/puzzles', html: iconLabel('puzzle', t('puzzles.rush.end.allPuzzles')) })));
     page.append(h('div', { class: 'pz-end-wrap' }, card));
-    if (isPb) vb.timeout(() => { if (confetti) confetti.remove(); }, 4000);
   }
 
   showSelect();
