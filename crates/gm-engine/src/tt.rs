@@ -107,15 +107,15 @@ impl Tt {
             }
         }
         let e = &mut bucket.e[slot];
-        let same = e.key == key;
+        let same = e.key == key && e.bound() != BOUND_NONE;
         // Keep a deeper entry for the same position unless the new one is exact or the old one
-        // is from an older search.
-        if same
-            && bound != BOUND_EXACT
-            && e.generation() == generation
-            && (depth as i32) + 3 < e.depth as i32
-        {
-            return;
+        // is from an older search. A depth-0 (quiescence) bound never replaces a deeper entry
+        // for the same position, whatever its age: it would throw away real search work.
+        if same && bound != BOUND_EXACT && depth < e.depth {
+            let stale = e.generation() != generation;
+            if depth == 0 || (!stale && (depth as i32) + 3 < e.depth as i32) {
+                return;
+            }
         }
         let mv = if mv == 0 && same { e.mv } else { mv };
         *e = Entry {
@@ -160,6 +160,17 @@ mod tests {
         // shallower non-exact store for the same key does not clobber a much deeper entry
         t.store(42, 9, -50, 5, 1, BOUND_LOWER);
         assert_eq!(t.probe(42).unwrap().depth, 6);
+        // a quiescence (depth 0) bound never replaces a deeper entry, even from an older search
+        t.new_search();
+        t.store(42, 9, -50, 5, 0, BOUND_UPPER);
+        let e = t.probe(42).unwrap();
+        assert_eq!((e.depth, e.mv, e.score), (6, 7, 100));
+        // ...but a depth-0 exact score, or a positive-depth bound in a new search, does
+        t.store(42, 9, -50, 5, 2, BOUND_LOWER);
+        assert_eq!(t.probe(42).unwrap().depth, 2);
+        t.store(42, 0, 30, 5, 0, BOUND_EXACT);
+        let e = t.probe(42).unwrap();
+        assert_eq!((e.depth, e.mv, e.score), (0, 9, 30));
         t.clear();
         assert!(t.probe(42).is_none());
     }

@@ -6,6 +6,9 @@ use gm_content::Content;
 use gm_engine::{to_fen, START_FEN};
 use rand::SeedableRng;
 
+/// A stop flag nothing raises.
+static NO_STOP: AtomicBool = AtomicBool::new(false);
+
 fn content() -> Content {
     let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data");
     Content::load(&dir).unwrap_or_default()
@@ -99,17 +102,17 @@ fn errors_are_graceful() {
     let mut engine = Engine::new(1);
     // Fool's mate: game over.
     let mated: Vec<String> = ["f2f3", "e7e5", "g2g4", "d8h4"].iter().map(|s| s.to_string()).collect();
-    assert!(choose_move(&mut engine, &content, "titan", START_FEN, &mated, Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "titan", START_FEN, &mated, Lang::En).is_err());
     // Stalemate FEN.
-    assert!(choose_move(&mut engine, &content, "pawnny", "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1", &[], Lang::En).is_err());
-    assert!(choose_move(&mut engine, &content, "nobody", START_FEN, &[], Lang::En).is_err());
-    assert!(choose_move(&mut engine, &content, "titan", "garbage", &[], Lang::En).is_err());
-    assert!(choose_move(&mut engine, &content, "titan", START_FEN, &["e2e5".into()], Lang::En).is_err());
-    assert!(choose_move(&mut engine, &content, "titan", START_FEN, &["zz".into()], Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "pawnny", "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1", &[], Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "nobody", START_FEN, &[], Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "titan", "garbage", &[], Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "titan", START_FEN, &["e2e5".into()], Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "titan", START_FEN, &["zz".into()], Lang::En).is_err());
     // Moves after the game is over are rejected.
     let mut over = mated.clone();
     over.push("a2a3".into());
-    assert!(choose_move(&mut engine, &content, "titan", START_FEN, &over, Lang::En).is_err());
+    assert!(choose_move(&mut engine, &NO_STOP, &content, "titan", START_FEN, &over, Lang::En).is_err());
 }
 
 #[test]
@@ -121,7 +124,7 @@ fn forced_move_is_played() {
     let pos = parse_fen(fen).expect("fen");
     let legal = pos.legal_moves();
     if legal.len() == 1 {
-        let r = choose_move(&mut engine, &content, "titan", fen, &[], Lang::En).expect("move");
+        let r = choose_move(&mut engine, &NO_STOP, &content, "titan", fen, &[], Lang::En).expect("move");
         assert_eq!(r.uci, move_to_uci(&legal[0]));
     }
 }
@@ -337,12 +340,12 @@ fn adaptive_bot_plays_at_requested_level() {
     // At a strong level it finds the mate in one every time; out-of-range levels are clamped.
     let mut rng = StdRng::seed_from_u64(3);
     for elo in [2800u16, u16::MAX] {
-        let r = choose_move_inner(&mut engine, &content, ADAPTIVE_ID, fen, &[], &mut rng, Clock::Wall { cap_ms: Some(200) }, Some(elo), Lang::En)
+        let r = choose_move_inner(&mut engine, &NO_STOP, &content, ADAPTIVE_ID, fen, &[], &mut rng, Clock::Wall { cap_ms: Some(200) }, Some(elo), Lang::En)
             .expect("move");
         assert_eq!(r.uci, "h5f7");
     }
     for elo in [0u16, 250, 1200] {
-        let r = choose_move_at(&mut engine, &content, ADAPTIVE_ID, START_FEN, &[], Some(elo), Lang::En).expect("move");
+        let r = choose_move_at(&mut engine, &NO_STOP, &content, ADAPTIVE_ID, START_FEN, &[], Some(elo), Lang::En).expect("move");
         assert!(!r.uci.is_empty());
     }
 }
@@ -470,4 +473,18 @@ fn labels_match_the_committed_calibration() {
     sparky.sort_by_key(|(l, _)| *l);
     assert!(sparky.len() >= 2, "calibration should include adaptive levels");
     assert!(sparky.windows(2).all(|w| w[1].1 > w[0].1), "adaptive levels not monotonic: {sparky:?}");
+}
+
+#[test]
+fn raised_stop_flag_ends_the_search_with_a_legal_move() {
+    // The strongest bot thinks for over a second; a raised flag (client gone, shutdown) makes
+    // it answer at once with the best move found so far.
+    let content = content();
+    let mut engine = Engine::new(4);
+    let stop = AtomicBool::new(true);
+    let fen = "r2q1rk1/pp2bppp/2n1pn2/3p4/2PP4/2N1PN2/PP3PPP/R2QKB1R w KQ - 0 9";
+    let t0 = Instant::now();
+    let r = choose_move(&mut engine, &stop, &content, "titan", fen, &[], Lang::En).expect("move");
+    assert!(t0.elapsed() < std::time::Duration::from_millis(500), "took {:?}", t0.elapsed());
+    assert!(uci_to_move(&parse_fen(fen).expect("fen"), &r.uci).is_ok());
 }

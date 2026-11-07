@@ -3,7 +3,7 @@
 use std::time::Duration;
 
 use serde_json::{json, Value};
-use shakmaty::{Chess, File, Position, Rank, Square};
+use shakmaty::{Chess, Color, File, Position, Rank, Square};
 
 use gm_content::Lang;
 
@@ -11,7 +11,12 @@ use crate::{coach, describe, tactics, ChatRequest};
 
 pub(crate) const API_URL: &str = "https://api.anthropic.com/v1/messages";
 pub(crate) const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
-const MAX_TOKENS: u32 = 2048;
+/// Output budget. The default model always thinks (adaptive thinking), and thinking tokens
+/// count toward `max_tokens`, so this must leave room for both; answers themselves stay short
+/// (the prompt asks for under 150 words, and the prompt side is bounded below).
+const MAX_TOKENS: u32 = 8192;
+/// Largest response body we read (a normal answer is a few KB).
+const MAX_RESPONSE_BYTES: usize = 256 * 1024;
 const MAX_QUESTION_CHARS: usize = 2000;
 const MAX_TURN_CHARS: usize = 2000;
 const MAX_HISTORY_TURNS: usize = 12;
@@ -97,15 +102,32 @@ pub(crate) fn ascii_board(pos: &Chess) -> String {
     out
 }
 
-fn numbered_history(moves: &[String]) -> String {
+/// "1. e4 e5 2. Nf3", numbered like the real game. `moves` lead up to `current` (the position
+/// asked about), so the numbering is counted back from its side to move and fullmove number:
+/// that is right for games from a custom FEN (e.g. black to move first, "5... Nf6 6. Nc3")
+/// and for histories the client trimmed. Without a position, white moves first from move 1.
+fn numbered_history(moves: &[String], current: Option<&Chess>) -> String {
+    // Absolute ply (0 = white's first move of the game) of the first move in `moves`.
+    let end_ply = current.map(|p| {
+        let full = u64::from(p.fullmoves().get());
+        2 * full.saturating_sub(1) + u64::from(p.turn() == Color::Black)
+    });
+    let first_ply = match end_ply {
+        Some(end) if end >= moves.len() as u64 => end - moves.len() as u64,
+        _ => 0, // inconsistent with the position (or none): count from move 1
+    };
     let start = moves.len().saturating_sub(MAX_MOVES);
     let mut s = String::new();
     if start > 0 {
         s.push_str("… ");
     }
     for (i, m) in moves.iter().enumerate().skip(start) {
-        if i % 2 == 0 {
-            s.push_str(&format!("{}. ", i / 2 + 1));
+        let ply = first_ply + i as u64;
+        let number = ply / 2 + 1;
+        if ply.is_multiple_of(2) {
+            s.push_str(&format!("{number}. "));
+        } else if i == start {
+            s.push_str(&format!("{number}... "));
         }
         s.push_str(&truncate_chars(m, 10));
         s.push(' ');
@@ -117,8 +139,10 @@ fn numbered_history(moves: &[String]) -> String {
 pub(crate) fn build_context(req: &ChatRequest) -> String {
     let mut s = String::new();
     s.push_str("<position>\n");
-    match gm_engine::parse_fen(&req.fen) {
+    let parsed = gm_engine::parse_fen(&req.fen);
+    match &parsed {
         Ok(pos) => {
+            let pos = pos.clone();
             s.push_str(&format!("FEN: {}\n", gm_engine::to_fen(&pos)));
             s.push_str(&format!("Side to move: {}\n", coach::side_name(pos.turn())));
             if pos.is_checkmate() {
@@ -150,7 +174,7 @@ pub(crate) fn build_context(req: &ChatRequest) -> String {
     if req.moves_san.is_empty() {
         s.push_str("Move history: (none)\n");
     } else {
-        s.push_str(&format!("Move history (SAN): {}\n", numbered_history(&req.moves_san)));
+        s.push_str(&format!("Move history (SAN): {}\n", numbered_history(&req.moves_san, parsed.as_ref().ok())));
     }
     let lines: Vec<String> = req.engine_lines.iter().take(MAX_ENGINE_LINES).map(|l| truncate_chars(l.trim(), 300)).filter(|l| !l.is_empty()).collect();
     if lines.is_empty() {
@@ -203,27 +227,49 @@ pub(crate) fn build_messages(req: &ChatRequest) -> Vec<Value> {
     msgs.into_iter().map(|(role, text)| json!({"role": role, "content": text})).collect()
 }
 
-pub(crate) fn build_body(model: &str, req: &ChatRequest, extras: bool, lang: Lang) -> Value {
+/// Optional request parameters, each sent only to models that support it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct Extras {
+    /// `output_config.effort: "low"`
+    pub effort: bool,
+    /// `fallbacks: "default"` + its beta header
+    pub fallbacks: bool,
+}
+
+impl Extras {
+    pub const ALL: Extras = Extras { effort: true, fallbacks: true };
+
+    /// The extras to keep for a retry after an HTTP 400 whose message is `msg`: only the
+    /// parameters the error names are dropped. `None` when it names none of those we sent (the
+    /// request is bad for another reason, so retrying would fail the same way).
+    pub fn without_rejected(self, model: &str, msg: &str) -> Option<Extras> {
+        let msg = msg.to_ascii_lowercase();
+        let drop_effort = self.effort && supports_effort(model) && (msg.contains("effort") || msg.contains("output_config"));
+        let drop_fallbacks = self.fallbacks && supports_fallbacks(model) && (msg.contains("fallback") || msg.contains("anthropic-beta"));
+        (drop_effort || drop_fallbacks)
+            .then_some(Extras { effort: self.effort && !drop_effort, fallbacks: self.fallbacks && !drop_fallbacks })
+    }
+}
+
+pub(crate) fn build_body(model: &str, req: &ChatRequest, extras: Extras, lang: Lang) -> Value {
     let mut body = json!({
         "model": model,
         "max_tokens": MAX_TOKENS,
         "system": system_prompt(lang),
         "messages": build_messages(req),
     });
-    if extras {
-        if supports_effort(model) {
-            body["output_config"] = json!({"effort": "low"});
-        }
-        if supports_fallbacks(model) {
-            body["fallbacks"] = json!("default");
-        }
+    if extras.effort && supports_effort(model) {
+        body["output_config"] = json!({"effort": "low"});
+    }
+    if extras.fallbacks && supports_fallbacks(model) {
+        body["fallbacks"] = json!("default");
     }
     body
 }
 
 #[derive(Debug)]
 pub(crate) enum LlmError {
-    /// 400-class error that might be caused by optional parameters; worth one retry without them.
+    /// HTTP 400: possibly caused by an optional parameter (see [`Extras::without_rejected`]).
     BadRequest(String),
     Other(String),
 }
@@ -236,11 +282,17 @@ impl std::fmt::Display for LlmError {
     }
 }
 
-/// Extract the answer text from a Messages API response.
+/// Extract the answer text from a Messages API response. A cut-off answer (out of output
+/// tokens or context window) is an error, so the caller falls back to the rule-based coach
+/// instead of showing half a sentence.
 pub(crate) fn parse_response(v: &Value) -> Result<String, LlmError> {
     let stop = v.get("stop_reason").and_then(Value::as_str).unwrap_or("");
-    if stop == "refusal" {
-        return Err(LlmError::Other("model declined the request".into()));
+    match stop {
+        "refusal" => return Err(LlmError::Other("model declined the request".into())),
+        "max_tokens" | "model_context_window_exceeded" => {
+            return Err(LlmError::Other(format!("response truncated (stop_reason={stop})")));
+        }
+        _ => {}
     }
     let text: String = v
         .get("content")
@@ -261,6 +313,24 @@ pub(crate) fn parse_response(v: &Value) -> Result<String, LlmError> {
     Ok(text)
 }
 
+/// Read the response body, refusing anything larger than [`MAX_RESPONSE_BYTES`].
+async fn read_capped(mut resp: reqwest::Response) -> Result<Vec<u8>, LlmError> {
+    let too_big = || LlmError::Other(format!("response larger than {MAX_RESPONSE_BYTES} bytes"));
+    if resp.content_length().is_some_and(|n| n > MAX_RESPONSE_BYTES as u64) {
+        return Err(too_big());
+    }
+    let mut body = Vec::new();
+    while let Some(chunk) =
+        resp.chunk().await.map_err(|e| LlmError::Other(format!("reading body failed: {}", e.without_url())))?
+    {
+        if body.len() + chunk.len() > MAX_RESPONSE_BYTES {
+            return Err(too_big());
+        }
+        body.extend_from_slice(&chunk);
+    }
+    Ok(body)
+}
+
 #[allow(clippy::too_many_arguments)]
 pub(crate) async fn call(
     client: &reqwest::Client,
@@ -268,22 +338,25 @@ pub(crate) async fn call(
     api_key: &str,
     model: &str,
     req: &ChatRequest,
-    extras: bool,
+    extras: Extras,
     lang: Lang,
 ) -> Result<String, LlmError> {
     let body = build_body(model, req, extras, lang);
+    let mut key = reqwest::header::HeaderValue::from_str(api_key)
+        .map_err(|_| LlmError::Other("the API key contains invalid characters".into()))?;
+    key.set_sensitive(true);
     let mut rb = client
         .post(url)
         .timeout(REQUEST_TIMEOUT)
-        .header("x-api-key", api_key)
+        .header("x-api-key", key)
         .header("anthropic-version", "2023-06-01")
         .header("content-type", "application/json");
-    if extras && supports_fallbacks(model) {
+    if extras.fallbacks && supports_fallbacks(model) {
         rb = rb.header("anthropic-beta", "server-side-fallback-2026-07-01");
     }
     let resp = rb.json(&body).send().await.map_err(|e| LlmError::Other(format!("request failed: {}", e.without_url())))?;
     let status = resp.status();
-    let bytes = resp.bytes().await.map_err(|e| LlmError::Other(format!("reading body failed: {}", e.without_url())))?;
+    let bytes = read_capped(resp).await?;
     if !status.is_success() {
         let snippet = truncate_chars(&String::from_utf8_lossy(&bytes), MAX_ERROR_BODY);
         let msg = format!("HTTP {status}: {snippet}");
@@ -314,16 +387,16 @@ mod tests {
 
     #[test]
     fn body_shape() {
-        let body = build_body("claude-opus-5-5", &req(), true, Lang::En);
+        let body = build_body("claude-opus-5-5", &req(), Extras::ALL, Lang::En);
         assert!(body["system"].as_str().unwrap_or("").ends_with("Answer in English."));
-        let es = build_body("claude-opus-5-5", &req(), true, Lang::Es);
+        let es = build_body("claude-opus-5-5", &req(), Extras::ALL, Lang::Es);
         assert!(es["system"].as_str().unwrap_or("").contains("Answer in Spanish"));
         for (lang, needle, term) in [
             (Lang::Pt, "Answer in Brazilian Portuguese", "xeque-mate"),
             (Lang::Fr, "Answer in French", "échec et mat"),
             (Lang::De, "Answer in German", "Schachmatt"),
         ] {
-            let b = build_body("claude-opus-5-5", &req(), true, lang);
+            let b = build_body("claude-opus-5-5", &req(), Extras::ALL, lang);
             let system = b["system"].as_str().unwrap_or("");
             assert!(system.contains(needle) && system.contains(term) && system.contains("English SAN"), "{lang}: {system}");
             assert!(system.starts_with(SYSTEM_PROMPT));
@@ -343,9 +416,53 @@ mod tests {
         assert!(last.contains("+0.30: Nc6 Bb5 a6"));
         assert!(last.contains("Legal moves for Black:"));
         assert!(last.contains("8 | r n b q k b n r"));
-        let plain = build_body("claude-haiku-4-5", &req(), true, Lang::En);
+        assert_eq!(body["max_tokens"], MAX_TOKENS);
+        let plain = build_body("claude-haiku-4-5", &req(), Extras::ALL, Lang::En);
         assert!(plain.get("output_config").is_none());
         assert!(plain.get("fallbacks").is_none());
+        let no_fallback = build_body("claude-opus-5-5", &req(), Extras { effort: true, fallbacks: false }, Lang::En);
+        assert_eq!(no_fallback["output_config"]["effort"], "low");
+        assert!(no_fallback.get("fallbacks").is_none());
+    }
+
+    #[test]
+    fn retry_drops_only_the_rejected_parameter() {
+        let m = "claude-opus-5-5";
+        let fallbacks = "HTTP 400 Bad Request: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"fallbacks: Extra inputs are not permitted\"}}";
+        assert_eq!(Extras::ALL.without_rejected(m, fallbacks), Some(Extras { effort: true, fallbacks: false }));
+        let effort = "HTTP 400: output_config.effort: unsupported value";
+        assert_eq!(Extras::ALL.without_rejected(m, effort), Some(Extras { effort: false, fallbacks: true }));
+        let beta = "HTTP 400: unknown anthropic-beta header value";
+        assert_eq!(Extras::ALL.without_rejected(m, beta), Some(Extras { effort: true, fallbacks: false }));
+        // A 400 about something else (prompt too long, bad messages...) is not retried.
+        assert_eq!(Extras::ALL.without_rejected(m, "HTTP 400: prompt is too long"), None);
+        // Parameters that were not sent can't be the cause.
+        assert_eq!(Extras::ALL.without_rejected("claude-haiku-4-5", effort), None);
+        let none = Extras { effort: false, fallbacks: false };
+        assert_eq!(none.without_rejected(m, fallbacks), None);
+    }
+
+    fn history(moves: &[&str], fen: &str) -> String {
+        let moves: Vec<String> = moves.iter().map(|m| m.to_string()).collect();
+        numbered_history(&moves, gm_engine::parse_fen(fen).ok().as_ref())
+    }
+
+    #[test]
+    fn move_numbers_follow_the_position() {
+        // From the standard start.
+        assert_eq!(
+            history(&["e4", "e5", "Nf3"], "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"),
+            "1. e4 e5 2. Nf3"
+        );
+        // A custom start with black to move on move 5: 5... Nf6 6. Nc3 Bc5, white to move on 7.
+        assert_eq!(history(&["Nf6", "Nc3", "Bc5"], "4k3/8/8/8/8/8/8/4K3 w - - 3 7"), "5... Nf6 6. Nc3 Bc5");
+        // A trimmed history ending with white to move on move 41.
+        assert_eq!(history(&["Kg2", "Kf7"], "4k3/8/8/8/8/8/8/4K3 w - - 0 41"), "40. Kg2 Kf7");
+        // A trimmed history ending with black to move on move 41.
+        assert_eq!(history(&["Kf7", "Kg3"], "4k3/8/8/8/8/8/8/4K3 b - - 0 41"), "40... Kf7 41. Kg3");
+        // Inconsistent with the position (or none): count from 1, white first.
+        assert_eq!(history(&["e4", "e5", "Nf3"], "garbage"), "1. e4 e5 2. Nf3");
+        assert_eq!(history(&["e4", "e5", "Nf3"], "4k3/8/8/8/8/8/8/4K3 w - - 0 1"), "1. e4 e5 2. Nf3");
     }
 
     #[test]
@@ -355,5 +472,14 @@ mod tests {
         let refusal = json!({"content": [], "stop_reason": "refusal"});
         assert!(parse_response(&refusal).is_err());
         assert!(parse_response(&json!({})).is_err());
+        // Ran out of tokens (e.g. thinking used the budget): partial text is not an answer.
+        let cut = json!({"content": [{"type": "thinking", "thinking": ""}, {"type": "text", "text": "Play **Nc6** because"}], "stop_reason": "max_tokens"});
+        assert!(matches!(parse_response(&cut), Err(LlmError::Other(e)) if e.contains("max_tokens")));
+        let window = json!({"content": [{"type": "text", "text": "Play"}], "stop_reason": "model_context_window_exceeded"});
+        assert!(parse_response(&window).is_err());
+        let only_thinking = json!({"content": [{"type": "thinking", "thinking": "..."}], "stop_reason": "end_turn"});
+        assert!(parse_response(&only_thinking).is_err());
+        let two_blocks = json!({"content": [{"type": "text", "text": "Play "}, {"type": "text", "text": "**Nc6**. "}], "stop_reason": "end_turn"});
+        assert_eq!(parse_response(&two_blocks).ok().as_deref(), Some("Play **Nc6**."));
     }
 }

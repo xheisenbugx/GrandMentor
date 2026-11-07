@@ -111,24 +111,29 @@ pub fn exists(bot_id: &str) -> bool {
 /// `content` should be the English source content (style preferences match English opening
 /// names); opening names in chat come from `content.localized(lang)`. Chat is in `lang`.
 ///
+/// `stop` interrupts the engine search (client gone, server shutting down); the bot then
+/// plays the best move found so far.
+///
 /// Errors: unknown bot, invalid FEN/move, or the game is already over.
 pub fn choose_move(
     engine: &mut Engine,
+    stop: &AtomicBool,
     content: &gm_content::Content,
     bot_id: &str,
     start_fen: &str,
     moves: &[String],
     lang: Lang,
 ) -> Result<BotMove, String> {
-    let mut rng = rand::make_rng::<StdRng>();
-    choose_move_with(engine, content, bot_id, start_fen, moves, &mut rng, None, lang)
+    choose_move_at(engine, stop, content, bot_id, start_fen, moves, None, lang)
 }
 
 /// Like [`choose_move`], but plays at `elo` instead of the persona's own rating (used for the
 /// adaptive bot, whose level is stored per user). `elo` is clamped to
 /// `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO`; `None` behaves exactly like [`choose_move`].
+#[allow(clippy::too_many_arguments)]
 pub fn choose_move_at(
     engine: &mut Engine,
+    stop: &AtomicBool,
     content: &gm_content::Content,
     bot_id: &str,
     start_fen: &str,
@@ -137,7 +142,7 @@ pub fn choose_move_at(
     lang: Lang,
 ) -> Result<BotMove, String> {
     let mut rng = rand::make_rng::<StdRng>();
-    choose_move_inner(engine, content, bot_id, start_fen, moves, &mut rng, Clock::Wall { cap_ms: None }, elo, lang)
+    choose_move_inner(engine, stop, content, bot_id, start_fen, moves, &mut rng, Clock::Wall { cap_ms: None }, elo, lang)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -146,6 +151,9 @@ pub fn choose_move_at(
 
 struct Game {
     pos: Chess,
+    /// Every earlier position of the game (oldest first, excluding `pos`), for the engine's
+    /// repetition detection.
+    before: Vec<Chess>,
     /// Zobrist hashes of every position reached so far (including the current one).
     history: Vec<u64>,
     /// The position before the opponent's last move, and that move.
@@ -162,6 +170,7 @@ fn replay(start_fen: &str, moves: &[String]) -> Result<Game, String> {
     }
     let mut pos = parse_fen(start_fen)?;
     let mut history = Vec::with_capacity(moves.len() + 1);
+    let mut earlier = Vec::with_capacity(moves.len());
     history.push(zobrist(&pos));
     let mut last = None;
     for (i, u) in moves.iter().enumerate() {
@@ -173,10 +182,11 @@ fn replay(start_fen: &str, moves: &[String]) -> Result<Game, String> {
         pos.play_unchecked(m);
         history.push(zobrist(&pos));
         if i + 1 == moves.len() {
-            last = Some((before, m));
+            last = Some((before.clone(), m));
         }
+        earlier.push(before);
     }
-    Ok(Game { pos, history, last })
+    Ok(Game { pos, before: earlier, history, last })
 }
 
 #[derive(Clone, Debug)]
@@ -426,6 +436,8 @@ fn naive_score<R: Rng>(rng: &mut R, pos: &Chess, m: &Move, ply: usize) -> f64 {
     s + rng.random_range(-45.0..45.0)
 }
 
+/// Test helper: a caller-seeded RNG and an optional cap on the wall-clock limit.
+#[cfg(test)]
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn choose_move_with<R: Rng>(
     engine: &mut Engine,
@@ -437,8 +449,10 @@ pub(crate) fn choose_move_with<R: Rng>(
     movetime_cap_ms: Option<u64>,
     lang: Lang,
 ) -> Result<BotMove, String> {
+    // Test helper: nothing ever raises this flag.
+    static NEVER: AtomicBool = AtomicBool::new(false);
     let clock = Clock::Wall { cap_ms: movetime_cap_ms };
-    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, clock, None, lang)
+    choose_move_inner(engine, &NEVER, content, bot_id, start_fen, moves, rng, clock, None, lang)
 }
 
 /// How a bot's per-move time limit is applied.
@@ -458,6 +472,7 @@ pub(crate) enum Clock {
 #[allow(clippy::too_many_arguments)]
 pub fn choose_move_deterministic(
     engine: &mut Engine,
+    stop: &AtomicBool,
     content: &gm_content::Content,
     bot_id: &str,
     start_fen: &str,
@@ -467,12 +482,13 @@ pub fn choose_move_deterministic(
     ref_nps: u64,
 ) -> Result<BotMove, String> {
     let clock = Clock::Nodes { ref_nps: ref_nps.max(1_000) };
-    choose_move_inner(engine, content, bot_id, start_fen, moves, rng, clock, elo, Lang::En)
+    choose_move_inner(engine, stop, content, bot_id, start_fen, moves, rng, clock, elo, Lang::En)
 }
 
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn choose_move_inner<R: Rng>(
     engine: &mut Engine,
+    stop: &AtomicBool,
     content: &gm_content::Content,
     bot_id: &str,
     start_fen: &str,
@@ -548,8 +564,8 @@ pub(crate) fn choose_move_inner<R: Rng>(
         nodes: Some(nodes),
         multipv: st.multipv.min(legal.len()).max(1),
     };
-    let stop = AtomicBool::new(false);
-    let info = engine.search(pos, &limits, &stop, &mut |_| {});
+    // With the game history the engine sees repetition draws (threefold) itself.
+    let info = engine.search_with_history(pos, &game.before, &limits, stop, &mut |_| {});
     let mut cands: Vec<Candidate> = Vec::with_capacity(info.lines.len());
     for line in &info.lines {
         let Some(u) = line.moves.first() else { continue };

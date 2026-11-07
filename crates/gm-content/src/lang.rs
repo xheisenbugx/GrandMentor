@@ -1,8 +1,9 @@
 //! User-facing language. Shared by every crate that produces human text.
 //!
-//! Adding a language: add a variant, add it to [`Lang::ALL`], fill in [`Lang::code`] and
-//! [`Lang::name`], then follow the compiler: every message table `match`es on `Lang`
-//! exhaustively, so each one that needs the new language shows up as an error.
+//! Adding a language: add a variant, add it to [`Lang::ALL`] (and bump [`Lang::COUNT`]), fill
+//! in [`Lang::code`] and [`Lang::name`], then follow the compiler: every message table either
+//! `match`es on `Lang` exhaustively or is a `[_; Lang::COUNT]` array given to [`Lang::pick`],
+//! so each one that needs the new language shows up as an error.
 
 use serde::{Deserialize, Serialize};
 
@@ -25,8 +26,26 @@ const MAX_ACCEPT_LANGUAGE: usize = 512;
 const MAX_RANGES: usize = 16;
 
 impl Lang {
+    /// Number of supported languages.
+    pub const COUNT: usize = 5;
+
     /// Every supported language, default first.
-    pub const ALL: [Lang; 5] = [Lang::En, Lang::Es, Lang::Pt, Lang::Fr, Lang::De];
+    pub const ALL: [Lang; Lang::COUNT] = [Lang::En, Lang::Es, Lang::Pt, Lang::Fr, Lang::De];
+
+    /// Pick this language's entry from a table in [`Lang::ALL`] order, `[en, es, pt, fr, de]`:
+    /// `lang.pick(["Hello", "Hola", "Olá", "Bonjour", "Hallo"])`. Works for any entry type
+    /// (strings, slices of alternatives, values). The one shared helper for inline message
+    /// tables; a missing language is a compile error (the array must have `COUNT` entries).
+    pub fn pick<T>(self, table: [T; Lang::COUNT]) -> T {
+        let [en, es, pt, fr, de] = table;
+        match self {
+            Lang::En => en,
+            Lang::Es => es,
+            Lang::Pt => pt,
+            Lang::Fr => fr,
+            Lang::De => de,
+        }
+    }
 
     /// ISO 639-1 code, as used on the wire, in `?lang=` and in `data/i18n/<code>/`.
     pub fn code(self) -> &'static str {
@@ -121,6 +140,17 @@ impl std::str::FromStr for Lang {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn pick_follows_all_order() {
+        let table = ["en", "es", "pt", "fr", "de"];
+        for lang in Lang::ALL {
+            assert_eq!(lang.pick(table), lang.code());
+        }
+        let alternatives: [&[&str]; Lang::COUNT] = [&["a", "b"], &["c"], &[], &["d"], &["e"]];
+        assert_eq!(Lang::En.pick(alternatives), &["a", "b"]);
+        assert_eq!(Lang::De.pick([String::from("x"), "y".into(), "z".into(), "w".into(), "v".into()]), "v");
+    }
 
     #[test]
     fn parse_tags() {

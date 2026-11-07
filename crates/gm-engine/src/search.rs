@@ -138,6 +138,7 @@ impl Engine {
         t.path.clear();
         let skip = history.len().saturating_sub(MAX_GAME_HISTORY);
         t.path.extend(history[skip..].iter().map(full_hash));
+        let root_index = t.path.len();
 
         let root_moves = pos.legal_moves();
         if root_moves.is_empty() {
@@ -156,6 +157,8 @@ impl Engine {
             next_check: CHECK_INTERVAL,
             stopped: false,
             can_stop: false,
+            root_best: None,
+            root_index,
             seldepth: 0,
             pv_idx: 0,
             excluded: Vec::with_capacity(MAX_MULTIPV),
@@ -175,8 +178,14 @@ struct Searcher<'a> {
     nodes: u64,
     next_check: u64,
     stopped: bool,
-    /// The first iteration always completes so a move is always returned.
+    /// Stop requests (flag, node limit, deadline) are honoured once the root has a scored
+    /// move: after the first root move of iteration 1, so a move is always returned.
     can_stop: bool,
+    /// Best scored root move of the MultiPV line being searched (score, PV), kept so an
+    /// iteration-1 search that is stopped part-way still reports a line.
+    root_best: Option<(i32, Vec<u16>)>,
+    /// Index in `path` of the root position: entries below it are the game history.
+    root_index: usize,
     seldepth: usize,
     pv_idx: usize,
     /// Root moves already reported in earlier MultiPV lines of this iteration.
@@ -293,14 +302,25 @@ impl Searcher<'_> {
         self.stopped
     }
 
+    /// Draw by repetition: the position already occurred inside the search tree (root
+    /// included; a twofold repetition there can be forced again), or it occurred twice in the
+    /// game history before the root (this is the third occurrence, a threefold repetition).
     fn is_repetition(&self, hash: u64, halfmoves: u32) -> bool {
         let path = &self.t.path;
         let n = path.len();
         let lim = (halfmoves as usize).min(n.saturating_sub(self.null_floor));
+        let mut before_root = 0;
         let mut i = 2;
         while i <= lim {
-            if path[n - i] == hash {
-                return true;
+            let idx = n - i;
+            if path[idx] == hash {
+                if idx >= self.root_index {
+                    return true;
+                }
+                before_root += 1;
+                if before_root >= 2 {
+                    return true;
+                }
             }
             i += 2;
         }
@@ -351,6 +371,7 @@ impl Searcher<'_> {
             self.seldepth = 0;
             for pv_idx in 0..multipv {
                 self.pv_idx = pv_idx;
+                self.root_best = None;
                 let prev = prev_scores.get(pv_idx).copied();
                 let mut delta = 18;
                 let (mut alpha, mut beta) = match prev {
@@ -379,6 +400,12 @@ impl Searcher<'_> {
                     }
                 };
                 if self.stopped {
+                    // Iteration 1 was cut short: keep the best root move scored so far.
+                    if depth == 1 {
+                        if let Some(line) = self.root_best.take() {
+                            lines.push(line);
+                        }
+                    }
                     break;
                 }
                 let len = self.t.pv_len[0];
@@ -397,7 +424,7 @@ impl Searcher<'_> {
                 self.excluded.push(pv[0]);
                 lines.push((score, pv));
             }
-            if self.stopped && depth > 1 {
+            if self.stopped && (depth > 1 || lines.is_empty()) {
                 break;
             }
             // Stable sort: best first.
@@ -790,6 +817,15 @@ impl Searcher<'_> {
                     best_move = code;
                     alpha = score;
                     self.update_pv(ply, code);
+                    if root {
+                        let len = self.t.pv_len[0];
+                        self.root_best = Some((score, self.t.pv[0][..len].to_vec()));
+                        if !self.can_stop {
+                            // A move is now guaranteed: honour pending stop requests promptly.
+                            self.can_stop = true;
+                            self.next_check = self.nodes;
+                        }
+                    }
                     if score >= beta {
                         if is_quiet {
                             let k = &mut self.t.killers[ply];

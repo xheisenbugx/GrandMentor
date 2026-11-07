@@ -386,17 +386,6 @@ pub fn derive(inp: &ReasonInput<'_>) -> Option<MoveReason> {
 // Text
 // ---------------------------------------------------------------------------------------------
 
-/// Pick the string for `lang` from `[en, es, pt, fr, de]`.
-fn l5(lang: Lang, s: [&'static str; 5]) -> &'static str {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-}
-
 /// "your queen" as a direct object ("tu dama", "sua dama", "ta dame", "deine Dame"/"deinen Turm").
 fn your(role: Role, lang: Lang) -> String {
     match lang {
@@ -489,10 +478,10 @@ fn won_phrase(roles: &[Role], lang: Lang) -> String {
 /// " for a pawn" / " for nothing".
 fn for_phrase(won: &[Role], lang: Lang) -> String {
     if won.is_empty() {
-        return l5(lang, [" for nothing", " a cambio de nada", " sem nada em troca", " pour rien", " ohne Gegenwert"]).to_string();
+        return lang.pick([" for nothing", " a cambio de nada", " sem nada em troca", " pour rien", " ohne Gegenwert"]).to_string();
     }
     let w = some_phrase(won, lang);
-    fill(l5(lang, [" for {w}", " a cambio de {w}", " em troca de {w}", " contre {w}", " für {w}"]), &kv(&[("w", &w)]))
+    fill(lang.pick([" for {w}", " a cambio de {w}", " em troca de {w}", " contre {w}", " für {w}"]), &kv(&[("w", &w)]))
 }
 
 /// "the queen and the rook" for the opponent's pieces (accusative in German).
@@ -533,20 +522,19 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
     let better = if best.is_empty() {
         String::new()
     } else {
-        fill(l5(lang, [" {b} was better.", " Era mejor {b}.", " {b} era melhor.", " {b} était meilleur.", " Besser war {b}."]), &kv(&[("b", &best)]))
+        fill(lang.pick([" {b} was better.", " Era mejor {b}.", " {b} era melhor.", " {b} était meilleur.", " Besser war {b}."]), &kv(&[("b", &best)]))
     };
     let n = r.mate_in.unwrap_or(1).max(1);
     let n_s = n.to_string();
     let moves_word = plural(
         n as i64,
-        l5(lang, ["move", "jugada", "lance", "coup", "Zug"]),
-        l5(lang, ["moves", "jugadas", "lances", "coups", "Zügen"]),
+        lang.pick(["move", "jugada", "lance", "coup", "Zug"]),
+        lang.pick(["moves", "jugadas", "lances", "coups", "Zügen"]),
         lang,
     );
 
     let text = match r.kind {
-        ReasonKind::AllowsMate if key_move.is_empty() => l5(
-            lang,
+        ReasonKind::AllowsMate if key_move.is_empty() => lang.pick(
             [
                 "This lets your opponent force checkmate.",
                 "Esta jugada permite que tu rival fuerce el jaque mate.",
@@ -557,8 +545,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
         )
         .to_string(),
         ReasonKind::AllowsMate if n == 1 => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "This allows {m}, which is checkmate!",
                     "Esta jugada permite {m}, ¡que es jaque mate!",
@@ -570,8 +557,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             &kv(&[("m", &key_move)]),
         ),
         ReasonKind::AllowsMate => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "This lets your opponent force checkmate in {n} {w}, starting with {m}.",
                     "Esta jugada permite que tu rival fuerce el mate en {n} {w}, empezando por {m}.",
@@ -583,8 +569,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             &kv(&[("n", &n_s), ("w", moves_word), ("m", &reply)]),
         ),
         ReasonKind::MissedMate if n == 1 => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "You had checkmate in one with {b}!",
                     "¡Tenías mate en una con {b}!",
@@ -596,8 +581,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             &kv(&[("b", &best)]),
         ),
         ReasonKind::MissedMate => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "You had a forced checkmate in {n} {w}, starting with {b}.",
                     "Tenías un mate forzado en {n} {w}, empezando por {b}.",
@@ -613,8 +597,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             let mut v = PieceRef::new(role).vars("p", lang);
             v.extend(kv(&[("y", &your(role, lang)), ("m", &key_move)]));
             let s = fill(
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "This leaves {y} unprotected: {m} simply takes it.",
                         "Esta jugada deja {y} sin protección: {m} {p_lo} captura gratis.",
@@ -629,8 +612,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
         }
         ReasonKind::LosesMaterial => {
             let s = fill(
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "After {s}, you lose {l}{f}.",
                         "Tras {s}, pierdes {l}{f}.",
@@ -646,8 +628,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
         ReasonKind::AllowsFork => {
             let t: Vec<String> = targets.iter().map(|ro| your(*ro, lang)).collect();
             let s = fill(
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "This allows {m}, a fork that attacks {t} at once — you end up losing {l}{f}.",
                         "Esta jugada permite {m}, un ataque doble contra {t}: acabas perdiendo {l}{f}.",
@@ -664,8 +645,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             let front = targets.first().copied().unwrap_or(Role::Pawn);
             let behind = targets.get(1).copied().unwrap_or(Role::King);
             let tpl = if r.kind == ReasonKind::AllowsPin {
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "This allows {m}, which pins {a} to {b} — you end up losing {l}{f}.",
                         "Esta jugada permite {m}, que clava {a} contra {b}: acabas perdiendo {l}{f}.",
@@ -675,8 +655,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
                     ],
                 )
             } else {
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "This allows {m}, a skewer through {a} and {b} — you end up losing {l}{f}.",
                         "Esta jugada permite {m}, una enfilada contra {a} y {b}: acabas perdiendo {l}{f}.",
@@ -699,8 +678,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             format!("{s}{better}")
         }
         ReasonKind::MissedFork => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "You missed a fork: {b} attacks {t} at once and wins {w}.",
                     "Se te escapó un ataque doble: {b} ataca a la vez {t} y gana {w}.",
@@ -712,8 +690,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
             &kv(&[("b", &best), ("t", &their_phrase(&targets, lang)), ("w", &won_phrase(&won, lang))]),
         ),
         ReasonKind::MissedMaterial => fill(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "You missed a chance: {b} wins {w}.",
                     "Se te escapó una oportunidad: {b} gana {w}.",
@@ -729,8 +706,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
                 better.trim().to_string()
             } else if let Some(t) = targets.first() {
                 let s = fill(
-                    l5(
-                        lang,
+                    lang.pick(
                         [
                             "Your opponent can answer {m}, attacking {y} and gaining time.",
                             "Tu rival puede responder {m}, atacando {y} y ganando tiempo.",
@@ -744,8 +720,7 @@ pub fn render(r: &MoveReason, lang: Lang) -> String {
                 format!("{s}{better}")
             } else {
                 let s = fill(
-                    l5(
-                        lang,
+                    lang.pick(
                         [
                             "You don't lose material right away, but after {m} your opponent gets the easier game.",
                             "No pierdes material enseguida, pero tras {m} tu rival tiene la partida más cómoda.",

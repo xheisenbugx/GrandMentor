@@ -245,11 +245,19 @@ async fn bot_move(
     } else {
         None
     };
-    let mv = with_engine(&st.pool, move |engine| {
-        gm_bots::choose_move_at(engine, &content, &req.bot_id, &req.start_fen, &req.moves, elo, lang)
-    })
-    .await?
-    .map_err(ApiError::bad_request)?;
+    // Raised when this handler future is dropped (client disconnected) or the server shuts
+    // down, so the bot's search stops instead of holding an engine for nobody.
+    let stop = Arc::new(AtomicBool::new(false));
+    let _guard = StopOnDrop(Arc::clone(&stop));
+    let mut shutdown = st.shutdown.subscribe();
+    let flag = Arc::clone(&stop);
+    let think = with_engine(&st.pool, move |engine| {
+        gm_bots::choose_move_at(engine, &flag, &content, &req.bot_id, &req.start_fen, &req.moves, elo, lang)
+    });
+    let mv = tokio::select! {
+        r = think => r?.map_err(ApiError::bad_request)?,
+        _ = shutdown.wait_for(|v| *v) => return Err(ApiError::unavailable("server is shutting down")),
+    };
     Ok(Json(mv))
 }
 

@@ -372,3 +372,64 @@ fn bad_input_never_panics() {
         assert!(uci_to_move(&pos, u).is_err(), "{u}");
     }
 }
+
+#[test]
+fn stop_is_honoured_during_the_first_iteration() {
+    // A pre-raised stop flag with a huge MultiPV: iteration 1 is cut short after the first
+    // scored root move, but a legal best move is still returned.
+    let mut e = Engine::new(4);
+    let pos = Chess::default();
+    let stop = AtomicBool::new(true);
+    let limits = SearchLimits { depth: Some(20), multipv: 64, ..Default::default() };
+    let info = e.search(&pos, &limits, &stop, &mut |_| {});
+    assert_eq!(info.depth, 1);
+    assert!(!info.lines.is_empty() && info.lines.len() < 20, "lines: {}", info.lines.len());
+    assert!(uci_to_move(&pos, info.best_move().expect("a move")).is_ok());
+
+    // Same with a node budget that is already exhausted after the first root move.
+    let limits = SearchLimits { depth: Some(20), nodes: Some(1), multipv: 64, ..Default::default() };
+    let stop = AtomicBool::new(false);
+    let info = e.search(&pos, &limits, &stop, &mut |_| {});
+    assert_eq!(info.depth, 1);
+    assert!(!info.lines.is_empty() && info.lines.len() < 20, "lines: {}", info.lines.len());
+    assert!(info.nodes < 2_048, "nodes: {}", info.nodes);
+    assert!(uci_to_move(&pos, info.best_move().expect("a move")).is_ok());
+}
+
+/// Replay `moves` from `fen`, returning the final position and every earlier one.
+fn replay_with_history(fen: &str, moves: &[&str]) -> (Chess, Vec<Chess>) {
+    let mut pos = parse_fen(fen).expect("fen");
+    let mut hist = Vec::new();
+    for u in moves {
+        hist.push(pos.clone());
+        let m = uci_to_move(&pos, u).expect("legal");
+        pos.play_unchecked(m);
+    }
+    (pos, hist)
+}
+
+#[test]
+fn threefold_from_game_history_is_a_draw_but_twofold_is_not() {
+    // White (K+Q vs K) is completely winning; the queen and the black king shuffle.
+    let fen = "7k/8/8/8/8/8/8/2KQ4 w - - 0 1";
+    let score_of = |info: &SearchInfo, uci: &str| {
+        info.lines.iter().find(|l| l.moves.first().map(String::as_str) == Some(uci)).map(|l| l.score)
+    };
+    let mut e = Engine::new(8);
+    let stop = AtomicBool::new(false);
+    let limits = SearchLimits { depth: Some(6), multipv: 64, ..Default::default() };
+
+    // After 1.Qd2 Kg8: going back with 2.Qd1 only repeats once (Kh8 would be a twofold).
+    let (pos, hist) = replay_with_history(fen, &["d1d2", "h8g8"]);
+    let info = e.search_with_history(&pos, &hist, &limits, &stop, &mut |_| {});
+    let back = score_of(&info, "d2d1").expect("Qd1 line");
+    assert!(back.to_cp() > 500, "a twofold repetition is not a draw yet: {back:?}");
+
+    // After 1.Qd2 Kg8 2.Qd1 Kh8 3.Qd2 Kg8: 4.Qd1 lets black claim a threefold with 4...Kh8.
+    e.new_game();
+    let (pos, hist) = replay_with_history(fen, &["d1d2", "h8g8", "d2d1", "g8h8", "d1d2", "h8g8"]);
+    let info = e.search_with_history(&pos, &hist, &limits, &stop, &mut |_| {});
+    assert_eq!(score_of(&info, "d2d1"), Some(Score::Cp(0)), "Qd1 allows a threefold repetition");
+    assert_ne!(info.best_move(), Some("d2d1"));
+    assert!(info.score().to_cp() > 500);
+}

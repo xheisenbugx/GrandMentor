@@ -55,6 +55,10 @@ human display uses SAN. FENs are full 6-field FENs.
 
 **Score** (always from WHITE's point of view on the wire):
 `{"cp": 35}` or `{"mate": 3}` (mate>0 = white mates in N, mate<0 = black mates in N).
+`{"mate": 0}` means a checkmate already on the board **delivered by white** (black is mated); the
+search never produces it (a mated position has no lines), game review uses it for a final position
+where white has won and reports black's finished checkmate as `{"mate": -1}`. In Rust,
+`Score::Mate(0).to_cp()` is `Score::MATE_CP` (best possible for white); don't `negate` it.
 Rust: `#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq)] #[serde(rename_all="snake_case")] pub enum Score { Cp(i32), Mate(i32) }` defined in `gm-engine`.
 
 **Classification** (rust enum in gm-analysis, snake_case strings):
@@ -79,7 +83,14 @@ impl Engine {
   pub fn search(&mut self, pos: &shakmaty::Chess, limits: &SearchLimits,
                 stop: &std::sync::atomic::AtomicBool,
                 on_info: &mut dyn FnMut(&SearchInfo)) -> SearchInfo;
+  /// Same, with the game's earlier positions (oldest first, excluding `pos`): a position
+  /// repeated inside the search, or for the third time counting the history, is a draw.
+  pub fn search_with_history(&mut self, pos: &shakmaty::Chess, history: &[shakmaty::Chess],
+                limits: &SearchLimits, stop: &AtomicBool, on_info: &mut dyn FnMut(&SearchInfo)) -> SearchInfo;
 }
+// Stopping: `stop`, `nodes` and `movetime_ms` are honoured as soon as the first root move of
+// iteration 1 has a score, so a search always returns a legal best move (unless the position has
+// none) and never runs a whole first iteration (e.g. MultiPV 64) after being told to stop.
 pub fn evaluate(pos: &shakmaty::Chess) -> i32;         // static eval, side-to-move POV, cp
 pub fn parse_fen(fen: &str) -> Result<shakmaty::Chess, String>;
 pub fn to_fen(pos: &shakmaty::Chess) -> String;
@@ -89,9 +100,16 @@ pub fn move_to_uci(m: &shakmaty::Move) -> String;   // standard (e1g1 for castli
 pub struct EnginePool;  // N engines; Clone (Arc inside)
 impl EnginePool {
   pub fn new(size: usize, tt_mb: usize) -> Self;
-  /// Run blocking work with an exclusive engine on a blocking thread.
+  /// Run blocking work with an exclusive engine on a blocking thread (interactive work:
+  /// bot moves, live analysis, single-position requests).
   pub async fn with_engine<R: Send + 'static>(&self, f: impl FnOnce(&mut Engine) -> R + Send + 'static) -> R;
+  /// Same for bulk background work (game reviews): all background callers together hold at
+  /// most `background_capacity() = max(1, size - 1)` engines, so with 2+ engines interactive
+  /// work never queues behind a review. FIFO among background jobs.
+  pub async fn with_engine_background<R: Send + 'static>(&self, f: impl FnOnce(&mut Engine) -> R + Send + 'static) -> R;
   pub fn size(&self) -> usize;
+  pub fn available(&self) -> usize;            // idle engines
+  pub fn background_capacity(&self) -> usize;
 }
 ```
 Engine targets: PVS alpha-beta, iterative deepening, aspiration windows, TT, null-move,
@@ -143,10 +161,12 @@ pub struct OpeningMatch { pub opening: OpeningRef, pub continuations: Vec<BookMo
 pub struct OpeningRef { pub id: String, pub eco: String, pub name: String }
 pub struct BookMove { pub uci: String, pub san: String, pub name: Option<String> /* opening it leads to */, pub weight: u32 }
 
-/// User-facing language, shared by every crate (serde: "en" | "es"; default En).
-pub enum Lang { En, Es }
+/// User-facing language, shared by every crate (serde: "en" | "es" | "pt" | "fr" | "de"; default En).
+pub enum Lang { En, Es, Pt, Fr, De }
 impl Lang {
-  pub const ALL: [Lang; 5];                                     // En, Es, Pt (pt-BR), Fr, De
+  pub const COUNT: usize;                                       // 5
+  pub const ALL: [Lang; Lang::COUNT];                           // En, Es, Pt (pt-BR), Fr, De
+  pub fn pick<T>(self, table: [T; Lang::COUNT]) -> T;           // entry for self from [en, es, pt, fr, de] (inline message tables)
   pub fn code(self) -> &'static str;                            // "en" | "es" | "pt" | "fr" | "de"
   pub fn parse(tag: &str) -> Option<Lang>;                      // "es", "es-MX", "ES_es" -> Es; "pt-BR"/"pt-PT" -> Pt; "fr-CA" -> Fr; "de-AT"/"de-CH" -> De; unsupported -> None
   pub fn from_accept_language(h: &str) -> Option<Lang>;         // first supported range by q: "es-MX,es;q=0.9,en;q=0.8" -> Es
@@ -172,9 +192,15 @@ pub struct BotProfile { pub id: String, pub name: String, pub elo: u16, pub avat
 pub struct BotMove { pub uci: String, pub san: String, pub chat: Option<String>, pub think_ms: u64 }
 pub fn list(lang: Lang) -> Vec<BotProfile>;              // description/greeting in `lang`; id/name/style/category never change
 pub fn get(bot_id: &str, lang: Lang) -> Option<BotProfile>;
-pub fn choose_move(engine: &mut gm_engine::Engine, content: &gm_content::Content /* English source */, bot_id: &str,
-                   start_fen: &str, moves: &[String], lang: Lang) -> Result<BotMove, String>; // chat in `lang`
+pub fn choose_move(engine: &mut gm_engine::Engine, stop: &AtomicBool, content: &gm_content::Content /* English source */,
+                   bot_id: &str, start_fen: &str, moves: &[String], lang: Lang) -> Result<BotMove, String>; // chat in `lang`
+pub fn choose_move_at(engine, stop, content, bot_id, start_fen, moves, elo: Option<u16>, lang) -> Result<BotMove, String>;
+pub fn choose_move_deterministic(engine, stop, content, bot_id, start_fen, moves, elo, rng: &mut StdRng, ref_nps: u64)
+    -> Result<BotMove, String>;                         // calibration harness: node budget instead of wall clock
 ```
+`stop` interrupts the bot's search (the server raises it when the client disconnects or the server
+shuts down); the bot then plays its best move so far. The search gets the game's earlier positions,
+so the engine sees threefold-repetition draws.
 14 rated bots from 250 to 3000 Elo, the adaptive bot Sparky (`adaptive`, strength follows the user's results) and two coach bots (`coach`, `coach-leo`). Weak bots blunder plausibly (not randomly):
 limited depth/nodes, softmax over multipv with Elo-dependent temperature, occasional missed captures,
 use opening book (content) with style preferences. `think_ms` = suggested UI delay for realism.
@@ -208,7 +234,12 @@ pub fn from_stored_json(json: &str) -> Option<(GameReview, Lang)>;          // u
 pub fn win_percent(score: Score) -> f32; // lichess formula, white POV
 ```
 Accuracy: lichess-style (win% → per-move accuracy, harmonic+volatility weighted mean).
-Analyze positions in parallel across the pool. `explanation` filled via `gm_mentor::explain_move`.
+Analyze positions in parallel across the pool as background work (`EnginePool::with_engine_background`,
+so one engine stays free for bot moves and live analysis). Each position is searched with the game's
+earlier positions, so allowing a threefold repetition from a winning position is an error; identical
+positions are searched once only when their reversible history (since the last capture or pawn move)
+is identical too. `MoveReview.uci` is the canonical UCI of the parsed move (castling sent as `e1h1`
+is stored as `e1g1`). `explanation` filled via `gm_mentor::explain_move`.
 
 ### gm-mentor
 ```rust
@@ -226,6 +257,12 @@ pub struct Mentor;  // holds reqwest client + optional API key
 impl Mentor { pub fn from_env() -> Self; pub fn llm_enabled(&self) -> bool;
   pub async fn chat(&self, req: ChatRequest, lang: Lang) -> ChatResponse; } // falls back to rule-based coach; LLM told to answer in `lang`
 ```
+LLM call: `max_tokens` 8192 (the default model's adaptive thinking counts toward it); an answer cut
+off by `stop_reason: "max_tokens"` (or the context window) counts as a failure, so the coach answers
+instead. On HTTP 400 the call is retried once only if the error names an optional parameter that was
+sent (`output_config.effort` or `fallbacks`/its beta header), dropping just that one. Responses over
+256 KB are rejected; the API key header is marked sensitive. `moves_san` must lead up to `fen`: move
+numbers in the prompt are counted back from the FEN's side to move and fullmove number.
 
 ### gm-store
 ```rust
@@ -1006,7 +1043,7 @@ and **Classic games** → `#/classics`.
 
 - **Bot** `id: "adaptive"` ("Sparky", `gm_bots::ADAPTIVE_ID`). `GET /api/bots` reports its `elo` as the user's
   current adaptive level. `POST /api/bot/move` with `bot_id: "adaptive"` plays at the stored level
-  (`gm_bots::choose_move_at(engine, content, bot_id, start_fen, moves, elo: Option<u16>, lang)`; the level is
+  (`gm_bots::choose_move_at(engine, stop, content, bot_id, start_fen, moves, elo: Option<u16>, lang)`; the level is
   clamped to `ADAPTIVE_MIN_ELO..=ADAPTIVE_MAX_ELO` = 250..=2800).
 - `GET /api/adaptive/estimate` →
   `{"rating": n|null, "games": n, "provisional": bool, "bot_level": n, "bot_games": n}`.

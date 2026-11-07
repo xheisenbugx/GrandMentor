@@ -58,33 +58,11 @@ pub(crate) fn parse_engine_line(s: &str) -> Option<EngineLine> {
     Some(EngineLine { pawns, mate, score_text: score_text.to_string(), moves })
 }
 
-/// Pick the string for `lang` from `[en, es, pt, fr, de]`.
-fn t(lang: Lang, s: [&'static str; 5]) -> &'static str {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-}
-
-fn tl<'a>(lang: Lang, en: &'a [&'a str], es: &'a [&'a str], pt: &'a [&'a str], fr: &'a [&'a str], de: &'a [&'a str]) -> &'a [&'a str] {
-    match lang {
-        Lang::En => en,
-        Lang::Es => es,
-        Lang::Pt => pt,
-        Lang::Fr => fr,
-        Lang::De => de,
-    }
-}
-
 /// Plain-language verdict for a White-POV engine line.
 pub(crate) fn eval_words(line: &EngineLine, lang: Lang) -> Option<String> {
     if let Some(m) = line.mate {
         let side = capitalize(side_word(if m > 0 { Color::White } else { Color::Black }, lang));
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 "{S} has a forced checkmate in {n}.",
                 "{S} tienen un mate forzado en {n}.",
@@ -98,8 +76,7 @@ pub(crate) fn eval_words(line: &EngineLine, lang: Lang) -> Option<String> {
     let v = line.pawns?;
     let (side, a) = if v >= 0.0 { (Color::White, v) } else { (Color::Black, -v) };
     let tpl = if a < 0.3 {
-        t(
-            lang,
+        lang.pick(
             [
                 "The position is roughly equal ({e}).",
                 "La posición está más o menos igualada ({e}).",
@@ -109,8 +86,7 @@ pub(crate) fn eval_words(line: &EngineLine, lang: Lang) -> Option<String> {
             ],
         )
     } else if a < 1.0 {
-        t(
-            lang,
+        lang.pick(
             [
                 "{S} is slightly better ({e}).",
                 "{S} están algo mejor ({e}).",
@@ -120,8 +96,7 @@ pub(crate) fn eval_words(line: &EngineLine, lang: Lang) -> Option<String> {
             ],
         )
     } else if a < 2.5 {
-        t(
-            lang,
+        lang.pick(
             [
                 "{S} is clearly better ({e}).",
                 "{S} están claramente mejor ({e}).",
@@ -131,8 +106,7 @@ pub(crate) fn eval_words(line: &EngineLine, lang: Lang) -> Option<String> {
             ],
         )
     } else {
-        t(
-            lang,
+        lang.pick(
             [
                 "{S} is winning ({e}).",
                 "{S} están ganando ({e}).",
@@ -329,14 +303,13 @@ fn best_move_text(pos: &Chess, lines: &[EngineLine], p: &Picker, lang: Lang) -> 
     let cont: Vec<&str> = line.moves.iter().skip(1).take(4).map(String::as_str).collect();
     let lead = p.pick(
         71,
-        tl(
-            lang,
+        lang.pick::<&[&str]>([
             &["The engine's top choice is", "I'd play", "The strongest move here is"],
             &["La primera opción del motor es", "Yo jugaría", "La jugada más fuerte aquí es"],
             &["A primeira opção do motor é", "Eu jogaria", "O lance mais forte aqui é"],
             &["Le premier choix du moteur est", "Je jouerais", "Le coup le plus fort ici est"],
             &["Die erste Wahl der Engine ist", "Mein Tipp:", "Der stärkste Zug hier ist"],
-        ),
+        ]),
     );
     let mut s = format!("{lead} **{san}**");
     if !line.score_text.is_empty() {
@@ -348,8 +321,7 @@ fn best_move_text(pos: &Chess, lines: &[EngineLine], p: &Picker, lang: Lang) -> 
         s.push_str(&comment.text);
     }
     if !cont.is_empty() {
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 " A likely continuation: {c}.",
                 " Una continuación probable: {c}.",
@@ -362,8 +334,7 @@ fn best_move_text(pos: &Chess, lines: &[EngineLine], p: &Picker, lang: Lang) -> 
     }
     if let Some(second) = lines.get(1).and_then(|l| l.moves.first()) {
         if let Some(m2) = tactics::parse_any_move(pos, second) {
-            let tpl = t(
-                lang,
+            let tpl = lang.pick(
                 [
                     " **{m}** is a decent alternative.",
                     " **{m}** es una alternativa decente.",
@@ -380,8 +351,7 @@ fn best_move_text(pos: &Chess, lines: &[EngineLine], p: &Picker, lang: Lang) -> 
 
 fn hint_without_engine(pos: &Chess, lang: Lang) -> String {
     if let Some(m) = tactics::mate_in_one(pos) {
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 "There's a checkmate in one: **{m}**!",
                 "¡Hay un mate en una: **{m}**!",
@@ -397,8 +367,7 @@ fn hint_without_engine(pos: &Chess, lang: Lang) -> String {
         if let Some(c) = tactics::best_capture_on(pos, h.square) {
             let mut v = PieceRef::on(h.role, h.square).vars("p", lang);
             v.extend(kv(&[("c", &tactics::san(pos, &c))]));
-            let tpl = t(
-                lang,
+            let tpl = lang.pick(
                 [
                     "Look at {p} — **{c}** wins material.",
                     "Fíjate en {p}: **{c}** gana material.",
@@ -414,8 +383,7 @@ fn hint_without_engine(pos: &Chess, lang: Lang) -> String {
     if let Some(h) = own.first() {
         let mut v = PieceRef::new(h.role).vars("p", lang);
         v.extend(kv(&[("sq", &h.square.to_string())]));
-        let tpl = t(
-            lang,
+        let tpl = lang.pick(
             [
                 "First, take care of your {p_n} on {sq} — it's under attack.",
                 "Primero, ocúpate de tu {p_n} en {sq}: está atacad{p_o}.",
@@ -426,8 +394,7 @@ fn hint_without_engine(pos: &Chess, lang: Lang) -> String {
         );
         return fill(tpl, &v);
     }
-    t(
-        lang,
+    lang.pick(
         [
             "Start with a quick safety check: any checks, captures or threats? If not, improve your worst-placed piece.",
             "Empieza con un repaso de seguridad: ¿hay jaques, capturas o amenazas? Si no, mejora tu pieza peor colocada.",
@@ -445,8 +412,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
     let pos = match gm_engine::parse_fen(&req.fen) {
         Ok(p) => p,
         Err(_) => {
-            return t(
-                lang,
+            return lang.pick(
                 [
                     "I couldn't read the current position, so let me give general advice: before each move, look for checks, captures and threats, then develop your pieces, control the center and keep your king safe.",
                     "No he podido leer la posición actual, así que te doy un consejo general: antes de cada jugada, busca jaques, capturas y amenazas; después desarrolla tus piezas, controla el centro y mantén tu rey a salvo.",
@@ -475,8 +441,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
         let mut out = comment.text;
         if let Some(top) = lines.first().and_then(|l| l.moves.first()).and_then(|t| tactics::parse_any_move(&pos, t)) {
             let tail = if top == m {
-                let tpl = t(
-                    lang,
+                let tpl = lang.pick(
                     [
                         " Good news: **{m}** is the engine's top choice!",
                         " ¡Buenas noticias: **{m}** es la primera opción del motor!",
@@ -489,8 +454,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
             } else {
                 let top_san = tactics::san(&pos, &top);
                 let tpl = if comment.bad {
-                    t(
-                        lang,
+                    lang.pick(
                         [
                             " Instead, consider **{m}**.",
                             " En su lugar, considera **{m}**.",
@@ -500,8 +464,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
                         ],
                     )
                 } else {
-                    t(
-                        lang,
+                    lang.pick(
                         [
                             " The engine slightly prefers **{m}**.",
                             " El motor prefiere ligeramente **{m}**.",
@@ -522,8 +485,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
             let comment = plain_move_comment(&prev, &m, lang);
             let mut out = comment.text;
             if !comment.bad {
-                out.push_str(t(
-                    lang,
+                out.push_str(lang.pick(
                     [
                         " I don't see an immediate tactical problem with it — if the engine disagrees, it's probably a deeper positional issue. Use the Best button to compare.",
                         " No le veo ningún problema táctico inmediato: si el motor no está de acuerdo, seguramente sea algo posicional más profundo. Usa el botón de mejor jugada para comparar.",
@@ -534,7 +496,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
                 ));
             }
             if let Some(b) = best_move_text(&pos, &lines, &p, lang) {
-                out.push_str(t(lang, ["\n\nNow: ", "\n\nAhora: ", "\n\nAgora: ", "\n\nMaintenant : ", "\n\nJetzt: "]));
+                out.push_str(lang.pick(["\n\nNow: ", "\n\nAhora: ", "\n\nAgora: ", "\n\nMaintenant : ", "\n\nJetzt: "]));
                 out.push_str(&b);
             }
             return out;
@@ -550,8 +512,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
 
     if has_any(&q, EVAL) {
         let mut out = lines.first().and_then(|l| eval_words(l, lang)).unwrap_or_else(|| {
-            t(
-                lang,
+            lang.pick(
                 [
                     "I don't have an engine evaluation right now, but here's what I see:",
                     "Ahora mismo no tengo la evaluación del motor, pero esto es lo que veo:",
@@ -570,8 +531,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
     if has_any(&q, THREATS) {
         let threats: Vec<String> = ideas.iter().filter(|i| i.threat).map(|i| i.text.clone()).collect();
         if threats.is_empty() {
-            let tpl = t(
-                lang,
+            let tpl = lang.pick(
                 [
                     "No immediate threats that I can see — {S} is free to improve the position. {hint}",
                     "No veo amenazas inmediatas: {s} pueden mejorar su posición con calma. {hint}",
@@ -594,8 +554,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
 
     let ph = describe::phase(&pos);
     if has_any(&q, OPENING) && ph == Phase::Opening {
-        let items: Vec<String> = tl(
-            lang,
+        let items: Vec<String> = lang.pick::<&[&str]>([
             &[
                 "Control the center with pawns and pieces (e4, d4, Nf3, Nc3...).",
                 "Develop knights and bishops before moving the queen out.",
@@ -621,12 +580,11 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
                 "Entwickle Springer und Läufer, bevor du die Dame herausbringst.",
                 "Rochiere früh, um den König zu sichern und die Türme zu verbinden.",
             ],
-        )
+        ])
         .iter()
         .map(|s| s.to_string())
         .collect();
-        let header = t(
-            lang,
+        let header = lang.pick(
             [
                 "In the opening, three things matter most:",
                 "En la apertura, lo que más importa son tres cosas:",
@@ -638,8 +596,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
         return format!("{header}\n{}", bullets(&items));
     }
     if has_any(&q, ENDGAME) && ph == Phase::Endgame {
-        let items: Vec<String> = tl(
-            lang,
+        let items: Vec<String> = lang.pick::<&[&str]>([
             &[
                 "Activate the king — in the endgame it's a fighting piece.",
                 "Create a passed pawn and push it with support.",
@@ -665,7 +622,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
                 "Schaffe einen Freibauern und schiebe ihn mit Unterstützung vor.",
                 "Türme gehören hinter Freibauern (eigene oder gegnerische).",
             ],
-        )
+        ])
         .iter()
         .map(|s| s.to_string())
         .collect();
@@ -690,8 +647,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
         return p
             .pick(
                 72,
-                tl(
-                    lang,
+                lang.pick::<&[&str]>([
                     &[
                         "Hi! I'm Mentor Mira. Ask me about the best move, the plan, threats, or why a move was good or bad.",
                         "Happy to help! Try asking \"What's the plan?\" or \"Why is Nf3 good here?\"",
@@ -712,7 +668,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
                         "Hallo! Ich bin Mentor Mira. Frag mich nach dem besten Zug, dem Plan, Drohungen oder warum ein Zug gut oder schlecht war.",
                         "Ich helfe gern! Frag zum Beispiel „Was ist der Plan?“ oder „Warum ist Nf3 hier gut?“",
                     ],
-                ),
+                ]),
             )
             .to_string();
     }
@@ -723,8 +679,7 @@ pub(crate) fn answer(req: &ChatRequest, lang: Lang) -> String {
         out.push_str(&e);
         out.push(' ');
     }
-    let tpl = t(
-        lang,
+    let tpl = lang.pick(
         [
             "It's {S}'s move. Here's what stands out:\n",
             "Juegan {s}. Esto es lo que destaca:\n",
