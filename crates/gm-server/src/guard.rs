@@ -51,6 +51,13 @@ impl GuardCtx {
         if let Some(raw) = normalize_host(&gethostname::gethostname().to_string_lossy()) {
             extra.push(raw);
         }
+        // The sanitized label and its mDNS form, even when phone mode is off (`PhoneState::hostname`
+        // is then unset) and the OS name has no `.local` suffix (most Linux hosts).
+        if let Some(label) = crate::phone::net::hostname() {
+            extra.push(format!("{label}.local"));
+            extra.push(label);
+        }
+        extra.dedup();
         GuardCtx { phone, extra_hosts: Arc::new(extra) }
     }
 
