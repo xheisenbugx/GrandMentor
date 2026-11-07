@@ -176,17 +176,8 @@
   to { opacity: 0; transform: translate(-50%, -110%) scale(1); }
 }
 
-/* Confetti */
-.drl-confetti { position: absolute; left: 50%; top: 45%; width: 0; height: 0; z-index: calc(var(--z-board-overlay) + 2); pointer-events: none; }
-.drl-confetti i {
-  position: absolute; width: 8px; height: 12px; border-radius: 2px; background: var(--c);
-  animation: drl-confetti 1.4s var(--ease-out) var(--d) both;
-}
-@keyframes drl-confetti {
-  from { transform: translate(0, 0) rotate(0); opacity: 1; }
-  70% { opacity: 1; }
-  to { transform: translate(var(--x), calc(var(--y) + 220px)) rotate(var(--r)); opacity: 0; }
-}
+/* Confetti (ui.js confetti()): a burst from the board centre that may spill past its edges */
+.gm-confetti.drl-confetti { inset: auto; left: 50%; top: 45%; width: 0; height: 0; overflow: visible; z-index: calc(var(--z-board-overlay) + 2); --ox: 0px; --oy: 0px; }
 
 /* Answer bar under the board */
 .drl-answers {

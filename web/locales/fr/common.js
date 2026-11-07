@@ -75,6 +75,13 @@ export default {
   lessons: { one: '{count} leçon', many: '{count} leçons', other: '{count} leçons' },
   minutes: { one: '{count} min', many: '{count} min', other: '{count} min' },
   seconds: { one: '{count} s', many: '{count} s', other: '{count} s' },
+  errors: {
+    timeout: 'Le serveur a mis trop de temps à répondre. Réessaie dans un instant.',
+    unreachable: 'Impossible de joindre le serveur GrandMentor. Est-il lancé ?',
+    requestFailed: 'Une erreur s’est produite (erreur {status}). Réessaie.',
+    engine: 'Le moteur a rencontré un problème.',
+    engineUnreachable: 'Impossible de joindre le moteur pour le moment. Vérifie que GrandMentor est lancé, puis réessaie.',
+  },
   pieces: {
     king: 'Roi',
     queen: 'Dame',

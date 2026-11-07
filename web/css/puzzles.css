@@ -227,19 +227,6 @@
 .pz-end-stats .stat { text-align: center; padding: var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); }
 .pz-end-actions { justify-content: center; gap: var(--sp-2); }
 
-.pz-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: var(--z-board-overlay); }
-.pz-confetti span {
-  position: absolute; top: -12px; left: var(--x);
-  width: 8px; height: 14px; border-radius: 2px;
-  background: var(--c);
-  transform: rotate(var(--r));
-  animation: pz-fall 2.6s var(--ease-out) var(--d) both;
-}
-@keyframes pz-fall {
-  from { transform: translateY(0) rotate(var(--r)); opacity: 1; }
-  to { transform: translateY(560px) rotate(calc(var(--r) + 540deg)); opacity: 0; }
-}
-
 /* ---------- My mistakes (spaced repetition) --------------------------------- */
 /* Hub entry */
 .card.pz-mx-entry {
@@ -364,6 +351,5 @@
   .pz-rating-num { font-size: var(--fs-2xl); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pz-confetti { display: none; }
   .pz-rush-clock.low, .pz-rush-score.bump, .pz-dot { animation: none; }
 }

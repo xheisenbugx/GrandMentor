@@ -9,7 +9,7 @@
 import { Chess } from '../../vendor/chess.js';
 import { api, isAbort, EngineClient } from '../api.js';
 import {
-  h, icon, formatScore, disposables, classificationMeta, classificationBadge, mdLite, emptyState, formatSan,
+  h, icon, formatScore, disposables, classificationMeta, classificationBadge, mdLite, emptyState, formatSan, shortcutAllowed,
 } from '../ui.js';
 import { userAvatar } from '../ui.js';
 import { getSettings, onSettingsChange } from '../settings.js';
@@ -823,6 +823,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       try { over = new Chess(fen).isGameOver(); } catch { over = true; }
       if (over) { engine?.stop(); evalBar.set({ mate: 0 }, { fen }); return; }
       if (!engine) engine = new EngineClient();
+      ex.engineError = null;
       engine.analyze(fen, { multipv: 1, movetime_ms: 2500 }, (info) => {
         if (bag.disposed || st.explore !== ex || ex.line[ex.idx - 1]?.fen !== fen) return;
         const top = info?.lines?.[0];
@@ -833,11 +834,18 @@ export async function mount(root, { params = {}, query = {} } = {}) {
         if (sq && !st.retry) board.setArrows([{ from: sq[0], to: sq[1], color: 'blue' }]);
         const eng = walkCard.querySelector('.rv-explore-engine');
         if (eng) eng.replaceChildren(...engineLineNodes(info, ex));
-      }, () => {});
+      }, (message) => {
+        if (bag.disposed || st.explore !== ex) return;
+        // Stop the "thinking" spinner and say why.
+        ex.engineError = String(message || '');
+        const eng = walkCard.querySelector('.rv-explore-engine');
+        if (eng) eng.replaceChildren(...engineLineNodes(ex.info, ex));
+      });
     }
 
     function engineLineNodes(info, ex) {
       const top = info?.lines?.[0];
+      if (!top && ex.engineError) return [h('span', { class: 'subtle' }, ex.engineError)];
       if (!top) return [h('span', { class: 'spinner spinner-sm' }), h('span', { class: 'subtle' }, ` ${t('review.explore.thinking')}`)];
       const absPly = ply0 + ex.basePly + ex.idx;
       return [
@@ -906,10 +914,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     bag.on(bLast, 'click', () => goTo(n));
     bag.on(bFlip, 'click', flip);
     bag.on(window, 'keydown', (e) => {
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-      const tgt = e.target;
-      if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
-      if (document.querySelector('.modal-backdrop')) return;
+      if (!shortcutAllowed(e)) return;
       if (e.key === 'ArrowLeft') { e.preventDefault(); stepBack(); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); stepForward(); }
       else if (e.key === 'Home') { e.preventDefault(); goTo(0); }

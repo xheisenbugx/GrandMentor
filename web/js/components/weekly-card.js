@@ -8,7 +8,7 @@
 // See docs/CONTRACT.md "Weekly personal set".
 
 import { api, isAbort } from '../api.js';
-import { h, icon, escapeHtml } from '../ui.js';
+import { h, icon, escapeHtml, loadCss } from '../ui.js';
 import { t, hasKey, formatNumber, formatDateIntl } from '../i18n.js';
 
 /** Weeks shown in the Insights card. */
@@ -17,12 +17,7 @@ const CARD_WEEKS = 4;
 const CARD_THEMES = 5;
 
 export function ensureWeeklyCss() {
-  if (document.querySelector('link[data-page-css="weekly"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/weekly.css';
-  link.dataset.pageCss = 'weekly';
-  document.head.appendChild(link);
+  return loadCss('/css/weekly.css');
 }
 
 function themeName(id) {

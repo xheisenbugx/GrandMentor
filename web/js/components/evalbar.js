@@ -2,20 +2,11 @@
 // Contract: docs/CONTRACT.md §5 — new EvalBar(el, {orientation}), .set(score), .setOrientation(c), .destroy().
 // Score is white-POV: {cp: 35} | {mate: 3} | {mate: -2} | null (unknown).
 
-import { winPercent } from '../ui.js';
+import { winPercent, loadCss } from '../ui.js';
 import { t } from '../i18n.js';
 
-let cssInjected = false;
 function ensureCss() {
-  if (cssInjected || typeof document === 'undefined') return;
-  cssInjected = true;
-  const linked = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-    .some((l) => /\/board\.css(\?|$)/.test(l.getAttribute('href') || ''));
-  if (linked) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = new URL('../../css/board.css', import.meta.url).href;
-  document.head.appendChild(link);
+  return loadCss(new URL('../../css/board.css', import.meta.url).href);
 }
 
 /** Short label for the bar: "1.3", "10", "M3", "1-0". Always unsigned (side is shown by placement). */

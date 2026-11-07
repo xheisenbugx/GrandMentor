@@ -5,7 +5,7 @@
 // Server: GET /api/first-week, POST /api/first-week/{start,restart,dismiss,step}.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, pageHeader, disposables, toast, confirmDialog, emptyState, skeleton } from '../ui.js';
+import { h, icon, pageHeader, disposables, toast, confirmDialog, emptyState, skeleton, iconLabel } from '../ui.js';
 import { t } from '../i18n.js';
 import { ensureFirstWeekCss, dotPath, dayStatus, opensLabel, celebrate } from '../components/firstweek.js';
 
@@ -87,9 +87,9 @@ export async function mount(root) {
       dotPath(state),
       complete
         ? h('div', { class: 'fw-hero-actions' },
-          h('a', { class: 'btn btn-primary', href: '#/play', html: icon('play') + `<span>${t('firstweek.complete.play')}</span>` }),
-          h('a', { class: 'btn btn-secondary', href: '#/puzzles', html: icon('puzzle') + `<span>${t('firstweek.complete.puzzles')}</span>` }),
-          h('a', { class: 'btn btn-secondary', href: '#/learn', html: icon('learn') + `<span>${t('firstweek.complete.learn')}</span>` }))
+          h('a', { class: 'btn btn-primary', href: '#/play', html: iconLabel('play', t('firstweek.complete.play')) }),
+          h('a', { class: 'btn btn-secondary', href: '#/puzzles', html: iconLabel('puzzle', t('firstweek.complete.puzzles')) }),
+          h('a', { class: 'btn btn-secondary', href: '#/learn', html: iconLabel('learn', t('firstweek.complete.learn')) }))
         : null,
     ].filter(Boolean));
   }
@@ -98,7 +98,7 @@ export async function mount(root) {
     const st = dayStatus(state, day);
     const doneSteps = day.steps.filter((s) => s.done).length;
     const badge = st === 'done'
-      ? h('span', { class: 'badge badge-success', html: icon('check', { size: 14 }) + `<span>${t('firstweek.status.done')}</span>` })
+      ? h('span', { class: 'badge badge-success', html: iconLabel('check', t('firstweek.status.done'), { size: 14 }) })
       : st === 'today' ? h('span', { class: 'badge badge-info' }, t('firstweek.status.today'))
         : st === 'open' ? h('span', { class: 'badge' }, t('firstweek.status.open'))
           : h('span', { class: 'badge fw-badge-locked', html: icon('lock', { size: 14 }) + `<span>${opensLabel(state, day)}</span>` });
@@ -148,7 +148,7 @@ export async function mount(root) {
   }
 
   function renderFoot() {
-    const restart = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 16 }) + `<span>${t('firstweek.restart')}</span>` });
+    const restart = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('refresh', t('firstweek.restart'), { size: 16 }) });
     restart.addEventListener('click', async () => {
       const ok = await confirmDialog({ title: t('firstweek.restartConfirm.title'), message: t('firstweek.restartConfirm.message'), confirmLabel: t('firstweek.restartConfirm.button') });
       if (!ok || signal.aborted) return;

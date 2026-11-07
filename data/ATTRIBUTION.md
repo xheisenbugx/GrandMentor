@@ -19,3 +19,19 @@ opponent's setup move), Rating, Themes (split), Popularity.
 The board pieces are the *cburnett* and *merida* sets (GPLv2+) and the *chessnut* set by
 Alexis Luengas (Apache 2.0), taken unmodified from the lichess.org repository. Details and
 links: [`web/img/pieces/LICENSE.md`](../web/img/pieces/LICENSE.md).
+
+## Font (`web/fonts/`)
+
+The interface font is **Inter** by Rasmus Andersson and the Inter Project Authors
+(https://github.com/rsms/inter), licensed under the **SIL Open Font License 1.1**
+(full text: [`web/fonts/Inter-OFL.txt`](../web/fonts/Inter-OFL.txt)). The Latin and Latin Extended
+variable subsets (`inter-latin-wght-normal.woff2`, `inter-latin-ext-wght-normal.woff2`) are taken
+unmodified from the `@fontsource-variable/inter` 5.3.0 npm package (tarball sha512 checked against the
+registry). They are served by the app itself, so nothing is loaded from Google Fonts and the app looks
+the same offline.
+
+## chess.js (`web/vendor/chess.js`)
+
+Move generation in the browser uses **chess.js** v1.4.0 by Jeff Hlywa
+(https://github.com/jhlywa/chess.js), licensed under the **BSD 2-Clause License**. The file is the
+unmodified ESM build; its copyright notice and the full license text are kept in the file header.

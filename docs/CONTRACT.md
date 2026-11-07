@@ -362,12 +362,26 @@ The router (`app.js`) always calls the previous page's cleanup before mounting t
 
 **`web/js/api.js`**
 ```js
-export const api = { get(path), post(path, body), put(path, body), del(path) }; // path like '/api/games'; throws Error(message) on non-2xx
+export const api = { get(path, opts), post(path, body, opts), put(path, body, opts), del(path, opts) }; // path like '/api/games'; throws ApiError(message) on non-2xx
+// opts: { signal?: AbortSignal, timeout?: ms (default 60000), keepalive?: boolean }
 export class EngineClient {           // one websocket, lazy-connect, auto-reconnect
-  analyze(fen, { multipv = 1, movetime_ms = 3000, depth = null } = {}, onInfo /* (info, done:boolean) */);
+  analyze(fen, { multipv = 1, movetime_ms = 3000, depth = null } = {}, onInfo /* (info, done:boolean) */, onError /* (message) */);
   stop(); close();
 }
 ```
+- Client-side error messages (timeout, server unreachable, `Request failed (status)` fallback, engine unreachable)
+  are translated at call time (`common.errors.*`); server `{ "error" }` texts are already localized.
+- **Progress writes** (puzzle / mistake / weekly attempts, Rush and drill scores, lesson completion, endgame and
+  repertoire drill attempts, classics progress, the adaptive rating update) pass `{ keepalive: true }` and **no page
+  signal**, so leaving the page right after finishing doesn't cancel the save; only the UI update is guarded with
+  `bag.disposed`. The service worker never queues a write the page aborted (`AbortError`), so a request the server
+  may already have is not replayed.
+- `EngineClient`: after 5 connection attempts in a row that never open (server down, revoked phone sign-in) it stops
+  retrying, calls the active request's `onError(message)` and forgets it (the next `analyze()` tries again). It also
+  probes `GET /api/health`, which sends a revoked phone session to `/login` like any REST 401.
+- After an update installed from another tab (`controllerchange` this tab didn't ask for), the router does a full
+  `location.reload()` on the next navigation; a page module that fails to import reloads the app once (guarded by
+  `sessionStorage['gm-import-reload']`).
 **`web/js/settings.js`**: `getSettings()`, `setSetting(key, value)`, `onSettingsChange(fn) → unsubscribe`.
 Keys: `boardTheme` (green|brown|blue|purple|gray|contrast), `pieceSet` (cburnett|merida|chessnut; a stored `alpha` is migrated to `chessnut`), `sounds` (bool),
 `soundVolume` (0–100, default 100), `soundPicks` (`{ event: style }` overrides of the default sound per event, see Sound below),
@@ -380,6 +394,13 @@ Also exported: `reducedMotion()` (true when `motion` is reduce, or system + `pre
 **`web/js/ui.js`**: `toast(msg, kind)`, `modal({title, body /*Node|string*/, actions:[{label, kind, onClick}]}) → {close}`,
 `h(tag, attrs, ...children)` tiny DOM helper, `icon(name)` → inline SVG string, `formatScore(score)` → "+1.2"/"M3",
 `classificationMeta(cls)` → `{label, color, symbol /* "!!","!","★","👍","📖","?!","?","✗","??" */}`, `escapeHtml`.
+Safe HTML for translations: `labelHtml(text)` (escaped `<span>`), `iconLabel(icon, text, iconOpts)` (icon + escaped
+label, for `html:` on buttons/titles), `tHtml(key, params)` (a translation that intentionally contains `<strong>`;
+params are escaped). Never interpolate raw `t()` into `html:`/`innerHTML`; `tools/qa/check-i18n.mjs` fails on it.
+Shared helpers: `loadCss(href, {timeout})` → Promise (load a stylesheet once; existing `<link>`s count),
+`confetti(host, opts)` → `{el, cancel}` (`.gm-confetti`, skipped under reduced motion), `shortcutAllowed(e)` (page
+keyboard shortcuts: no modifiers, not typing in a field, no open modal) and `isTypingTarget(el)`,
+`engineErrorToast(message)` (throttled "engine unavailable" toast).
 
 **`web/js/components/board.js`**
 ```js
@@ -591,7 +612,7 @@ GrandMentor can be installed as an app and keeps puzzles and lessons working wit
 | Cache | Strategy | Contents | Limit |
 |---|---|---|---|
 | `gm-shell-<build>` | precache, cache-first | the precache manifest list; navigations fall back to the cached `/index.html` | exact list |
-| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache; Google Fonts (SWR) | 120 entries |
+| `gm-runtime-v1` | cache-first / SWR | same-origin static files missed by the precache (the Inter font is vendored in `web/fonts/` and precached) | 120 entries |
 | `gm-content-v1` | stale-while-revalidate | `GET /api/courses[/:id]`, `/api/openings[/:id]`, `/api/endgames[/:id]`, `/api/classics[/:id]`, `/api/puzzles/themes`, `/api/bots`, `/api/puzzles/:id`, plus the offline puzzle pack | 250 entries |
 | `gm-api-v1` | network-first, cached fallback | any other JSON `GET /api/*` (profile, progress, stats, summaries…) | 80 entries |
 
@@ -1264,7 +1285,7 @@ FirstWeekState { started, started_on: "YYYY-MM-DD"|null, today, dismissed, eligi
 
 **Frontend** — `web/js/pages/start.js` (`#/start`; opening it starts the path), `web/js/components/firstweek.js`:
 `ensureFirstWeekCss()` (`web/css/firstweek.css`), `dotPath(state, {compact})`, `celebrate(state, {bag})` (toast +
-confetti, confetti skipped under reduced motion), `new FirstWeekCard(container)` (Home card: `.load()`, `.destroy()`;
+confetti via `ui.confetti()`, skipped under reduced motion), `new FirstWeekCard(container)` (Home card: `.load()`, `.destroy()`;
 hides itself when not `eligible`; "I already know how to play" dismisses), `createFirstWeekSection()` (Settings card
 with "Start over" / "Show on Home": `{el, destroy}`). Strings: `firstweek` locale namespace (step/day copy keyed by id).
 

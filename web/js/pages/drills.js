@@ -10,7 +10,7 @@
 //
 // Memory: every listener, timer, animation frame, fetch and the Board are released by the cleanup.
 
-import { h, icon, disposables, pageHeader, emptyState, skeleton } from '../ui.js';
+import { h, icon, disposables, pageHeader, emptyState, skeleton, iconLabel, labelHtml, confetti, shortcutAllowed } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
 import { t, formatNumber } from '../i18n.js';
 import { Board } from '../components/board.js';
@@ -210,25 +210,6 @@ function bestOf(drillStats) {
   return { best, plays };
 }
 
-/** Burst of CSS confetti inside `host` (skipped with reduced motion). */
-function confetti(host, later) {
-  if (reducedMotion() || !host) return;
-  const layer = h('div', { class: 'drl-confetti', 'aria-hidden': 'true' });
-  const tones = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--danger)'];
-  for (let i = 0; i < 28; i++) {
-    layer.appendChild(h('i', {
-      style: {
-        '--x': `${Math.round(Math.random() * 240 - 120)}px`,
-        '--y': `${Math.round(-80 - Math.random() * 160)}px`,
-        '--r': `${Math.round(Math.random() * 720 - 360)}deg`,
-        '--d': `${Math.round(Math.random() * 120)}ms`,
-        '--c': tones[i % tones.length],
-      },
-    }));
-  }
-  host.appendChild(layer);
-  later(() => layer.remove(), 1600);
-}
 
 // ============================================================================ mount
 
@@ -515,14 +496,14 @@ function mountDrill(root, id, bag, signal) {
       bestBlock(),
       h('button', {
         class: 'btn btn-primary btn-lg btn-block drl-start', type: 'button',
-        html: icon('play-circle') + `<span>${t('drills.start')}</span>`, onClick: startRun,
+        html: iconLabel('play-circle', t('drills.start')), onClick: startRun,
       }),
       h('p', { class: 'drl-kbd-hint subtle text-xs' }, t(`drills.kbd.${kbdKind()}`))));
     overlay.replaceChildren(...kids(
       h('div', { class: 'drl-ov-card drl-ov-intro' },
         h('div', { class: 'drl-ov-emoji', 'aria-hidden': 'true' }, meta.emoji),
         h('div', { class: 'drl-ov-title' }, t(`drills.${id}.title`)),
-        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('play-circle') + `<span>${t('drills.start')}</span>`, onClick: startRun }),
+        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: iconLabel('play-circle', t('drills.start')), onClick: startRun }),
         h('div', { class: 'drl-ov-sub' }, durationLabel(meta.seconds)))));
     overlay.hidden = false;
   }
@@ -710,7 +691,7 @@ function mountDrill(root, id, bag, signal) {
     try {
       const res = await api.post(`/api/drills/${id}/score`, {
         variant: r.variant, score: r.score, correct: r.correct, total: r.correct + r.wrong, duration_ms: elapsed,
-      }, { signal });
+      }, { keepalive: true });
       if (bag.disposed || run !== r) return;
       lastResult = { ...res, pending: false };
       if (stats) {
@@ -728,7 +709,11 @@ function mountDrill(root, id, bag, signal) {
       renderOver();
       if (lastResult.is_best && r.score > 0) {
         playSound('promote');
-        confetti(boardSlot, later);
+        confetti(boardSlot, {
+          count: 28, duration: 1400, gravity: 220, className: 'drl-confetti', later,
+          colors: ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--danger)'],
+          piece: (i, rnd) => ({ '--x': `${Math.round(rnd() * 240 - 120)}px`, '--y': `${Math.round(-80 - rnd() * 160)}px`, '--d': `${Math.round(rnd() * 120)}ms`, width: null }),
+        });
       }
     }
   }
@@ -746,7 +731,7 @@ function mountDrill(root, id, bag, signal) {
         h('div', { class: 'drl-ov-sub' }, res.best != null && !newBest
           ? t('drills.bestIs', { n: formatNumber(res.best) })
           : (acc == null ? t('drills.points', { count: r.score }) : t('drills.accuracyLine', { n: acc }))),
-        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: icon('refresh') + `<span>${t('drills.again')}</span>`, onClick: startRun }))));
+        h('button', { class: 'btn btn-primary btn-lg', type: 'button', html: iconLabel('refresh', t('drills.again')), onClick: startRun }))));
     overlay.hidden = false;
 
     const mistakesList = r.mistakes.length
@@ -771,12 +756,12 @@ function mountDrill(root, id, bag, signal) {
           h('div', { class: 'stat-value tabular' }, formatNumber(r.bestStreak)))),
       res.failed ? h('div', { class: 'callout callout-warning' }, h('div', null, t('drills.saveFailed'))) : null,
       h('div', { class: 'row-sm drl-over-actions' },
-        h('button', { class: 'btn btn-primary grow-btn', type: 'button', html: icon('refresh') + `<span>${t('drills.again')}</span>`, onClick: startRun }),
-        h('button', { class: 'btn btn-secondary', type: 'button', html: icon('settings') + `<span>${t('drills.changeOptions')}</span>`, onClick: () => { run = null; createBoard(); renderIntro(); } })),
+        h('button', { class: 'btn btn-primary grow-btn', type: 'button', html: iconLabel('refresh', t('drills.again')), onClick: startRun }),
+        h('button', { class: 'btn btn-secondary', type: 'button', html: iconLabel('settings', t('drills.changeOptions')), onClick: () => { run = null; createBoard(); renderIntro(); } })),
       h('h3', { class: 'drl-h3' }, t('drills.reviewTitle'), r.mistakes.length ? h('span', { class: 'badge' }, String(r.mistakes.length)) : null),
       r.mistakes.length ? h('p', { class: 'subtle text-sm drl-review-hint' }, t('drills.reviewHint')) : null,
       mistakesList,
-      h('a', { class: 'btn btn-ghost btn-sm drl-all', href: '#/drills', html: icon('grid') + `<span>${t('drills.allDrills')}</span>` })));
+      h('a', { class: 'btn btn-ghost btn-sm drl-all', href: '#/drills', html: iconLabel('grid', t('drills.allDrills')) })));
   }
 
   function cheerKey(r, res) {
@@ -859,9 +844,8 @@ function mountDrill(root, id, bag, signal) {
   }
 
   function onKey(e) {
-    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!shortcutAllowed(e)) return;
     const tag = (e.target && e.target.tagName) || '';
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable)) return;
     const k = e.key;
     if (phase === 'intro' || phase === 'over') {
       if ((k === 'Enter' || k === ' ') && !/^(BUTTON|A)$/.test(tag)) { e.preventDefault(); startRun(); }
@@ -1045,7 +1029,7 @@ function mountDrill(root, id, bag, signal) {
     announce(t(`drills.checks.spoken.${run.variant}`, { side: t(side === 'white' ? 'common.whiteLower' : 'common.blackLower') }));
     answers.replaceChildren(...kids(
       h('div', { class: 'drl-side' }, h('span', { class: `drl-side-dot ${side}` }), t(side === 'white' ? 'common.whiteToMove' : 'common.blackToMove')),
-      h('button', { type: 'button', class: 'btn btn-secondary drl-skip', html: `<span>${t('drills.checks.doneNext')}</span>` + icon('chevron-right'), onClick: skipChecks })));
+      h('button', { type: 'button', class: 'btn btn-secondary drl-skip', html: labelHtml(t('drills.checks.doneNext')) + icon('chevron-right'), onClick: skipChecks })));
   }
 
   function renderChecksPrompt() {

@@ -159,20 +159,6 @@
 .lrn-complete .lrn-nav { width: 100%; flex-direction: column; margin-top: var(--sp-2); }
 @keyframes lrn-pop { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
 
-/* Confetti-lite */
-.lrn-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: var(--z-board-overlay); }
-.lrn-confetti i {
-  position: absolute; top: 45%; left: 50%; width: 8px; height: 12px; border-radius: 2px; opacity: 0;
-  background: var(--c, var(--primary));
-  animation: lrn-confetti 1300ms var(--ease-out) forwards; animation-delay: var(--delay, 0ms);
-}
-@keyframes lrn-confetti {
-  0% { opacity: 1; transform: translate(-50%, -50%) rotate(0) scale(0.6); }
-  60% { opacity: 1; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(1); }
-}
-@media (prefers-reduced-motion: reduce) { .lrn-confetti { display: none; } }
-
 /* ---------- Openings library ------------------------------------------------ */
 .op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-4); }
 .op-card { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-3); position: relative; }

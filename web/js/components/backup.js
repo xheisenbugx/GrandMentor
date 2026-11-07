@@ -9,7 +9,7 @@
 // API: docs/CONTRACT.md "Backup & sync". Browser preferences (localStorage keys starting with
 // "grandmentor" / "gm.") travel inside the backup file under "browser".
 
-import { h, icon, disposables, toast, modal, formatDate, formatRelative } from '../ui.js';
+import { h, icon, disposables, toast, modal, formatDate, formatRelative, iconLabel } from '../ui.js';
 import { getSetting } from '../settings.js';
 import { t } from '../i18n.js';
 
@@ -179,7 +179,7 @@ export function createBackupSection() {
   };
 
   // ---- Download ------------------------------------------------------------------
-  const downloadBtn = h('button', { type: 'button', class: 'btn btn-primary', html: icon('download') + `<span>${t('settings.data.download.button')}</span>` });
+  const downloadBtn = h('button', { type: 'button', class: 'btn btn-primary', html: iconLabel('download', t('settings.data.download.button')) });
   bag.on(downloadBtn, 'click', async () => {
     downloadBtn.classList.add('loading');
     try {
@@ -204,7 +204,7 @@ export function createBackupSection() {
 
   // ---- Restore -------------------------------------------------------------------
   const fileInput = h('input', { type: 'file', accept: '.json,application/json', class: 'bk-file-input', tabindex: '-1', 'aria-hidden': 'true' });
-  const chooseBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: icon('upload', { size: 16 }) + `<span>${t('settings.data.restore.choose')}</span>` });
+  const chooseBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', html: iconLabel('upload', t('settings.data.restore.choose'), { size: 16 }) });
   const drop = h('div', { class: 'bk-drop', role: 'button', tabindex: '0', 'aria-label': t('settings.data.restore.dropAria') },
     h('span', { class: 'bk-drop-icon', html: icon('upload') }),
     h('div', { class: 'bk-drop-title' }, t('settings.data.restore.dropTitle')),
@@ -281,7 +281,7 @@ export function createBackupSection() {
       modeCard('merge', 'plus', 'settings.data.restore.merge.title', 'settings.data.restore.merge.desc'),
       modeCard('replace', 'refresh', 'settings.data.restore.replace.title', 'settings.data.restore.replace.desc'));
     modes.addEventListener('change', (e) => { if (e.target.name === 'bk-mode') { mode = e.target.value; restoreBtn.className = `btn ${mode === 'replace' ? 'btn-danger' : 'btn-primary'}`; } });
-    const restoreBtn = h('button', { type: 'button', class: 'btn btn-primary', html: icon('upload') + `<span>${t('settings.data.restore.go')}</span>` });
+    const restoreBtn = h('button', { type: 'button', class: 'btn btn-primary', html: iconLabel('upload', t('settings.data.restore.go')) });
     restoreBtn.addEventListener('click', () => runImport(mode, hasBrowser && prefsBox.checked, restoreBtn));
     const meta = [
       p.created_at ? t('settings.data.restore.createdOn', { date: formatDate(p.created_at) }) : null,
@@ -356,7 +356,7 @@ export function createBackupSection() {
 
   function renderImportDone(rep, needsReload) {
     current = null;
-    const reloadBtn = h('button', { type: 'button', class: 'btn btn-primary', html: icon('refresh') + `<span>${t('settings.data.result.reload')}</span>`, onClick: () => location.reload() });
+    const reloadBtn = h('button', { type: 'button', class: 'btn btn-primary', html: iconLabel('refresh', t('settings.data.result.reload')), onClick: () => location.reload() });
     fill(restorePanel,
       h('div', { class: 'callout callout-success' }, h('span', { class: 'bk-ci', html: icon('check-circle') }),
         h('div', null, h('strong', null, rep.mode === 'replace' ? t('settings.data.result.replaced') : t('settings.data.result.merged')),
@@ -376,7 +376,7 @@ export function createBackupSection() {
 
   const renderShareIdle = (info) => {
     stopCountdown();
-    const btn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('link') + `<span>${t('settings.data.sync.share.button')}</span>` });
+    const btn = h('button', { type: 'button', class: 'btn btn-secondary', html: iconLabel('link', t('settings.data.sync.share.button')) });
     btn.addEventListener('click', async () => {
       btn.classList.add('loading');
       try {
@@ -406,7 +406,7 @@ export function createBackupSection() {
       if (left <= 0) { renderShareIdle(info); return; }
       left -= 1;
     };
-    const stopBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('x-circle', { size: 16 }) + `<span>${t('settings.data.sync.share.stop')}</span>` });
+    const stopBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('x-circle', t('settings.data.sync.share.stop'), { size: 16 }) });
     stopBtn.addEventListener('click', async () => {
       try { await request('DELETE', '/api/sync/pair', { signal }); } catch { /* ignore */ }
       if (!bag.disposed) renderShareIdle(info);
@@ -447,7 +447,7 @@ export function createBackupSection() {
     direction = b.dataset.v;
     for (const c of dirSeg.children) { const on = c.dataset.v === direction; c.classList.toggle('active', on); c.setAttribute('aria-checked', String(on)); }
   });
-  const syncBtn = h('button', { type: 'button', class: 'btn btn-primary', html: icon('refresh') + `<span>${t('settings.data.sync.connect.go')}</span>` });
+  const syncBtn = h('button', { type: 'button', class: 'btn btn-primary', html: iconLabel('refresh', t('settings.data.sync.connect.go')) });
   const syncLog = h('div', { class: 'bk-sync-log', 'aria-live': 'polite' });
 
   const step = (key, params) => {
@@ -503,7 +503,7 @@ export function createBackupSection() {
   // ---- Layout -------------------------------------------------------------------------
   const el = h('section', { class: 'card bk-section', id: 'your-data' },
     h('div', { class: 'card-header' },
-      h('div', { class: 'card-title', html: icon('shield') + `<span>${t('settings.data.title')}</span>` })),
+      h('div', { class: 'card-title', html: iconLabel('shield', t('settings.data.title')) })),
     h('p', { class: 'setting-row-desc bk-intro' }, t('settings.data.intro')),
     reminder,
     h('div', { class: 'setting-row' },
@@ -525,10 +525,10 @@ export function createBackupSection() {
         h('div', { class: 'setting-row-desc' }, t('settings.data.sync.desc'))),
       h('div', { class: 'bk-sync-grid' },
         h('div', { class: 'bk-sync-card' },
-          h('div', { class: 'bk-sync-head', html: icon('wifi') + `<span>${t('settings.data.sync.share.title')}</span>` }),
+          h('div', { class: 'bk-sync-head', html: iconLabel('wifi', t('settings.data.sync.share.title')) }),
           shareBody),
         h('div', { class: 'bk-sync-card' },
-          h('div', { class: 'bk-sync-head', html: icon('link') + `<span>${t('settings.data.sync.connect.title')}</span>` }),
+          h('div', { class: 'bk-sync-head', html: iconLabel('link', t('settings.data.sync.connect.title')) }),
           h('p', { class: 'setting-row-desc' }, t('settings.data.sync.connect.desc')),
           h('label', { class: 'field' }, h('span', { class: 'label' }, t('settings.data.sync.connect.address')), addrInput),
           h('label', { class: 'field' }, h('span', { class: 'label' }, t('settings.data.sync.connect.code')), codeInput),

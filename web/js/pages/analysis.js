@@ -6,7 +6,7 @@
 import { Chess, validateFen } from '../../vendor/chess.js';
 import { api, qs, isAbort, EngineClient } from '../api.js';
 import {
-  h, icon, toast, modal, formatScore, copyText, disposables, debounce, formatSan,
+  h, icon, toast, modal, formatScore, copyText, disposables, debounce, formatSan, shortcutAllowed,
 } from '../ui.js';
 import { getSettings, onSettingsChange } from '../settings.js';
 import { Board } from '../components/board.js';
@@ -1065,10 +1065,7 @@ export async function mount(root, { query = {} } = {}) {
   bag.on(bLast, 'click', step.last);
   bag.on(bFlip, 'click', flip);
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tgt = e.target;
-    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     const map = { ArrowLeft: step.prev, ArrowRight: step.next, Home: step.first, End: step.last };
     if (map[e.key]) { e.preventDefault(); map[e.key](); return; }
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {

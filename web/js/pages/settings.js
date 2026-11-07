@@ -5,7 +5,7 @@
 // switching language makes app.js remount this page.
 
 import { api, qs, isAbort } from '../api.js';
-import { h, icon, pageHeader, disposables, debounce, confirmDialog, toast, formatSan } from '../ui.js';
+import { h, icon, pageHeader, disposables, debounce, confirmDialog, toast, formatSan, iconLabel } from '../ui.js';
 import { getSettings, setSetting, onSettingsChange, resetSettings, BOARD_THEMES, PIECE_SETS, UI_SCALES, pieceUrl } from '../settings.js';
 import { ensureHubCss, fenBoardSvg } from './library.js';
 import { t, getLanguage, setLanguage, LANGUAGES } from '../i18n.js';
@@ -105,7 +105,7 @@ export async function mount(root) {
   const notationExample = h('span', { class: 'muted text-sm mono' });
   syncers.push((s) => { notationExample.textContent = ['Nf3', 'Bb5', 'O-O', 'Qxd8+'].map((m) => formatSan(m, s.moveNotation)).join('  '); });
 
-  const testSoundBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('volume') + `<span>${t('settings.testSound')}</span>` });
+  const testSoundBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('volume', t('settings.testSound')) });
 
   // ---- Sounds: volume, theme and one choice per event ---------------------------------
   let soundMod = null;
@@ -175,13 +175,13 @@ export async function mount(root) {
       h('div', { class: 'hub-sound-grid' }, eventRows)));
   syncers.push((s) => { soundBody.classList.toggle('hub-sounds-off', !s.sounds); });
   const soundSection = h('section', { class: 'card', id: 'sounds', 'aria-labelledby': 'settings-sounds-title' },
-    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-sounds-title', html: icon('volume') + `<span>${t('settings.soundSection.title')}</span>` })),
+    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-sounds-title', html: iconLabel('volume', t('settings.soundSection.title')) })),
     row(t('settings.sounds.title'), t('settings.sounds.desc'), toggle('sounds', t('settings.sounds.title'))),
     soundBody);
 
   // ---- Preview board -----------------------------------------------------------
   const previewSlot = h('div', { class: 'hub-preview-board' });
-  const resetPreviewBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: icon('refresh', { size: 16 }) + `<span>${t('common.reset')}</span>` });
+  const resetPreviewBtn = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', html: iconLabel('refresh', t('common.reset'), { size: 16 }) });
   let board = null;
   let BoardCls = null;
   let previewFen = PREVIEW_FEN;
@@ -214,7 +214,7 @@ export async function mount(root) {
     .catch(() => { /* static preview stays */ });
 
   // ---- Danger zone -----------------------------------------------------------------
-  const resetSettingsBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: icon('refresh') + `<span>${t('settings.reset.button')}</span>` });
+  const resetSettingsBtn = h('button', { type: 'button', class: 'btn btn-secondary', html: iconLabel('refresh', t('settings.reset.button')) });
   bag.on(resetSettingsBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.reset.confirmTitle'), message: t('settings.reset.confirmMessage'), confirmLabel: t('settings.reset.button'), danger: true });
     if (!ok || bag.disposed) return;
@@ -222,7 +222,7 @@ export async function mount(root) {
     toast(t('settings.reset.done'), 'success');
   });
 
-  const deleteGamesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('trash') + `<span>${t('settings.deleteGames.button')}</span>` });
+  const deleteGamesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: iconLabel('trash', t('settings.deleteGames.button')) });
   bag.on(deleteGamesBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.deleteGames.confirmTitle'), message: t('settings.deleteGames.confirmMessage'), confirmLabel: t('settings.deleteGames.button'), danger: true });
     if (!ok || bag.disposed) return;
@@ -248,7 +248,7 @@ export async function mount(root) {
     }
   });
 
-  const resetPuzzlesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('refresh') + `<span>${t('settings.resetPuzzles.button')}</span>` });
+  const resetPuzzlesBtn = h('button', { type: 'button', class: 'btn btn-danger', html: iconLabel('refresh', t('settings.resetPuzzles.button')) });
   bag.on(resetPuzzlesBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.resetPuzzles.confirmTitle'), message: t('settings.resetPuzzles.confirmMessage'), confirmLabel: t('settings.resetPuzzles.button'), danger: true });
     if (!ok || bag.disposed) return;
@@ -263,7 +263,7 @@ export async function mount(root) {
     }
   });
 
-  const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: icon('x-circle') + `<span>${t('settings.clearData.button')}</span>` });
+  const clearLocalBtn = h('button', { type: 'button', class: 'btn btn-danger', html: iconLabel('x-circle', t('settings.clearData.button')) });
   bag.on(clearLocalBtn, 'click', async () => {
     const ok = await confirmDialog({ title: t('settings.clearData.confirmTitle'), message: t('settings.clearData.confirmMessage'), confirmLabel: t('settings.clearData.confirmButton'), danger: true });
     if (!ok || bag.disposed) return;
@@ -291,7 +291,7 @@ export async function mount(root) {
   const canSpeak = speechSupported();
   const speakToggle = toggle('speakMoves', t('a11y.speech.title'));
   const speakOwnToggle = toggle('speakOwnMoves', t('a11y.speech.own.title'));
-  const speakTestBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', 'aria-label': t('a11y.speech.testLabel'), html: icon('volume') + `<span>${t('a11y.speech.test')}</span>` });
+  const speakTestBtn = h('button', { type: 'button', class: 'btn btn-secondary btn-sm', 'aria-label': t('a11y.speech.testLabel'), html: iconLabel('volume', t('a11y.speech.test')) });
   bag.on(speakTestBtn, 'click', () => speak(describeMove({ color: 'w', piece: 'n', from: 'g1', to: 'f3', san: 'Nf3', flags: 'n' })));
   bag.add(cancelSpeech);
   const speakOwnRow = row(t('a11y.speech.own.title'), t('a11y.speech.own.desc'), speakOwnToggle);
@@ -312,7 +312,7 @@ export async function mount(root) {
   bag.add(onVoicesChanged(syncVoiceNote));
 
   const a11ySection = h('section', { class: 'card', id: 'accessibility', 'aria-labelledby': 'settings-a11y-title' },
-    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-a11y-title', html: icon('eye') + `<span>${t('a11y.settings.section')}</span>` })),
+    h('div', { class: 'card-header' }, h('h2', { class: 'card-title', id: 'settings-a11y-title', html: iconLabel('eye', t('a11y.settings.section')) })),
     h('p', { class: 'muted text-sm' }, t('a11y.settings.intro')),
     row(t('a11y.settings.highContrast.title'), t('a11y.settings.highContrast.desc'), toggle('highContrast', t('a11y.settings.highContrast.title'))),
     row(t('a11y.settings.boardContrastRow.title'), t('a11y.settings.boardContrastRow.desc'), h('label', { class: 'switch' }, boardContrastInput, h('span', { class: 'switch-track' }))),
@@ -344,10 +344,10 @@ export async function mount(root) {
     h('div', { class: 'hub-settings-layout' },
       h('div', { class: 'stack-lg hub-settings-main' },
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('palette') + `<span>${t('settings.sections.appearance')}</span>` })),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('palette', t('settings.sections.appearance')) })),
           h('div', { class: 'setting-row hub-language-row' },
             h('div', { class: 'setting-row-text' },
-              h('div', { class: 'setting-row-title', html: icon('globe', { size: 18 }) + `<span>${t('settings.language.title')}</span>`, style: 'display:flex;align-items:center;gap:var(--sp-2)' }),
+              h('div', { class: 'setting-row-title', html: iconLabel('globe', t('settings.language.title'), { size: 18 }), style: 'display:flex;align-items:center;gap:var(--sp-2)' }),
               h('div', { class: 'setting-row-desc' }, t('settings.language.desc')),
               h('div', { class: 'setting-row-desc subtle text-xs' }, t('settings.language.moreSoon'))),
             langPicker),
@@ -355,7 +355,7 @@ export async function mount(root) {
           h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, t('settings.boardColors')), themePicker),
           h('div', { class: 'hub-setting-block' }, h('div', { class: 'setting-row-title' }, t('settings.pieces')), piecePicker)),
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('board') + `<span>${t('settings.sections.board')}</span>` })),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('board', t('settings.sections.board')) })),
           row(t('settings.coords.title'), t('settings.coords.desc'), toggle('showCoords', t('settings.coords.title'))),
           row(t('settings.legal.title'), t('settings.legal.desc'), toggle('showLegal', t('settings.legal.title'))),
           row(t('settings.autoQueen.title'), t('settings.autoQueen.desc'), toggle('autoQueen', t('settings.autoQueen.aria'))),
@@ -364,7 +364,7 @@ export async function mount(root) {
             h('div', { class: 'stack-sm hub-anim-ctl' }, speedSeg, h('div', { class: 'row-sm' }, range, rangeVal))),
           row(t('settings.notation.title'), h('span', null, t('settings.notation.desc'), ' ', notationExample), segmented('moveNotation', [['san', t('settings.notation.letters')], ['figurine', t('settings.notation.figurines')]], t('settings.notation.title')))),
         h('section', { class: 'card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('play') + `<span>${t('settings.sections.playing')}</span>` })),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('play', t('settings.sections.playing')) })),
           row(t('settings.evalBar.title'), t('settings.evalBar.desc'), toggle('showEvalBar', t('settings.evalBar.aria')))),
         soundSection,
         a11ySection,
@@ -372,14 +372,14 @@ export async function mount(root) {
         dataSection.el,
         phoneSection.el,
         h('section', { class: 'card hub-danger' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('alert') + `<span>${t('settings.sections.danger')}</span>` })),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('alert', t('settings.sections.danger')) })),
           row(t('settings.reset.button'), t('settings.reset.desc'), resetSettingsBtn),
           row(t('settings.deleteGames.button'), t('settings.deleteGames.desc'), deleteGamesBtn),
           row(t('settings.resetPuzzles.button'), t('settings.resetPuzzles.desc'), resetPuzzlesBtn),
           row(t('settings.clearData.button'), t('settings.clearData.desc'), clearLocalBtn))),
       h('aside', { class: 'hub-settings-aside' },
         h('div', { class: 'card hub-preview-card' },
-          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: icon('eye') + `<span>${t('settings.preview.title')}</span>` }), resetPreviewBtn),
+          h('div', { class: 'card-header' }, h('div', { class: 'card-title', html: iconLabel('eye', t('settings.preview.title')) }), resetPreviewBtn),
           previewSlot,
           h('p', { class: 'subtle text-xs mt-2' }, t('settings.preview.hint'))))));
   root.appendChild(page);

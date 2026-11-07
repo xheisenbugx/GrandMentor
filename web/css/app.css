@@ -5,6 +5,26 @@
    light theme via <html data-theme="light">.
    ========================================================================== */
 
+/* ---------- 0. Fonts ----------------------------------------------------- */
+/* Inter (variable, weights 100–900), served from web/fonts/ so the app looks the same offline.
+   SIL Open Font License 1.1: web/fonts/Inter-OFL.txt. Latin + Latin Extended subsets (fontsource). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ---------- 1. Tokens ---------------------------------------------------- */
 :root {
   color-scheme: dark;
@@ -282,7 +302,27 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
   :root:not([data-motion="full"]) *, :root:not([data-motion="full"]) *::before, :root:not([data-motion="full"]) *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
 }
 :root[data-motion="reduce"] *, :root[data-motion="reduce"] *::before, :root[data-motion="reduce"] *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
-:root[data-motion="reduce"] .lrn-confetti, :root[data-motion="reduce"] .pz-confetti, :root[data-motion="reduce"] .dp-confetti { display: none !important; }
+:root[data-motion="reduce"] .gm-confetti { display: none !important; }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion="full"]) .gm-confetti { display: none; } }
+
+/* Confetti (ui.js confetti()): a burst from --ox/--oy, or pieces falling from the top edge. */
+.gm-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: var(--z-board-overlay); --dur: 1500ms; --fall: 320px; --g: 0px; --ox: 50%; --oy: 45%; }
+.gm-confetti.is-fixed { position: fixed; z-index: var(--z-sheet); }
+.gm-confetti i {
+  position: absolute; width: 8px; height: 12px; border-radius: 2px; background: var(--c, var(--primary)); opacity: 0;
+  animation-duration: var(--dur); animation-delay: var(--d, 0ms); animation-timing-function: var(--ease-out); animation-fill-mode: forwards;
+}
+.gm-confetti-burst i { left: var(--ox); top: var(--oy); animation-name: gm-confetti-burst; }
+.gm-confetti-fall i { left: var(--x); top: -12px; animation-name: gm-confetti-fall; }
+@keyframes gm-confetti-burst {
+  0% { opacity: 1; transform: translate(-50%, -50%) rotate(0) scale(0.6); }
+  60% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y) + var(--g))) rotate(var(--r)) scale(1); }
+}
+@keyframes gm-confetti-fall {
+  0% { opacity: 1; transform: translate(0, 0) rotate(var(--r0, 0deg)); }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--fall)) rotate(var(--r)); }
+}
 
 /* ---------- 3. App shell ------------------------------------------------- */
 .app {

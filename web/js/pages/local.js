@@ -9,7 +9,7 @@
 
 import { Chess } from '/vendor/chess.js';
 import { api, isAbort, EngineClient } from '../api.js';
-import { h, icon, toast, modal, confirmDialog, disposables, emptyState, escapeHtml } from '../ui.js';
+import { h, icon, toast, modal, confirmDialog, disposables, emptyState, escapeHtml, engineErrorToast, loadCss, confetti, shortcutAllowed } from '../ui.js';
 import { getSettings, pieceUrl } from '../settings.js';
 import { Board } from '../components/board.js';
 import { createMoveInput } from '../components/moveinput.js';
@@ -146,30 +146,12 @@ function parseUci(uci) {
 
 /** Inject /css/local.css once; resolves when loaded (or after a short timeout). */
 function ensureCss() {
-  if (document.querySelector(`link[href="${CSS_HREF}"]`)) return Promise.resolve();
-  return new Promise((resolve) => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = CSS_HREF;
-    link.dataset.pageCss = 'local';
-    let done = false;
-    const finish = () => { if (!done) { done = true; clearTimeout(timer); resolve(); } };
-    const timer = setTimeout(finish, 800);
-    link.addEventListener('load', finish, { once: true });
-    link.addEventListener('error', finish, { once: true });
-    document.head.appendChild(link);
-  });
+  return loadCss(CSS_HREF);
 }
 
 function sideAvatar(c, cls = '') {
   return h('div', { class: `lc-avatar ${c === 'w' ? 'white' : 'black'} ${cls}`.trim(), 'aria-hidden': 'true' },
     h('img', { src: pieceUrl(c === 'w' ? 'wK' : 'bK'), alt: '', draggable: 'false' }));
-}
-
-function isTyping(e) {
-  const el = e.target;
-  if (!el || !(el instanceof Element)) return false;
-  return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
 }
 
 function playSoundSafe(name) {
@@ -642,7 +624,7 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
         rememberEval(fen, line.score);
         if (done) { const e = evals.get(fen); if (e) e.final = true; }
         if (evalbar && g.fens[currentPly()] === fen) evalbar.set(line.score);
-      }, () => { /* engine hiccup: the bar just stays where it was */ });
+      }, (message) => { if (!bag.disposed) engineErrorToast(message); /* the bar stays where it was */ });
     } catch (e) { console.warn('[local] engine', e); }
   }
 
@@ -831,8 +813,7 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
   }
 
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isTyping(e)) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     let handled = true;
     switch (e.key) {
       case 'ArrowLeft': goto(currentPly() - 1); break;
@@ -1065,14 +1046,15 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
   }
 
   function renderAfter() {
-    afterEl.replaceChildren(
+    afterEl.replaceChildren(...[
       plies() >= 2 ? h('button', { type: 'button', class: 'btn btn-primary btn-lg btn-block', html: icon('sparkles') + `<span>${escapeHtml(t('local.after.review'))}</span>`, onClick: async (e) => { const b = e.currentTarget; b.classList.add('loading'); try { await goReview(); } finally { b.classList.remove('loading'); } } }) : null,
       h('div', { class: 'row-sm' },
         h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('refresh') + `<span>${escapeHtml(t('local.after.rematch'))}</span>`, onClick: () => rematch() }),
         h('button', { type: 'button', class: 'btn btn-secondary grow', html: icon('users') + `<span>${escapeHtml(t('local.after.newGame'))}</span>`, onClick: () => onNewGame() })),
       h('div', { class: 'row-sm' },
         h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('analysis') + `<span>${escapeHtml(t('local.after.analyze'))}</span>`, onClick: () => { location.hash = `#/analysis?fen=${encodeURIComponent(chess.fen())}`; } }),
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + `<span>${escapeHtml(t('local.actions.flip'))}</span>`, onClick: () => onFlip() })));
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm grow', html: icon('flip') + `<span>${escapeHtml(t('local.actions.flip'))}</span>`, onClick: () => onFlip() })),
+    ].filter(Boolean));
   }
 
   function showGameOver() {
@@ -1081,7 +1063,7 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
     const player = (c) => h('div', { class: ['lc-go-player', win === c && 'winner'] }, sideAvatar(c, 'lg'), h('div', { class: 'semibold truncate' }, nameOf(c)), h('div', { class: 'subtle text-xs' }, sideLabel(c)));
     const scoreText = g.result === '1/2-1/2' ? '½ – ½' : g.result === '1-0' ? '1 – 0' : '0 – 1';
     const body = h('div', { class: ['lc-go', win ? 'lc-go-win' : 'lc-go-draw'] },
-      win ? confetti() : null,
+      win ? confetti(null, { kind: 'fall', duration: 1600, colors: ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--cls-brilliant)', 'var(--cls-mistake)'], later: bag.timeout, removeAfter: 4000 }).el : null,
       h('div', { class: 'result-hero' },
         h('div', { class: 'lc-go-icon', html: icon(win ? 'trophy' : 'handshake') }),
         h('div', { class: 'result-hero-title' }, resultHeadline()),
@@ -1100,14 +1082,6 @@ function buildGame(bag, host, ctx, cfg, { onNewGame, onRematch }) {
     gameOverModal = modal({ title: t('local.gameOver.title'), body, actions, onClose: () => { gameOverModal = null; } });
   }
 
-  function confetti() {
-    const wrap = h('div', { class: 'lc-confetti', 'aria-hidden': 'true' });
-    const colors = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--accent)', 'var(--cls-brilliant)', 'var(--cls-mistake)'];
-    for (let i = 0; i < 36; i++) {
-      wrap.appendChild(h('i', { style: { '--x': `${Math.round(Math.random() * 100)}%`, '--d': `${(Math.random() * 0.6).toFixed(2)}s`, '--r': `${Math.round(Math.random() * 720 - 360)}deg`, '--c': colors[i % colors.length], '--dx': `${Math.round(Math.random() * 120 - 60)}px` } }));
-    }
-    return wrap;
-  }
 
   // ---- Persistence (resume unfinished games) -----------------------------
   function persist() {

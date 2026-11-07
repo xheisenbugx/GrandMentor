@@ -4,7 +4,7 @@
 // Charts are plain SVG/CSS using design tokens; no libraries.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml } from '../ui.js';
+import { h, icon, pageHeader, disposables, emptyState, skeleton, toast, escapeHtml, loadCss } from '../ui.js';
 import { t, hasKey, formatNumber, formatDateIntl } from '../i18n.js';
 import { pieceUrl } from '../settings.js';
 import { weeklyInsightsCard } from '../components/weekly-card.js';
@@ -22,12 +22,7 @@ const pct1 = (v) => `${formatNumber(Math.round(num(v) * 10) / 10)}%`;
 
 /** Inject /css/insights.css once (also linked from index.html; idempotent). */
 export function ensureInsightsCss() {
-  if (document.querySelector('link[data-page-css="insights"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/insights.css';
-  link.dataset.pageCss = 'insights';
-  document.head.appendChild(link);
+  return loadCss('/css/insights.css');
 }
 
 /** Label for a puzzle theme id (falls back to the raw id). */

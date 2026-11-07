@@ -14,14 +14,14 @@
 
 import {
   h, icon, disposables, pageHeader, emptyState, loadingBlock, skeleton, escapeHtml, formatSan,
-  formatRelative, toast, modal, confirmDialog,
+  formatRelative, toast, modal, confirmDialog, loadCss, confetti, shortcutAllowed,
 } from '../ui.js';
 import { api, qs, isAbort } from '../api.js';
 import { getSetting, pieceUrl, scrollBehavior } from '../settings.js';
 import { createMoveInput } from '../components/moveinput.js';
 import { Board } from '../components/board.js';
 import {
-  ensureLearnCss, START_FEN, fenKey, timerSet, confetti, sfx, setFeedback, readStore, writeStore,
+  ensureLearnCss, START_FEN, fenKey, timerSet, sfx, setFeedback, readStore, writeStore,
 } from './learn.js';
 import { t } from '../i18n.js';
 import { practiceHref, MAX_LINE_PLIES } from '../components/practice.js';
@@ -35,12 +35,7 @@ const MAX_RETRY = 20;
 const DAY_S = 86400;
 
 function ensureCss() {
-  if (document.querySelector('link[data-page-css="repertoire"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/repertoire.css';
-  link.dataset.pageCss = 'repertoire';
-  document.head.appendChild(link);
+  return loadCss('/css/repertoire.css');
 }
 
 // ---------------------------------------------------------------------------
@@ -414,9 +409,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
     });
     mb.add(() => { if (board) board.destroy(); board = null; });
     mb.on(window, 'keydown', (e) => {
-      if (mode !== 'build' || e.defaultPrevented) return;
-      const tag = (e.target && e.target.tagName) || '';
-      if (/INPUT|TEXTAREA|SELECT/.test(tag) || (e.target && e.target.isContentEditable)) return;
+      if (mode !== 'build' || !shortcutAllowed(e)) return;
       if (e.key === 'ArrowLeft') { e.preventDefault(); navBtns.prev.click(); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); navBtns.next.click(); }
       else if (e.key === 'Home') { e.preventDefault(); select(0); }
@@ -898,7 +891,8 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       failedHere = true;
       stats.reviewed++;
       if (!isRetry) {
-        api.post('/api/repertoire/drill/attempt', { node_id: n.id, uci }, { signal }).then((r) => {
+        api.post('/api/repertoire/drill/attempt', { node_id: n.id, uci }, { keepalive: true }).then((r) => {
+          if (bag.disposed) return;
           if (r && r.card && n.is_due) { n.is_due = false; dueTotal = Math.max(0, dueTotal - 1); renderStats(); }
         }).catch(() => {});
       }
@@ -937,7 +931,8 @@ export async function mount(root, { params = {}, query = {} } = {}) {
         stats.reviewed++;
         stats.correct++;
         if (!isRetry) {
-          api.post('/api/repertoire/drill/attempt', { node_id: n.id, uci: mv.uci }, { signal }).then((r) => {
+          api.post('/api/repertoire/drill/attempt', { node_id: n.id, uci: mv.uci }, { keepalive: true }).then((r) => {
+            if (bag.disposed) return;
             if (r && n.is_due) { n.is_due = false; dueTotal = Math.max(0, dueTotal - 1); renderStats(); }
           }).catch(() => {});
         }
@@ -973,7 +968,7 @@ export async function mount(root, { params = {}, query = {} } = {}) {
       renderStats();
       showBtn.disabled = true;
       skipBtn.disabled = true;
-      if (stats.reviewed) { sfx('gameEnd'); confetti(host, timers); }
+      if (stats.reviewed) { sfx('gameEnd'); confetti(host, { duration: 1300, later: timers.later }); }
       loadSummary().then(() => { if (!bag.disposed) renderChrome(); }).catch(() => {});
     }
 

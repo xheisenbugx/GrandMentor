@@ -8,14 +8,14 @@
 // went wrong. Attempts are recorded with POST /api/training/:id/attempt; 3 successes in a row
 // master a drill. Attempts that used help (best-move hint or takeback) are not recorded.
 
-import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, formatSan, loadingBlock } from '../ui.js';
+import { h, icon, disposables, pageHeader, emptyState, skeleton, mdLite, escapeHtml, formatSan, loadingBlock, tHtml, loadCss, confetti, shortcutAllowed } from '../ui.js';
 import { api, isAbort } from '../api.js';
 import { getSetting, scrollBehavior } from '../settings.js';
 import { Board } from '../components/board.js';
 import { createMoveInput } from '../components/moveinput.js';
 import {
   ensureLearnCss, chessAt, applyUci, moveUci, sideToMove, fenKey, miniBoardSvg, levelPill, timerSet,
-  confetti, flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
+  flashClass, sfx, setFeedback, breadcrumbs, errorBlock,
 } from './learn.js';
 import { t } from '../i18n.js';
 
@@ -39,12 +39,7 @@ const catBlurb = (c) => (CATEGORY_ORDER.includes(c) ? t(`endgames.categories.${c
 const catRank = (c) => { const i = CATEGORY_ORDER.indexOf(c); return i < 0 ? 99 : i; };
 
 function ensureEndgamesCss() {
-  if (document.querySelector('link[data-gm-css="endgames"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/css/endgames.css';
-  link.dataset.gmCss = 'endgames';
-  document.head.appendChild(link);
+  return loadCss('/css/endgames.css');
 }
 
 function goalOf(d) { return d && d.goal === 'draw' ? 'draw' : 'win'; }
@@ -221,8 +216,7 @@ async function mountDrill(root, id, bag, signal) {
   let engineCtrl = null;
   let hintCtrl = null;
   let baseCtrl = null;
-  let saveCtrl = null;
-  bag.add(() => { for (const c of [engineCtrl, hintCtrl, baseCtrl, saveCtrl]) if (c) c.abort(); });
+  bag.add(() => { for (const c of [engineCtrl, hintCtrl, baseCtrl]) if (c) c.abort(); });
 
   // ------------------------------------------------------------------ state
   let phase = 'lesson';      // lesson | practice
@@ -526,10 +520,9 @@ async function mountDrill(root, id, bag, signal) {
   async function record(won) {
     if (recorded || assisted) return null;
     recorded = true;
-    if (saveCtrl) saveCtrl.abort();
-    saveCtrl = new AbortController();
     try {
-      const res = await api.post(`/api/training/${encodeURIComponent(drill.id)}/attempt`, { success: won, moves: Math.min(500, userMoveCount()) }, { signal: saveCtrl.signal, timeout: 10000 });
+      // keepalive, no page signal: leaving right after the drill must not cancel the save.
+      const res = await api.post(`/api/training/${encodeURIComponent(drill.id)}/attempt`, { success: won, moves: Math.min(500, userMoveCount()) }, { keepalive: true, timeout: 10000 });
       if (bag.disposed) return null;
       if (res && res.drill_id) { progress = res; renderMastery(); }
       return res;
@@ -561,7 +554,7 @@ async function mountDrill(root, id, bag, signal) {
     botLinkSlot.replaceChildren(); // the result box has its own link
     if (won) {
       sfx('gameEnd');
-      confetti(boardSlot, timers, { count: 48 });
+      confetti(boardSlot, { count: 48, duration: 1300, later: timers.later });
       flashClass(boardWrap, 'flash-good', timers, 1000);
     } else {
       sfx('wrong');
@@ -580,7 +573,7 @@ async function mountDrill(root, id, bag, signal) {
     if (won && res.just_mastered) {
       box.querySelector('h2').textContent = t('endgames.justMastered');
       box.insertBefore(h('p', { class: 'eg-streak-note' }, masteryBadge(), ' ', t('endgames.masteredText')), actions);
-      confetti(boardSlot, timers, { count: 72 });
+      confetti(boardSlot, { count: 72, duration: 1300, later: timers.later });
     } else if (won && !res.mastered) {
       const streak = Math.min(need, res.streak || 0);
       box.insertBefore(h('p', { class: 'eg-streak-note' }, masteryDots(res, need), ' ', t('endgames.streakText', { count: streak, left: Math.max(0, need - streak) })), actions);
@@ -715,7 +708,7 @@ async function mountDrill(root, id, bag, signal) {
     assisted = true;
     board.setArrows([{ from: best.uci.slice(0, 2), to: best.uci.slice(2, 4), color: 'green' }]);
     board.setHighlights([{ square: best.uci.slice(0, 2), kind: 'hint' }]);
-    setFeedback(feedback, 'warn', `${t('endgames.engineSuggests', { san: escapeHtml(sanOf(best.san)) })} <span class="subtle">${escapeHtml(t('endgames.practice.assisted'))}</span>`);
+    setFeedback(feedback, 'warn', `${tHtml('endgames.engineSuggests', { san: sanOf(best.san) })} <span class="subtle">${escapeHtml(t('endgames.practice.assisted'))}</span>`);
   }
 
   function cancelEngine() {
@@ -752,10 +745,7 @@ async function mountDrill(root, id, bag, signal) {
   }
 
   bag.on(window, 'keydown', (e) => {
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-    const tgt = e.target;
-    if (tgt && (tgt.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tgt.tagName))) return;
-    if (document.querySelector('.modal-backdrop')) return;
+    if (!shortcutAllowed(e)) return;
     if (e.key === 'f' || e.key === 'F') board.flip();
     else if (phase === 'lesson') {
       if (e.key === 'ArrowRight') { e.preventDefault(); if (lessonIdx < lessonSteps.length - 1) showLesson(lessonIdx + 1); else startPractice(true); }

@@ -10,9 +10,8 @@
 // Days are UTC calendar days, matching the server.
 
 import { api, isAbort } from '../api.js';
-import { h, icon, disposables, modal, toast } from '../ui.js';
+import { h, icon, disposables, modal, toast, iconLabel, loadCss, confetti } from '../ui.js';
 import { t, formatDateIntl, formatNumber } from '../i18n.js';
-import { reducedMotion } from '../settings.js';
 
 const PLAN_KEY = 'grandmentor.daily.plan.v1';
 const CELEBRATED_KEY = 'grandmentor.daily.celebrated.v1';
@@ -123,31 +122,9 @@ function writeJson(key, value) {
 }
 
 /** Load web/css/daily.css once. */
-let cssPromise = null;
 export function ensureDailyCss() {
-  if (cssPromise) return cssPromise;
-  const existing = document.querySelector('link[data-daily-css]');
-  if (existing && existing.sheet) { cssPromise = Promise.resolve(); return cssPromise; }
-  cssPromise = new Promise((resolve) => {
-    const link = existing || document.createElement('link');
-    let timer = 0;
-    const done = () => { clearTimeout(timer); link.removeEventListener('load', done); link.removeEventListener('error', done); resolve(); };
-    link.addEventListener('load', done);
-    link.addEventListener('error', done);
-    timer = setTimeout(done, 1500);
-    if (!existing) {
-      link.rel = 'stylesheet';
-      link.href = '/css/daily.css';
-      link.dataset.dailyCss = '1';
-      document.head.appendChild(link);
-    }
-  });
-  return cssPromise;
+  return loadCss('/css/daily.css');
 }
-
-const prefersReducedMotion = () => {
-  try { return reducedMotion(); } catch { return false; }
-};
 
 const utcDate = (day) => new Date(`${day}T12:00:00Z`);
 
@@ -172,7 +149,7 @@ export class DailyPanel {
     const open = readJson(HEATMAP_KEY) === true;
     this.heatEl = h('details', { class: 'card dp-heat', open: open || null },
       h('summary', { class: 'dp-heat-summary' },
-        h('span', { class: 'dp-heat-title', html: icon('calendar') + `<span>${t('daily.heatmap.title')}</span>` }),
+        h('span', { class: 'dp-heat-title', html: iconLabel('calendar', t('daily.heatmap.title')) }),
         h('span', { class: 'dp-heat-meta subtle text-sm' }),
         h('span', { class: 'dp-heat-chev', 'aria-hidden': 'true', html: icon('chevron-down') })),
       this.heatBody);
@@ -390,7 +367,7 @@ export class DailyPanel {
         h('div', { class: 'hub-eyebrow' }, t('daily.goal.title')),
         h('div', { class: 'dp-goal-name' }, `${goalName} · ${unit}`),
         h('p', { class: 'muted text-sm dp-goal-msg' }, p.met ? t('daily.goal.metText') : p.value > 0 ? t('daily.goal.progressText', { count: Math.max(0, p.target - p.value), unit: g.kind === 'activities' ? t('daily.goal.activitiesWord', { count: Math.max(0, p.target - p.value) }) : t('daily.goal.minutesWord', { count: Math.max(0, p.target - p.value) }) }) : t('daily.goal.startText')),
-        h('button', { type: 'button', class: 'btn btn-ghost btn-sm dp-goal-edit', html: icon('edit', { size: 16 }) + `<span>${t('daily.goal.change')}</span>`, onClick: () => this.openGoalPicker() })));
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm dp-goal-edit', html: iconLabel('edit', t('daily.goal.change'), { size: 16 }), onClick: () => this.openGoalPicker() })));
 
     if (p.met) this.maybeCelebrate(s.date);
   }
@@ -399,20 +376,12 @@ export class DailyPanel {
     if (readJson(CELEBRATED_KEY) === date) return;
     writeJson(CELEBRATED_KEY, date);
     toast(t('daily.goal.celebrate'), 'success');
-    if (prefersReducedMotion()) return;
-    const colors = ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)'];
     const rnd = seededRandom(`confetti:${date}`);
-    const layer = h('div', { class: 'dp-confetti', 'aria-hidden': 'true' }, Array.from({ length: 36 }, (_, i) => h('i', {
-      style: {
-        '--x': `${Math.round((rnd() - 0.5) * 320)}px`,
-        '--y': `${Math.round(-60 - rnd() * 160)}px`,
-        '--r': `${Math.round(rnd() * 720 - 360)}deg`,
-        '--d': `${Math.round(rnd() * 250)}ms`,
-        '--c': colors[i % colors.length],
-      },
-    })));
-    this.goalEl.appendChild(layer);
-    this.bag.timeout(() => layer.remove(), 2200);
+    confetti(this.goalEl, {
+      count: 36, duration: 1500, gravity: 140, rand: rnd, className: 'dp-confetti', later: this.bag.timeout, removeAfter: 2200,
+      colors: ['var(--primary)', 'var(--gold)', 'var(--info)', 'var(--cls-brilliant)', 'var(--cls-mistake)'],
+      piece: (i, r) => ({ '--x': `${Math.round((r() - 0.5) * 320)}px`, '--y': `${Math.round(-60 - r() * 160)}px`, '--r': `${Math.round(r() * 720 - 360)}deg`, '--d': `${Math.round(r() * 250)}ms`, width: null }),
+    });
   }
 
   openGoalPicker() {

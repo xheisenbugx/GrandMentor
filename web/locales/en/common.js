@@ -75,6 +75,13 @@ export default {
   lessons: { one: '{count} lesson', other: '{count} lessons' },
   minutes: { one: '{count} min', other: '{count} min' },
   seconds: { one: '{count} s', other: '{count} s' },
+  errors: {
+    timeout: 'The server took too long to respond. Try again in a moment.',
+    unreachable: 'Can’t reach the GrandMentor server. Is it running?',
+    requestFailed: 'Something went wrong (error {status}). Please try again.',
+    engine: 'The engine ran into a problem.',
+    engineUnreachable: 'Can’t reach the engine right now. Check that GrandMentor is running, then try again.',
+  },
   pieces: {
     king: 'King',
     queen: 'Queen',
