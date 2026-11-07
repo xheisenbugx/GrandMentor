@@ -326,7 +326,9 @@ async fn login_post(
             };
             (status, Json(json!({ "error": msg }))).into_response()
         } else {
-            (status, Html(login::page(lang, &next, Some(err)))).into_response()
+            let mut r = (status, Html(login::page(lang, &next, Some(err)))).into_response();
+            r.headers_mut().insert(header::CONTENT_SECURITY_POLICY, crate::web::csp_header(&[]));
+            r
         };
         if let Some(secs) = retry {
             if let Ok(v) = HeaderValue::from_str(&secs.to_string()) {
@@ -415,6 +417,8 @@ async fn login_page(
     let lang = lang_of(&uri, &headers);
     let mut res = Html(login::page(lang, &next, None)).into_response();
     res.headers_mut().insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+    // The sign-in page has no scripts at all.
+    res.headers_mut().insert(header::CONTENT_SECURITY_POLICY, crate::web::csp_header(&[]));
     res
 }
 

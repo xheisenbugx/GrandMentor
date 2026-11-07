@@ -3,6 +3,7 @@
 pub mod api;
 pub mod cache;
 pub mod error;
+pub mod guard;
 pub mod lang;
 pub mod phone;
 pub mod puzzles;
@@ -62,8 +63,9 @@ pub fn app(state: AppState, web_dir: &Path) -> Router {
     app_with_phone(state, web_dir, phone::PhoneState::in_memory(), phone::Transport::Http)
 }
 
-/// Build the application router for one listener. Every request passes the access gate
-/// (`phone::gate`): this computer always gets in, other devices need the access PIN.
+/// Build the application router for one listener. Every request passes the request guard
+/// (`guard`: known host names only, no state changes from other websites) and then the access
+/// gate (`phone::gate`): this computer always gets in, other devices need the access PIN.
 pub fn app_with_phone(state: AppState, web_dir: &Path, phone: Arc<phone::PhoneState>, transport: phone::Transport) -> Router {
     let api = api::router()
         .merge(phone::routes::api_router().with_state(Arc::clone(&phone)))
@@ -87,9 +89,10 @@ pub fn app_with_phone(state: AppState, web_dir: &Path, phone: Arc<phone::PhoneSt
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         );
 
+    let pairing = Arc::clone(&state.pairing);
     let cors = CorsLayer::new()
-        .allow_origin(AllowOrigin::predicate(|origin, parts| {
-            is_local_origin(origin.as_bytes()) || routes::backup::sync_cors_allowed(origin, parts)
+        .allow_origin(AllowOrigin::predicate(move |origin, parts| {
+            is_local_origin(origin.as_bytes()) || routes::backup::sync_cors_allowed(&pairing, origin, parts)
         }))
         .allow_methods([
             Method::GET,
@@ -107,12 +110,14 @@ pub fn app_with_phone(state: AppState, web_dir: &Path, phone: Arc<phone::PhoneSt
         .max_age(Duration::from_secs(3600));
 
     let gate = phone::gate::GateCtx { phone: Arc::clone(&phone), transport };
+    let guard = guard::GuardCtx::new(Arc::clone(&phone));
     Router::new()
         .nest("/api", api)
         .merge(phone::routes::page_router().with_state(phone))
         .with_state(state)
         .fallback_service(web::router(web_dir))
         .layer(axum::middleware::from_fn_with_state(gate, phone::gate::gate))
+        .layer(axum::middleware::from_fn_with_state(guard, guard::guard))
         .layer(CompressionLayer::new())
         .layer(cors)
         .layer(CatchPanicLayer::custom(panic_response))

@@ -253,7 +253,7 @@ async fn wrong_pins_are_rate_limited_per_device() {
     let app = f.app(&phone, Transport::Https);
     let pin = current_pin(&app).await;
     let wrong = if pin == "000000" { "111111" } else { "000000" };
-    for _ in 0..gm_server::phone::access::PER_IP_FAILURES - 1 {
+    for _ in 0..gm_server::phone::access::PER_IP_FREE - 1 {
         assert_eq!(login(&app, wrong, PHONE).await.status(), StatusCode::UNAUTHORIZED);
     }
     // The 5th wrong try locks this device…

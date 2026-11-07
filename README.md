@@ -336,6 +336,8 @@ Run from the repository root so `./data` and `./web` are found. Your games live 
 | `GM_ENGINES` | cores − 1, clamped to 2–8 | Engines in the search pool, one thread each |
 | `GM_TT_MB` | `32` | Hash table per engine (MB). Memory ≈ `GM_ENGINES × GM_TT_MB`. |
 | `GM_SYNC_ALLOW_ORIGINS` | – | Extra origins allowed to sync with this device (pairing code still required) |
+| `GM_ALLOWED_HOSTS` | – | Extra host names accepted in the `Host` header (e.g. your own DNS name); `localhost`, IP addresses and `<hostname>.local` always work |
+| `GM_DEV` | off | `1` serves the `web/dev/` component demos in release builds |
 | `ANTHROPIC_API_KEY` | – | Enables the Claude-powered mentor chat |
 | `GM_MENTOR_MODEL` | `claude-opus-5-5` | Claude model used by the mentor |
 | `RUST_LOG` | `info` | Log filter |
