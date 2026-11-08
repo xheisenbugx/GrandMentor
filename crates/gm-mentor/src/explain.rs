@@ -36,12 +36,11 @@ impl Cat {
 }
 
 /// Score in centipawns from `side`'s point of view; mates are mapped to +-100000 (nearer = bigger).
+/// `score` is white POV; `Mate(0)` means white has already checkmated (see `Score`).
 pub(crate) fn pov_cp(score: Score, side: Color) -> i32 {
     let white = match score {
         Score::Cp(c) => c.clamp(-50_000, 50_000),
-        Score::Mate(m) if m > 0 => 100_000 - m.min(1000),
-        Score::Mate(m) if m < 0 => -100_000 - m.max(-1000),
-        Score::Mate(_) => 0,
+        mate => mate.to_cp(),
     };
     match side {
         Color::White => white,
@@ -79,28 +78,6 @@ fn category(cls: &str, drop: i32) -> Cat {
     }
 }
 
-/// Pick the template list for `lang` (English, Spanish, Portuguese, French, German).
-fn t<'a>(lang: Lang, en: &'a [&'a str], es: &'a [&'a str], pt: &'a [&'a str], fr: &'a [&'a str], de: &'a [&'a str]) -> &'a [&'a str] {
-    match lang {
-        Lang::En => en,
-        Lang::Es => es,
-        Lang::Pt => pt,
-        Lang::Fr => fr,
-        Lang::De => de,
-    }
-}
-
-/// Pick one string for `lang` from `[en, es, pt, fr, de]`.
-fn l5(lang: Lang, s: [&'static str; 5]) -> &'static str {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-}
-
 /// Variables for a piece standing on `sq` (the king is just "the king").
 fn pv(prefix: &str, role: Role, sq: Square, lang: Lang) -> Vec<(String, String)> {
     PieceRef::on_or_king(role, sq).vars(prefix, lang)
@@ -122,15 +99,14 @@ fn cat(mut a: Vec<(String, String)>, b: Vec<(String, String)>) -> Vec<(String, S
 pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     if f.is_mate {
-        out.push(l5(lang, ["delivers checkmate", "da jaque mate", "dá xeque-mate", "donne échec et mat", "setzt matt"]).to_string());
+        out.push(lang.pick(["delivers checkmate", "da jaque mate", "dá xeque-mate", "donne échec et mat", "setzt matt"]).to_string());
         return out;
     }
     if f.fork.len() >= 2 {
         let (a, b) = (f.fork[0], f.fork[1]);
         let tpl = p.pick(
             11,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &[
                     "forks {a} and {b} — they can't both be saved",
                     "attacks {a} and {b} at the same time, a classic fork",
@@ -156,21 +132,20 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
                     "greift gleichzeitig {a_acc} und {b_acc} an, eine klassische Gabel",
                     "stellt eine Gabel: {a} und {b} sind gleichzeitig angegriffen",
                 ],
-            ),
+            ]),
         );
         out.push(fill(tpl, &cat(pv("a", a.1, a.0, lang), pv("b", b.1, b.0, lang))));
     }
     if let Some(m) = &f.stops_mate {
         let tpl = p.pick(
             25,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["stops the threat of {m}", "defends against {m}, which was threatening mate", "shuts down the mating threat {m}"],
                 &["frena la amenaza de {m}", "se defiende de {m}, que amenazaba mate", "neutraliza la amenaza de mate {m}"],
                 &["impede a ameaça de {m}", "se defende de {m}, que ameaçava mate", "neutraliza a ameaça de mate {m}"],
                 &["pare la menace {m}", "se défend contre {m}, qui menaçait de faire mat", "neutralise la menace de mat {m}"],
                 &["wehrt die Drohung {m} ab", "verteidigt sich gegen das drohende Matt mit {m}", "schaltet die Mattdrohung {m} aus"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &kv(&[("m", m)])));
     }
@@ -180,32 +155,29 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
             let tpl = if f.material_lead < 0 {
                 p.pick(
                     12,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["wins back the {c_n}", "recaptures the {c_n} and restores the balance", "takes back the {c_n}"],
                         &["recupera material capturando {c}", "captura {c} y restablece el equilibrio", "recupera material al llevarse {c}"],
                         &["recupera material capturando {c}", "captura {c} e restabelece o equilíbrio", "recupera material ao tomar {c}"],
                         &["regagne du matériel en prenant {c}", "prend {c} et rétablit l'équilibre", "récupère du matériel en capturant {c}"],
                         &["gewinnt {c_acc} zurück", "schlägt {c_acc} und stellt das Gleichgewicht wieder her", "holt sich {c_acc} zurück"],
-                    ),
+                    ]),
                 )
             } else if !f.recapturable && f.capture_net >= value(cap) - 10 {
                 p.pick(
                     12,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["wins {c_un} for free", "picks up a free {c_n}", "grabs the undefended {c_n}"],
                         &["gana {c_un} gratis", "se lleva {c_un} gratis", "captura {c} indefens{c_o}"],
                         &["ganha {c_un} de graça", "leva {c_un} de graça", "captura {c} indefes{c_o}"],
                         &["gagne {c_un} gratuitement", "empoche {c_un} gratuitement", "prend {c}, qui n'était pas défendu{c_o}"],
                         &["gewinnt {c_un_acc} umsonst", "schnappt sich {c_un_acc} gratis", "kassiert {c_acc}, ohne etwas dafür zu geben"],
-                    ),
+                    ]),
                 )
             } else if f.capture_net >= value(cap) - 30 {
-                l5(lang, ["wins {c_un}", "gana {c_un}", "ganha {c_un}", "gagne {c_un}", "gewinnt {c_un_acc}"])
+                lang.pick(["wins {c_un}", "gana {c_un}", "ganha {c_un}", "gagne {c_un}", "gewinnt {c_un_acc}"])
             } else {
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "comes out ahead in the exchange",
                         "sale ganando en el intercambio",
@@ -223,32 +195,29 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
         let tpl = match l.kind {
             LineKind::Pin => p.pick(
                 13,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["pins {f} to {b}", "sets up a pin: {f} can't move without exposing {b}"],
                     &["clava {f} contra {b}", "crea una clavada: {f} no puede moverse sin dejar expuest{b_o} {b}"],
                     &["crava {f} contra {b}", "cria uma cravada: {f} não pode se mover sem deixar expost{b_o} {b}"],
                     &["cloue {f} sur {b}", "crée un clouage : {f} ne peut pas bouger sans exposer {b}"],
                     &["fesselt {f_acc} an {b_acc}", "baut eine Fesselung auf: {f} kann nicht ziehen, ohne {b_acc} preiszugeben"],
-                ),
+                ]),
             ),
             LineKind::Skewer => p.pick(
                 14,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["skewers {f} and {b} behind it", "lines up a skewer through {f} to {b}"],
                     &["hace una enfilada {f_al}, con {b} detrás", "ataca en enfilada {f_al} y {b_al}, que está detrás"],
                     &["faz um espeto: ataca {f}, com {b} logo atrás", "ataca em espeto {f} e {b}, que está atrás"],
                     &["fait une enfilade sur {f}, avec {b} derrière", "aligne {f} et {b} en enfilade"],
                     &["spießt {f_acc} auf – dahinter steht {b}", "stellt einen Spieß: erst {f}, dahinter {b}"],
-                ),
+                ]),
             ),
         };
         out.push(fill(tpl, &v));
     }
     if let Some(r) = f.promotion {
-        let tpl = l5(
-            lang,
+        let tpl = lang.pick(
             [
                 "promotes the pawn to {r_un}",
                 "corona el peón y consigue {r_un}",
@@ -262,14 +231,13 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
     if let Some(m) = &f.threatens_mate {
         let tpl = p.pick(
             15,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["threatens {m} with checkmate", "sets up a mating threat ({m})", "creates the threat of {m}, checkmate"],
                 &["amenaza mate con {m}", "prepara una amenaza de mate ({m})", "crea la amenaza de {m}, jaque mate"],
                 &["ameaça mate com {m}", "prepara uma ameaça de mate ({m})", "cria a ameaça de {m}, xeque-mate"],
                 &["menace de faire mat avec {m}", "prépare une menace de mat ({m})", "crée la menace {m}, échec et mat"],
                 &["droht Matt mit {m}", "baut eine Mattdrohung auf ({m})", "stellt die Drohung {m} auf – Schachmatt"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &kv(&[("m", m)])));
     }
@@ -277,8 +245,7 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
         if f.material_lead >= 2 {
             let tpl = p.pick(
                 17,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &[
                         "trades pieces — a great idea when you're ahead in material",
                         "simplifies the position, which helps the side that's ahead",
@@ -299,24 +266,23 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
                         "tauscht Figuren – eine gute Idee, wenn du materiell vorne liegst",
                         "vereinfacht die Stellung, was der stärkeren Seite hilft",
                     ],
-                ),
+                ]),
             );
             out.push(tpl.to_string());
         } else {
             let ns = match f.captured {
                 Some(r) => piece_plural(r, lang),
-                None => l5(lang, ["pieces", "piezas", "peças", "pièces", "Figuren"]),
+                None => lang.pick(["pieces", "piezas", "peças", "pièces", "Figuren"]),
             };
             let tpl = p.pick(
                 18,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["keeps the material balanced by trading {ns}", "recaptures and keeps material level", "completes a fair trade of {ns}"],
                     &["mantiene el equilibrio material cambiando {ns}", "recaptura y mantiene el material igualado", "completa un cambio justo de {ns}"],
                     &["mantém o equilíbrio material trocando {ns}", "recaptura e mantém o material igualado", "completa uma troca justa de {ns}"],
                     &["garde l'équilibre matériel en échangeant des {ns}", "reprend et garde l'égalité matérielle", "conclut un échange équitable de {ns}"],
                     &["hält durch den Tausch der {ns} das Material ausgeglichen", "schlägt zurück und hält das Material ausgeglichen", "schließt einen fairen Tausch der {ns} ab"],
-                ),
+                ]),
             );
             out.push(fill(tpl, &kv(&[("ns", ns)])));
         }
@@ -324,21 +290,19 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
     if let Some((sq, r)) = f.new_threat {
         let v = pv("p", r, sq, lang);
         let tpl = if r == Role::Queen {
-            l5(
-                lang,
+            lang.pick(
                 ["attacks the queen on {sq}", "ataca a la dama en {sq}", "ataca a dama em {sq}", "attaque la dame en {sq}", "greift die Dame auf {sq} an"],
             )
         } else {
             p.pick(
                 16,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["attacks {p}, which is now in trouble", "goes after {p}", "puts pressure on {p}"],
                     &["ataca {p_al}, que ahora está en apuros", "persigue {p_al}", "presiona {p_al}"],
                     &["ataca {p}, que agora está em apuros", "vai atrás {p_del}", "pressiona {p}"],
                     &["attaque {p}, qui est maintenant en difficulté", "s'en prend {p_al}", "met la pression sur {p}"],
                     &["greift {p_acc} an – {p_er} gerät jetzt in Schwierigkeiten", "nimmt {p_acc} ins Visier", "setzt {p_acc} unter Druck"],
-                ),
+                ]),
             )
         };
         out.push(fill(tpl, &cat(v, kv(&[("sq", &sq.to_string())]))));
@@ -346,36 +310,33 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
     if let Some((sq, r)) = f.defends.filter(|_| f.captured.is_none()) {
         let tpl = p.pick(
             26,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["protects {p}", "takes care of {p}, which was under attack"],
                 &["defiende {p}", "protege {p}, que estaba atacad{p_o}"],
                 &["defende {p}", "protege {p}, que estava sob ataque"],
                 &["défend {p}", "protège {p}, qui était attaqué{p_o}"],
                 &["deckt {p_acc}", "schützt {p_acc} vor dem Angriff"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &pv("p", r, sq, lang)));
     }
     if f.saves_piece {
         let tpl = p.pick(
             19,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["moves {p} out of danger", "rescues the attacked {p_n}", "gets {p} to safety"],
                 &["saca {p} del peligro", "rescata {p} atacad{p_o}", "pone {p} a salvo"],
                 &["tira {p} do perigo", "salva {p} atacad{p_o}", "coloca {p} em segurança"],
                 &["met {p} hors de danger", "sauve {p} attaqué{p_o}", "met {p} à l'abri"],
                 &["bringt {p_acc} aus der Gefahrenzone", "rettet {p_acc} vor dem Angriff", "bringt {p_acc} in Sicherheit"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &rv("p", f.role, lang)));
     }
     if f.castle.is_some() {
         let tpl = p.pick(
             20,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &[
                     "castles, tucking the king into safety and connecting the rooks",
                     "gets the king safe and brings a rook toward the center",
@@ -401,21 +362,20 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
                     "bringt den König in Sicherheit und einen Turm Richtung Zentrum",
                     "ist eine Rochade – Königssicherheit zuerst, und jetzt arbeiten die Türme zusammen",
                 ],
-            ),
+            ]),
         );
         out.push(tpl.to_string());
     }
     if f.develops {
         let tpl = p.pick(
             21,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["develops {p} toward the center", "brings {p} into the game", "gets another piece into play"],
                 &["desarrolla {p} hacia el centro", "pone {p} en juego", "pone en juego otra pieza"],
                 &["desenvolve {p} em direção ao centro", "coloca {p} em jogo", "coloca mais uma peça em jogo"],
                 &["développe {p} vers le centre", "fait entrer {p} dans le jeu", "met une pièce de plus en jeu"],
                 &["entwickelt {p_acc} Richtung Zentrum", "bringt {p_acc} ins Spiel", "bringt eine weitere Figur ins Spiel"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &rv("p", f.role, lang)));
     }
@@ -423,26 +383,24 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
         let tpl = if f.role == Role::Pawn {
             p.pick(
                 22,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["claims space in the center", "stakes a claim in the center", "grabs a big share of the center"],
                     &["gana espacio en el centro", "reclama su parte del centro", "se hace con buena parte del centro"],
                     &["ganha espaço no centro", "reivindica sua parte do centro", "toma boa parte do centro"],
                     &["gagne de l'espace au centre", "revendique sa part du centre", "s'empare d'une bonne partie du centre"],
                     &["gewinnt Raum im Zentrum", "beansprucht seinen Teil des Zentrums", "sichert sich einen großen Teil des Zentrums"],
-                ),
+                ]),
             )
         } else {
             p.pick(
                 23,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["controls important central squares", "eyes the center"],
                     &["controla casillas centrales importantes", "apunta al centro"],
                     &["controla casas centrais importantes", "mira o centro"],
                     &["contrôle des cases centrales importantes", "vise le centre"],
                     &["kontrolliert wichtige Zentrumsfelder", "zielt aufs Zentrum"],
-                ),
+                ]),
             )
         };
         out.push(tpl.to_string());
@@ -450,14 +408,13 @@ pub(crate) fn positive_reasons(f: &MoveFacts, p: &Picker, lang: Lang) -> Vec<Str
     if f.gives_check && out.is_empty() {
         let tpl = p.pick(
             24,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["gives check and keeps the opponent busy", "checks the king and keeps the initiative"],
                 &["da jaque y mantiene ocupado al rival", "da jaque al rey y mantiene la iniciativa"],
                 &["dá xeque e mantém o adversário ocupado", "dá xeque no rei e mantém a iniciativa"],
                 &["donne échec et occupe l'adversaire", "met le roi en échec et garde l'initiative"],
                 &["gibt Schach und hält den Gegner beschäftigt", "bietet Schach und behält die Initiative"],
-            ),
+            ]),
         );
         out.push(tpl.to_string());
     }
@@ -473,8 +430,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
         let tpl = if *back_rank {
             p.pick(
                 31,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &[
                         "This allows a back-rank mate with {m} — the king has no escape squares.",
                         "Careful: {m} is now a back-rank checkmate, since the king is boxed in by its own pawns.",
@@ -495,19 +451,18 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
                         "Dieser Zug erlaubt ein Grundreihenmatt mit {m}: Der König hat keine Fluchtfelder.",
                         "Vorsicht: {m} ist jetzt ein Grundreihenmatt, weil der König von den eigenen Bauern eingesperrt ist.",
                     ],
-                ),
+                ]),
             )
         } else {
             p.pick(
                 32,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["This allows {m}, checkmate!", "Ouch — this lets {m} deliver checkmate."],
                     &["Esta jugada permite {m}, ¡jaque mate!", "¡Ay! Esta jugada permite que {m} dé jaque mate."],
                     &["Este lance permite {m}, xeque-mate!", "Ai! Este lance deixa {m} dar xeque-mate."],
                     &["Ce coup permet {m}, échec et mat !", "Aïe ! Ce coup permet {m}, qui fait échec et mat."],
                     &["Dieser Zug erlaubt {m}, Schachmatt!", "Autsch! Dieser Zug erlaubt {m} – und das ist matt."],
-                ),
+                ]),
             )
         };
         out.push(fill(tpl, &kv(&[("m", m)])));
@@ -516,14 +471,13 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
     if let Some(m) = &f.missed_mate {
         let tpl = p.pick(
             33,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["You had checkmate in one with {m}!", "There was a mate in one: {m}!"],
                 &["¡Tenías mate en una con {m}!", "¡Había mate en una: {m}!"],
                 &["Você tinha mate em um com {m}!", "Havia um mate em um: {m}!"],
                 &["Tu avais un mat en un coup avec {m} !", "Il y avait un mat en un coup : {m} !"],
                 &["Du hattest Matt in einem Zug mit {m}!", "Hier gab es ein Matt in einem Zug: {m}!"],
-            ),
+            ]),
         );
         out.push(fill(tpl, &kv(&[("m", m)])));
         return out;
@@ -532,22 +486,20 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
         if before > 0 && after.map(|a| a <= 0).unwrap_or(true) {
             let tpl = p.pick(
                 34,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["This lets a forced checkmate slip away.", "There was a forced mate here, and this move misses it."],
                     &["Esta jugada deja escapar un mate forzado.", "Aquí había un mate forzado, y esta jugada lo deja pasar."],
                     &["Este lance deixa escapar um mate forçado.", "Havia um mate forçado aqui, e este lance o deixa passar."],
                     &["Ce coup laisse échapper un mat forcé.", "Il y avait un mat forcé ici, et ce coup le laisse passer."],
                     &["Dieser Zug lässt ein erzwungenes Matt aus.", "Hier gab es ein erzwungenes Matt, und dieser Zug verpasst es."],
-                ),
+                ]),
             );
             out.push(tpl.to_string());
         }
     }
     if f.is_stalemate && f.material_lead > 0 {
         out.push(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "This is stalemate — a winning position thrown away as a draw!",
                     "Esta jugada es ahogado: ¡una posición ganada que se convierte en tablas!",
@@ -569,44 +521,41 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
             let tpl = if *was {
                 p.pick(
                     35,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["This leaves {p} hanging", "This doesn't deal with the threat to {p}", "{P} is still en prise after this"],
                         &["Esta jugada deja {p} colgad{p_o}", "Esta jugada no resuelve la amenaza sobre {p}", "{P} sigue colgad{p_o} tras esta jugada"],
                         &["Este lance deixa {p} pendurad{p_o}", "Este lance não resolve a ameaça sobre {p}", "{P} continua pendurad{p_o} depois deste lance"],
                         &["Ce coup laisse {p} en prise", "Ce coup ne règle pas la menace sur {p}", "{P} reste en prise après ce coup"],
                         &["Dieser Zug lässt {p_acc} hängen", "Dieser Zug ändert nichts an der Drohung gegen {p_acc}", "{P} hängt nach diesem Zug immer noch"],
-                    ),
+                    ]),
                 )
             } else if h.undefended {
                 p.pick(
                     36,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["This hangs {p}", "This leaves {p} undefended", "This drops {p}"],
                         &["Esta jugada deja colgad{p_o} {p}", "Esta jugada deja {p} sin defensa", "Con esta jugada, {p} queda colgad{p_o}"],
                         &["Este lance entrega {p}", "Este lance deixa {p} sem defesa", "Com este lance, {p} fica pendurad{p_o}"],
                         &["Ce coup met {p} en prise", "Ce coup laisse {p} sans défense", "Avec ce coup, {p} est en prise"],
                         &["Dieser Zug stellt {p_acc} ein", "Dieser Zug lässt {p_acc} ungedeckt", "Nach diesem Zug hängt {p}"],
-                    ),
+                    ]),
                 )
             } else {
                 p.pick(
                     37,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["This puts {p} where it can be won", "This leaves {p} under-protected"],
                         &["Esta jugada pone {p} donde se puede perder", "Esta jugada deja {p} mal defendid{p_o}"],
                         &["Este lance coloca {p} onde pode ser perdid{p_o}", "Este lance deixa {p} mal defendid{p_o}"],
                         &["Ce coup place {p} là où {p_er} peut être perdu{p_o}", "Ce coup laisse {p} mal défendu{p_o}"],
                         &["Dieser Zug stellt {p_acc} auf ein Feld, wo {p_er} verloren gehen kann", "Nach diesem Zug ist {p} zu schwach gedeckt"],
-                    ),
+                    ]),
                 )
             };
             let mut sent = fill(tpl, &v);
             match cap {
                 Some(c) => {
-                    let tail = l5(lang, [" — {c} wins it.", ": {c} {p_lo} gana.", ": {c} {p_lo} captura.", " : {c} {p_lo} prend.", ": {c} schlägt {p_lo}."]);
+                    let tail = lang.pick([" — {c} wins it.", ": {c} {p_lo} gana.", ": {c} {p_lo} captura.", " : {c} {p_lo} prend.", ": {c} schlägt {p_lo}."]);
                     sent.push_str(&fill(tail, &cat(v, kv(&[("c", c)]))));
                 }
                 None => sent.push('.'),
@@ -617,8 +566,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
     if out.is_empty() && f.captured.is_some() && f.capture_net <= -90 {
         let tpl = p.pick(
             38,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &[
                     "This capture doesn't add up — after the recapture you lose material.",
                     "The trade here costs material once the opponent takes back.",
@@ -639,15 +587,14 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
                     "Dieser Zug geht nicht auf: Nach dem Zurückschlagen verlierst du Material.",
                     "Dieser Tausch kostet Material, sobald der Gegner zurückschlägt.",
                 ],
-            ),
+            ]),
         );
         out.push(tpl.to_string());
     }
     if out.is_empty() && cat_ == Cat::Miss {
         if let Some(b) = best {
             if let Some(cap) = b.captured.filter(|_| b.wins_material()) {
-                let tpl = l5(
-                    lang,
+                let tpl = lang.pick(
                     [
                         "This misses a chance: {san} would have won {c_un}.",
                         "Esta jugada deja pasar una oportunidad: {san} habría ganado {c_un}.",
@@ -658,8 +605,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
                 );
                 out.push(fill(tpl, &cat(rv("c", cap, lang), kv(&[("san", &b.san)]))));
             } else if b.fork.len() >= 2 {
-                let tpl = l5(
-                    lang,
+                let tpl = lang.pick(
                     [
                         "This misses a fork with {san}.",
                         "Esta jugada deja pasar un ataque doble con {san}.",
@@ -672,14 +618,13 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
             } else {
                 let tpl = p.pick(
                     39,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["This misses a chance to punish the opponent's last move.", "The opponent slipped up, but this doesn't take advantage."],
                         &["Esta jugada no castiga la última jugada del rival.", "El rival se equivocó, pero esta jugada no lo aprovecha."],
                         &["Este lance não pune o último lance do adversário.", "O adversário errou, mas este lance não aproveita."],
                         &["Ce coup ne punit pas le dernier coup de l'adversaire.", "L'adversaire s'est trompé, mais ce coup n'en profite pas."],
                         &["Dieser Zug bestraft den letzten Zug des Gegners nicht.", "Der Gegner hat gepatzt, aber dieser Zug nutzt das nicht aus."],
-                    ),
+                    ]),
                 );
                 out.push(tpl.to_string());
             }
@@ -687,8 +632,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
     }
     if out.is_empty() && f.king_walk {
         out.push(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "Moving the king this early gives up castling and leaves it exposed.",
                     "Mover el rey tan pronto renuncia al enroque y lo deja expuesto.",
@@ -702,8 +646,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
     }
     if out.is_empty() && f.weakens_king {
         out.push(
-            l5(
-                lang,
+            lang.pick(
                 [
                     "Pushing a pawn in front of the castled king weakens its shelter.",
                     "Avanzar un peón delante del rey enrocado debilita su refugio.",
@@ -720,7 +663,7 @@ fn problems(ctx: &MoveContext, f: &MoveFacts, best: Option<&MoveFacts>, cat_: Ca
 
 /// The sentence subject that stands for "the move" in templates ("This" / "Esta jugada").
 fn subject(lang: Lang) -> &'static str {
-    l5(lang, ["This", "Esta jugada", "Este lance", "Ce coup", "Dieser Zug"])
+    lang.pick(["This", "Esta jugada", "Este lance", "Ce coup", "Dieser Zug"])
 }
 
 fn eval_drop(ctx: &MoveContext, mover: Color) -> i32 {
@@ -734,36 +677,33 @@ fn generic_bad(cat_: Cat, ctx: &MoveContext, mover: Color, p: &Picker, lang: Lan
     match cat_ {
         Cat::Blunder if after < -150 => p.pick(
             41,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["This turns the game around for the opponent.", "This seriously damages the position."],
                 &["Esta jugada le da la vuelta a la partida a favor del rival.", "Esta jugada daña seriamente la posición."],
                 &["Este lance vira o jogo a favor do adversário.", "Este lance prejudica seriamente a posição."],
                 &["Ce coup renverse la partie en faveur de l'adversaire.", "Ce coup abîme sérieusement la position."],
                 &["Dieser Zug dreht die Partie zugunsten des Gegners.", "Dieser Zug schwächt die Stellung erheblich."],
-            ),
+            ]),
         ),
         Cat::Blunder | Cat::Mistake => p.pick(
             42,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["This gives away a big part of the advantage.", "This lets the opponent take over.", "This hands the opponent a strong game."],
                 &["Esta jugada regala buena parte de la ventaja.", "Esta jugada permite que el rival tome el control.", "Esta jugada le pone la partida muy fácil al rival."],
                 &["Este lance entrega boa parte da vantagem.", "Este lance permite que o adversário assuma o controle.", "Este lance deixa a partida bem fácil para o adversário."],
                 &["Ce coup gâche une bonne partie de l'avantage.", "Ce coup permet à l'adversaire de prendre le dessus.", "Ce coup offre une partie facile à l'adversaire."],
                 &["Dieser Zug verschenkt einen großen Teil des Vorteils.", "Dieser Zug lässt den Gegner die Kontrolle übernehmen.", "Dieser Zug macht dem Gegner das Leben leicht."],
-            ),
+            ]),
         ),
         _ => p.pick(
             43,
-            t(
-                lang,
+            lang.pick::<&[&str]>([
                 &["This is a bit slow.", "This is playable, but there was something more active.", "A small slip — the position gets a little harder."],
                 &["Esta jugada es un poco lenta.", "Se puede jugar, pero había algo más activo.", "Un pequeño desliz: la posición se complica un poco."],
                 &["Este lance é um pouco lento.", "Dá para jogar, mas havia algo mais ativo.", "Um pequeno deslize: a posição fica um pouco mais difícil."],
                 &["Ce coup est un peu lent.", "C'est jouable, mais il y avait plus actif.", "Une petite imprécision : la position devient un peu plus difficile."],
                 &["Dieser Zug ist etwas langsam.", "Spielbar, aber es gab etwas Aktiveres.", "Ein kleiner Ausrutscher – die Stellung wird etwas schwieriger."],
-            ),
+            ]),
         ),
     }
     .to_string()
@@ -773,7 +713,7 @@ fn fallback_text(ctx: &MoveContext, cat_: Cat, lang: Lang) -> String {
     let played = if ctx.played_san.is_empty() { ctx.played_uci.as_str() } else { ctx.played_san.as_str() };
     let best = if ctx.best_san.is_empty() { ctx.best_uci.as_str() } else { ctx.best_san.as_str() };
     let better = if !best.is_empty() && best != played {
-        fill(l5(lang, [" {b} was better.", " {b} era mejor.", " {b} era melhor.", " {b} était meilleur.", " {b} war besser."]), &kv(&[("b", best)]))
+        fill(lang.pick([" {b} was better.", " {b} era mejor.", " {b} era melhor.", " {b} était meilleur.", " {b} war besser."]), &kv(&[("b", best)]))
     } else {
         String::new()
     };
@@ -819,7 +759,7 @@ fn fallback_text(ctx: &MoveContext, cat_: Cat, lang: Lang) -> String {
         ],
         Cat::Blunder => ["This is a serious error.", "Esto es un error grave.", "Isto é um erro grave.", "C'est une gaffe.", "Das ist ein grober Fehler."],
     };
-    let text = l5(lang, texts);
+    let text = lang.pick(texts);
     match cat_ {
         Cat::Good | Cat::Inaccuracy | Cat::Mistake | Cat::Miss | Cat::Blunder => format!("{text}{better}"),
         _ => text.to_string(),
@@ -872,7 +812,7 @@ pub(crate) fn plain_move_comment(pos: &Chess, m: &shakmaty::Move, lang: Lang) ->
     let san = kv(&[("san", &f.san)]);
     if f.is_mate {
         let text = fill(
-            l5(lang, ["**{san}** is checkmate!", "¡**{san}** es jaque mate!", "**{san}** é xeque-mate!", "**{san}** est échec et mat !", "**{san}** ist Schachmatt!"]),
+            lang.pick(["**{san}** is checkmate!", "¡**{san}** es jaque mate!", "**{san}** é xeque-mate!", "**{san}** est échec et mat !", "**{san}** ist Schachmatt!"]),
             &san,
         );
         return Comment { bad: false, quiet: false, text };
@@ -889,8 +829,7 @@ pub(crate) fn plain_move_comment(pos: &Chess, m: &shakmaty::Move, lang: Lang) ->
             bad: false,
             quiet: true,
             text: fill(
-                l5(
-                    lang,
+                lang.pick(
                     [
                         "**{san}** is a quiet move — it doesn't create or allow any immediate tactics.",
                         "**{san}** es una jugada tranquila: no crea ni permite ninguna táctica inmediata.",
@@ -909,19 +848,17 @@ fn better_clause(b: &MoveFacts, p: &Picker, lang: Lang) -> String {
     let reasons = positive_reasons(b, p, lang);
     let opener = p.pick(
         51,
-        t(
-            lang,
+        lang.pick::<&[&str]>([
             &["Better was", "Stronger was", "The engine prefers"],
             &["Era mejor", "Más fuerte era", "El motor prefiere"],
             &["Era melhor", "Mais forte era", "O motor prefere"],
             &["Il fallait jouer", "Mieux valait", "Le moteur préfère"],
             &["Besser war", "Stärker war", "Die Engine bevorzugt"],
-        ),
+        ]),
     );
     let v = kv(&[("o", opener), ("san", &b.san)]);
     if b.is_mate {
-        let tpl = l5(
-            lang,
+        let tpl = lang.pick(
             ["{o} {san}, which is checkmate!", "{o} {san}, ¡que es jaque mate!", "{o} {san}, que é xeque-mate!", "{o} {san}, qui fait échec et mat !", "{o} {san} – das ist Schachmatt!"],
         );
         return fill(tpl, &v);
@@ -937,9 +874,9 @@ fn better_clause(b: &MoveFacts, p: &Picker, lang: Lang) -> String {
                 Lang::De => true,
             };
             let tpl = if complex {
-                l5(lang, ["{o} {san} — it {r}.", "{o} {san}: {r}.", "{o} {san}: {r}.", "{o} {san} : il {r}.", "{o} {san} – dieser Zug {r}."])
+                lang.pick(["{o} {san} — it {r}.", "{o} {san}: {r}.", "{o} {san}: {r}.", "{o} {san} : il {r}.", "{o} {san} – dieser Zug {r}."])
             } else {
-                l5(lang, ["{o} {san}, which {r}.", "{o} {san}, que {r}.", "{o} {san}, que {r}.", "{o} {san}, qui {r}.", "{o} {san} – dieser Zug {r}."])
+                lang.pick(["{o} {san}, which {r}.", "{o} {san}, que {r}.", "{o} {san}, que {r}.", "{o} {san}, qui {r}.", "{o} {san} – dieser Zug {r}."])
             };
             fill(tpl, &cat(v, kv(&[("r", r)])))
         }
@@ -953,14 +890,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
         return p
             .pick(
                 1,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["Checkmate! Beautifully finished.", "Checkmate — game over. Well played!", "That's checkmate! Nicely done."],
                     &["¡Jaque mate! Un final precioso.", "Jaque mate: se acabó la partida. ¡Bien jugado!", "¡Eso es jaque mate! Muy bien hecho."],
                     &["Xeque-mate! Uma finalização linda.", "Xeque-mate: fim de jogo. Muito bem jogado!", "Isso é xeque-mate! Muito bem feito."],
                     &["Échec et mat ! Superbe finition.", "Échec et mat : la partie est terminée. Bien joué !", "C'est échec et mat ! Bravo."],
                     &["Schachmatt! Wunderschön zu Ende gespielt.", "Schachmatt – die Partie ist vorbei. Gut gespielt!", "Das ist Schachmatt! Sehr gut gemacht."],
-                ),
+                ]),
             )
             .to_string();
     }
@@ -978,7 +914,7 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
     }
 
     let reasons = positive_reasons(f, p, lang);
-    let and = l5(lang, [" and ", " y ", " e ", " et ", " und "]);
+    let and = lang.pick([" and ", " y ", " e ", " et ", " und "]);
     let reason_sentence = |lead: &str| -> Option<String> {
         let mut rs = reasons.iter().take(2);
         let first = rs.next()?;
@@ -991,27 +927,25 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
         Some(sentence(&s))
     };
     let this = subject(lang);
-    let it = l5(lang, ["It", "Esta jugada", "Este lance", "Il", "Er"]);
+    let it = lang.pick(["It", "Esta jugada", "Este lance", "Il", "Er"]);
 
     match cat_ {
         Cat::Forced => {
             if pos.legal_moves().len() == 1 {
-                l5(
-                    lang,
+                lang.pick(
                     ["This was the only legal move.", "Era la única jugada legal.", "Era o único lance legal.", "C'était le seul coup légal.", "Das war der einzige legale Zug."],
                 )
                 .to_string()
             } else {
                 p.pick(
                     2,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["This was the only move that holds things together.", "Forced — everything else loses."],
                         &["Era la única jugada que lo sostenía todo.", "Forzada: todo lo demás pierde."],
                         &["Era o único lance que segurava tudo.", "Forçado: todo o resto perde."],
                         &["C'était le seul coup qui tenait tout.", "Forcé : tout le reste perd."],
                         &["Das war der einzige Zug, der alles zusammenhält.", "Erzwungen – alles andere verliert."],
-                    ),
+                    ]),
                 )
                 .to_string()
             }
@@ -1019,14 +953,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
         Cat::Book => {
             let lead = p.pick(
                 3,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["A well-known opening move.", "Straight out of opening theory.", "A book move — this is how the masters play it."],
                     &["Una jugada de apertura muy conocida.", "Directamente de la teoría de aperturas.", "Una jugada de teoría: así la juegan los maestros."],
                     &["Um lance de abertura bem conhecido.", "Direto da teoria de aberturas.", "Um lance de teoria: é assim que os mestres jogam."],
                     &["Un coup d'ouverture bien connu.", "Tout droit sorti de la théorie des ouvertures.", "Un coup théorique : c'est ainsi que jouent les maîtres."],
                     &["Ein bekannter Eröffnungszug.", "Direkt aus der Eröffnungstheorie.", "Ein Theoriezug – so spielen ihn die Meister."],
-                ),
+                ]),
             );
             match reason_sentence(it) {
                 Some(r) => format!("{lead} {r}"),
@@ -1039,18 +972,16 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
                 Some(r) => {
                     let excl = p.pick(
                         4,
-                        t(
-                            lang,
+                        lang.pick::<&[&str]>([
                             &["Brilliant!", "Wow — brilliant!", "A brilliant sacrifice!"],
                             &["¡Brillante!", "¡Guau, brillante!", "¡Un sacrificio brillante!"],
                             &["Brilhante!", "Uau, brilhante!", "Um sacrifício brilhante!"],
                             &["Brillant !", "Waouh, brillant !", "Un sacrifice brillant !"],
                             &["Brillant!", "Wow – brillant!", "Ein brillantes Opfer!"],
-                        ),
+                        ]),
                     );
                     let tail = fill(
-                        l5(
-                            lang,
+                        lang.pick(
                             [
                                 "Giving up {p} is the key idea.",
                                 "Entregar {p} es la idea clave.",
@@ -1066,14 +997,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
                 None => p
                     .pick(
                         5,
-                        t(
-                            lang,
+                        lang.pick::<&[&str]>([
                             &["Brilliant!", "A brilliant find!"],
                             &["¡Brillante!", "¡Un hallazgo brillante!"],
                             &["Brilhante!", "Um achado brilhante!"],
                             &["Brillant !", "Une trouvaille brillante !"],
                             &["Brillant!", "Ein brillanter Fund!"],
-                        ),
+                        ]),
                     )
                     .to_string(),
             };
@@ -1085,20 +1015,18 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
         Cat::Great => {
             let lead = p.pick(
                 6,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["Great find!", "Great move!", "Excellent spot!"],
                     &["¡Gran hallazgo!", "¡Gran jugada!", "¡Excelente visión!"],
                     &["Ótimo achado!", "Ótimo lance!", "Excelente visão!"],
                     &["Belle trouvaille !", "Très bon coup !", "Excellent coup d'œil !"],
                     &["Starker Fund!", "Starker Zug!", "Hervorragend gesehen!"],
-                ),
+                ]),
             );
             match reason_sentence(this) {
                 Some(r) => format!("{lead} {r}"),
                 None => {
-                    let tail = l5(
-                        lang,
+                    let tail = lang.pick(
                         [
                             "It's the only move that keeps the advantage.",
                             "Es la única jugada que mantiene la ventaja.",
@@ -1114,14 +1042,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
         Cat::Best => {
             let lead = p.pick(
                 7,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["Nice!", "Well played!", "Spot on!", "Exactly right!"],
                     &["¡Bien!", "¡Bien jugado!", "¡Exacto!", "¡Justo eso!"],
                     &["Boa!", "Muito bem jogado!", "Exato!", "Isso mesmo!"],
                     &["Bien !", "Bien joué !", "Exactement !", "C'est tout à fait ça !"],
                     &["Schön!", "Gut gespielt!", "Genau!", "Ganz genau richtig!"],
-                ),
+                ]),
             );
             match reason_sentence(this) {
                 Some(r) => format!("{lead} {r}"),
@@ -1152,7 +1079,7 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
                             "Das ist hier die erste Wahl der Engine.",
                         ]
                     };
-                    format!("{lead} {}", l5(lang, tail))
+                    format!("{lead} {}", lang.pick(tail))
                 }
             }
         }
@@ -1160,14 +1087,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
             // Good / excellent.
             let lead = p.pick(
                 8,
-                t(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["Good move.", "Solid.", "A good, healthy move."],
                     &["Buena jugada.", "Sólida.", "Una jugada buena y sana."],
                     &["Bom lance.", "Sólido.", "Um lance bom e saudável."],
                     &["Bon coup.", "Solide.", "Un bon coup, sain."],
                     &["Guter Zug.", "Solide.", "Ein guter, gesunder Zug."],
-                ),
+                ]),
             );
             let mut s = match reason_sentence(this) {
                 Some(r) => format!("{lead} {r}"),
@@ -1177,14 +1103,13 @@ fn explain_with(ctx: &MoveContext, pos: &Chess, cat_: Cat, f: &MoveFacts, best: 
                 s.push(' ');
                 let tpl = p.pick(
                     9,
-                    t(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["{b} was slightly more precise.", "{b} was a touch stronger.", "The engine slightly prefers {b}."],
                         &["{b} era un poco más precisa.", "{b} era algo más fuerte.", "El motor prefiere ligeramente {b}."],
                         &["{b} era um pouco mais preciso.", "{b} era um pouco mais forte.", "O motor prefere levemente {b}."],
                         &["{b} était un peu plus précis.", "{b} était légèrement plus fort.", "Le moteur préfère légèrement {b}."],
                         &["{b} war etwas genauer.", "{b} war einen Tick stärker.", "Die Engine bevorzugt leicht {b}."],
-                    ),
+                    ]),
                 );
                 s.push_str(&fill(tpl, &kv(&[("b", &b.san)])));
             }

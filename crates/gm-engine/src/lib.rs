@@ -30,6 +30,12 @@ pub use shakmaty;
 
 /// Engine score. On the wire: `{"cp": 35}` or `{"mate": 3}`.
 /// `Mate(n)`: n > 0 = white mates in n moves, n < 0 = black mates in n moves.
+///
+/// `Mate(0)` is a white-POV score for a checkmate already on the board **delivered by white**
+/// (black is mated). The search never produces it (a mated root has no lines); game review
+/// uses it for a final position where white has won, and reports black's finished checkmate
+/// as `Mate(-1)` so the sign stays unambiguous. [`Score::to_cp`] ranks it as the best possible
+/// score for white. Don't `negate` it: `-0 == 0`, so it can't express "black has mated".
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum Score {
@@ -74,9 +80,8 @@ impl Score {
             Score::Cp(c) => c,
             Score::Mate(m) if m > 0 => Self::MATE_CP - m.min(1000),
             Score::Mate(m) if m < 0 => -Self::MATE_CP - m.max(-1000),
-            // Mate(0): side to move is already mated; treat as a loss for the side to move is
-            // unknowable here, so map to a neutral 0.
-            Score::Mate(_) => 0,
+            // Mate(0): white has already delivered checkmate (see the type docs).
+            Score::Mate(_) => Self::MATE_CP,
         }
     }
 
@@ -290,6 +295,9 @@ pub fn uci_line_to_san(pos: &Chess, moves: &[String]) -> Vec<String> {
 struct PoolInner {
     engines: Mutex<Vec<Engine>>,
     permits: Arc<Semaphore>,
+    /// Caps background work (game reviews) at `max(1, size - 1)` engines so one engine stays
+    /// free for interactive requests (bot moves, live analysis) whenever `size > 1`.
+    background: Arc<Semaphore>,
     size: usize,
     tt_mb: usize,
 }
@@ -335,10 +343,16 @@ impl EnginePool {
             inner: Arc::new(PoolInner {
                 engines: Mutex::new(engines),
                 permits: Arc::new(Semaphore::new(size)),
+                background: Arc::new(Semaphore::new(Self::background_slots(size))),
                 size,
                 tt_mb,
             }),
         }
+    }
+
+    /// Engines background work may use at once: all but one (at least one).
+    fn background_slots(size: usize) -> usize {
+        size.saturating_sub(1).max(1)
     }
 
     /// Run blocking work with an exclusive engine on a blocking thread.
@@ -347,6 +361,27 @@ impl EnginePool {
         &self,
         f: impl FnOnce(&mut Engine) -> R + Send + 'static,
     ) -> R {
+        self.run(f).await
+    }
+
+    /// [`EnginePool::with_engine`] for bulk background work such as a game review. All
+    /// background callers together hold at most `max(1, size - 1)` engines, so with two or
+    /// more engines an interactive request never waits behind a review. Background jobs queue
+    /// in FIFO order; dropping the future before it starts gives its slot back.
+    pub async fn with_engine_background<R: Send + 'static>(
+        &self,
+        f: impl FnOnce(&mut Engine) -> R + Send + 'static,
+    ) -> R {
+        let slot = match Arc::clone(&self.inner.background).acquire_owned().await {
+            Ok(p) => p,
+            Err(_) => unreachable_closed(),
+        };
+        let r = self.run(f).await;
+        drop(slot);
+        r
+    }
+
+    async fn run<R: Send + 'static>(&self, f: impl FnOnce(&mut Engine) -> R + Send + 'static) -> R {
         let inner = Arc::clone(&self.inner);
         let permit = match Arc::clone(&self.inner.permits).acquire_owned().await {
             Ok(p) => p,
@@ -383,6 +418,11 @@ impl EnginePool {
     /// Number of engines currently idle.
     pub fn available(&self) -> usize {
         self.inner.permits.available_permits()
+    }
+
+    /// Most engines background work ([`EnginePool::with_engine_background`]) may hold at once.
+    pub fn background_capacity(&self) -> usize {
+        Self::background_slots(self.inner.size)
     }
 }
 
@@ -440,6 +480,19 @@ mod tests {
     }
 
     #[test]
+    fn mate_zero_is_white_has_mated() {
+        // A finished checkmate by white outranks every other score; black's finished
+        // checkmate is reported as Mate(-1) and is the lowest.
+        assert_eq!(Score::Mate(0).to_cp(), Score::MATE_CP);
+        assert!(Score::Mate(0).to_cp() > Score::Mate(1).to_cp());
+        assert!(Score::Mate(1).to_cp() > Score::Cp(5_000).to_cp());
+        assert!(Score::Mate(-1).to_cp() < Score::Mate(-2).to_cp());
+        assert!(Score::Mate(-1).to_cp() < Score::Cp(-5_000).to_cp());
+        assert_eq!(Score::Mate(0).to_cp_clamped(1000), 1000);
+        assert_eq!(Score::Mate(0).to_string(), "M0");
+    }
+
+    #[test]
     fn finds_mate_in_one() {
         // White: Qh5 with Bc4 -> Qxf7#
         let p =
@@ -488,5 +541,52 @@ mod tests {
         }
         assert_eq!(pool.available(), 2);
         assert_eq!(pool.inner.engines.lock().len(), 2);
+    }
+
+    /// Background work never takes the last engine: an interactive search started while a
+    /// flood of background jobs is queued gets an engine right away.
+    #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+    async fn background_work_leaves_an_engine_free() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        let pool = EnginePool::new(3, 1);
+        assert_eq!(pool.background_capacity(), 2);
+        assert_eq!(EnginePool::new(1, 1).background_capacity(), 1);
+        let stop = Arc::new(AtomicBool::new(false));
+        let running = Arc::new(AtomicUsize::new(0));
+        let peak = Arc::new(AtomicUsize::new(0));
+        let mut jobs = tokio::task::JoinSet::new();
+        for _ in 0..8 {
+            let (pool, stop, running, peak) =
+                (pool.clone(), Arc::clone(&stop), Arc::clone(&running), Arc::clone(&peak));
+            jobs.spawn(async move {
+                pool.with_engine_background(move |_e| {
+                    let now = running.fetch_add(1, Ordering::SeqCst) + 1;
+                    peak.fetch_max(now, Ordering::SeqCst);
+                    while !stop.load(Ordering::Relaxed) {
+                        std::thread::sleep(std::time::Duration::from_millis(1));
+                    }
+                    running.fetch_sub(1, Ordering::SeqCst);
+                })
+                .await
+            });
+        }
+        // Let the background jobs grab their engines.
+        while running.load(Ordering::SeqCst) < 2 {
+            tokio::time::sleep(std::time::Duration::from_millis(1)).await;
+        }
+        let quick = tokio::time::timeout(
+            std::time::Duration::from_secs(5),
+            pool.with_engine(|e| {
+                let s = AtomicBool::new(false);
+                let limits = SearchLimits { depth: Some(2), ..Default::default() };
+                e.search(&Chess::default(), &limits, &s, &mut |_| {}).lines.len()
+            }),
+        )
+        .await;
+        stop.store(true, Ordering::Relaxed);
+        assert_eq!(quick.expect("interactive search must not wait for background work"), 1);
+        while jobs.join_next().await.is_some() {}
+        assert_eq!(peak.load(Ordering::SeqCst), 2);
+        assert_eq!(pool.available(), 3);
     }
 }

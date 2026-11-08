@@ -338,11 +338,14 @@ fn pick_move(
     rng: &mut StdRng,
     ref_nps: u64,
 ) -> Result<String, String> {
+    // Offline harness: every search is node-limited, so nothing needs to raise this flag.
+    let stop = AtomicBool::new(false);
     match &p.kind {
-        Kind::Bot { bot_id, elo } => choose_move_deterministic(engine, content, bot_id, START_FEN, moves, *elo, rng, ref_nps).map(|m| m.uci),
+        Kind::Bot { bot_id, elo } => {
+            choose_move_deterministic(engine, &stop, content, bot_id, START_FEN, moves, *elo, rng, ref_nps).map(|m| m.uci)
+        }
         Kind::Engine { nodes } => {
             let limits = SearchLimits { depth: None, movetime_ms: None, nodes: Some(*nodes), multipv: 1 };
-            let stop = AtomicBool::new(false);
             let info = engine.search_with_history(pos, history, &limits, &stop, &mut |_| {});
             info.best_move().map(str::to_string).ok_or_else(|| "engine returned no move".to_string())
         }

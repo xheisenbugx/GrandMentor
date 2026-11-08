@@ -102,27 +102,6 @@ fn doubled_files(b: &Board, c: Color) -> Vec<File> {
     File::ALL.into_iter().filter(|f| (file_bb(*f) & ours).count() >= 2).collect()
 }
 
-/// Pick the template for `lang` from `[en, es, pt, fr, de]`.
-fn t(lang: Lang, s: [&'static str; 5]) -> &'static str {
-    match lang {
-        Lang::En => s[0],
-        Lang::Es => s[1],
-        Lang::Pt => s[2],
-        Lang::Fr => s[3],
-        Lang::De => s[4],
-    }
-}
-
-fn tl<'a>(lang: Lang, en: &'a [&'a str], es: &'a [&'a str], pt: &'a [&'a str], fr: &'a [&'a str], de: &'a [&'a str]) -> &'a [&'a str] {
-    match lang {
-        Lang::En => en,
-        Lang::Es => es,
-        Lang::Pt => pt,
-        Lang::Fr => fr,
-        Lang::De => de,
-    }
-}
-
 /// Side as a sentence subject, capitalized ("White" / "Las blancas" / "Les Blancs" / "Weiß").
 fn side(c: Color, lang: Lang) -> String {
     capitalize(side_name(c, lang))
@@ -130,7 +109,7 @@ fn side(c: Color, lang: Lang) -> String {
 
 fn side_label(c: Color, to_move: Color, lang: Lang) -> String {
     if c == to_move {
-        fill(t(lang, ["{s} (to move)", "{s} (con el turno)", "{s} (com a vez)", "{s} (au trait)", "{s} (am Zug)"]), &kv(&[("s", &side(c, lang))]))
+        fill(lang.pick(["{s} (to move)", "{s} (con el turno)", "{s} (com a vez)", "{s} (au trait)", "{s} (am Zug)"]), &kv(&[("s", &side(c, lang))]))
     } else {
         side(c, lang)
     }
@@ -147,8 +126,7 @@ fn material_sentence(b: &Board, lang: Lang) -> String {
         let bb = count(Color::Black, Role::Bishop);
         let pair = |c: Color| {
             fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "Material is equal, but {s} has the bishop pair — a long-term plus in open positions.",
                         "El material está igualado, pero {s} tienen la pareja de alfiles: una ventaja a largo plazo en posiciones abiertas.",
@@ -166,13 +144,12 @@ fn material_sentence(b: &Board, lang: Lang) -> String {
         if bb == 2 && wb < 2 {
             return pair(Color::Black);
         }
-        return t(lang, ["Material is level.", "El material está igualado.", "O material está igualado.", "Le matériel est égal.", "Das Material ist ausgeglichen."]).into();
+        return lang.pick(["Material is level.", "El material está igualado.", "O material está igualado.", "Le matériel est égal.", "Das Material ist ausgeglichen."]).into();
     }
     let (leader, n) = if diff > 0 { (Color::White, diff) } else { (Color::Black, -diff) };
     let what = describe_material_edge(b, leader, lang);
     let advice = if n >= 3 {
-        t(
-            lang,
+        lang.pick(
             [
                 "trade pieces (not pawns) and head for a simple endgame",
                 "cambiar piezas (no peones) e ir a un final sencillo",
@@ -182,8 +159,7 @@ fn material_sentence(b: &Board, lang: Lang) -> String {
             ],
         )
     } else {
-        t(
-            lang,
+        lang.pick(
             [
                 "keep it safe and look to trade down",
                 "conservar la ventaja y buscar cambios",
@@ -194,8 +170,7 @@ fn material_sentence(b: &Board, lang: Lang) -> String {
         )
     };
     let tpl = if n == 1 {
-        t(
-            lang,
+        lang.pick(
             [
                 "{S} is up {n} point of material{what} — the plan is to {advice}.",
                 "{S} tienen {n} punto de ventaja material{what}: el plan es {advice}.",
@@ -205,8 +180,7 @@ fn material_sentence(b: &Board, lang: Lang) -> String {
             ],
         )
     } else {
-        t(
-            lang,
+        lang.pick(
             [
                 "{S} is up {n} points of material{what} — the plan is to {advice}.",
                 "{S} tienen {n} puntos de ventaja material{what}: el plan es {advice}.",
@@ -250,7 +224,7 @@ fn describe_material_edge(b: &Board, leader: Color, lang: Lang) -> String {
             Lang::De => format!(" ({} mehr)", join_list(&extra, lang)),
         }
     } else {
-        let label = t(lang, ["extra", "de más", "a mais", "en plus", "zusätzlich"]);
+        let label = lang.pick(["extra", "de más", "a mais", "en plus", "zusätzlich"]);
         match lang {
             Lang::Fr => format!(" ({label} : {})", extra.join(", ")),
             _ => format!(" ({label}: {})", extra.join(", ")),
@@ -300,8 +274,7 @@ pub(crate) struct Idea {
 /// Rule-based list of ideas (3-6) about a position.
 pub fn describe_position(fen: &str, lang: Lang) -> Vec<String> {
     let Ok(pos) = gm_engine::parse_fen(fen) else {
-        return vec![t(
-            lang,
+        return vec![lang.pick(
             [
                 "That position doesn't look valid — try setting it up again.",
                 "Esa posición no parece válida: intenta colocarla de nuevo.",
@@ -329,8 +302,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     if pos.is_checkmate() {
         return [
             fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "Checkmate — {S} has won the game.",
                         "Jaque mate: {s} han ganado la partida.",
@@ -341,8 +313,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                 ),
                 &kv(&[("S", &them), ("s", side_name(!stm, lang))]),
             ),
-            t(
-                lang,
+            lang.pick(
                 [
                     "Step back through the moves to see how the attack came together.",
                     "Repasa las jugadas para ver cómo se construyó el ataque.",
@@ -352,8 +323,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                 ],
             )
             .to_string(),
-            t(
-                lang,
+            lang.pick(
                 [
                     "Notice which pieces covered the king's escape squares.",
                     "Fíjate en qué piezas cubrían las casillas de escape del rey.",
@@ -370,8 +340,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     }
     if pos.is_stalemate() {
         return [
-            t(
-                lang,
+            lang.pick(
                 [
                     "Stalemate — the game is a draw because the side to move has no legal moves but isn't in check.",
                     "Ahogado: la partida es tablas porque el bando que mueve no tiene jugadas legales y no está en jaque.",
@@ -380,8 +349,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "Patt – die Partie ist remis, weil die Seite am Zug keinen legalen Zug hat, aber nicht im Schach steht.",
                 ],
             ),
-            t(
-                lang,
+            lang.pick(
                 [
                     "When you're winning, always make sure the opponent has a legal move left!",
                     "Cuando vayas ganando, ¡asegúrate siempre de que tu rival tenga alguna jugada legal!",
@@ -390,8 +358,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "Wenn du gewinnst, achte immer darauf, dass der Gegner noch einen legalen Zug hat!",
                 ],
             ),
-            t(
-                lang,
+            lang.pick(
                 [
                     "Material doesn't matter anymore once it's stalemate.",
                     "Cuando hay ahogado, el material ya no importa.",
@@ -407,8 +374,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     }
     if pos.is_insufficient_material() {
         return [
-            t(
-                lang,
+            lang.pick(
                 [
                     "Neither side has enough material to checkmate — it's a draw.",
                     "Ningún bando tiene material suficiente para dar mate: son tablas.",
@@ -417,8 +383,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "Keine Seite hat genug Material zum Mattsetzen – remis.",
                 ],
             ),
-            t(
-                lang,
+            lang.pick(
                 [
                     "Remember: a lone king plus a bishop or knight can't force mate.",
                     "Recuerda: un rey con solo un alfil o un caballo no puede forzar el mate.",
@@ -427,8 +392,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "Denk dran: Ein König mit nur einem Läufer oder Springer kann kein Matt erzwingen.",
                 ],
             ),
-            t(
-                lang,
+            lang.pick(
                 [
                     "Try practising basic mates in the Endgames section.",
                     "Practica los mates básicos en la sección de Finales.",
@@ -446,8 +410,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     // 1. Immediate tactics.
     if pos.is_check() {
         ideas.push(threat(fill(
-            t(
-                lang,
+            lang.pick(
                 [
                     "{S} is in check and must deal with it first: move the king, block, or capture the checker.",
                     "{S} están en jaque y deben resolverlo primero: mover el rey, tapar el jaque o capturar la pieza que lo da.",
@@ -461,8 +424,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     }
     if let Some(m) = tactics::mate_in_one(pos) {
         ideas.push(threat(fill(
-            t(
-                lang,
+            lang.pick(
                 [
                     "{S} has checkmate in one: {m}!",
                     "¡{S} tienen mate en una: {m}!",
@@ -476,8 +438,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     } else if let Some((swapped, m)) = tactics::null_move_mate_threat(pos) {
         let mv = tactics::san(&swapped, &m);
         let tpl = if tactics::is_back_rank_mate(&swapped, &m) {
-            t(
-                lang,
+            lang.pick(
                 [
                     "Watch out: {T} threatens {m}, checkmate on the back rank — {s} must defend.",
                     "Cuidado: {t} amenazan {m}, mate del pasillo; {s} deben defenderse.",
@@ -487,8 +448,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                 ],
             )
         } else {
-            t(
-                lang,
+            lang.pick(
                 [
                     "Watch out: {T} threatens {m}, checkmate — {s} must defend.",
                     "Cuidado: {t} amenazan {m}, jaque mate; {s} deben defenderse.",
@@ -513,8 +473,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         let mut v = PieceRef::on(h.role, h.square).colored(h.color).vars("p", lang);
         v.extend(kv(&[("s", side_name(stm, lang)), ("S", &us)]));
         let tpl = match (&cap, h.undefended) {
-            (Some(_), true) => t(
-                lang,
+            (Some(_), true) => lang.pick(
                 [
                     "{P} is undefended — {S} can grab it with {c}.",
                     "{P} está indefens{p_o}: {s} pueden capturar{p_lo} con {c}.",
@@ -523,8 +482,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "{P} ist ungedeckt – {S} kann {p_lo} mit {c} schlagen.",
                 ],
             ),
-            (Some(_), false) => t(
-                lang,
+            (Some(_), false) => lang.pick(
                 [
                     "{P} is under-protected — {S} wins material with {c}.",
                     "{P} está mal defendid{p_o}: {s} ganan material con {c}.",
@@ -533,8 +491,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     "{P} ist zu schwach gedeckt – {S} gewinnt mit {c} Material.",
                 ],
             ),
-            (None, _) => t(
-                lang,
+            (None, _) => lang.pick(
                 [
                     "{P} is loose — look for ways to attack it.",
                     "{P} está suelt{p_o}: busca maneras de atacar{p_lo}.",
@@ -553,8 +510,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
     if let Some(h) = own_hanging.first() {
         let v = PieceRef::on(h.role, h.square).colored(stm).vars("p", lang);
         ideas.push(threat(fill(
-            t(
-                lang,
+            lang.pick(
                 [
                     "{P} is under attack — move it, defend it, or create a bigger threat.",
                     "{P} está atacad{p_o}: muéve{p_lo}, defiénde{p_lo} o crea una amenaza mayor.",
@@ -581,8 +537,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                 uniq.dedup();
                 let names: Vec<String> = uniq.iter().map(|r| piece_plural(*r, lang).to_string()).collect();
                 ideas.push(plain(fill(
-                    t(
-                        lang,
+                    lang.pick(
                         [
                             "{S} still has {n} minor pieces at home ({names}) — developing them is a priority.",
                             "{S} todavía tienen {n} piezas menores sin desarrollar ({names}): sacarlas es la prioridad.",
@@ -603,8 +558,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         let king = king_ref.def(lang);
         if king_exposed(pos, c) {
             ideas.push(threat(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "{K} looks exposed — attacking it (or tucking it away) is the key theme.",
                         "{K} parece expuesto: atacarlo (o ponerlo a salvo) es el tema clave.",
@@ -618,8 +572,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
             break;
         } else if castled_rights && pos.fullmoves().get() >= 6 && ph != Phase::Endgame {
             ideas.push(plain(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "{S} hasn't castled yet — castling soon keeps the king safe and connects the rooks.",
                         "{S} aún no han enrocado: enrocar pronto pone el rey a salvo y conecta las torres.",
@@ -635,8 +588,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
             let mut v = king_ref.vars("k", lang);
             v.extend(kv(&[("S", &side(c, lang))]));
             ideas.push(threat(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "The pawn cover around {S}'s king is thin — keep an eye on attacks there.",
                         "La protección de peones de {k} es escasa: vigila los ataques por ese lado.",
@@ -661,18 +613,16 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
             if advanced || ph == Phase::Endgame {
                 let tail = p.pick(
                     61,
-                    tl(
-                        lang,
+                    lang.pick::<&[&str]>([
                         &["push it with support, and the opponent must block it with a piece.", "passed pawns must be pushed!", "it can become a queen if nobody stops it."],
                         &["avánzalo con apoyo, y el rival tendrá que bloquearlo con una pieza.", "¡los peones pasados hay que avanzarlos!", "puede convertirse en dama si nadie lo detiene."],
                         &["avance-o com apoio, e o adversário terá que bloqueá-lo com uma peça.", "peões passados devem avançar!", "ele pode virar dama se ninguém o parar."],
                         &["pousse-le avec du soutien, et l'adversaire devra le bloquer avec une pièce.", "les pions passés doivent avancer !", "il peut devenir une dame si personne ne l'arrête."],
                         &["schieb ihn mit Unterstützung vor, dann muss der Gegner ihn mit einer Figur blockieren.", "Freibauern müssen laufen!", "er kann zur Dame werden, wenn ihn niemand aufhält."],
-                    ),
+                    ]),
                 );
                 ideas.push(plain(fill(
-                    t(
-                        lang,
+                    lang.pick(
                         [
                             "{S} has a passed pawn on {sq} — {tail}",
                             "{S} tienen un peón pasado en {sq}: {tail}",
@@ -693,14 +643,13 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         ideas.push(plain(
             p.pick(
                 62,
-                tl(
-                    lang,
+                lang.pick::<&[&str]>([
                     &["It's an endgame: bring the king toward the center — it's a strong piece now.", "Endgame time: activate your king and create a passed pawn."],
                     &["Estamos en un final: lleva el rey hacia el centro, ahora es una pieza fuerte.", "Hora del final: activa tu rey y crea un peón pasado."],
                     &["É um final: leve o rei para o centro, agora ele é uma peça forte.", "Hora do final: ative seu rei e crie um peão passado."],
                     &["C'est une finale : amène le roi vers le centre, c'est maintenant une pièce forte.", "C'est l'heure de la finale : active ton roi et crée un pion passé."],
                     &["Es ist ein Endspiel: Bring den König ins Zentrum – jetzt ist er eine starke Figur.", "Zeit fürs Endspiel: Aktiviere deinen König und schaffe einen Freibauern."],
-                ),
+                ]),
             )
             .to_string(),
         ));
@@ -717,8 +666,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         let letters: Vec<String> = open.iter().take(2).map(|f| f.char().to_string()).collect();
         if rooks_on.len() == 1 {
             ideas.push(plain(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "{S} controls the open {f}-file with a heavy piece — try to invade on the 7th rank.",
                         "{S} controlan la columna abierta {f} con una pieza pesada: intenta invadir por la séptima fila.",
@@ -731,8 +679,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
             )));
         } else if rooks_on.is_empty() && !b.rooks().is_empty() {
             let tpl = if letters.len() > 1 {
-                t(
-                    lang,
+                lang.pick(
                     [
                         "The {a}-file and {b}-file are open — whoever puts a rook there first gains an edge.",
                         "Las columnas {a} y {b} están abiertas: quien ponga primero una torre ahí gana ventaja.",
@@ -742,8 +689,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                     ],
                 )
             } else {
-                t(
-                    lang,
+                lang.pick(
                     [
                         "The {a}-file is open — whoever puts a rook there first gains an edge.",
                         "La columna {a} está abierta: quien ponga primero una torre ahí gana ventaja.",
@@ -765,8 +711,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         if let Some(sq) = iso.first().filter(|_| ph != Phase::Opening) {
             let pawn = PieceRef::on(Role::Pawn, *sq).colored(c).def(lang);
             ideas.push(plain(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "{P} is isolated — no pawn can defend it, so it's a target.",
                         "{P} está aislado: ningún peón puede defenderlo, así que es un objetivo.",
@@ -781,8 +726,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         }
         if let Some(f) = dbl.first().filter(|_| ph != Phase::Opening) {
             ideas.push(plain(fill(
-                t(
-                    lang,
+                lang.pick(
                     [
                         "{S} has doubled pawns on the {f}-file, a small long-term weakness.",
                         "{S} tienen peones doblados en la columna {f}, una pequeña debilidad a largo plazo.",
@@ -803,8 +747,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         let count = |c: Color| center.iter().filter(|s| b.piece_at(**s).map(|pc| pc.color == c && pc.role == Role::Pawn).unwrap_or(false)).count();
         let (w, bl) = (count(Color::White), count(Color::Black));
         let text = if w > bl {
-            t(
-                lang,
+            lang.pick(
                 [
                     "White has more pawns in the center — Black should challenge it with pawn breaks like ...c5 or ...d5.",
                     "Las blancas tienen más peones en el centro: las negras deberían desafiarlo con rupturas como ...c5 o ...d5.",
@@ -814,8 +757,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                 ],
             )
         } else if bl > w {
-            t(
-                lang,
+            lang.pick(
                 [
                     "Black has more central pawns — White should fight back for the center.",
                     "Las negras tienen más peones centrales: las blancas deberían luchar por el centro.",
@@ -827,8 +769,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
         } else {
             p.pick(
                 63,
-                tl(
-                    lang,
+                lang.pick::<&[&str]>([
                     &[
                         "Opening principles: control the center, develop knights and bishops, and castle early.",
                         "Follow the basics: develop a new piece each move and don't move the same piece twice without a reason.",
@@ -849,7 +790,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
                         "Eröffnungsprinzipien: Kontrolliere das Zentrum, entwickle Springer und Läufer und rochiere früh.",
                         "Die Grundlagen: Entwickle mit jedem Zug eine neue Figur und zieh dieselbe Figur nicht ohne Grund zweimal.",
                     ],
-                ),
+                ]),
             )
         };
         ideas.push(plain(text.to_string()));
@@ -870,8 +811,7 @@ pub(crate) fn describe(pos: &Chess, lang: Lang) -> Vec<Idea> {
 
 /// General advice used to pad short idea lists.
 fn fillers(lang: Lang) -> &'static [&'static str] {
-    tl(
-        lang,
+    lang.pick::<&[&str]>([
         &[
             "Before every move, check for checks, captures and threats — for both sides.",
             "Find your least active piece and look for a better square for it.",
@@ -897,7 +837,7 @@ fn fillers(lang: Lang) -> &'static [&'static str] {
             "Finde deine am wenigsten aktive Figur und such ihr ein besseres Feld.",
             "Frag dich: Was will der Gegner als Nächstes tun?",
         ],
-    )
+    ])
 }
 
 #[cfg(test)]
