@@ -38,7 +38,7 @@ parking_lot.workspace = true
 futures-util.workspace = true
 rand.workspace = true
 # Phone & home use (docs/PHONE.md): HTTPS on the LAN with a local CA, QR codes, LAN addresses.
-axum-server = { version = "0.8", features = ["tls-rustls-no-provider"] }
+axum-server = { version = "0.9", features = ["tls-rustls-no-provider"] }
 rustls = { workspace = true, features = ["logging"] }
 rcgen = { version = "0.14", default-features = false, features = ["crypto", "pem", "ring", "x509-parser"] }
 ring = "0.17"
