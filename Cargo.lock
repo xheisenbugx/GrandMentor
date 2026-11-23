@@ -709,7 +709,7 @@ version = "0.1.0"
 dependencies = [
  "gm-content",
  "gm-engine",
- "rand 0.10.3",
+ "rand 0.10.4",
  "serde",
  "serde_json",
  "shakmaty",
@@ -772,7 +772,7 @@ dependencies = [
  "if-addrs",
  "parking_lot 0.13.0",
  "qrcode",
- "rand 0.10.3",
+ "rand 0.10.4",
  "rcgen",
  "ring",
  "rqrr",
@@ -1515,9 +1515,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.10.3"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65c9fb96cbc91e3478eaae79a69fcd3f1ae4ad052e471fe6732fff548984b4af"
+checksum = "8f6fa277c67e6ea590466f04c3fe82cb509f0864fe470643e5570de9514a9b11"
 dependencies = [
  "chacha20",
  "getrandom 0.4.3",
@@ -1942,9 +1942,9 @@ dependencies = [
 
 [[package]]
 name = "shakmaty"
-version = "0.30.2"
+version = "0.30.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d465a6a07031a8c60d92dc9b656cc8f59f8c1640493576d5d88f898883b4bd67"
+checksum = "112f34413cdc32e9c15d74798cd57583bfc228c42e8dd30570d1af62305fcdc4"
 dependencies = [
  "arrayvec",
  "bitflags",
@@ -2410,7 +2410,7 @@ dependencies = [
  "http",
  "httparse",
  "log",
- "rand 0.10.3",
+ "rand 0.10.4",
  "sha1 0.11.0",
  "thiserror",
 ]
