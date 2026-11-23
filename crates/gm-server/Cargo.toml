@@ -42,7 +42,7 @@ axum-server = { version = "0.8", features = ["tls-rustls-no-provider"] }
 rustls = { workspace = true, features = ["logging"] }
 rcgen = { version = "0.14", default-features = false, features = ["crypto", "pem", "ring", "x509-parser"] }
 ring = "0.17"
-qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+qrcode = { version = "0.15", default-features = false, features = ["svg"] }
 if-addrs = "0.15"
 gethostname = "1"
 time = { version = "0.3", default-features = false, features = ["std"] }
